@@ -40,7 +40,11 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute element={<MainLayout />} />}>
-                <Route path="/dashboard" element={<DashboardLayout />} />
+                <Route path="/dashboard" element={<PrivateRoute element={<DashboardLayout />} />}>
+                    <Route index element={<Navigate to="/dashboard/overview" />} />
+                    <Route path="/dashboard/overview" element={<ServiceDeskOverviewLayout />} />
+                </Route>
+
                 <Route
                     path="/servicedesk"
                     element={<PrivateRoute element={<ServiceDeskLayout />} />}
