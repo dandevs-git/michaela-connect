@@ -29,21 +29,21 @@
 //                 to={page.link}
 //             >
 //                 <div className="">{page.icon}</div>
-//                 <div className="d-none d-md-inline ms-2 me-5">{page.page}</div>
+//                 <div className="d-md-inline d-none me-5 ms-2">{page.page}</div>
 //             </NavLink>
 //         </li>
 //     ))
 
 //     return (
 //         <>
-//             <div className="pt-5 d-flex flex-column sticky-top vh-100 bg-light-subtle shadow-lg">
-//                 <div className="nav nav-pills flex-column mb-auto">
-//                     <div className="px-2 px-md-4 pt-4">
-//                         <ul className="text-nowrap list-unstyled">{listPages}</ul>
+//             <div className="d-flex flex-column bg-light-subtle shadow-lg pt-5 sticky-top vh-100">
+//                 <div className="flex-column nav nav-pills mb-auto">
+//                     <div className="pt-4 px-2 px-md-4">
+//                         <ul className="list-unstyled text-nowrap">{listPages}</ul>
 //                     </div>
 //                 </div>
 
-//                 <div className="text-center p-2 bg-primary text-white small mt-auto border">
+//                 <div className="bg-primary border p-2 text-center text-white mt-auto small">
 //                     &copy; 2025 Goldnines
 //                 </div>
 //             </div>
@@ -70,6 +70,7 @@ const pages = [
         icon: <FaChartLine />,
         subPages: [
             { name: 'Overview', link: '/dashboard/overview' },
+            { name: 'Activities', link: '/dashboard/activities' },
             { name: 'Reports', link: '/dashboard/reports' }
         ]
     },
@@ -78,12 +79,37 @@ const pages = [
         link: '/servicedesk',
         icon: <FaTicketAlt />,
         subPages: [
-            { name: 'All Tickets', link: '/servicedesk/all' },
-            { name: 'New Tickets', link: '/servicedesk/new' }
+            { name: 'Overview', link: '/servicedesk/overview' },
+            { name: 'Tickets', link: '/servicedesk/tickets' },
+            { name: 'Reports', link: '/servicedesk/reports' }
         ]
     },
-    { page: 'Employees', link: '/employees', icon: <FaUser /> },
-    { page: 'Directory', link: '/directory', icon: <FaNetworkWired /> },
+    {
+        page: 'Employees',
+        link: '/employees',
+        icon: <FaUser />,
+        subPages: [
+            { name: 'All Employees', link: '/employees/all' },
+            { name: 'Employee Directory', link: '/employees/directory' },
+            { name: 'Roles & Permissions', link: '/employees/roles' },
+            { name: 'Activity Logs', link: '/employees/logs' },
+            { name: 'Performance Tracking', link: '/employees/performance' }
+        ]
+    },
+    {
+        page: 'Directory',
+        link: '/directory',
+        icon: <FaNetworkWired />,
+        subPages: [
+            { name: 'Employees', link: '/directory/employees' },
+            { name: 'Department', link: '/directory/departments' },
+            { name: 'Telephone', link: '/directory/telephones' },
+            { name: 'IP Address', link: '/directory/ipaddress' },
+            { name: 'Anydesk', link: '/directory/anydesk' },
+            { name: 'PC Name', link: '/directory/pcname' },
+            { name: 'Printers', link: '/directory/printers' }
+        ]
+    },
     { page: 'Settings', link: '/settings', icon: <FaCog /> },
     { page: '404 Error', link: '/notfound', icon: <FaRegEyeSlash /> }
 ]
@@ -93,11 +119,11 @@ function SideNavigation() {
 
     return (
         <div
-            className="pt-5 d-flex flex-column sticky-top vh-100 bg-light-subtle shadow-lg"
+            className="d-flex flex-column bg-light-subtle shadow-lg pt-5 sticky-top vh-100"
             style={{ width: '250px' }}
         >
-            <div className="flex-grow-1 overflow-auto p-3">
-                <ul className="nav flex-column p-2">
+            <div className="flex-grow-1 p-3 overflow-auto">
+                <ul className="flex-column nav p-2">
                     {pages.map((page, index) => {
                         const isActive = location.pathname.startsWith(page.link)
                         const collapseId = `collapse-${index}`
@@ -108,25 +134,29 @@ function SideNavigation() {
                                     <>
                                         <NavLink
                                             to={page.link}
-                                            className={`nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? 'bg-primary' : 'text-light-emphasis'}`}
+                                            className={`nav-link d-flex align-items-center px-3 py-2 rounded ${isActive ? 'text-light bg-primary' : 'text-light-emphasis'}`}
                                             data-bs-toggle="collapse"
                                             data-bs-target={`#${collapseId}`}
                                             aria-expanded={isActive ? 'true' : 'false'}
                                         >
-                                            {page.icon} <span className="ms-2">{page.page}</span>
+                                            {page.icon}
+                                            <span className="ms-2">{page.page}</span>
+                                            <i
+                                                className={`bi ms-auto ${isActive ? 'bi-chevron-down' : 'bi-chevron-right'}`}
+                                            ></i>
                                         </NavLink>
 
                                         <div
                                             className={`collapse ${isActive ? 'show' : ''}`}
                                             id={collapseId}
                                         >
-                                            <ul className="nav flex-column ms-3 border-start ps-2 mt-1">
+                                            <ul className="flex-column nav ms-4 mt-1">
                                                 {page.subPages.map((subPage, subIndex) => (
                                                     <li key={subIndex}>
                                                         <NavLink
                                                             to={subPage.link}
                                                             className={({ isActive }) =>
-                                                                `nav-link d-inline-flex align-items-center px-3 py-2 rounded text-light-emphasis ${isActive ? 'bg-light-subtle text-primary fw-bold text-underline' : 'text-light-emphasis'}`
+                                                                `nav-link text-light-emphasis ps-4 border-start my-1 p-1 ${isActive ? 'text-decoration-underline underline-offset-8 fw-bold' : ''}`
                                                             }
                                                         >
                                                             {subPage.name}
@@ -149,7 +179,7 @@ function SideNavigation() {
                     })}
                 </ul>
             </div>
-            <div className="text-center p-2 bg-primary text-white small mt-auto border">
+            <div className="bg-primary border p-2 text-center text-white mt-auto small">
                 &copy; 2025 Goldnines
             </div>
         </div>

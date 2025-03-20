@@ -2,7 +2,7 @@ import CustomBarChart from '../../components/charts/CustomBarChart'
 import CustomLineChart from '../../components/charts/CustomLineChart'
 import CustomPieChart from '../../components/charts/CustomPieChart'
 
-function PerformanceReports() {
+function Reports() {
     const ticketStatusData = [
         { name: 'Done', value: 123 },
         { name: 'In Progress', value: 300 },
@@ -89,31 +89,31 @@ function PerformanceReports() {
     return (
         <>
             <div className="col-xl-4 p-4">
-                <div className="card shadow rounded-4 mb-3 text-center h-100">
-                    <div className="card-header text-uppercase fw-semibold fs-3">
+                <div className="card h-100 rounded-4 shadow text-center mb-3">
+                    <div className="card-header text-uppercase fs-3 fw-semibold">
                         Ticket Status Data
                     </div>
-                    <div className="card-body d-flex justify-content-center align-items-center">
+                    <div className="d-flex card-body align-items-center justify-content-center">
                         <CustomPieChart data={ticketStatusData} />
                     </div>
                 </div>
             </div>
             <div className="col-xl-6 p-4">
-                <div className="card shadow rounded-4 mb-3 text-center h-100">
-                    <div className="card-header text-uppercase fw-semibold fs-3">
+                <div className="card h-100 rounded-4 shadow text-center mb-3">
+                    <div className="card-header text-uppercase fs-3 fw-semibold">
                         Ticket Volume Trends
                     </div>
-                    <div className="card-body d-flex justify-content-center align-items-center">
+                    <div className="d-flex card-body align-items-center justify-content-center">
                         <CustomLineChart data={ticketVolumeTrends} />
                     </div>
                 </div>
             </div>
             <div className="col-xl-6 p-4">
-                <div className="card shadow rounded-4 mb-3 text-center h-100">
-                    <div className="card-header text-uppercase fw-semibold fs-3">
+                <div className="card h-100 rounded-4 shadow text-center mb-3">
+                    <div className="card-header text-uppercase fs-3 fw-semibold">
                         Tickets by Department
                     </div>
-                    <div className="card-body d-flex justify-content-center align-items-center">
+                    <div className="d-flex card-body align-items-center justify-content-center">
                         <CustomBarChart data={ticketsByDepartment} datakey={'Tickets'} />
                     </div>
                 </div>
@@ -121,4 +121,4 @@ function PerformanceReports() {
         </>
     )
 }
-export default PerformanceReports
+export default Reports

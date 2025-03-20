@@ -34,26 +34,26 @@ function TopNavigation() {
 
     return (
         <>
-            <div className="navbar navbar-expand-md fixed-top bg-body-tertiary shadow bg-light-subtle">
+            <div className="navbar navbar-expand-md bg-body-tertiary bg-light-subtle shadow fixed-top">
                 <div className="col order-1">
                     <Link
                         to="/"
-                        className="d-flex align-items-center link-body-emphasis text-decoration-none ms-4"
+                        className="d-flex align-items-center text-decoration-none link-body-emphasis ms-4"
                     >
                         <img
                             src={!darkMode ? logoBlack : logoWhite}
                             className="img-fluid"
                             width={30}
                         />
-                        <span className="ms-2 fs-5">Michaela</span>
+                        <span className="fs-5 ms-2">Michaela</span>
                     </Link>
                 </div>
 
                 <div className="col order-3">
                     <div className="d-flex justify-content-end me-4">
-                        <div className="dropdown d-flex align-items-center ">
+                        <div className="d-flex dropdown align-items-center">
                             <Link
-                                className="link-body-emphasis text-decoration-none dropdown-toggle mx-4"
+                                className="dropdown-toggle text-decoration-none link-body-emphasis mx-4"
                                 data-bs-toggle="dropdown"
                             >
                                 <img
@@ -66,7 +66,7 @@ function TopNavigation() {
                                 <strong>Dan</strong>
                             </Link>
 
-                            <ul className="dropdown-menu text-small bg-body text-body shadow">
+                            <ul className="dropdown-menu bg-body shadow text-body text-small">
                                 {listPages}
                                 <li>
                                     <hr className="dropdown-divider" />

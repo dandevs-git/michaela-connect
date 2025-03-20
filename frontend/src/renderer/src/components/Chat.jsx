@@ -10,27 +10,27 @@ function Chat() {
     return (
         <>
             <button
-                className="btn btn-primary position-fixed bottom-0 end-0 me-4 mb-4 rounded-circle p-2 shadow border-2 border-light z-3"
+                className="btn btn-primary border-2 border-light p-2 position-fixed rounded-circle shadow bottom-0 end-0 mb-4 me-4 z-3"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#chatBox"
             >
-                <i className="bi bi-chat-fill mx-1 fs-4"></i>
-                <span className="position-absolute badge top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                <i className="bi bi-chat-fill fs-4 mx-1"></i>
+                <span className="badge bg-danger border border-light p-2 position-absolute rounded-circle start-100 top-0 translate-middle">
                     <span className="">99+</span>
                 </span>
             </button>
 
             <div
-                className="z-1 collapse position-fixed bottom-0 end-0 me-5 mb-5 shadow-lg"
+                className="collapse position-fixed shadow-lg bottom-0 end-0 mb-5 me-5 z-1"
                 id="chatBox"
                 style={{ width: '300px' }}
             >
                 <div className="card">
-                    <div className="card-header bg-primary text-white d-flex align-items-center">
+                    <div className="d-flex card-header align-items-center bg-primary text-white">
                         <span>IT DEPARTMENT</span>
                         <i
-                            className="bi bi-circle-fill ms-2 text-success"
+                            className="text-success bi bi-circle-fill ms-2"
                             style={{ fontSize: '0.5rem' }}
                         ></i>
                         <button
@@ -42,23 +42,23 @@ function Chat() {
                     </div>
                     <div
                         className="card-body text-center"
-                        style={{ height: '250px', overflowY: 'auto' }}
+                        style={{ height: '300px', overflowY: 'auto' }}
                     >
                         <div className="text-muted">
                             IT-Minio
-                            <span className="opacity-50 text-light bg-success rounded-pill px-2 ms-1 small">
+                            <span className="bg-success rounded-pill text-light ms-1 opacity-50 px-2 small">
                                 online
                             </span>
                         </div>
                         <div className="text-muted">
                             IT-Justine
-                            <span className="opacity-50 text-light bg-success rounded-pill px-2 ms-1 small">
+                            <span className="bg-success rounded-pill text-light ms-1 opacity-50 px-2 small">
                                 online
                             </span>
                         </div>
                         <div className="text-muted">
                             IT-Gilbert
-                            <span className="opacity-50 text-light bg-success rounded-pill px-2 ms-1 small">
+                            <span className="bg-success rounded-pill text-light ms-1 opacity-50 px-2 small">
                                 online
                             </span>
                         </div>
@@ -77,7 +77,9 @@ function Chat() {
                                 onClick={sendMessage}
                                 disabled={!message.trim()}
                             >
-                                <i className="bi-send-fill"></i>
+                                <div className="p-0 rotate-45">
+                                    <i className="bi-send-fill"></i>
+                                </div>
                             </button>
                         </div>
                     </div>

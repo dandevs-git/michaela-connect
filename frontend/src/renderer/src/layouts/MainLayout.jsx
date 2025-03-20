@@ -10,8 +10,8 @@ function DashboardLayout() {
                 <SideNavigation />
                 <div className="w-100">
                     <TopNavigation />
-                    <div className="p-4 mt-5 w-100">
-                        <div className="shadow border rounded-4 mb-3 p-4 bg-light-subtle">
+                    <div className="p-4 w-100 mt-5">
+                        <div className="bg-light-subtle border p-4 rounded-4 shadow mb-3">
                             <Outlet />
                         </div>
                     </div>

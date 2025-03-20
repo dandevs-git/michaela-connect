@@ -23,6 +23,10 @@ import ServiceDeskOverviewLayout from './layouts/ServiceDeskOverviewLayout'
 import ServiceDeskTicketLayout from './layouts/ServiceDeskTicketLayout'
 import Employees from './pages/Employees'
 
+import Overview from './pages/dashboard/Overview'
+import Activities from './pages/dashboard/Activities'
+import Reports from './pages/dashboard/Reports'
+
 const PrivateRoute = ({ element }) => {
     const { isAuthenticated } = useAuth()
     return isAuthenticated ? element : <Navigate to="/login" replace />
@@ -40,15 +44,12 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute element={<MainLayout />} />}>
-                <Route path="/dashboard" element={<PrivateRoute element={<DashboardLayout />} />}>
-                    <Route index element={<Navigate to="/dashboard/overview" />} />
-                    <Route path="/dashboard/overview" element={<ServiceDeskOverviewLayout />} />
+                <Route path="/dashboard">
+                    <Route index element={<Navigate to="overview" replace />} />
+                    <Route path=":section" element={<DashboardLayout />} />
                 </Route>
 
-                <Route
-                    path="/servicedesk"
-                    element={<PrivateRoute element={<ServiceDeskLayout />} />}
-                >
+                <Route path="/servicedesk" element={<ServiceDeskLayout />}>
                     <Route index element={<Navigate to="/servicedesk/overview" />} />
                     <Route path="/servicedesk/overview" element={<ServiceDeskOverviewLayout />} />
                     <Route path="/servicedesk/tickets" element={<ServiceDeskTicketLayout />}>

@@ -4,21 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
 {
     /** @use HasFactory<\Database\Factories\TicketFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'requester_id',
-        'department_id',
-        'assigned_to',
-        'assigned_department_id',
         'title',
         'description',
-        'status'
+        'priority',
+        'status',
+        'requester_id',
+        'department_id',
+        'requester_head_id',
+        'assigned_head_id',
+        'assigned_to',
+        'resolved_at',
+        'failed_at',
+        'completed_at',
     ];
+
+    protected $dates = ['resolved_at', 'failed_at', 'completed_at', 'deleted_at'];
 
     public function requester()
     {
@@ -30,13 +38,39 @@ class Ticket extends Model
         return $this->belongsTo(Department::class, 'department_id');
     }
 
-    public function assignedUser()
+    public function requesterHead()
+    {
+        return $this->belongsTo(User::class, 'requester_head_id');
+    }
+
+    public function assignedHead()
+    {
+        return $this->belongsTo(User::class, 'assigned_head_id');
+    }
+
+    public function assignedTo()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    public function assignedDepartment()
+    // Scopes
+    public function scopePending($query)
     {
-        return $this->belongsTo(Department::class, 'assigned_department_id');
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeInProgress($query)
+    {
+        return $query->where('status', 'in_progress');
+    }
+
+    public function scopeResolved($query)
+    {
+        return $query->where('status', 'resolved');
+    }
+
+    public function scopeFailed($query)
+    {
+        return $query->where('status', 'failed');
     }
 }

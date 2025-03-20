@@ -41,14 +41,14 @@ function CustomTable({
 
     return (
         <>
-            <div className="d-flex justify-content-center align-items-center row mb-3">
+            <div className="d-flex row align-items-center justify-content-center mb-3">
                 <div className="col-8 d-flex align-items-center">
                     {topContent ? topContent : ''}
                     {!hasEntriesNumber && (
                         <div className="text-start">
                             show
                             <select
-                                className="rounded px-3 mx-2"
+                                className="rounded mx-2 px-3"
                                 value={table.getState().pagination.pageSize}
                                 onChange={(e) => {
                                     table.setPageSize(Number(e.target.value))
@@ -67,8 +67,8 @@ function CustomTable({
                 <div className="col-4">
                     {!hasSearch && (
                         <div className="d-flex">
-                            <div className="input-group input-group-sm d-flex">
-                                <span className="input-group-text border bg-primary text-light rounded-start-pill px-3">
+                            <div className="d-flex input-group input-group-sm">
+                                <span className="input-group-text bg-primary border rounded-start-pill text-light px-3">
                                     Search
                                 </span>
                                 <input
@@ -84,7 +84,7 @@ function CustomTable({
                 </div>
             </div>
 
-            <table className="table table-bordered table-sm table-responsive table-hover mb-3 text-nowrap">
+            <table className="table table-bordered table-hover table-responsive text-nowrap mb-3">
                 {caption && <caption className="text-center">{caption}</caption>}
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -126,32 +126,32 @@ function CustomTable({
             </table>
 
             {!hasPagination && (
-                <div className="pagination justify-content-end">
+                <div className="justify-content-end pagination">
                     <button
                         onClick={() => table.firstPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="page-item btn border rounded-start-3 rounded-0"
+                        className="btn border rounded-0 rounded-start-3 page-item"
                     >
                         First Page
                     </button>
                     <button
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="page-item btn border rounded-0 px-3"
+                        className="btn border rounded-0 page-item px-3"
                     >
                         {'<'}
                     </button>
                     <button
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
-                        className="page-item btn border rounded-0 px-3"
+                        className="btn border rounded-0 page-item px-3"
                     >
                         {'>'}
                     </button>
                     <button
                         onClick={() => table.lastPage()}
                         disabled={!table.getCanNextPage()}
-                        className="page-item btn border rounded-end-3 rounded-0"
+                        className="btn border rounded-0 rounded-end-3 page-item"
                     >
                         Last Page
                     </button>

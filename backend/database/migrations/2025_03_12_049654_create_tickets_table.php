@@ -13,14 +13,24 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('requester_id')->constrained('users')->cascadeOnDelete(); // Staff who requested
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade'); // Requesting department
-            $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null'); // Assigned staff
-            $table->foreignId('assigned_department_id')->nullable()->constrained('departments')->onDelete('set null'); // Assigned department
+            $table->string('title'); 
+            $table->text('description');
+            $table->enum('priority', ['normal', 'priority', 'urgent'])->default('normal');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'in_progress', 'resolved', 'failed', 'completed', 'reopened'])->default('pending');
 
-            $table->string('title'); // Ticket subject
-            $table->text('description'); // Issue details
-            $table->enum('status', ['Pending', 'Approved by Head', 'Assigned', 'In Progress', 'Completed', 'Reopened', 'Failed'])->default('Pending'); // Ticket status
+            // Relationships
+            $table->foreignId('requester_id')->constrained('users')->onDelete('cascade'); // User who submitted
+            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade'); // Department handling
+            $table->foreignId('requester_head_id')->nullable()->constrained('users')->onDelete('set null'); // Head of Requester’s Dept
+            $table->foreignId('assigned_head_id')->nullable()->constrained('users')->onDelete('set null'); // Head of Assigned Dept
+            $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null'); // Assigned Staff
+
+            // Timestamps
+            $table->timestamp('resolved_at')->nullable();
+            $table->timestamp('failed_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

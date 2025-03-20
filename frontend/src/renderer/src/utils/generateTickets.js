@@ -1,3 +1,4 @@
+import { formatDistanceToNow } from 'date-fns'
 import { faker } from '@faker-js/faker'
 
 const priorityLevels = ['Low', 'Medium', 'High', 'Urgent']
@@ -9,8 +10,13 @@ const generateTickets = (count = 100) => {
     return Array.from({ length: count }, (_, i) => {
         const status = faker.helpers.arrayElement(statuses)
         const createdAt = faker.date.recent({ days: 60 })
-        const assignedAt = faker.date.between({ from: createdAt, to: new Date() })
-        const deadline = faker.date.soon({ days: 10, refDate: assignedAt })
+        const assignedAt =
+            status !== 'Pending' ? faker.date.between({ from: createdAt, to: new Date() }) : null
+        const deadline = assignedAt ? faker.date.soon({ days: 10, refDate: assignedAt }) : null
+        const lastUpdated =
+            status === 'Pending'
+                ? createdAt
+                : faker.date.between({ from: assignedAt, to: new Date() })
 
         return {
             ticketID: `T-${i + 1}`,
@@ -20,8 +26,10 @@ const generateTickets = (count = 100) => {
             requester: faker.helpers.arrayElement(users),
             department: faker.helpers.arrayElement(departments),
             assignedTo: status !== 'Pending' ? faker.helpers.arrayElement(users) : null,
-            createdAt: createdAt.toISOString().split('T')[0],
-            deadline: deadline.toISOString().split('T')[0]
+            createdAt: createdAt.toISOString(),
+            deadline: deadline ? deadline.toISOString() : null,
+            lastUpdated: lastUpdated.toISOString(),
+            lastUpdatedRelative: formatDistanceToNow(lastUpdated, { addSuffix: true })
         }
     })
 }
