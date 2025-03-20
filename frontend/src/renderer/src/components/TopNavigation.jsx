@@ -1,10 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { useContext } from 'react'
-import logoBlack from '../assets/images/logos/logo-black.png'
-import logoWhite from '../assets/images/logos/logo-white.png'
 import id from '../assets/images/photos/id.jpg'
 import ThemeSwitch from './ThemeSwitch'
-import ThemeContext from '../contexts/ThemeContext'
 import { useAuth } from '../contexts/AuthContext'
 
 const pages = [
@@ -14,7 +10,6 @@ const pages = [
 ]
 
 function TopNavigation() {
-    const { darkMode } = useContext(ThemeContext)
     const { logout } = useAuth()
     const handleLogout = (e) => {
         e.preventDefault()
@@ -34,23 +29,78 @@ function TopNavigation() {
 
     return (
         <>
-            <div className="navbar navbar-expand-md bg-body-tertiary bg-light-subtle shadow fixed-top">
-                <div className="col order-1">
-                    <Link
-                        to="/"
-                        className="d-flex align-items-center text-decoration-none link-body-emphasis ms-4"
-                    >
-                        <img
-                            src={!darkMode ? logoBlack : logoWhite}
-                            className="img-fluid"
-                            width={30}
-                        />
-                        <span className="fs-5 ms-2">Michaela</span>
-                    </Link>
-                </div>
-
+            <div className="navbar navbar-expand-md bg-light-subtle sticky-top shadow-lg">
                 <div className="col order-3">
                     <div className="d-flex justify-content-end me-4">
+                        <div className="dropdown mx-2">
+                            <button
+                                type="button"
+                                className="btn bg-transparent border-0 p-1 position-relative"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <i className="bi bi-bell-fill fs-4 mx-1"></i>
+                                <span className="badge bg-danger border border-light position-absolute mt-2 start-100 top-0 translate-middle">
+                                    <span>99+</span>
+                                </span>
+                            </button>
+
+                            <ul className="dropdown-menu dropdown-menu-end rounded-4 shadow-lg border">
+                                <li className="dropdown-header text-center fw-bold py-3">
+                                    Notifications
+                                </li>
+
+                                <li>
+                                    <a className="d-flex dropdown-item align-items-start" href="#">
+                                        <div className="me-3">
+                                            <i className="text-primary bi bi-box-seam fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div className="fw-semibold">New Ticket Received</div>
+                                            <small className="text-muted">2 mins ago</small>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a className="d-flex dropdown-item align-items-start" href="#">
+                                        <div className="me-3">
+                                            <i className="text-success bi bi-chat-dots fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div className="fw-semibold">
+                                                Message from HR Department
+                                            </div>
+                                            <small className="text-muted">10 mins ago</small>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a className="d-flex dropdown-item align-items-start" href="#">
+                                        <div className="me-3">
+                                            <i className="text-warning bi bi-exclamation-triangle fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div className="fw-semibold">
+                                                System Update Available
+                                            </div>
+                                            <small className="text-muted">1 hour ago</small>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <hr className="dropdown-divider" />
+                                </li>
+
+                                <li>
+                                    <a className="dropdown-item text-center fw-bold" href="#">
+                                        View All Notifications
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         <div className="d-flex dropdown align-items-center">
                             <Link
                                 className="dropdown-toggle text-decoration-none link-body-emphasis mx-4"

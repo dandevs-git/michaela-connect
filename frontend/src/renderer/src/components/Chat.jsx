@@ -26,9 +26,9 @@ function Chat() {
                 id="chatBox"
                 style={{ width: '300px' }}
             >
-                <div className="card">
-                    <div className="d-flex card-header align-items-center bg-primary text-white">
-                        <span>IT DEPARTMENT</span>
+                <div className="card rounded-4">
+                    <div className="d-flex card-header align-items-center bg-primary text-white py-2">
+                        <span className='fs-5'>IT DEPARTMENT</span>
                         <i
                             className="text-success bi bi-circle-fill ms-2"
                             style={{ fontSize: '0.5rem' }}
