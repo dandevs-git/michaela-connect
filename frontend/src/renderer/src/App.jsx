@@ -19,13 +19,12 @@ import InProgressTickets from './pages/servicedesk/tickets/InProgressTickets'
 import ClosedTickets from './pages/servicedesk/tickets/ClosedTickets'
 import FailedTickets from './pages/servicedesk/tickets/FailedTickets'
 import AllTickets from './pages/servicedesk/tickets/AllTickets'
-import ServiceDeskOverviewLayout from './layouts/ServiceDeskOverviewLayout'
 import ServiceDeskTicketLayout from './layouts/ServiceDeskTicketLayout'
 import Employees from './pages/Employees'
 
-import Overview from './pages/dashboard/Overview'
-import Activities from './pages/dashboard/Activities'
-import Reports from './pages/dashboard/Reports'
+import Overview from './pages/servicedesk/Overview'
+// import Activities from './pages/dashboard/Activities'
+import Reports from './pages/servicedesk/Reports'
 
 const PrivateRoute = ({ element }) => {
     const { isAuthenticated } = useAuth()
@@ -51,7 +50,7 @@ function App() {
 
                 <Route path="/servicedesk" element={<ServiceDeskLayout />}>
                     <Route index element={<Navigate to="/servicedesk/overview" />} />
-                    <Route path="/servicedesk/overview" element={<ServiceDeskOverviewLayout />} />
+                    <Route path="/servicedesk/overview" element={<Overview />} />
                     <Route path="/servicedesk/tickets" element={<ServiceDeskTicketLayout />}>
                         <Route index element={<Navigate to="/servicedesk/tickets/unassigned" />} />
                         <Route

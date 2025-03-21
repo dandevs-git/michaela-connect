@@ -29,7 +29,7 @@ function TopNavigation() {
 
     return (
         <>
-            <div className="navbar navbar-expand-md bg-light-subtle sticky-top shadow-lg">
+            <div className="navbar navbar-expand-md bg-light-subtle shadow-lg sticky-top">
                 <div className="col order-3">
                     <div className="d-flex justify-content-end me-4">
                         <div className="dropdown mx-2">
@@ -45,7 +45,7 @@ function TopNavigation() {
                                 </span>
                             </button>
 
-                            <ul className="dropdown-menu dropdown-menu-end rounded-4 shadow-lg border">
+                            <ul className="dropdown-menu dropdown-menu-end border rounded-4 shadow-lg">
                                 <li className="dropdown-header text-center fw-bold py-3">
                                     Notifications
                                 </li>
@@ -116,7 +116,7 @@ function TopNavigation() {
                                 <strong>Dan</strong>
                             </Link>
 
-                            <ul className="dropdown-menu bg-body shadow text-body text-small">
+                            <ul className="dropdown-menu dropdown-menu-end bg-body shadow text-body text-small">
                                 {listPages}
                                 <li>
                                     <hr className="dropdown-divider" />
