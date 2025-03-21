@@ -12,7 +12,7 @@ import {
     FaTicketAlt,
     FaUser
 } from 'react-icons/fa'
-import '../assets/styles/collapseAnimation.css'
+import '../assets/styles/sideNavigationStyle.css'
 
 const pages = [
     {
@@ -20,9 +20,9 @@ const pages = [
         link: '/dashboard',
         icon: <FaChartLine />,
         subPages: [
-            { name: 'Overview', link: '/dashboard/overview' },
-            { name: 'Activities', link: '/dashboard/activities' },
-            { name: 'Reports', link: '/dashboard/reports' }
+            { name: 'Team Overview', link: '/dashboard/overview' },
+            { name: 'Team Activities', link: '/dashboard/activities' },
+            { name: 'Team Reports', link: '/dashboard/reports' }
         ]
     },
     {
@@ -30,9 +30,9 @@ const pages = [
         link: '/servicedesk',
         icon: <FaTicketAlt />,
         subPages: [
-            { name: 'Overview', link: '/servicedesk/overview' },
-            { name: 'Tickets', link: '/servicedesk/tickets' },
-            { name: 'Reports', link: '/servicedesk/reports' }
+            { name: 'My Overview', link: '/servicedesk/overview' },
+            { name: 'My Tickets', link: '/servicedesk/tickets' },
+            { name: 'My Reports', link: '/servicedesk/reports' }
         ]
     },
     {
@@ -58,10 +58,33 @@ const pages = [
             { name: 'IP Address', link: '/directory/ipaddress' },
             { name: 'Anydesk', link: '/directory/anydesk' },
             { name: 'PC Name', link: '/directory/pcname' },
-            { name: 'Printers', link: '/directory/printers' }
+            { name: 'Printers', link: '/directory/printers' },
+            { name: 'Cables', link: '/directory/cables' }
         ]
     },
-    { page: 'Settings', link: '/settings', icon: <FaCog /> },
+    {
+        page: 'Reports & Analytics',
+        link: '/reports',
+        icon: <FaCog />,
+        subPages: [
+            { name: 'Ticket Analytics', link: '/directory/employees' },
+            { name: 'SLA Performance', link: '/directory/departments' },
+            { name: 'Employee Performance ', link: '/directory/telephones' },
+            { name: 'Customer Feedback ', link: '/directory/ipaddress' }
+        ]
+    },
+    {
+        page: 'Settings',
+        link: '/reports',
+        icon: <FaCog />,
+        subPages: [
+            { name: 'General Settings', link: '/directory/employees' },
+            { name: 'Security & Authentication', link: '/directory/departments' },
+            { name: 'Email & Notifications', link: '/directory/telephones' },
+            { name: 'System Logs & Audits', link: '/directory/ipaddress' },
+            { name: 'Department Settings', link: '/directory/ipaddress' }
+        ]
+    },
     { page: '404 Error', link: '/notfound', icon: <FaRegEyeSlash /> }
 ]
 
@@ -79,7 +102,7 @@ function SideNavigation() {
 
     return (
         <div
-            className="d-flex flex-column bg-light-subtle shadow-lg border-end border-light-subtle pt-3 sticky-top vh-100"
+            className="d-flex flex-column bg-light-subtle border-end border-light-subtle shadow-lg pt-3 sticky-top vh-100"
             style={{ width: '280px' }}
         >
             <Link
@@ -87,9 +110,9 @@ function SideNavigation() {
                 className="d-flex align-items-center justify-content-center text-decoration-none link-body-emphasis"
             >
                 <img src={!darkMode ? logoBlack : logoWhite} className="img-fluid" width={35} />
-                <span className="fs-3 ms-2 fw-semibold">Michaela</span>
+                <span className="fs-3 fw-semibold ms-2">Michaela</span>
             </Link>
-            <div className="flex-grow-1 p-2 overflow-auto">
+            <div className="flex-grow-1 p-2 overflow-auto scroll">
                 <ul className="flex-column nav p-2">
                     {pages.map((page, index) => {
                         const isActive = location.pathname.startsWith(page.link)

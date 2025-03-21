@@ -44,7 +44,7 @@ function CustomLineChart({ data }) {
                 />
                 <Line
                     type="monotone"
-                    dataKey="Reopened"
+                    dataKey="Failed"
                     stroke={COLORS[3]}
                     strokeWidth={2}
                     dot={{ r: 5, fill: COLORS[3] }}

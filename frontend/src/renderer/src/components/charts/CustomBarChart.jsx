@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { COLORS } from '../../constants/config'
 
-function CustomBarChart({ data, datakey }) {
+function CustomBarChart({ data, datakey, display }) {
     return (
         <ResponsiveContainer width={'100%'} height={350}>
             <BarChart data={data}>
@@ -26,7 +26,7 @@ function CustomBarChart({ data, datakey }) {
                         color: '#333'
                     }}
                 />
-                <Legend />
+                <Legend formatter={() => display} />
                 <Bar
                     dataKey={datakey}
                     fill={COLORS[0]}
