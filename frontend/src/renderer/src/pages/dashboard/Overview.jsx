@@ -99,10 +99,14 @@ function Overview() {
                                 <div className="card-header text-uppercase fw-semibold">
                                     Total Tickets
                                 </div>
-                                <div className="d-flex card-body align-items-center justify-content-center position-relative">
-                                    <p className="card-text display-3 fw-bold">3</p>
-                                    <span className="m-2 position-absolute text-success end-0 fs-5 fw-bold me-3 mt-3 top-0">
-                                        +5%
+                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                    <p className="card-text display-3 m-0 fw-bold">3</p>
+                                    <span className="text-success fs-5 fw-bold">
+                                        <i class="bi bi-arrow-up-short"></i>5
+                                        <i class="bi bi-ticket-perforated ms-2"></i>
+                                    </span>
+                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                        vs previews 30 days
                                     </span>
                                 </div>
                             </div>
@@ -112,10 +116,14 @@ function Overview() {
                                 <div className="card-header text-uppercase fw-semibold">
                                     Resolved Tickets
                                 </div>
-                                <div className="d-flex card-body align-items-center justify-content-center position-relative">
-                                    <p className="card-text display-3 fw-bold">10</p>
-                                    <span className="m-2 position-absolute text-danger end-0 fs-5 fw-bold me-3 mt-3 top-0">
-                                        -8%
+                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                    <p className="card-text display-3 m-0 fw-bold">10</p>
+                                    <span className="text-danger fs-5 fw-bold">
+                                        <i class="bi bi-arrow-down-short"></i>8
+                                        <i class="bi bi-clipboard-check ms-2"></i>
+                                    </span>
+                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                        vs previews 30 days
                                     </span>
                                 </div>
                             </div>
@@ -125,12 +133,16 @@ function Overview() {
                                 <div className="card-header text-uppercase fw-semibold">
                                     SLA Compliance
                                 </div>
-                                <div className="d-flex card-body align-items-center justify-content-center position-relative">
-                                    <p className="card-text display-3 fw-bold">
+                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                    <p className="card-text display-3 m-0 fw-bold">
                                         98<span className="fs-5">%</span>
                                     </p>
-                                    <span className="m-2 position-absolute text-danger end-0 fs-5 fw-bold me-3 mt-3 top-0">
-                                        -8%
+                                    <span className="text-success fs-5 fw-bold">
+                                        <i class="bi bi-arrow-up-short"></i>8%
+                                        <i class="bi bi-check2-circle ms-2"></i>
+                                    </span>
+                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                        vs previews 30 days
                                     </span>
                                 </div>
                             </div>
@@ -140,12 +152,16 @@ function Overview() {
                                 <div className="card-header text-uppercase fw-semibold">
                                     Avg Resolution Time
                                 </div>
-                                <div className="d-flex card-body align-items-center justify-content-center position-relative">
-                                    <p className="card-text display-3 m-0 p-0 fw-bold">
+                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                    <p className="card-text display-3 m-0 fw-bold">
                                         30<span className="fs-5">mins</span>
                                     </p>
-                                    <span className="m-2 position-absolute text-success end-0 fs-5 fw-bold me-3 mt-3 top-0">
-                                        -8%
+                                    <span className="text-success fs-5 fw-bold">
+                                        <i class="bi bi-arrow-up-short"></i>10 mins
+                                        <i class="bi bi-lightning-fill ms-2"></i>
+                                    </span>
+                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                        vs previews 30 days
                                     </span>
                                 </div>
                             </div>
@@ -153,14 +169,18 @@ function Overview() {
                         <div className="col-xl-4 h-50 p-3">
                             <div className="card h-100 rounded-4 shadow text-center mb-3">
                                 <div className="card-header text-uppercase fw-semibold">
-                                    Avg Response Rate
+                                    Avg Response Time
                                 </div>
-                                <div className="d-flex card-body align-items-center justify-content-center position-relative">
-                                    <p className="card-text display-3 m-0 p-0 fw-bold">
+                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                    <p className="card-text display-3 m-0 fw-bold">
                                         10<span className="fs-5">mins</span>
                                     </p>
-                                    <span className="m-2 position-absolute text-success end-0 fs-5 fw-bold me-3 mt-3 top-0">
-                                        -8%
+                                    <span className="text-success fs-5 fw-bold">
+                                        <i class="bi bi-arrow-up-short"></i>17 mins
+                                        <i class="bi bi-clock-history ms-2"></i>
+                                    </span>
+                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                        vs previews 30 days
                                     </span>
                                 </div>
                             </div>
@@ -170,10 +190,14 @@ function Overview() {
                                 <div className="card-header text-uppercase fw-semibold">
                                     Pending Approvals
                                 </div>
-                                <div className="d-flex card-body align-items-center justify-content-center position-relative">
-                                    <p className="card-text display-3 fw-bold">5</p>
-                                    <span className="m-2 position-absolute text-success end-0 fs-5 fw-bold me-3 mt-3 top-0">
-                                        -10%
+                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                    <p className="card-text display-3 m-0 fw-bold">5</p>
+                                    <span className="text-success fs-5 fw-bold">
+                                        <i class="bi bi-arrow-up-short"></i>10
+                                        <i class="bi bi-hourglass-split ms-2"></i>
+                                    </span>
+                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                        vs previews 30 days
                                     </span>
                                 </div>
                             </div>
