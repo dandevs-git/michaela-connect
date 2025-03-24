@@ -14,7 +14,7 @@ function ServiceDeskTicketLayout() {
         <li className="nav-item" key={index}>
             <NavLink
                 className={({ isActive }) =>
-                    `nav-link rounded-pill ${isActive ? 'active' : 'link-body-emphasis'}`
+                    `nav-link rounded-pill ${isActive ? 'active' : 'link-body-emphasis bg-light-subtle'}`
                 }
                 to={tab.link}
             >
@@ -25,22 +25,16 @@ function ServiceDeskTicketLayout() {
 
     return (
         <>
-            <div className="col-xl-12 p-3 d-flex">
-                <div className="">
-                    <div className="nav nav-pills shadow border rounded-4 pt-2 bg-light-subtle">
-                        <div className="">
-                            <div className="d-flex justify-content-center align-items-center p-3 text-nowrap">
-                                <div className="fw-bold fs-4 py-0 px-2 text-start">My Tickets</div>
-                                <div className="btn btn-sm btn-primary ms-2">+ New Ticket</div>
-                            </div>
-                            <hr className="my-1" />
-                            <ul className="text-nowrap list-unstyled px-2 px-md-4 my-4 ">
-                                {listTabs}
-                            </ul>
-                        </div>
+            <div className="col-xl-12 p-3">
+                <div className="navbar-expand-lg border rounded-pill mb-4">
+                    <div className="collapse navbar-collapse p-2 my" id="navbarNav">
+                        <div className="fw-bold fs-4 py-0 px-4 border-end">My Tickets</div>
+                        <div className="btn btn-sm btn-primary ms-3">+ New Ticket</div>
+                        <ul className="nav nav-pills ms-auto">{listTabs}</ul>
                     </div>
                 </div>
-                <div className="shadow border rounded-4 p-4 ms-4 w-100 bg-light-subtle">
+
+                <div className="shadow border rounded-4 p-4 w-100 bg-light-subtle">
                     {<Outlet />}
                 </div>
             </div>

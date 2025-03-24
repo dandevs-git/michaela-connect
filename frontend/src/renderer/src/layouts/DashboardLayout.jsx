@@ -1,8 +1,8 @@
 import { useLocation, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
-import Overview from '../pages/dashboard/Overview'
-import Activities from '../pages/dashboard/Activities'
-import Reports from '../pages/dashboard/Reports'
+import TeamOverview from '../pages/dashboard/TeamOverview'
+import TeamActivities from '../pages/dashboard/TeamActivities'
+import TeamReports from '../pages/dashboard/TeamReports'
 
 function DashboardLayout() {
     const { section } = useParams()
@@ -21,27 +21,27 @@ function DashboardLayout() {
     return (
         <>
             <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
-                <div className="card-header bg-dark text-light text-uppercase fs-3 fw-semibold">
-                    Overview
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+                    Team Overview
                 </div>
                 <div className="row card-body">
-                    <Overview />
+                    <TeamOverview />
                 </div>
             </div>
             <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="activities">
-                <div className="card-header bg-dark text-light text-uppercase fs-3 fw-semibold">
-                    Recent Activities
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+                    Team Activities
                 </div>
                 <div className="row card-body">
-                    <Activities />
+                    <TeamActivities />
                 </div>
             </div>
             <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="reports">
-                <div className="card-header bg-dark text-light text-uppercase fs-3 fw-semibold">
-                    Performance Reports
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+                    Team Performance Reports
                 </div>
                 <div className="row card-body">
-                    <Reports />
+                    <TeamReports />
                 </div>
             </div>
         </>

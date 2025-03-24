@@ -1,30 +1,28 @@
 import CustomTable from '../../components/tables/CustomTable'
-import { tickets } from '../../utils/generateTickets'
-import { userActivitycolumns } from '../../utils/sampleData'
 
 const columnsLogs = [
     {
-        header: '👤 User',
+        header: 'User',
         accessorKey: 'user'
     },
     {
-        header: '🛠️ Action',
+        header: 'Action',
         accessorKey: 'action'
     },
     {
-        header: '🎟️ Affected Ticket/Module',
+        header: 'Affected Ticket/Module',
         accessorKey: 'ticket'
     },
     {
-        header: '⏰ Timestamp',
+        header: 'Timestamp',
         accessorKey: 'timestamp'
     },
     {
-        header: '🖥️ PC Name',
+        header: 'PC Name',
         accessorKey: 'pcName'
     },
     {
-        header: '📍 IP Address',
+        header: 'IP Address',
         accessorKey: 'ipAddress'
     }
 ]
@@ -74,27 +72,27 @@ const dataLogs = [
 
 const columnsTask = [
     {
-        header: '✅ Task Name',
+        header: 'Task Name',
         accessorKey: 'taskName'
     },
     {
-        header: '👨‍💻 Assigned To',
+        header: 'Assigned To',
         accessorKey: 'assignedTo'
     },
     {
-        header: '📆 Due Date',
+        header: 'Due Date',
         accessorKey: 'dueDate'
     },
     {
-        header: '🚨 Priority',
+        header: 'Priority',
         accessorKey: 'priority'
     },
     {
-        header: '🔄 Status',
+        header: 'Status',
         accessorKey: 'status'
     },
     {
-        header: '⏳ Time Remaining',
+        header: 'Time Remaining',
         accessorKey: 'timeRemaining'
     }
 ]
@@ -104,68 +102,54 @@ const dataTask = [
         taskName: 'Approve network issue ticket',
         assignedTo: 'Head of IT',
         dueDate: 'March 22',
-        priority: '🔴 High',
-        status: '⏳ Pending Approval',
+        priority: 'High',
+        status: 'Pending Approval',
         timeRemaining: '2 Days Left'
     },
     {
         taskName: 'Assign ticket to HR team',
         assignedTo: 'HR Manager',
         dueDate: 'March 24',
-        priority: '🟡 Medium',
-        status: '🕒 Waiting for Assignment',
+        priority: 'Medium',
+        status: 'Waiting for Assignment',
         timeRemaining: '4 Days Left'
     },
     {
         taskName: 'Process workstation request',
         assignedTo: 'IT Support',
         dueDate: 'March 25',
-        priority: '🟢 Low',
-        status: '🔄 In Progress',
+        priority: 'Low',
+        status: 'In Progress',
         timeRemaining: '5 Days Left'
     },
     {
         taskName: 'Review new software request',
         assignedTo: 'Software Team',
         dueDate: 'March 26',
-        priority: '🔴 High',
-        status: '🚀 Not Started',
+        priority: 'High',
+        status: 'Not Started',
         timeRemaining: '6 Days Left'
     },
     {
         taskName: 'Investigate email issue',
         assignedTo: 'Network Team',
         dueDate: 'March 27',
-        priority: '🟡 Medium',
-        status: '🛠️ Under Investigation',
+        priority: 'Medium',
+        status: 'Under Investigation',
         timeRemaining: '7 Days Left'
     }
 ]
 
-function Activities() {
+function TeamActivities() {
     return (
         <>
             <div className="col-12 p-4">
-                <div className="bg-body-tertiary border p-4 rounded-4 shadow mb-5">
-                    <div className="text-uppercase fs-4 fw-semibold">Activity Logs</div>
-                    <hr />
-                    <CustomTable
-                        columns={columnsLogs}
-                        data={dataLogs}
-                        caption="Recent user activity logs"
-                    />
-                </div>
-                <div className="bg-body-tertiary border p-4 rounded-4 shadow">
-                    <div className="text-uppercase fs-4 fw-semibold">Assigned Task</div>
-                    <hr />
-                    <CustomTable
-                        columns={columnsTask}
-                        data={dataTask}
-                        caption="Pending task assignments and actions per role."
-                    />
-                </div>
+                <h4 className="text-start fw-semibold">Recent Tasks & Assignments</h4>
+                <CustomTable columns={columnsLogs} data={dataLogs} />
+                <h4 className="text-start fw-semibold">Upcoming Deadlines</h4>
+                <CustomTable columns={columnsTask} data={dataTask} />
             </div>
         </>
     )
 }
-export default Activities
+export default TeamActivities

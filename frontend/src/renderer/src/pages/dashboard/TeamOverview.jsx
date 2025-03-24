@@ -2,7 +2,7 @@ import CustomBarChart from '../../components/charts/CustomBarChart'
 import CustomLineChart from '../../components/charts/CustomLineChart'
 import CustomPieChart from '../../components/charts/CustomPieChart'
 
-function Overview() {
+function TeamOverview() {
     const ticketStatusData = [
         { name: 'Resolved', value: 123 },
         { name: 'Open', value: 300 },
@@ -102,8 +102,8 @@ function Overview() {
                                 <div className="d-flex flex-column card-body align-items-center justify-content-center">
                                     <p className="card-text display-3 m-0 fw-bold">3</p>
                                     <span className="text-success fs-5 fw-bold">
-                                        <i class="bi bi-arrow-up-short"></i>5
-                                        <i class="bi bi-ticket-perforated ms-2"></i>
+                                        <i className="bi bi-arrow-up-short"></i>5
+                                        <i className="bi bi-ticket-perforated ms-2"></i>
                                     </span>
                                     <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                         vs previews 30 days
@@ -119,8 +119,8 @@ function Overview() {
                                 <div className="d-flex flex-column card-body align-items-center justify-content-center">
                                     <p className="card-text display-3 m-0 fw-bold">10</p>
                                     <span className="text-danger fs-5 fw-bold">
-                                        <i class="bi bi-arrow-down-short"></i>8
-                                        <i class="bi bi-clipboard-check ms-2"></i>
+                                        <i className="bi bi-arrow-down-short"></i>2
+                                        <i className="bi bi-clipboard-check ms-2"></i>
                                     </span>
                                     <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                         vs previews 30 days
@@ -138,8 +138,8 @@ function Overview() {
                                         98<span className="fs-5">%</span>
                                     </p>
                                     <span className="text-success fs-5 fw-bold">
-                                        <i class="bi bi-arrow-up-short"></i>8%
-                                        <i class="bi bi-check2-circle ms-2"></i>
+                                        <i className="bi bi-arrow-up-short"></i>8%
+                                        <i className="bi bi-shield-check ms-2"></i>
                                     </span>
                                     <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                         vs previews 30 days
@@ -156,9 +156,9 @@ function Overview() {
                                     <p className="card-text display-3 m-0 fw-bold">
                                         30<span className="fs-5">mins</span>
                                     </p>
-                                    <span className="text-success fs-5 fw-bold">
-                                        <i class="bi bi-arrow-up-short"></i>10 mins
-                                        <i class="bi bi-lightning-fill ms-2"></i>
+                                    <span className="text-danger fs-5 fw-bold">
+                                        <i className="bi bi-arrow-up-short"></i>10 mins
+                                        <i className="bi bi-lightning-fill ms-2"></i>
                                     </span>
                                     <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                         vs previews 30 days
@@ -175,9 +175,9 @@ function Overview() {
                                     <p className="card-text display-3 m-0 fw-bold">
                                         10<span className="fs-5">mins</span>
                                     </p>
-                                    <span className="text-success fs-5 fw-bold">
-                                        <i class="bi bi-arrow-up-short"></i>17 mins
-                                        <i class="bi bi-clock-history ms-2"></i>
+                                    <span className="text-danger fs-5 fw-bold">
+                                        <i className="bi bi-arrow-up-short"></i>17 mins
+                                        <i className="bi bi-clock-history ms-2"></i>
                                     </span>
                                     <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                         vs previews 30 days
@@ -193,8 +193,8 @@ function Overview() {
                                 <div className="d-flex flex-column card-body align-items-center justify-content-center">
                                     <p className="card-text display-3 m-0 fw-bold">5</p>
                                     <span className="text-success fs-5 fw-bold">
-                                        <i class="bi bi-arrow-up-short"></i>10
-                                        <i class="bi bi-hourglass-split ms-2"></i>
+                                        <i className="bi bi-arrow-down-short"></i>10
+                                        <i className="bi bi-hourglass-top ms-2"></i>
                                     </span>
                                     <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                         vs previews 30 days
@@ -242,4 +242,4 @@ function Overview() {
         </>
     )
 }
-export default Overview
+export default TeamOverview

@@ -7,7 +7,7 @@ function UnassignedTickets() {
     return (
         <>
             <div className="card shadow text-center">
-                <div className="card-header text-uppercase fw-semibold fs-3 text-light bg-primary">
+                <div className="card-header text-uppercase fw-semibold fs-4 text-light bg-primary">
                     UNASSIGNED TICKETS
                 </div>
                 <div className="card-body">
