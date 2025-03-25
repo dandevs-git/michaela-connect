@@ -21,11 +21,7 @@ function CustomTable({
     const [globalFilter, setGlobalFilter] = useState('')
 
     useEffect(() => {
-        if (filter) {
-            setGlobalFilter(filter)
-        } else {
-            setGlobalFilter('')
-        }
+        setGlobalFilter(filter || '')
     }, [filter])
 
     const table = useReactTable({
@@ -41,119 +37,138 @@ function CustomTable({
 
     return (
         <>
-            <div className="d-flex row align-items-center justify-content-center mb-3">
+            {/* Search & Entries Selection */}
+            <div className="d-flex row align-items-center justify-content-between mb-3">
                 <div className="col-8 d-flex align-items-center">
-                    {topContent ? topContent : ''}
+                    {topContent && topContent}
+
                     {!hasEntriesNumber && (
                         <div className="text-start">
-                            show
+                            Show{' '}
                             <select
                                 className="rounded mx-2 px-3"
                                 value={table.getState().pagination.pageSize}
-                                onChange={(e) => {
-                                    table.setPageSize(Number(e.target.value))
-                                }}
+                                onChange={(e) => table.setPageSize(Number(e.target.value))}
                             >
-                                {[10, 20, 30, 40, 50].map((pageSize) => (
+                                {[10, 20, 30, 50, 100].map((pageSize) => (
                                     <option key={pageSize} value={pageSize}>
                                         {pageSize}
                                     </option>
                                 ))}
-                            </select>
+                            </select>{' '}
                             entries
                         </div>
                     )}
                 </div>
-                <div className="col-4">
-                    {!hasSearch && (
-                        <div className="d-flex">
-                            <div className="d-flex input-group input-group-sm">
-                                <span className="input-group-text bg-primary border rounded-start-pill text-light px-3">
-                                    Search
-                                </span>
-                                <input
-                                    type="text"
-                                    placeholder="Ticket number, Department, Employee and etc."
-                                    value={globalFilter}
-                                    onChange={(e) => setGlobalFilter(e.target.value)}
-                                    className="form-control rounded-end-pill"
-                                />
-                            </div>
+
+                {!hasSearch && (
+                    <div className="col-4">
+                        <div className="input-group input-group-sm">
+                            <span className="input-group-text bg-primary text-light px-3 rounded-start-pill">
+                                Search
+                            </span>
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={globalFilter}
+                                onChange={(e) => setGlobalFilter(e.target.value)}
+                                className="form-control rounded-end-pill"
+                            />
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
-            <table className="table table-bordered table-hover table-responsive text-nowrap mb-3">
-                {caption && <caption className="text-center">{caption}</caption>}
-                <thead>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
-                                <th
-                                    key={header.id}
-                                    onClick={header.column.getToggleSortingHandler()}
-                                >
-                                    {flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                    )}
-                                    {header.column.getIsSorted() && (
-                                        <i
-                                            className={`bi ${
-                                                header.column.getIsSorted() === 'asc'
-                                                    ? 'bi-caret-down-fill'
-                                                    : 'bi-caret-up-fill'
-                                            } ms-2`}
-                                        ></i>
-                                    )}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody className="table-group-divider">
-                    {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
-                                <td key={cell.id}>
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            {/* Table */}
+            <div className="table-responsive">
+                <table className="table table-bordered table-hover text-wrap mb-3 text-center">
+                    {caption && <caption className="text-center">{caption}</caption>}
+                    <thead>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <th
+                                        className="fw-semibold"
+                                        key={header.id}
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        {flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
+                                        {header.column.getIsSorted() && (
+                                            <i
+                                                className={`bi ${
+                                                    header.column.getIsSorted() === 'asc'
+                                                        ? 'bi-caret-down-fill'
+                                                        : 'bi-caret-up-fill'
+                                                } ms-2`}
+                                            ></i>
+                                        )}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                    </thead>
+                    <tbody>
+                        {table.getRowModel().rows.length > 0 ? (
+                            table.getRowModel().rows.map((row) => (
+                                <tr key={row.id}>
+                                    {row.getVisibleCells().map((cell) => (
+                                        <td key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={columns.length} className="text-center">
+                                    No data available
                                 </td>
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
 
+            {/* Pagination */}
             {!hasPagination && (
-                <div className="justify-content-end pagination">
+                <div className="d-flex justify-content-end pagination">
                     <button
-                        onClick={() => table.firstPage()}
+                        onClick={() => table.setPageIndex(0)}
                         disabled={!table.getCanPreviousPage()}
-                        className="btn border rounded-0 rounded-start-3 page-item"
+                        className="btn btn-sm btn-light border rounded-start-3"
                     >
-                        First Page
+                        First
                     </button>
                     <button
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="btn border rounded-0 page-item px-3"
+                        className="btn btn-sm btn-light border px-3"
                     >
                         {'<'}
                     </button>
+                    <span className="px-3">
+                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                    </span>
                     <button
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
-                        className="btn border rounded-0 page-item px-3"
+                        className="btn btn-sm btn-light border px-3"
                     >
                         {'>'}
                     </button>
                     <button
-                        onClick={() => table.lastPage()}
+                        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                         disabled={!table.getCanNextPage()}
-                        className="btn border rounded-0 rounded-end-3 page-item"
+                        className="btn btn-sm btn-light border rounded-end-3"
                     >
-                        Last Page
+                        Last
                     </button>
                 </div>
             )}

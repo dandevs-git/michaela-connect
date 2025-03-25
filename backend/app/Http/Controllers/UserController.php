@@ -32,8 +32,8 @@ class UserController extends Controller
 
     public function index()
     {
-        $user = User::all();
-        return response()->json($user, 200);
+        $users = User::with('department', 'roles')->get();
+        return response()->json($users, 200);
     }
     public function store(Request $request)
     {

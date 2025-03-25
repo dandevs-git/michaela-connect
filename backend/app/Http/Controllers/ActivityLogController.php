@@ -14,9 +14,10 @@ class ActivityLogController extends Controller
      */
     public function index()
     {
-        $logs = ActivityLog::latest()->paginate(20);
-        return response()->json($logs);
+        $logs = ActivityLog::with('user')->get();
+        return response()->json($logs, 200);
     }
+
 
     /**
      * Show the form for creating a new resource.

@@ -3,27 +3,27 @@ import CustomTable from '../../components/tables/CustomTable'
 function TeamReports() {
     const columnsEmployeesPerformance = [
         {
-            header: '👤 Employee',
+            header: 'Employee',
             accessorKey: 'employee'
         },
         {
-            header: '🎟️ Tickets Resolved',
+            header: 'Tickets Resolved',
             accessorKey: 'ticketsResolved'
         },
         {
-            header: '⏳ Avg. Response Time',
+            header: 'Avg. Response Time',
             accessorKey: 'avgResponseTime'
         },
         {
-            header: '🏆 SLA Compliance',
+            header: 'SLA Compliance',
             accessorKey: 'slaCompliance'
         },
         {
-            header: '🔥 Escalations',
+            header: 'Escalations',
             accessorKey: 'escalations'
         },
         {
-            header: '📊 Performance Score',
+            header: 'Performance Score',
             accessorKey: 'performanceScore'
         }
     ]
@@ -33,7 +33,7 @@ function TeamReports() {
             employee: 'John Doe',
             ticketsResolved: 42,
             avgResponseTime: '1h 10m',
-            slaCompliance: '95% ✅',
+            slaCompliance: '95%',
             escalations: 1,
             performanceScore: '⭐⭐⭐⭐☆ (4.5/5)'
         },
@@ -41,7 +41,7 @@ function TeamReports() {
             employee: 'Jane Smith',
             ticketsResolved: 38,
             avgResponseTime: '1h 30m',
-            slaCompliance: '90% ✅',
+            slaCompliance: '90%',
             escalations: 2,
             performanceScore: '⭐⭐⭐⭐☆ (4.3/5)'
         },
@@ -49,7 +49,7 @@ function TeamReports() {
             employee: 'Mark Lee',
             ticketsResolved: 45,
             avgResponseTime: '2h 05m',
-            slaCompliance: '85% ⚠️',
+            slaCompliance: '85%',
             escalations: 4,
             performanceScore: '⭐⭐⭐☆ (3.8/5)'
         },
@@ -57,7 +57,7 @@ function TeamReports() {
             employee: 'Sarah Kim',
             ticketsResolved: 50,
             avgResponseTime: '1h 20m',
-            slaCompliance: '98% ✅',
+            slaCompliance: '98%',
             escalations: 0,
             performanceScore: '⭐⭐⭐⭐⭐ (5/5)'
         },
@@ -65,7 +65,7 @@ function TeamReports() {
             employee: 'David Brown',
             ticketsResolved: 30,
             avgResponseTime: '2h 45m',
-            slaCompliance: '80% ⚠️',
+            slaCompliance: '80%',
             escalations: 3,
             performanceScore: '⭐⭐⭐☆ (3.6/5)'
         },
@@ -73,7 +73,7 @@ function TeamReports() {
             employee: 'Emily White',
             ticketsResolved: 55,
             avgResponseTime: '50m',
-            slaCompliance: '99% ✅',
+            slaCompliance: '99%',
             escalations: 0,
             performanceScore: '⭐⭐⭐⭐⭐ (5/5)'
         }
@@ -107,10 +107,12 @@ function TeamReports() {
                                 Avg. Resolution Time
                             </div>
                             <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                <p className="card-text display-3 m-0 fw-bold">10</p>
+                                <p className="card-text display-3 m-0 fw-bold">
+                                    10<span className="fs-5">mins</span>
+                                </p>
                                 <span className="text-danger fs-5 fw-bold">
-                                    <i className="bi bi-arrow-down-short"></i>2
-                                    <i className="bi bi-clipboard-check ms-2"></i>
+                                    <i className="bi bi-arrow-down-short"></i>2 mins
+                                    <i className="bi bi-lightning-fill ms-2"></i>
                                 </span>
                                 <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                     vs previews 7 days
@@ -129,7 +131,7 @@ function TeamReports() {
                                 </p>
                                 <span className="text-success fs-5 fw-bold">
                                     <i className="bi bi-arrow-up-short"></i>8%
-                                    <i className="bi bi-check2-circle ms-2"></i>
+                                    <i className="bi bi-shield-check ms-2"></i>
                                 </span>
                                 <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                     vs previews 7 days
@@ -144,11 +146,11 @@ function TeamReports() {
                             </div>
                             <div className="d-flex flex-column card-body align-items-center justify-content-center">
                                 <p className="card-text display-3 m-0 fw-bold">
-                                    30<span className="fs-5">mins</span>
+                                    99<span className="fs-5">%</span>
                                 </p>
-                                <span className="text-danger fs-5 fw-bold">
-                                    <i className="bi bi-arrow-up-short"></i>10 mins
-                                    <i className="bi bi-lightning-fill ms-2"></i>
+                                <span className="text-success fs-5 fw-bold">
+                                    <i className="bi bi-arrow-up-short"></i>1%
+                                    <i className="bi bi-emoji-smile-fill ms-2"></i>
                                 </span>
                                 <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                     vs previews 7 days

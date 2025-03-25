@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router-dom'
 
-function ServiceDeskLayout() {
+function EmployeeLayout() {
     return (
         <>
             <Outlet />
         </>
     )
 }
-export default ServiceDeskLayout
+export default EmployeeLayout

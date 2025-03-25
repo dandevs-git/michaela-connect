@@ -10,7 +10,7 @@ import Login from './pages/Login'
 import Directory from './pages/Directory'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
-import NotFound from './pages/NotFound'
+import ErrorPage from './pages/ErrorPage'
 
 import UnassignedTickets from './pages/servicedesk/mytickets/UnassignedTickets'
 import OpenTickets from './pages/servicedesk/mytickets/OpenTickets'
@@ -19,10 +19,13 @@ import ClosedTickets from './pages/servicedesk/mytickets/ClosedTickets'
 import FailedTickets from './pages/servicedesk/mytickets/FailedTickets'
 import AllTickets from './pages/servicedesk/mytickets/AllTickets'
 import ServiceDeskTicketLayout from './layouts/ServiceDeskTicketLayout'
-import Employees from './pages/Employees'
 
 import MyOverview from './pages/servicedesk/MyOverview'
 import MyReports from './pages/servicedesk/MyReports'
+import EmployeeLayout from './layouts/EmployeeLayout'
+import AllEmployees from './pages/employees/AllEmployees'
+import RolesPermissions from './pages/employees/RolesPermissions'
+import ActivityLog from './pages/employees/ActivityLog'
 
 const PrivateRoute = ({ element }) => {
     const { isAuthenticated } = useAuth()
@@ -31,7 +34,6 @@ const PrivateRoute = ({ element }) => {
 
 function App() {
     const { isAuthenticated } = useAuth()
-
     return (
         <Routes>
             <Route path="/" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} />} />
@@ -66,7 +68,12 @@ function App() {
                     </Route>
                     <Route path="/servicedesk/reports" element={<MyReports />} />
                 </Route>
-                <Route path="/employees" element={<Employees />} />
+                <Route path="/employees" element={<EmployeeLayout />}>
+                    <Route index element={<Navigate to="/employees/all" />} />
+                    <Route path="/employees/all" element={<AllEmployees />} />
+                    <Route path="/employees/roles" element={<RolesPermissions />} />
+                    <Route path="/employees/logs" element={<ActivityLog />} />
+                </Route>
                 <Route path="/directory" element={<Directory />} />
             </Route>
 
@@ -75,7 +82,10 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
             </Route>
 
-            <Route path="*" element={<NotFound />} />
+            <Route path="/403" element={<ErrorPage errorCode={403} />} />
+            <Route path="/404" element={<ErrorPage errorCode={404} />} />
+            <Route path="/500" element={<ErrorPage errorCode={500} />} />
+            <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
     )
 }

@@ -41,7 +41,6 @@ const pages = [
         icon: <FaUser />,
         subPages: [
             { name: 'All Employees', link: '/employees/all' },
-            { name: 'Employee Directory', link: '/employees/directory' },
             { name: 'Roles & Permissions', link: '/employees/roles' },
             { name: 'Activity Logs', link: '/employees/logs' },
             { name: 'Performance Tracking', link: '/employees/performance' }
@@ -85,7 +84,9 @@ const pages = [
             { name: 'Department Settings', link: '/directory/ipaddress' }
         ]
     },
-    { page: '404 Error', link: '/notfound', icon: <FaRegEyeSlash /> }
+    { page: 'Error Pages', link: '/404', icon: <FaRegEyeSlash /> },
+    { page: 'Forbidden', link: '/403', icon: <FaRegEyeSlash /> },
+    { page: 'Server Error', link: '/500', icon: <FaRegEyeSlash /> }
 ]
 
 function SideNavigation() {
@@ -142,7 +143,7 @@ function SideNavigation() {
                                                         <NavLink
                                                             to={subPage.link}
                                                             className={({ isActive }) =>
-                                                                `nav-link text-light-emphasis ps-4 border-start ms-4 my-1 p-1 
+                                                                `nav-link text-light-emphasis ps-3 border-start ms-4 my-1 p-1 
                                                                 ${isActive ? 'text-decoration-underline underline-offset-8 fw-bold' : ''}`
                                                             }
                                                         >

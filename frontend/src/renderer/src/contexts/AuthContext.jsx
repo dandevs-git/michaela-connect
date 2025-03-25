@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../api' // Axios instance
+import api from '../api'
 
 export const AuthContext = createContext()
 
@@ -15,8 +15,10 @@ export const AuthProvider = ({ children }) => {
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token)
                 setIsAuthenticated(true)
+                console.log(isAuthenticated)
                 navigate('/dashboard')
             }
+
             return response.data.message
         } catch (error) {
             if (error.response) {
@@ -35,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await api.post('/logout')
-            localStorage.clear()
+            localStorage.removeItem('token')
             setIsAuthenticated(false)
             navigate('/login')
         } catch (error) {

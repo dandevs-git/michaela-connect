@@ -16,11 +16,11 @@ import { ThemeProvider } from './contexts/ThemeContext'
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <HashRouter>
-            <AuthProvider>
-                <ThemeProvider>
+            <ThemeProvider>
+                <AuthProvider>
                     <App />
-                </ThemeProvider>
-            </AuthProvider>
+                </AuthProvider>
+            </ThemeProvider>
         </HashRouter>
     </React.StrictMode>
 )

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,9 +20,17 @@ class ActivityLog extends Model
         'ip_address',
     ];
 
-    /**
-     * Get the user associated with the activity log.
-     */
+    protected $appends = ['formatted_date', 'formatted_time'];
+
+    public function getFormattedDateAttribute()
+    {
+        return Carbon::parse($this->created_at)->format('F d, Y'); // Example: March 25, 2025
+    }
+
+    public function getFormattedTimeAttribute()
+    {
+        return Carbon::parse($this->created_at)->format('h:i A'); // Example: 05:05 AM
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
