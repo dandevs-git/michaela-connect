@@ -23,6 +23,7 @@ class User extends Authenticatable
         'rfid',
         'name',
         'username',
+        'email',
         'password',
         'profile_picture',
         'role',
@@ -46,21 +47,13 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
     protected $casts = [
-        'password' => 'string',
+        'email_verified_at' => 'datetime',
     ];
 
-    public function tickets()
-    {
-        return $this->hasMany(Ticket::class);
-    }
     public function department()
     {
-        return $this->belongsTo(Department::class);
-    }
-
-    public function activityLogs()
-    {
-        return $this->hasMany(ActivityLog::class, 'user_id', 'id');
+        return $this->belongsTo(Department::class, 'department_id');
     }
 }

@@ -3,26 +3,21 @@ import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { fetchData } from '../../utils/fetchData'
 
-function AllEmployees() {
-    const [employees, setEmployees] = useState([])
+function DepartmentDirectory() {
+    const [departments, setDepartments] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/users', setEmployees, setLoading)
+        fetchData('/departments', setDepartments, setLoading)
     }, [])
 
     const columns = [
         { header: 'No.', accessorKey: 'id' },
-        // { header: 'RFID', accessorKey: 'rfid' },
-        { header: 'Picture', accessorKey: 'profile_picture' },
         { header: 'Name', accessorKey: 'name' },
-        // { header: 'Email', accessorKey: 'email' },
-        { header: 'Department', accessorKey: 'department.name' },
-        { header: 'Role', accessorKey: 'role' },
-        { header: 'Status', accessorKey: 'status' },
+        { header: 'Description', accessorKey: 'description' },
         {
             header: 'Actions',
-            accessorKey: 'action',
+            accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
                     <button className="btn text-light btn-info btn-sm">
@@ -41,14 +36,14 @@ function AllEmployees() {
 
     const topContent = (
         <button className="btn btn-primary me-4">
-            <FaPlus /> Add Employee
+            <FaPlus /> Add Department
         </button>
     )
 
     return (
         <div className="card shadow w-100">
             <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-                All Employees
+                Department Directory
             </div>
             <div className="card-body">
                 <div className="col-12 p-4">
@@ -56,7 +51,7 @@ function AllEmployees() {
                         isloading={loading}
                         topContent={topContent}
                         columns={columns}
-                        data={employees}
+                        data={departments}
                     />
                 </div>
             </div>
@@ -64,4 +59,4 @@ function AllEmployees() {
     )
 }
 
-export default AllEmployees
+export default DepartmentDirectory

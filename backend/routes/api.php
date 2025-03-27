@@ -3,8 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TelephoneController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\AnydeskController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\IpAddressController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +27,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/role', [UserController::class, 'checkUserRole']);
 
-    Route::apiResource('tickets', TicketController::class);
+    Route::apiResource('/tickets', TicketController::class);
+
+    Route::apiResource('/departments', DepartmentController::class);
+    Route::apiResource('/telephones', TelephoneController::class);
+    Route::apiResource('/ipaddress', IpAddressController::class);
+    Route::apiResource('/anydesk', AnydeskController::class);
 
     Route::middleware(['role:admin'])->group(function () {
         Route::apiResource('/users', UserController::class);

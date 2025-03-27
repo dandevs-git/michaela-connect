@@ -1,43 +1,34 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import api from '../../api'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { fetchData } from '../../utils/fetchData'
 
-function RolesPermissions() {
-    const [roles, setRoles] = useState([])
-    const [selectedRole, setSelectedRole] = useState(null)
+function TelephoneDirectory() {
+    const [telephones, setTelephones] = useState([])
+    const [selectedTelephone, setSelectedTelephone] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/roles', setRoles, setLoading)
+        fetchData('/telephones', setTelephones, setLoading)
     }, [])
 
-    const handleShowModal = (role) => {
-        console.log(role)
-
-        setSelectedRole(role)
+    const handleShowModal = (telephone) => {
+        console.log(telephone)
+        setSelectedTelephone(telephone)
     }
 
     const columns = [
         { header: 'No.', accessorKey: 'id' },
-        { header: 'Role Name', accessorKey: 'name' },
-        {
-            header: 'Permissions',
-            accessorKey: 'permissions_count',
-            cell: ({ row }) => <>{row.original.permissions?.length ?? 0} Permissions</>
-        },
+        { header: 'Telephone Number', accessorKey: 'telephone_number' },
+        { header: 'Cable Code', accessorKey: 'cable_code' },
+        { header: 'Location', accessorKey: 'location' },
+        { header: 'Description', accessorKey: 'description' },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button
-                        className="btn text-light btn-info btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#permissionsModal"
-                        onClick={() => handleShowModal(row.original)}
-                    >
+                    <button className="btn text-light btn-info btn-sm">
                         <FaEye /> View
                     </button>
                     <button className="btn text-light btn-warning btn-sm">
@@ -50,16 +41,18 @@ function RolesPermissions() {
             )
         }
     ]
+
     const topContent = (
         <button className="btn btn-primary me-4">
-            <FaPlus /> Add Role
+            <FaPlus /> Add Telephone
         </button>
     )
+
     return (
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-                    Roles & Permissions
+                    Telephone Directory
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
@@ -67,24 +60,18 @@ function RolesPermissions() {
                             isloading={loading}
                             topContent={topContent}
                             columns={columns}
-                            data={roles}
+                            data={telephones}
                         />
                     </div>
                 </div>
             </div>
 
-            <div
-                className="modal fade"
-                id="permissionsModal"
-                tabIndex="-1"
-                aria-labelledby="permissionsModalLabel"
-                aria-hidden="true"
-            >
+            <div className="modal fade" id="employeesModal" tabIndex="-1">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="permissionsModalLabel">
-                                Permissions for {selectedRole?.name}
+                            <h5 className="modal-title">
+                                Employees for {selectedTelephone?.telephone_number}
                             </h5>
                             <button
                                 type="button"
@@ -94,16 +81,16 @@ function RolesPermissions() {
                             ></button>
                         </div>
                         <div className="modal-body text-center p-3">
-                            {selectedRole?.permissions?.length > 0 ? (
+                            {selectedTelephone?.users?.length > 0 ? (
                                 <ul className="list-group">
-                                    {selectedRole.permissions.map((perm) => (
+                                    {selectedTelephone.users.map((perm) => (
                                         <li key={perm.id} className="list-group-item">
                                             {perm.name}
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                <p className="text-muted">No permissions assigned.</p>
+                                <p className="text-muted">No employees assigned.</p>
                             )}
                         </div>
                         <div className="modal-footer">
@@ -122,4 +109,4 @@ function RolesPermissions() {
     )
 }
 
-export default RolesPermissions
+export default TelephoneDirectory

@@ -26,6 +26,12 @@ import EmployeeLayout from './layouts/EmployeeLayout'
 import AllEmployees from './pages/employees/AllEmployees'
 import RolesPermissions from './pages/employees/RolesPermissions'
 import ActivityLog from './pages/employees/ActivityLog'
+import DirectoryLayout from './layouts/DirectoryLayout'
+import DepartmentDirectory from './pages/directory/DepartmentDirectory'
+import TelephoneDirectory from './pages/directory/TelephoneDirectory'
+import IpAddressDirectory from './pages/directory/IpAddressDirectory'
+import AnydeskDirectory from './pages/directory/AnydeskDirectory'
+import PrinterDirectory from './pages/directory/PrinterDirectory'
 
 const PrivateRoute = ({ element }) => {
     const { isAuthenticated } = useAuth()
@@ -74,7 +80,15 @@ function App() {
                     <Route path="/employees/roles" element={<RolesPermissions />} />
                     <Route path="/employees/logs" element={<ActivityLog />} />
                 </Route>
-                <Route path="/directory" element={<Directory />} />
+
+                <Route path="/directory" element={<DirectoryLayout />}>
+                    <Route index element={<Navigate to="/directory/departments" />} />
+                    <Route path="/directory/departments" element={<DepartmentDirectory />} />
+                    <Route path="/directory/telephones" element={<TelephoneDirectory />} />
+                    <Route path="/directory/ipaddress" element={<IpAddressDirectory />} />
+                    <Route path="/directory/anydesks" element={<AnydeskDirectory />} />
+                    <Route path="/directory/printers" element={<PrinterDirectory />} />
+                </Route>
             </Route>
 
             <Route element={<PrivateRoute element={<ProfileLayout />} />}>

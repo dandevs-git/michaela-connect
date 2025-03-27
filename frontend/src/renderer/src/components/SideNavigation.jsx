@@ -51,7 +51,6 @@ const pages = [
         link: '/directory',
         icon: <FaNetworkWired />,
         subPages: [
-            { name: 'Employees', link: '/directory/employees' },
             { name: 'Department', link: '/directory/departments' },
             { name: 'Telephone', link: '/directory/telephones' },
             { name: 'IP Address', link: '/directory/ipaddress' },
