@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Anydesk;
+use App\Models\Internet;
 use Illuminate\Http\Request;
 
-class AnydeskController extends Controller
+class InternetController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $anydesk = Anydesk::all();
-        return response()->json($anydesk, 200);
+        $internet = Internet::all();
+        return response()->json($internet, 200);
     }
 
     /**
@@ -27,7 +27,7 @@ class AnydeskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Anydesk $anydesk)
+    public function show(Internet $internet)
     {
         //
     }
@@ -35,7 +35,7 @@ class AnydeskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Anydesk $anydesk)
+    public function update(Request $request, Internet $internet)
     {
         //
     }
@@ -43,7 +43,7 @@ class AnydeskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Anydesk $anydesk)
+    public function destroy(Internet $internet)
     {
         //
     }

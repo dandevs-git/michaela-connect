@@ -19,7 +19,7 @@ class TelephoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'telephone_number' => $this->faker->unique()->phoneNumber(),
+            'number' => $this->faker->unique()->phoneNumber(),
             'cable_code' => $this->faker->unique()->bothify('CABLE-####'),
             'location' => $this->faker->optional()->address(),
             'description' => $this->faker->optional()->sentence(),

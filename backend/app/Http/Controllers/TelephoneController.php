@@ -12,7 +12,7 @@ class TelephoneController extends Controller
      */
     public function index()
     {
-        $telephone = Telephone::with('cable')->get();
+        $telephone = Telephone::all();
         return response()->json($telephone, 200);
     }
 

@@ -12,7 +12,8 @@ class PrinterController extends Controller
      */
     public function index()
     {
-        //
+        $printer = Printer::all();
+        return response()->json($printer, 200);
     }
 
     /**

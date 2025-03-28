@@ -1,12 +1,12 @@
 import { useContext, useState } from 'react'
 import logoDark from '../assets/images/logos/logo-black.png'
 import logoLight from '../assets/images/logos/logo-black.png'
-import { useAuth } from '../contexts/AuthContext'
+import { useAPI } from '../contexts/APIContext'
 import ThemeContext from '../contexts/ThemeContext'
 
 function Login() {
     const { darkMode } = useContext(ThemeContext)
-    const { login } = useAuth()
+    const { login } = useAPI()
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)

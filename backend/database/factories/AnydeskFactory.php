@@ -17,7 +17,7 @@ class AnydeskFactory extends Factory
     public function definition(): array
     {
         return [
-            'anydesk_number' => $this->faker->unique()->regexify('[0-9]{9}'),
+            'number' => $this->faker->unique()->regexify('[0-9]{9}'),
             'location' => $this->faker->optional()->address(),
             'description' => $this->faker->optional()->sentence(),
         ];

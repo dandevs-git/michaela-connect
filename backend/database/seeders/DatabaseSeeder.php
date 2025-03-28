@@ -2,9 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\Anydesk;
 use App\Models\Department;
 use App\Models\DirectoryCategory;
 use App\Models\DirectoryEntry;
+use App\Models\Internet;
+use App\Models\IpAddress;
+use App\Models\Printer;
+use App\Models\Telephone;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +25,11 @@ class DatabaseSeeder extends Seeder
     {
 
         Department::factory()->count(6)->create();
+        Telephone::factory()->count(10)->create();
+        Internet::factory()->count(10)->create();
+        IpAddress::factory()->count(10)->create();
+        Anydesk::factory()->count(10)->create();
+        // Printer::factory()->count(10)->create();
 
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $managerRole = Role::firstOrCreate(['name' => 'manager', 'guard_name' => 'web']);
@@ -76,13 +86,5 @@ class DatabaseSeeder extends Seeder
         $approveTickets = Permission::firstOrCreate(['name' => 'approve tickets', 'guard_name' => 'web']);
 
         $adminRole->givePermissionTo([$manageUsers, $createTickets, $approveTickets]);
-
-        $categories = ['Printers', 'PC Names', 'IP Addresses', 'Telephones', 'Anydesk', 'Cables'];
-
-        // foreach ($categories as $category) {
-        //     $categoryModel = DirectoryCategory::create(['name' => $category]);
-
-        //     DirectoryEntry::factory(5)->create(['category_id' => $categoryModel->id]);
-        // }
     }
 }

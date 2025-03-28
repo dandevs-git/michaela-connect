@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Internet>
  */
-class IpFactory extends Factory
+class InternetFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,10 +17,10 @@ class IpFactory extends Factory
     public function definition(): array
     {
         return [
-            'ip_address' => $this->faker->unique()->ipv4(),
-            'device_type' => $this->faker->randomElement(['PC', 'Printer', 'Server', 'Other']),
-            'device_name' => $this->faker->word(),
-            'assigned_date' => $this->faker->optional()->date(),
+            'name' => $this->faker->unique()->company() . ' Network',
+            'provider' => $this->faker->company(),
+            'gateway' => $this->faker->ipv4(),
+            'cable_code' => strtoupper($this->faker->unique()->bothify('CABLE-####')),
             'location' => $this->faker->optional()->address(),
             'description' => $this->faker->optional()->sentence(),
         ];

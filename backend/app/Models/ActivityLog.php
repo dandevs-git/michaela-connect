@@ -24,12 +24,12 @@ class ActivityLog extends Model
 
     public function getFormattedDateAttribute()
     {
-        return Carbon::parse($this->created_at)->format('F d, Y'); // Example: March 25, 2025
+        return Carbon::parse($this->created_at)->format('F d, Y');
     }
 
     public function getFormattedTimeAttribute()
     {
-        return Carbon::parse($this->created_at)->format('h:i A'); // Example: 05:05 AM
+        return Carbon::parse($this->created_at)->format('h:i A');
     }
     public function user()
     {

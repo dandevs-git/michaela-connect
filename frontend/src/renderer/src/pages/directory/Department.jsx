@@ -3,7 +3,7 @@ import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { fetchData } from '../../utils/fetchData'
 
-function DepartmentDirectory() {
+function Department() {
     const [departments, setDepartments] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -43,7 +43,7 @@ function DepartmentDirectory() {
     return (
         <div className="card shadow w-100">
             <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-                Department Directory
+                Departments
             </div>
             <div className="card-body">
                 <div className="col-12 p-4">
@@ -59,4 +59,4 @@ function DepartmentDirectory() {
     )
 }
 
-export default DepartmentDirectory
+export default Department

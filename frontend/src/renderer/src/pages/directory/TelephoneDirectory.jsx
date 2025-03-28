@@ -19,7 +19,7 @@ function TelephoneDirectory() {
 
     const columns = [
         { header: 'No.', accessorKey: 'id' },
-        { header: 'Telephone Number', accessorKey: 'telephone_number' },
+        { header: 'Telephone Number', accessorKey: 'number' },
         { header: 'Cable Code', accessorKey: 'cable_code' },
         { header: 'Location', accessorKey: 'location' },
         { header: 'Description', accessorKey: 'description' },

@@ -3,18 +3,20 @@ import CustomTable from '../../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { fetchData } from '../../../utils/fetchData'
 
-function ClosedTickets() {
+function ResolvedTickets() {
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets/status=closed', setTickets, setLoading)
-        console.log(tickets)
+        fetchData('/tickets?status=resolved', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {
-        console.log(tickets)
+        setSelectedTickets(tickets)
+    }
+
+    const handleAddModal = (tickets) => {
         setSelectedTickets(tickets)
     }
 
@@ -47,7 +49,7 @@ function ClosedTickets() {
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-4 fw-semibold text-center">
-                    Closed tickets
+                    Resolved Tickets
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
@@ -56,7 +58,7 @@ function ClosedTickets() {
                 </div>
             </div>
 
-            {/* <div className="modal fade" id="employeesModal" tabIndex="-1">
+            <div className="modal fade" id="employeesModal" tabIndex="-1">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -94,8 +96,8 @@ function ClosedTickets() {
                         </div>
                     </div>
                 </div>
-            </div> */}
+            </div>
         </>
     )
 }
-export default ClosedTickets
+export default ResolvedTickets

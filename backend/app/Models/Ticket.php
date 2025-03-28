@@ -2,24 +2,22 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
 {
-    /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'ticket_number',
         'title',
         'description',
         'priority',
         'status',
         'requester_id',
-        'department_id',
-        'requester_head_id',
-        'assigned_head_id',
         'assigned_to',
         'resolved_at',
         'failed_at',
@@ -27,6 +25,7 @@ class Ticket extends Model
     ];
 
     protected $dates = ['resolved_at', 'failed_at', 'completed_at', 'deleted_at'];
+
 
     public function requester()
     {
@@ -53,7 +52,11 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    // Scopes
+    public function comments()
+    {
+        return $this->hasMany(TicketComment::class, 'ticket_id')->latest();
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', 'pending');
@@ -73,4 +76,36 @@ class Ticket extends Model
     {
         return $query->where('status', 'failed');
     }
+
+
+
+
+
+
+
+
+
+    // public function getResolvedAtAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
+    // }
+
+    // public function getFailedAtAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
+    // }
+
+    // public function getCompletedAtAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
+    // }
+
+    // public function getCreatedAtAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
+    // }
+    // public function getUpdatedAtAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
+    // }
 }

@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('printers', function (Blueprint $table) {
             $table->id();
-            $table->string('printer_name')->unique();
-            $table->string('printer_inkcode');
-            $table->string('ip_address', 45)->nullable();
+            $table->string('name')->unique();
+            $table->string('inkcode');
             $table->timestamps();
         });
     }

@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Anydesk extends Model
+class Internet extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'number',
+        'name',
+        'provider',
+        'gateway',
+        'cable_code',
         'location',
         'description',
     ];

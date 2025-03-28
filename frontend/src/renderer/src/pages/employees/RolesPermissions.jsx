@@ -14,8 +14,6 @@ function RolesPermissions() {
     }, [])
 
     const handleShowModal = (role) => {
-        console.log(role)
-
         setSelectedRole(role)
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('telephones', function (Blueprint $table) {
             $table->id();
-            $table->string('telephone_number')->unique();
+            $table->string('number')->unique();
             $table->string('cable_code')->unique();
             $table->string('location')->nullable();
             $table->text('description')->nullable();

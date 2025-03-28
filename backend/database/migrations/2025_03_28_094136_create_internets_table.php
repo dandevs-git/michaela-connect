@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cables', function (Blueprint $table) {
+        Schema::create('internets', function (Blueprint $table) {
             $table->id();
-            $table->string('cable_code');
-            $table->string('cable_type');
-            $table->string('cable_color');
-            $table->string('cable_location')->nullable();
+            $table->string('name')->unique();
+            $table->string('provider');
+            $table->string('gateway');
+            $table->string('cable_code')->unique();
+            $table->string('location')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cables');
+        Schema::dropIfExists('internets');
     }
 };

@@ -41,6 +41,7 @@ const pages = [
         icon: <FaUser />,
         subPages: [
             { name: 'All Employees', link: '/employees/all' },
+            { name: 'Departments', link: '/employees/departments' },
             { name: 'Roles & Permissions', link: '/employees/roles' },
             { name: 'Activity Logs', link: '/employees/logs' },
             { name: 'Performance Tracking', link: '/employees/performance' }
@@ -51,13 +52,11 @@ const pages = [
         link: '/directory',
         icon: <FaNetworkWired />,
         subPages: [
-            { name: 'Department', link: '/directory/departments' },
             { name: 'Telephone', link: '/directory/telephones' },
+            { name: 'Internet', link: '/directory/internet' },
             { name: 'IP Address', link: '/directory/ipaddress' },
-            { name: 'Anydesk', link: '/directory/anydesk' },
-            { name: 'PC Name', link: '/directory/pcname' },
-            { name: 'Printers', link: '/directory/printers' },
-            { name: 'Cables', link: '/directory/cables' }
+            { name: 'Anydesk', link: '/directory/anydesks' },
+            { name: 'Printers', link: '/directory/printers' }
         ]
     },
     {

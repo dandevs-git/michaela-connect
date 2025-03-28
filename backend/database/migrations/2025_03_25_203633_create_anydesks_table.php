@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('anydesks', function (Blueprint $table) {
             $table->id();
-            $table->string('anydesk_number')->unique();
+            $table->string('number')->unique();
             $table->string('location')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

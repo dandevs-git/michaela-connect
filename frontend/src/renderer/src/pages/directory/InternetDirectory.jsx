@@ -1,29 +1,36 @@
 import { useEffect, useState } from 'react'
-import CustomTable from '../../../components/tables/CustomTable'
+import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
-import { fetchData } from '../../../utils/fetchData'
+import { fetchData } from '../../utils/fetchData'
 
-function ClosedTickets() {
-    const [tickets, setTickets] = useState([])
-    const [selectedTickets, setSelectedTickets] = useState(null)
+function InternetDirectory() {
+    const [internet, setInternet] = useState([])
+    const [selectedInternet, setSelectedInternet] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets/status=closed', setTickets, setLoading)
-        console.log(tickets)
+        fetchData('/internet', setInternet, setLoading)
     }, [])
 
-    const handleShowModal = (tickets) => {
-        console.log(tickets)
-        setSelectedTickets(tickets)
+    const handleShowModal = (Internet) => {
+        console.log(Internet)
+        setSelectedInternet(Internet)
     }
 
+    // $table->string('name')->unique();
+    //         $table->string('provider');
+    //         $table->string('gateway');
+    //         $table->string('cable_code')->unique();
+    //         $table->string('location')->nullable();
+    //         $table->text('description')->nullable();
+
     const columns = [
-        { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority' },
-        { header: 'Status', accessorKey: 'status' },
+        { header: 'No.', accessorKey: 'id' },
+        { header: 'Provider', accessorKey: 'provider' },
+        { header: 'Gateway', accessorKey: 'gateway' },
+        { header: 'Cable Code', accessorKey: 'cable_code' },
+        { header: 'Location', accessorKey: 'location' },
         { header: 'Description', accessorKey: 'description' },
-        { header: 'Title', accessorKey: 'title' },
         {
             header: 'Actions',
             accessorKey: 'actions',
@@ -43,25 +50,36 @@ function ClosedTickets() {
         }
     ]
 
+    const topContent = (
+        <button className="btn btn-primary me-4">
+            <FaPlus /> Add Internet
+        </button>
+    )
+
     return (
         <>
             <div className="card shadow w-100">
-                <div className="card-header bg-primary text-light text-uppercase fs-4 fw-semibold text-center">
-                    Closed tickets
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
+                    Internet Directory
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable isloading={loading} columns={columns} data={tickets} />
+                        <CustomTable
+                            isloading={loading}
+                            topContent={topContent}
+                            columns={columns}
+                            data={internet}
+                        />
                     </div>
                 </div>
             </div>
 
-            {/* <div className="modal fade" id="employeesModal" tabIndex="-1">
+            <div className="modal fade" id="employeesModal" tabIndex="-1">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title">
-                                Employees for {selectedTickets?.telephone_number}
+                                Employees for {selectedInternet?.Internet_number}
                             </h5>
                             <button
                                 type="button"
@@ -71,9 +89,9 @@ function ClosedTickets() {
                             ></button>
                         </div>
                         <div className="modal-body text-center p-3">
-                            {selectedTickets?.users?.length > 0 ? (
+                            {selectedInternet?.users?.length > 0 ? (
                                 <ul className="list-group">
-                                    {selectedTickets.users.map((perm) => (
+                                    {selectedInternet.users.map((perm) => (
                                         <li key={perm.id} className="list-group-item">
                                             {perm.name}
                                         </li>
@@ -94,8 +112,9 @@ function ClosedTickets() {
                         </div>
                     </div>
                 </div>
-            </div> */}
+            </div>
         </>
     )
 }
-export default ClosedTickets
+
+export default InternetDirectory

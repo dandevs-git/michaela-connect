@@ -3,18 +3,16 @@ import CustomTable from '../../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { fetchData } from '../../../utils/fetchData'
 
-function ClosedTickets() {
+function RejectTickets() {
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets/status=closed', setTickets, setLoading)
-        console.log(tickets)
+        fetchData('/tickets?status=rejected', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {
-        console.log(tickets)
         setSelectedTickets(tickets)
     }
 
@@ -47,7 +45,7 @@ function ClosedTickets() {
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-4 fw-semibold text-center">
-                    Closed tickets
+                    Rejected Tickets
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
@@ -98,4 +96,4 @@ function ClosedTickets() {
         </>
     )
 }
-export default ClosedTickets
+export default RejectTickets

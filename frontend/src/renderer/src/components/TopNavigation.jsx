@@ -1,7 +1,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import id from '../assets/images/photos/id.jpg'
 import ThemeSwitch from './ThemeSwitch'
-import { useAuth } from '../contexts/AuthContext'
+import { useAPI } from '../contexts/APIContext'
 
 const pages = [
     { page: 'Dashboard', link: '/dashboard' },
@@ -10,7 +10,7 @@ const pages = [
 ]
 
 function TopNavigation() {
-    const { logout } = useAuth()
+    const { logout } = useAPI()
     const location = useLocation()
 
     const handleLogout = (e) => {

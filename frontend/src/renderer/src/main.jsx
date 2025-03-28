@@ -10,7 +10,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import { HashRouter } from 'react-router-dom'
-import { AuthProvider } from './contexts/AuthContext'
+import { APIProvider } from './contexts/APIContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 
 // localStorage.removeItem('token')
@@ -19,9 +19,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <HashRouter>
             <ThemeProvider>
-                <AuthProvider>
+                <APIProvider>
                     <App />
-                </AuthProvider>
+                </APIProvider>
             </ThemeProvider>
         </HashRouter>
     </React.StrictMode>
