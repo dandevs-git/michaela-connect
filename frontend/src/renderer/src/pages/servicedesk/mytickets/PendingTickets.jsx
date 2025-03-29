@@ -28,6 +28,10 @@ function PendingTickets() {
         setSelectedTickets(tickets)
     }
 
+    const handleApproveButton = (tickets) => {
+        setSelectedTickets(tickets)
+    }
+
     const statusIcons = {
         pending: {
             icon: <FaClock />,
@@ -95,7 +99,10 @@ function PendingTickets() {
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-success btn-sm">
+                    <button
+                        onClick={handleApproveButton}
+                        className="btn text-light btn-success btn-sm"
+                    >
                         <FaCheck /> Approve
                     </button>
                     <button className="btn text-light btn-danger btn-sm">
