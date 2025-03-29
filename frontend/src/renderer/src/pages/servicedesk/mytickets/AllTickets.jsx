@@ -1,15 +1,29 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
-import { fetchData } from '../../../utils/fetchData'
+import {
+    FaBan,
+    FaCheckCircle,
+    FaCircle,
+    FaClock,
+    FaDoorClosed,
+    FaExclamationCircle,
+    FaExclamationTriangle,
+    FaEye,
+    FaHourglassHalf,
+    FaRedo,
+    FaSpinner,
+    FaTimesCircle
+} from 'react-icons/fa'
+import { useAPI } from '../../../contexts/APIContext'
 
 function AllTickets() {
+    const { fetchData } = useAPI()
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets', setTickets, setLoading)
+        fetchData('/tickets?user_id=me', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {
@@ -17,10 +31,66 @@ function AllTickets() {
         setSelectedTickets(tickets)
     }
 
+    const statusIcons = {
+        pending: {
+            icon: <FaClock />,
+            class: 'text-light bg-primary',
+            label: 'Pending'
+        },
+        open: {
+            icon: <FaHourglassHalf />,
+            class: 'text-light bg-primary',
+            label: 'Open'
+        },
+        rejected: {
+            icon: <FaTimesCircle />,
+            class: 'text-light bg-danger',
+            label: 'Rejected'
+        },
+        in_progress: {
+            icon: <FaSpinner />,
+            class: 'text-light bg-warning',
+            label: 'In Progress'
+        },
+        resolved: {
+            icon: <FaCheckCircle />,
+            class: 'text-light bg-success',
+            label: 'Resolved'
+        },
+        failed: { icon: <FaBan />, class: 'text-light bg-dark', label: 'Failed' },
+        closed: {
+            icon: <FaDoorClosed />,
+            class: 'text-light bg-info',
+            label: 'Closed'
+        },
+        reopened: {
+            icon: <FaRedo />,
+            class: 'text-light bg-primary',
+            label: 'Reopened'
+        }
+    }
+
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority' },
-        { header: 'Status', accessorKey: 'status' },
+        { header: 'Priority Level', accessorKey: 'priority.name' },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: ({ row }) => {
+                const status = row.original.status
+                const statusInfo = statusIcons[status] || {
+                    icon: null,
+                    class: 'text-bg-secondary',
+                    label: 'Unknown'
+                }
+
+                return (
+                    <span className={`${statusInfo.class} small py-1 px-3 rounded-pill`}>
+                        {statusInfo.icon} {statusInfo.label}
+                    </span>
+                )
+            }
+        },
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
         {
@@ -30,12 +100,6 @@ function AllTickets() {
                 <div className="d-flex gap-2 justify-content-center align-items-center">
                     <button className="btn text-light btn-info btn-sm">
                         <FaEye /> View
-                    </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
                     </button>
                 </div>
             )

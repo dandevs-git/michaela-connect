@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
-import { fetchData } from '../../utils/fetchData'
+import { useAPI } from '../../contexts/APIContext'
 
 function PrinterDirectory() {
+    const { fetchData } = useAPI()
     const [printer, setPrinter] = useState([])
     const [selectedprinter, setSelectedprinter] = useState(null)
     const [loading, setLoading] = useState(true)

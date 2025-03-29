@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import { fetchData } from '../../utils/fetchData'
+import { useAPI } from '../../contexts/APIContext'
 
 function ActivityLog() {
+    const { fetchData } = useAPI()
     const [logs, setLogs] = useState([])
     const [loading, setLoading] = useState(true)
 

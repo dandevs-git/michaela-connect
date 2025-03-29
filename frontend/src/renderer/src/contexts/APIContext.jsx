@@ -8,14 +8,6 @@ export const APIProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'))
     const navigate = useNavigate()
 
-    useEffect(() => {
-        const token = localStorage.getItem('token')
-        if (token) {
-            setIsAuthenticated(true)
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        }
-    }, [])
-
     const login = async (username, password) => {
         try {
             const response = await api.post('/login', { username, password })
@@ -58,6 +50,19 @@ export const APIProvider = ({ children }) => {
         }
     }
 
+    const fetchData = async (endpoint, setData, setLoading) => {
+        if (setLoading) setLoading(true)
+
+        try {
+            const response = await api.get(endpoint)
+            if (setData) setData(response.data)
+        } catch (error) {
+            console.error(`Error fetching data from ${endpoint}:`, error)
+        } finally {
+            if (setLoading) setLoading(false)
+        }
+    }
+
     const addTicket = async (ticketData) => {
         try {
             const response = await api.post('/tickets', ticketData)
@@ -68,8 +73,22 @@ export const APIProvider = ({ children }) => {
         }
     }
 
+    const assignTicket = async (ticketId, assignedTo) => {
+        try {
+            const response = await api.post(`/tickets/${ticketId}/assign`, {
+                assigned_to: assignedTo
+            })
+            return response.data
+        } catch (error) {
+            console.error('Failed to assign ticket:', error.response?.data || error.message)
+            return error
+        }
+    }
+
     return (
-        <APIContext.Provider value={{ isAuthenticated, login, logout, addTicket }}>
+        <APIContext.Provider
+            value={{ isAuthenticated, login, logout, fetchData, addTicket, assignTicket }}
+        >
             {children}
         </APIContext.Provider>
     )

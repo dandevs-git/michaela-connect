@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('ticket_number')->unique();
             $table->string('title');
             $table->text('description');
-            $table->enum('priority', ['normal', 'priority', 'urgent'])->default('normal');
+            $table->foreignId('priority_id')->constrained('priorities')->onDelete('cascade');
             $table->enum('status', ['pending', 'open', 'rejected', 'in_progress', 'resolved', 'failed', 'closed', 'reopened'])->default('pending');
 
             $table->foreignId('requester_id')->constrained('users')->onDelete('cascade');
@@ -25,6 +25,10 @@ return new class extends Migration
             $table->timestamp('resolved_at')->nullable();
             $table->timestamp('failed_at')->nullable();
             $table->timestamp('completed_at')->nullable();
+            $table->timestamp('response_deadline')->nullable();
+            $table->timestamp('resolution_deadline')->nullable();
+
+            $table->boolean('sla_breached')->default(false);
 
             $table->softDeletes();
             $table->timestamps();

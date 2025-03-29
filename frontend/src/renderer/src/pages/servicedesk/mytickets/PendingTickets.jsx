@@ -1,26 +1,93 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaCheckCircle, FaTimesCircle, FaUndo } from 'react-icons/fa'
+import {
+    FaBan,
+    FaCheck,
+    FaCheckCircle,
+    FaClock,
+    FaDoorClosed,
+    FaHourglassHalf,
+    FaRedo,
+    FaSpinner,
+    FaTimes,
+    FaTimesCircle
+} from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 
-function InProgressTickets() {
+function PendingTickets() {
     const { fetchData } = useAPI()
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets?status=in_progress&&assigned_to=me', setTickets, setLoading)
+        fetchData('/tickets?status=pending', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {
         setSelectedTickets(tickets)
     }
 
+    const statusIcons = {
+        pending: {
+            icon: <FaClock />,
+            class: 'text-light bg-primary',
+            label: 'Pending'
+        },
+        open: {
+            icon: <FaHourglassHalf />,
+            class: 'text-light bg-primary',
+            label: 'Open'
+        },
+        rejected: {
+            icon: <FaTimesCircle />,
+            class: 'text-light bg-danger',
+            label: 'Rejected'
+        },
+        in_progress: {
+            icon: <FaSpinner />,
+            class: 'text-light bg-warning',
+            label: 'In Progress'
+        },
+        resolved: {
+            icon: <FaCheckCircle />,
+            class: 'text-light bg-success',
+            label: 'Resolved'
+        },
+        failed: { icon: <FaBan />, class: 'text-light bg-dark', label: 'Failed' },
+        closed: {
+            icon: <FaDoorClosed />,
+            class: 'text-light bg-info',
+            label: 'Closed'
+        },
+        reopened: {
+            icon: <FaRedo />,
+            class: 'text-light bg-primary',
+            label: 'Reopened'
+        }
+    }
+
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority' },
-        { header: 'Status', accessorKey: 'status' },
+        { header: 'Priority Level', accessorKey: 'priority.name' },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: ({ row }) => {
+                const status = row.original.status
+                const statusInfo = statusIcons[status] || {
+                    icon: null,
+                    class: 'text-bg-secondary',
+                    label: 'Unknown'
+                }
+
+                return (
+                    <span className={`${statusInfo.class} small py-1 px-3 rounded-pill`}>
+                        {statusInfo.icon} {statusInfo.label}
+                    </span>
+                )
+            }
+        },
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
         {
@@ -29,13 +96,10 @@ function InProgressTickets() {
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
                     <button className="btn text-light btn-success btn-sm">
-                        <FaCheckCircle /> Resolved
+                        <FaCheck /> Approve
                     </button>
                     <button className="btn text-light btn-danger btn-sm">
-                        <FaTimesCircle /> Failed
-                    </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaUndo /> Reopened
+                        <FaTimes /> Reject
                     </button>
                 </div>
             )
@@ -46,7 +110,7 @@ function InProgressTickets() {
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-4 fw-semibold text-center">
-                    In Progress tickets
+                    Pending Tickets
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
@@ -97,4 +161,4 @@ function InProgressTickets() {
         </>
     )
 }
-export default InProgressTickets
+export default PendingTickets

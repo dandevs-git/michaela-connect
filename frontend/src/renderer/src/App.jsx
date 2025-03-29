@@ -32,6 +32,7 @@ import AnydeskDirectory from './pages/directory/AnydeskDirectory'
 import PrinterDirectory from './pages/directory/PrinterDirectory'
 import InternetDirectory from './pages/directory/InternetDirectory'
 import ResolvedTickets from './pages/servicedesk/mytickets/ResolvedTickets'
+import PendingTickets from './pages/servicedesk/mytickets/PendingTickets'
 
 const PrivateRoute = ({ element }) => {
     const { isAuthenticated } = useAPI()
@@ -60,8 +61,9 @@ function App() {
                     <Route path="/servicedesk/tickets" element={<ServiceDeskTicketLayout />}>
                         <Route index element={<Navigate to="/servicedesk/tickets/all" />} />
                         <Route path="/servicedesk/tickets/all" element={<AllTickets />} />
+                        <Route path="/servicedesk/tickets/pending" element={<PendingTickets />} />
                         <Route path="/servicedesk/tickets/closed" element={<ClosedTickets />} />
-                        <Route path="/servicedesk/tickets/opentickets" element={<OpenTickets />} />
+                        <Route path="/servicedesk/tickets/open" element={<OpenTickets />} />
                         <Route
                             path="/servicedesk/tickets/inprogress"
                             element={<InProgressTickets />}

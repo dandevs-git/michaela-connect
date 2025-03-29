@@ -12,6 +12,7 @@ use App\Models\Printer;
 use App\Models\Telephone;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -23,13 +24,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('priorities')->insert([
+            ['name' => 'Low', 'response_time' => 480, 'resolution_time' => 8640],  // 8 hours, 6 days
+            ['name' => 'Medium', 'response_time' => 240, 'resolution_time' => 4320], // 4 hours, 3 days
+            ['name' => 'High', 'response_time' => 60, 'resolution_time' => 720], // 1 hour, 12 hours
+            ['name' => 'Urgent', 'response_time' => 15, 'resolution_time' => 240], // 15 min, 4 hours
+        ]);
 
         Department::factory()->count(6)->create();
         Telephone::factory()->count(10)->create();
         Internet::factory()->count(10)->create();
         IpAddress::factory()->count(10)->create();
         Anydesk::factory()->count(10)->create();
-        // Printer::factory()->count(10)->create();
+        Printer::factory()->count(10)->create();
 
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $managerRole = Role::firstOrCreate(['name' => 'manager', 'guard_name' => 'web']);

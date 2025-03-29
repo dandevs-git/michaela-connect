@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
-import { fetchData } from '../../../utils/fetchData'
+import { FaHandPaper, FaUserCheck } from 'react-icons/fa'
+import { useAPI } from '../../../contexts/APIContext'
 
 function OpenTickets() {
+    const { fetchData } = useAPI()
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -27,15 +28,15 @@ function OpenTickets() {
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-info btn-sm">
-                        <FaEye /> View
+                    <button className="btn text-light btn-success btn-sm position-relative">
+                        <FaUserCheck /> Assign
+                        <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">New alerts</span>
+                        </span>
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
-                    </button>
+                    {/* <button className="btn text-light btn-info btn-sm">
+                        <FaHandPaper /> Assign to me
+                    </button> */}
                 </div>
             )
         }

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
-import { fetchData } from '../../utils/fetchData'
+import { useAPI } from '../../contexts/APIContext'
 
 function AnydeskDirectory() {
+    const { fetchData } = useAPI()
     const [anydesk, setAnydesk] = useState([])
     const [selectedAnydesk, setSelectedAnydesk] = useState(null)
     const [loading, setLoading] = useState(true)

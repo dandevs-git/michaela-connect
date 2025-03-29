@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
-import { fetchData } from '../../utils/fetchData'
+import { useAPI } from '../../contexts/APIContext'
 
 function Department() {
+    const { fetchData } = useAPI()
     const [departments, setDepartments] = useState([])
     const [loading, setLoading] = useState(true)
 

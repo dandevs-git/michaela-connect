@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import api from '../../api'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
-import { fetchData } from '../../utils/fetchData'
+import { useAPI } from '../../contexts/APIContext'
 
 function RolesPermissions() {
+    const { fetchData } = useAPI()
     const [roles, setRoles] = useState([])
     const [selectedRole, setSelectedRole] = useState(null)
     const [loading, setLoading] = useState(true)

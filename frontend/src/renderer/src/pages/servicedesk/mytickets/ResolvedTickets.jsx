@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
-import { fetchData } from '../../../utils/fetchData'
+import { FaCheckCircle, FaTimesCircle, FaUndo } from 'react-icons/fa'
+import { useAPI } from '../../../contexts/APIContext'
 
 function ResolvedTickets() {
+    const { fetchData } = useAPI()
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets?status=resolved', setTickets, setLoading)
+        fetchData('/tickets?status=resolved&requester=me', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {
@@ -31,14 +32,14 @@ function ResolvedTickets() {
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-info btn-sm">
-                        <FaEye /> View
-                    </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
+                    <button className="btn text-light btn-success btn-sm">
+                        <FaCheckCircle /> Completed
                     </button>
                     <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
+                        <FaUndo /> Reopened
+                    </button>
+                    <button className="btn text-light btn-warning btn-sm">
+                        <FaTimesCircle /> Failed
                     </button>
                 </div>
             )
