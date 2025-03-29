@@ -1,22 +1,16 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import api from '../../api'
-import { FaPlus } from 'react-icons/fa'
+import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
+import { useAPI } from '../../contexts/APIContext'
 
 function RolesPermissions() {
+    const { fetchData } = useAPI()
     const [roles, setRoles] = useState([])
     const [selectedRole, setSelectedRole] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const fetchRoles = async () => {
-            try {
-                const response = await api.get('/roles')
-                setRoles(response.data)
-            } catch (error) {
-                console.error('Error fetching roles:', error)
-            }
-        }
-        fetchRoles()
+        fetchData('/roles', setRoles, setLoading)
     }, [])
 
     const handleShowModal = (role) => {
@@ -24,29 +18,32 @@ function RolesPermissions() {
     }
 
     const columns = [
-        { header: '#', accessorKey: 'id', cell: ({ row }) => <span>{row.index + 1}</span> },
+        { header: 'No.', accessorKey: 'id' },
         { header: 'Role Name', accessorKey: 'name' },
         {
             header: 'Permissions',
             accessorKey: 'permissions_count',
-            cell: ({ row }) => (
-                <button
-                    className="btn btn-info btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#permissionsModal"
-                    onClick={() => handleShowModal(row.original)}
-                >
-                    {row.original.permissions ? row.original.permissions.length : 0} Permissions
-                </button>
-            )
+            cell: ({ row }) => <>{row.original.permissions?.length ?? 0} Permissions</>
         },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center">
-                    <button className="btn btn-warning btn-sm">Edit</button>
-                    <button className="btn btn-danger btn-sm">Delete</button>
+                <div className="d-flex gap-2 justify-content-center align-items-center">
+                    <button
+                        className="btn text-light btn-info btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#permissionsModal"
+                        onClick={() => handleShowModal(row.original)}
+                    >
+                        <FaEye /> View
+                    </button>
+                    <button className="btn text-light btn-warning btn-sm">
+                        <FaEdit /> Edit
+                    </button>
+                    <button className="btn text-light btn-danger btn-sm">
+                        <FaTrash /> Delete
+                    </button>
                 </div>
             )
         }
@@ -64,7 +61,12 @@ function RolesPermissions() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable topContent={topContent} columns={columns} data={roles} />
+                        <CustomTable
+                            isloading={loading}
+                            topContent={topContent}
+                            columns={columns}
+                            data={roles}
+                        />
                     </div>
                 </div>
             </div>

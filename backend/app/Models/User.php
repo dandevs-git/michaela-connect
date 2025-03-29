@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -23,6 +25,7 @@ class User extends Authenticatable
         'rfid',
         'name',
         'username',
+        'email',
         'password',
         'profile_picture',
         'role',
@@ -46,21 +49,33 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
     protected $casts = [
-        'password' => 'string',
+        'email_verified_at' => 'datetime',
     ];
 
-    public function tickets()
-    {
-        return $this->hasMany(Ticket::class);
-    }
+
     public function department()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
-    public function activityLogs()
+    public function head()
     {
-        return $this->hasMany(ActivityLog::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'head_id');
     }
+
+    public function subordinates()
+    {
+        return $this->hasMany(User::class, 'head_id');
+    }
+
+    // public function getCreatedAtAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
+    // }
+    // public function getUpdatedAtAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
+    // }
 }

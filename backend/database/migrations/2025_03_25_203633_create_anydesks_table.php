@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ticket_status_logs', function (Blueprint $table) {
+        Schema::create('anydesks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['Pending', 'Open', 'In Progress', 'Resolved', 'Closed', 'Failed']);
-            $table->timestamp('changed_at')->default(now());
+            $table->string('number')->unique();
+            $table->string('location')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ticket_status_logs');
+        Schema::dropIfExists('anydesks');
     }
 };

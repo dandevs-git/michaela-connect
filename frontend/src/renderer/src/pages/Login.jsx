@@ -1,12 +1,12 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import logoDark from '../assets/images/logos/logo-black.png'
 import logoLight from '../assets/images/logos/logo-black.png'
-import { useAuth } from '../contexts/AuthContext'
+import { useAPI } from '../contexts/APIContext'
 import ThemeContext from '../contexts/ThemeContext'
 
 function Login() {
     const { darkMode } = useContext(ThemeContext)
-    const { login } = useAuth()
+    const { login } = useAPI()
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
@@ -16,88 +16,115 @@ function Login() {
         e.preventDefault()
         setMessage('')
         setLoading(true)
+
         const response = await login(username, password)
         setMessage(response)
+
         setLoading(false)
     }
 
+    // useEffect(() => {
+    //     'use strict'
+    //     const forms = document.querySelectorAll('.needs-validation')
+
+    //     Array.from(forms).forEach((form) => {
+    //         form.addEventListener(
+    //             'submit',
+    //             (event) => {
+    //                 if (!form.checkValidity()) {
+    //                     event.preventDefault()
+    //                     event.stopPropagation()
+    //                 }
+    //                 form.classList.add('was-validated')
+    //             },
+    //             false
+    //         )
+    //     })
+    // }, [])
+
     return (
-        <>
-            <div className="shadow-lg p-4 rounded-4 border" style={{ width: '20rem' }}>
-                <img
-                    src={!darkMode ? logoDark : logoLight}
-                    className="img-fluid d-flex mx-auto mb-3"
-                    width={80}
-                />
-                <h2 className="text-center  mb-3">LOGIN</h2>
-                <form className="needs-validation" noValidate>
-                    {message && (
-                        <div className="alert small alert-danger text-center py-1" role="alert">
-                            {message}
-                        </div>
-                    )}
-                    <div className="mb-3">
-                        <label htmlFor="username" className="form-label">
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                        />
-                        <div className="invalid-feedback">Enter username</div>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                        <div className="invalid-feedback">Enter password</div>
-                    </div>
-                    <div className="mb-3 form-check">
-                        <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                        <label className="form-check-label" htmlFor="exampleCheck1">
-                            Remember me
-                        </label>
-                    </div>
+        <div className="shadow-lg p-4 rounded-4 border" style={{ width: '20rem' }}>
+            <img
+                src={darkMode ? logoLight : logoDark}
+                className="img-fluid d-flex mx-auto mb-3"
+                width={80}
+                alt="Company Logo"
+            />
+            <h2 className="text-center mb-3">LOGIN</h2>
+
+            {message && (
+                <div className="alert small alert-danger text-center py-1" role="alert">
+                    {message}
+                </div>
+            )}
+
+            <form className="needs-validation" noValidate onSubmit={handleLogin}>
+                <div className="mb-3">
+                    <label htmlFor="username" className="form-label">
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                        autoComplete="username"
+                        aria-label="Enter your username"
+                    />
+                    <div className="invalid-feedback">Enter username</div>
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                        Password
+                    </label>
+                    <input
+                        type="password"
+                        className="form-control"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                        aria-label="Enter your password"
+                    />
+                    <div className="invalid-feedback">Enter password</div>
+                </div>
+
+                <div className="mb-3 form-check">
+                    <input type="checkbox" className="form-check-input" id="rememberMe" />
+                    <label className="form-check-label" htmlFor="rememberMe">
+                        Remember me
+                    </label>
+                </div>
+
+                <button
+                    className="btn btn-primary w-100 rounded-4 mb-2"
+                    type="submit"
+                    disabled={loading}
+                >
                     {loading ? (
-                        <button
-                            className="btn btn-primary w-100 rounded-4 mb-2"
-                            type="button"
-                            disabled
-                        >
+                        <>
                             <span
                                 className="spinner-grow spinner-grow-sm"
                                 aria-hidden="true"
                             ></span>
                             <span className="ms-2">Logging in...</span>
-                        </button>
+                        </>
                     ) : (
-                        <button
-                            className="btn btn-primary w-100 rounded-4 mb-2"
-                            onClick={handleLogin}
-                        >
-                            Login
-                        </button>
+                        'Login'
                     )}
-                </form>
-                <div className="d-flex align-items-center">
-                    <a className="" type="button">
-                        Forgot password?
-                    </a>
-                </div>
+                </button>
+            </form>
+
+            <div className="d-flex align-items-center">
+                <a href="#" className="text-decoration-none">
+                    Forgot password?
+                </a>
             </div>
-        </>
+        </div>
     )
 }
 

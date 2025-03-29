@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ActivityLog>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Printer>
  */
-class ActivityLogFactory extends Factory
+class PrinterFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,8 @@ class ActivityLogFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->unique()->word() . ' Printer',
+            'inkcode' => strtoupper($this->faker->bothify('INK-###')),
         ];
     }
 }

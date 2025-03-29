@@ -22,12 +22,12 @@ return new class extends Migration
             $table->enum('role', ['staff', 'head', 'manager', 'admin'])->default('staff');
             $table->enum('status', ['active', 'inactive', 'suspended', 'locked'])->default('active');
             $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
+            $table->foreignId('head_id')->nullable()->constrained('users')->onDelete('set null');
             $table->integer('failed_attempts')->default(0);
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();
         });
-
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('username')->primary();

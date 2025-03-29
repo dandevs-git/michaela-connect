@@ -1,39 +1,40 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import api from '../../api'
-import { FaPlus } from 'react-icons/fa'
+import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
+import { useAPI } from '../../contexts/APIContext'
 
 function AllEmployees() {
+    const { fetchData } = useAPI()
     const [employees, setEmployees] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await api.get('/users')
-                setEmployees(response.data)
-            } catch (error) {
-                console.error('Error fetching employees:', error)
-            }
-        }
-        fetchUsers()
+        fetchData('/users', setEmployees, setLoading)
     }, [])
 
     const columns = [
+        { header: 'No.', accessorKey: 'id' },
+        // { header: 'RFID', accessorKey: 'rfid' },
+        { header: 'Picture', accessorKey: 'profile_picture' },
         { header: 'Name', accessorKey: 'name' },
-        { header: 'Email', accessorKey: 'email' },
-        {
-            header: 'Department',
-            cell: ({ row }) => row.original.department?.name + ' Department' || 'N/A'
-        },
+        // { header: 'Email', accessorKey: 'email' },
+        { header: 'Department', accessorKey: 'department.name' },
         { header: 'Role', accessorKey: 'role' },
         { header: 'Status', accessorKey: 'status' },
         {
             header: 'Actions',
             accessorKey: 'action',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center">
-                    <button className="btn btn-primary btn-sm">Edit</button>
-                    <button className="btn btn-danger btn-sm">Delete</button>
+                <div className="d-flex gap-2 justify-content-center align-items-center">
+                    <button className="btn text-light btn-info btn-sm">
+                        <FaEye /> View
+                    </button>
+                    <button className="btn text-light btn-warning btn-sm">
+                        <FaEdit /> Edit
+                    </button>
+                    <button className="btn text-light btn-danger btn-sm">
+                        <FaTrash /> Delete
+                    </button>
                 </div>
             )
         }
@@ -52,7 +53,12 @@ function AllEmployees() {
             </div>
             <div className="card-body">
                 <div className="col-12 p-4">
-                    <CustomTable topContent={topContent} columns={columns} data={employees} />
+                    <CustomTable
+                        isloading={loading}
+                        topContent={topContent}
+                        columns={columns}
+                        data={employees}
+                    />
                 </div>
             </div>
         </div>

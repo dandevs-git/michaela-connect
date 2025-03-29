@@ -1,23 +1,18 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import api from '../../api'
+import { useAPI } from '../../contexts/APIContext'
 
 function ActivityLog() {
+    const { fetchData } = useAPI()
     const [logs, setLogs] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const fetchLogs = async () => {
-            try {
-                const response = await api.get('/logs')
-                setLogs(response.data)
-            } catch (error) {
-                console.error('Error fetching logs:', error)
-            }
-        }
-        fetchLogs()
+        fetchData('/logs', setLogs, setLoading)
     }, [])
 
     const columns = [
+        { header: 'No.', accessorKey: 'id' },
         { header: 'User', accessorKey: 'user.name' },
         { header: 'Category', accessorKey: 'category' },
         { header: 'Action', accessorKey: 'action' },
@@ -36,7 +31,7 @@ function ActivityLog() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable columns={columns} data={logs} />
+                        <CustomTable isloading={loading} columns={columns} data={logs} />
                     </div>
                 </div>
             </div>

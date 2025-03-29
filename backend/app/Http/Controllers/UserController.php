@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -37,14 +36,14 @@ class UserController extends Controller
     }
     public function store(Request $request)
     {
+        $admin = Auth::user();
+
         $validator = Validator::make($request->all(), [
             'rfid' => 'required|string|unique:users,rfid|max:20',
             'name' => 'required|string|max:255',
             'role' => ['required', Rule::in(['staff', 'head', 'manager', 'admin'])],
             'department_id' => 'required|exists:departments,id',
         ]);
-
-        $admin = Auth::user();
 
         if ($validator->fails()) {
             logActivity(
@@ -88,7 +87,6 @@ class UserController extends Controller
             ],
         ]);
     }
-
 
     public function show(User $user)
     {
