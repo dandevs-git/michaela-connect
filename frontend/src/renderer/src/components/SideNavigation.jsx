@@ -13,6 +13,7 @@ import {
     FaUser
 } from 'react-icons/fa'
 import '../assets/styles/css/sideNavigationStyle.css'
+import { useAPI } from '../contexts/APIContext'
 
 const pages = [
     {
@@ -88,6 +89,7 @@ const pages = [
 ]
 
 function SideNavigation() {
+    const { authenticatedUserDetails } = useAPI()
     const { darkMode } = useContext(ThemeContext)
     const location = useLocation()
     const [openMenus, setOpenMenus] = useState({})
@@ -166,8 +168,12 @@ function SideNavigation() {
                     })}
                 </ul>
             </div>
-            <div className="bg-primary border p-2 text-center text-white mt-auto small">
-                &copy; 2025 Goldnines
+            <div className="bg-primary border text-center text-white mt-auto small flex-column d-flex">
+                <strong className="text-uppercase border-bottom p-1">
+                    {authenticatedUserDetails?.department?.name || 'User'}{' '}
+                    {authenticatedUserDetails?.role || 'User'}
+                </strong>
+                <span className='p-2'>&copy; 2025 Goldnines</span>
             </div>
         </div>
     )

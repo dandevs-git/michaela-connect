@@ -1,7 +1,8 @@
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import id from '../assets/images/photos/id.jpg'
 import ThemeSwitch from './ThemeSwitch'
 import { useAPI } from '../contexts/APIContext'
+import { useEffect, useState } from 'react'
 
 const pages = [
     { page: 'Dashboard', link: '/dashboard' },
@@ -10,12 +11,14 @@ const pages = [
 ]
 
 function TopNavigation() {
-    const { logout, userRole } = useAPI()
+    const { logout } = useAPI()
     const location = useLocation()
+    const navigate = useNavigate()
 
     const handleLogout = (e) => {
         e.preventDefault()
         logout()
+        navigate('/login')
     }
 
     const pathnames = location.pathname.split('/').filter((x) => x)
@@ -124,7 +127,6 @@ function TopNavigation() {
                                 className="rounded-circle me-2"
                             />
                             <strong>Dan</strong>
-                            {/* <strong>{userRole}</strong> */}
                         </Link>
 
                         <ul className="dropdown-menu dropdown-menu-end bg-body shadow text-body text-small">

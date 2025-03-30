@@ -26,7 +26,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/change-password', [PasswordController::class, 'changePassword'])->name('password.change');
 
-    Route::get('/role', [UserController::class, 'getAuthenticatedUserRole'])->name('user.role');
+    Route::get('/auth', [UserController::class, 'getAuthenticatedUserDetails'])->name('user.auth');
 
     Route::apiResources([
         'tickets' => TicketController::class,

@@ -58,7 +58,7 @@ class AuthController extends Controller
                 $user->id,
                 'Authentication',
                 'Failed Login',
-                "Failed login attempt for {$user->username} from " . gethostname() . " PC. Reason: Incorrect password."
+                "Failed login attempt for {$user->username} from IP: {$request->ip()} on " . gethostname() . ". Reason: Incorrect password."
             );
 
             return response()->json([
@@ -80,13 +80,15 @@ class AuthController extends Controller
             );
         }
 
-        $token = $user->createToken($user->name)->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // $request->session()->regenerate();
 
         logActivity(
             $user->id,
             'Authentication',
             'Successful Login',
-            "User {$user->username} logged in successfully from " . gethostname() . " PC."
+            "User {$user->username} logged in successfully from IP: {$request->ip()} on " . gethostname() . "."
         );
 
         return response()->json([
@@ -106,9 +108,17 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $request->user()->tokens()->delete();
+        // $request->session()->invalidate();
+        // $request->session()->regenerateToken();
 
-        logActivity($user->id, 'Authentication', 'Logout', "User {$user->username} logged out successfully.");
+        $user->tokens()->delete();
+
+        logActivity(
+            $user->id,
+            'Authentication',
+            'Logout',
+            "User {$user->username} logged out successfully from IP: {$request->ip()} on " . gethostname() . "."
+        );
 
         return response()->json([
             'message' => 'Logged out successfully'

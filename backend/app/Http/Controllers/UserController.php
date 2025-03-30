@@ -129,7 +129,7 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully']);
     }
 
-    public function getAuthenticatedUserRole()
+    public function getAuthenticatedUserDetails()
     {
         $user = Auth::user();
 
@@ -137,8 +137,23 @@ class UserController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $role = $user->getRoleNames()->first();
+        $user->load('department');
 
-        return response()->json(['role' => $role ?? 'No Role']);
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+            'profile_picture' => $user->profile_picture,
+            'role' => $user->getRoleNames()->first() ?? 'No Role',
+            'status' => $user->status,
+            'department' => $user->department ? [
+                'id' => $user->department->id,
+                'name' => $user->department->name,
+            ] : null,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+        ]);
     }
+
 }

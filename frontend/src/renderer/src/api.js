@@ -19,6 +19,11 @@ api.interceptors.request.use(
         return config
     },
     (error) => {
+        // if (error.response && error.response.status === 401) {
+        //     localStorage.clear()
+        //     sessionStorage.clear()
+        //     window.location.href = '/login'
+        // }
         return Promise.reject(error)
     }
 )

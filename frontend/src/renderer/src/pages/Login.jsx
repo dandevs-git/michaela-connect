@@ -3,14 +3,17 @@ import logoDark from '../assets/images/logos/logo-black.png'
 import logoLight from '../assets/images/logos/logo-black.png'
 import { useAPI } from '../contexts/APIContext'
 import ThemeContext from '../contexts/ThemeContext'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
     const { darkMode } = useContext(ThemeContext)
-    const { login } = useAPI()
+    const { login, getAuthenticatedUserDetails } = useAPI()
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
+
+    const navigate = useNavigate()
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -18,29 +21,15 @@ function Login() {
         setLoading(true)
 
         const response = await login(username, password)
-        setMessage(response)
 
+        if (!response.includes('Invalid') && !response.includes('Access denied')) {
+            await getAuthenticatedUserDetails()
+            navigate('/dashboard')
+        }else{
+            setMessage(response)
+        }
         setLoading(false)
     }
-
-    // useEffect(() => {
-    //     'use strict'
-    //     const forms = document.querySelectorAll('.needs-validation')
-
-    //     Array.from(forms).forEach((form) => {
-    //         form.addEventListener(
-    //             'submit',
-    //             (event) => {
-    //                 if (!form.checkValidity()) {
-    //                     event.preventDefault()
-    //                     event.stopPropagation()
-    //                 }
-    //                 form.classList.add('was-validated')
-    //             },
-    //             false
-    //         )
-    //     })
-    // }, [])
 
     return (
         <div className="shadow-lg p-4 rounded-4 border" style={{ width: '20rem' }}>

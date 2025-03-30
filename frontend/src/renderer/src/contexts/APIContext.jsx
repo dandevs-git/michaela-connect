@@ -1,12 +1,10 @@
 import { createContext, useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
 import api from '../api'
 
 export const APIContext = createContext()
 
 export const APIProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'))
-    const navigate = useNavigate()
+    const [authenticatedUserDetails, setAuthenticatedUserDetails] = useState(null)
 
     const login = async (username, password) => {
         try {
@@ -15,8 +13,6 @@ export const APIProvider = ({ children }) => {
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token)
                 api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
-                setIsAuthenticated(true)
-                navigate('/dashboard')
             }
 
             return response.data.message
@@ -45,8 +41,6 @@ export const APIProvider = ({ children }) => {
         } finally {
             localStorage.removeItem('token')
             delete api.defaults.headers.common['Authorization']
-            setIsAuthenticated(false)
-            navigate('/login')
         }
     }
 
@@ -60,6 +54,17 @@ export const APIProvider = ({ children }) => {
             console.error(`Error fetching data from ${endpoint}:`, error)
         } finally {
             if (setLoading) setLoading(false)
+        }
+    }
+
+    const getAuthenticatedUserDetails = async () => {
+        try {
+            const response = await api.get('/auth')
+            setAuthenticatedUserDetails(response.data)
+            return response.data.role
+        } catch (error) {
+            console.error('Failed to fetch user details:', error.response?.data || error.message)
+            return null
         }
     }
 
@@ -87,7 +92,16 @@ export const APIProvider = ({ children }) => {
 
     return (
         <APIContext.Provider
-            value={{ isAuthenticated, login, logout, fetchData, addTicket, assignTicket }}
+            value={{
+                authenticatedUserDetails,
+                getAuthenticatedUserDetails,
+                setAuthenticatedUserDetails,
+                login,
+                logout,
+                fetchData,
+                addTicket,
+                assignTicket
+            }}
         >
             {children}
         </APIContext.Provider>
