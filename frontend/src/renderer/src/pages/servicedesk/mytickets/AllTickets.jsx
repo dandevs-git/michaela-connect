@@ -1,20 +1,8 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import {
-    FaBan,
-    FaCheckCircle,
-    FaCircle,
-    FaClock,
-    FaDoorClosed,
-    FaExclamationCircle,
-    FaExclamationTriangle,
-    FaEye,
-    FaHourglassHalf,
-    FaRedo,
-    FaSpinner,
-    FaTimesCircle
-} from 'react-icons/fa'
+import { FaEye } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
+import StatusBadge from '../../../components/badge/StatusBadge'
 
 function AllTickets() {
     const { fetchData } = useAPI()
@@ -23,51 +11,12 @@ function AllTickets() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets?user_id=me', setTickets, setLoading)
+        fetchData('/tickets?requester=me&assigned_to=me', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {
         console.log(tickets)
         setSelectedTickets(tickets)
-    }
-
-    const statusIcons = {
-        pending: {
-            icon: <FaClock />,
-            class: 'text-light bg-primary',
-            label: 'Pending'
-        },
-        open: {
-            icon: <FaHourglassHalf />,
-            class: 'text-light bg-primary',
-            label: 'Open'
-        },
-        rejected: {
-            icon: <FaTimesCircle />,
-            class: 'text-light bg-danger',
-            label: 'Rejected'
-        },
-        in_progress: {
-            icon: <FaSpinner />,
-            class: 'text-light bg-warning',
-            label: 'In Progress'
-        },
-        resolved: {
-            icon: <FaCheckCircle />,
-            class: 'text-light bg-success',
-            label: 'Resolved'
-        },
-        failed: { icon: <FaBan />, class: 'text-light bg-dark', label: 'Failed' },
-        closed: {
-            icon: <FaDoorClosed />,
-            class: 'text-light bg-info',
-            label: 'Closed'
-        },
-        reopened: {
-            icon: <FaRedo />,
-            class: 'text-light bg-primary',
-            label: 'Reopened'
-        }
     }
 
     const columns = [
@@ -76,23 +25,15 @@ function AllTickets() {
         {
             header: 'Status',
             accessorKey: 'status',
-            cell: ({ row }) => {
-                const status = row.original.status
-                const statusInfo = statusIcons[status] || {
-                    icon: null,
-                    class: 'text-bg-secondary',
-                    label: 'Unknown'
-                }
-
-                return (
-                    <span className={`${statusInfo.class} small py-1 px-3 rounded-pill`}>
-                        {statusInfo.icon} {statusInfo.label}
-                    </span>
-                )
-            }
+            cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
+        {
+            header: 'Assigned To',
+            accessorKey: 'assigned_to',
+            cell: ({ row }) => row.original.assigned_to?.name || '-'
+        },
         {
             header: 'Actions',
             accessorKey: 'actions',

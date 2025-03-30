@@ -129,17 +129,16 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully']);
     }
 
-    // Temporary
-    public function checkUserRole()
+    public function getAuthenticatedUserRole()
     {
-        $user = User::find(1);
-        return response()->json([
-            'username' => $user->username,
-            'roles' => $user->getRoleNames(),
-            'is_admin' => $user->hasRole('admin'),
-            'is_manager' => $user->hasRole('manager'),
-            'is_head' => $user->hasRole('head'),
-            'is_staff' => $user->hasRole('staff'),
-        ], 200);
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $role = $user->getRoleNames()->first();
+
+        return response()->json(['role' => $role ?? 'No Role']);
     }
 }

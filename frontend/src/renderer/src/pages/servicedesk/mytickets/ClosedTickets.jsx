@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
+import StatusBadge from '../../../components/badge/StatusBadge'
 
 function ClosedTickets() {
     const { fetchData } = useAPI()
@@ -10,7 +11,7 @@ function ClosedTickets() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets/status=closed', setTickets, setLoading)
+        fetchData('/tickets?status=closed', setTickets, setLoading)
         console.log(tickets)
     }, [])
 
@@ -21,8 +22,12 @@ function ClosedTickets() {
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority' },
-        { header: 'Status', accessorKey: 'status' },
+        { header: 'Priority Level', accessorKey: 'priority.name' },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: ({ row }) => <StatusBadge status={row.original.status} />
+        },
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
         {

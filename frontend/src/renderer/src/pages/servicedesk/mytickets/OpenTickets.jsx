@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaHandPaper, FaUserCheck } from 'react-icons/fa'
+import { FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
+import StatusBadge from '../../../components/badge/StatusBadge'
 
 function OpenTickets() {
     const { fetchData } = useAPI()
@@ -19,8 +20,12 @@ function OpenTickets() {
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority' },
-        { header: 'Status', accessorKey: 'status' },
+        { header: 'Priority Level', accessorKey: 'priority.name' },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: ({ row }) => <StatusBadge status={row.original.status} />
+        },
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
         {
@@ -30,8 +35,8 @@ function OpenTickets() {
                 <div className="d-flex gap-2 justify-content-center align-items-center">
                     <button className="btn text-light btn-success btn-sm position-relative">
                         <FaUserCheck /> Assign
-                        <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                            <span class="visually-hidden">New alerts</span>
+                        <span className="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                            <span className="visually-hidden">New alerts</span>
                         </span>
                     </button>
                     {/* <button className="btn text-light btn-info btn-sm">

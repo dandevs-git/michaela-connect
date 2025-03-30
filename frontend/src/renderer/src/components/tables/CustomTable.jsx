@@ -97,7 +97,7 @@ function CustomTable({
 
                         {/* Table */}
                         <div className="table-responsive rounded-3 border mb-3">
-                            <table className="table table table-hover text-wrap mb-3 text-center">
+                            <table className="table table-hover text-wrap mb-3 text-center">
                                 {caption && <caption className="text-center">{caption}</caption>}
                                 <thead>
                                     {table.getHeaderGroups().map((headerGroup) => (

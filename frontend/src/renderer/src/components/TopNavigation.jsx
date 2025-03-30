@@ -10,7 +10,7 @@ const pages = [
 ]
 
 function TopNavigation() {
-    const { logout } = useAPI()
+    const { logout, userRole } = useAPI()
     const location = useLocation()
 
     const handleLogout = (e) => {
@@ -33,7 +33,10 @@ function TopNavigation() {
     ]
 
     return (
-        <div className="navbar navbar-expand-md bg-light-subtle shadow-lg sticky-top">
+        <div
+            className="navbar navbar-expand-md bg-light-subtle shadow-lg sticky-top"
+            style={{ minHeight: '5vh' }}
+        >
             <div className="col d-flex justify-content-between order-3">
                 <nav className="d-flex align-items-center mx-4">
                     <ol className="breadcrumb mb-0">{breadcrumbItems}</ol>
@@ -53,14 +56,15 @@ function TopNavigation() {
                             </span>
                         </button>
 
-                        <ul className="dropdown-menu dropdown-menu-end border rounded-4 shadow-lg">
+                        <ul className="dropdown-menu dropdown-menu-end bg-light text-dark shadow-lg rounded-3 border-0">
                             <li className="dropdown-header text-center fw-bold py-3">
                                 Notifications
                             </li>
+
                             <li>
-                                <a className="d-flex dropdown-item align-items-start" href="#">
+                                <a className="dropdown-item d-flex align-items-start" href="#">
                                     <div className="me-3">
-                                        <i className="text-primary bi bi-box-seam fs-5"></i>
+                                        <i className="bi bi-box-seam text-primary fs-5"></i>
                                     </div>
                                     <div>
                                         <div className="fw-semibold">New Ticket Received</div>
@@ -68,9 +72,37 @@ function TopNavigation() {
                                     </div>
                                 </a>
                             </li>
+
+                            <li>
+                                <a className="dropdown-item d-flex align-items-start" href="#">
+                                    <div className="me-3">
+                                        <i className="bi bi-chat-dots text-secondary fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <div className="fw-semibold">
+                                            Message from HR Department
+                                        </div>
+                                        <small className="text-muted">10 mins ago</small>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a className="dropdown-item d-flex align-items-start" href="#">
+                                    <div className="me-3">
+                                        <i className="bi bi-exclamation-triangle text-warning fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <div className="fw-semibold">System Update Available</div>
+                                        <small className="text-muted">1 hour ago</small>
+                                    </div>
+                                </a>
+                            </li>
+
                             <li>
                                 <hr className="dropdown-divider" />
                             </li>
+
                             <li>
                                 <a className="dropdown-item text-center fw-bold" href="#">
                                     View All Notifications
@@ -92,6 +124,7 @@ function TopNavigation() {
                                 className="rounded-circle me-2"
                             />
                             <strong>Dan</strong>
+                            {/* <strong>{userRole}</strong> */}
                         </Link>
 
                         <ul className="dropdown-menu dropdown-menu-end bg-body shadow text-body text-small">

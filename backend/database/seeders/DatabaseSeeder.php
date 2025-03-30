@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'username' => 'admin',
             'password' => Hash::make('110686'),
-            'role' => 'admin',
+            'role' => $adminRole->name,
             'status' => 'active',
             'department_id' => 1,
         ]);
@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Manager',
             'username' => 'manager',
             'password' => Hash::make('110686'),
-            'role' => 'manager',
+            'role' => $managerRole->name,
             'status' => 'active',
             'department_id' => 2,
         ]);
@@ -68,7 +68,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Head',
             'username' => 'head',
             'password' => Hash::make('110686'),
-            'role' => 'head',
+            'role' => $headRole->name,
             'status' => 'active',
             'department_id' => 3,
         ]);
@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Staff',
             'username' => 'staff',
             'password' => Hash::make('110686'),
-            'role' => 'staff',
+            'role' => $staffRole->name,
             'status' => 'active',
             'department_id' => 4,
         ]);

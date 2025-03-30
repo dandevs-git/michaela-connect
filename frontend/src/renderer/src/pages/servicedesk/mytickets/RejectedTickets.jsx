@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
+import { FaEdit, FaEye, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
+import StatusBadge from '../../../components/badge/StatusBadge'
 
-function RejectTickets() {
+function RejectedTickets() {
     const { fetchData } = useAPI()
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
@@ -19,8 +20,12 @@ function RejectTickets() {
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority' },
-        { header: 'Status', accessorKey: 'status' },
+        { header: 'Priority Level', accessorKey: 'priority.name' },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: ({ row }) => <StatusBadge status={row.original.status} />
+        },
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
         {
@@ -97,4 +102,4 @@ function RejectTickets() {
         </>
     )
 }
-export default RejectTickets
+export default RejectedTickets

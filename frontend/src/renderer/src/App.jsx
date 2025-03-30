@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useAPI } from './contexts/APIContext'
 import MainLayout from './layouts/MainLayout'
 import AuthLayout from './layouts/AuthLayout'
@@ -33,14 +33,19 @@ import PrinterDirectory from './pages/directory/PrinterDirectory'
 import InternetDirectory from './pages/directory/InternetDirectory'
 import ResolvedTickets from './pages/servicedesk/mytickets/ResolvedTickets'
 import PendingTickets from './pages/servicedesk/mytickets/PendingTickets'
+import RejectedTickets from './pages/servicedesk/mytickets/RejectedTickets'
 
-const PrivateRoute = ({ element }) => {
-    const { isAuthenticated } = useAPI()
-    return isAuthenticated ? element : <Navigate to="/login" replace />
-}
+const PrivateRoute = ({ element, allowedRoles }) => {
+    const { isAuthenticated, userRole } = useAPI();
+
+    if (!isAuthenticated) return <Navigate to="/login" replace />;
+    if (allowedRoles && !allowedRoles.includes(userRole)) return <Navigate to="/login" replace />;
+    return element;
+};
 
 function App() {
-    const { isAuthenticated } = useAPI()
+    const { isAuthenticated } = useAPI();
+
     return (
         <Routes>
             <Route path="/" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} />} />
@@ -49,49 +54,44 @@ function App() {
                 <Route path="/login" element={<Login />} />
             </Route>
 
-            <Route element={<PrivateRoute element={<MainLayout />} />}>
-                <Route path="/dashboard">
-                    <Route index element={<Navigate to="overview" replace />} />
-                    <Route path=":section" element={<DashboardLayout />} />
-                </Route>
+            <Route element={<PrivateRoute element={<MainLayout />} allowedRoles={['admin', 'manager', 'staff', 'head']} />}>
+                <Route path="/dashboard" element={<DashboardLayout />} />
 
                 <Route path="/servicedesk" element={<ServiceDeskLayout />}>
-                    <Route index element={<Navigate to="/servicedesk/overview" />} />
-                    <Route path="/servicedesk/overview" element={<MyOverview />} />
-                    <Route path="/servicedesk/tickets" element={<ServiceDeskTicketLayout />}>
-                        <Route index element={<Navigate to="/servicedesk/tickets/all" />} />
-                        <Route path="/servicedesk/tickets/all" element={<AllTickets />} />
-                        <Route path="/servicedesk/tickets/pending" element={<PendingTickets />} />
-                        <Route path="/servicedesk/tickets/closed" element={<ClosedTickets />} />
-                        <Route path="/servicedesk/tickets/open" element={<OpenTickets />} />
-                        <Route
-                            path="/servicedesk/tickets/inprogress"
-                            element={<InProgressTickets />}
-                        />
-                        <Route path="/servicedesk/tickets/resolved" element={<ResolvedTickets />} />
-                        <Route path="/servicedesk/tickets/failed" element={<FailedTickets />} />
+                    <Route index element={<MyOverview />} />
+                    <Route path="tickets" element={<ServiceDeskTicketLayout />}>
+                        <Route index element={<AllTickets />} />
+                        <Route path="all" element={<AllTickets />} />
+                        <Route path="pending" element={<PendingTickets />} />
+                        <Route path="closed" element={<ClosedTickets />} />
+                        <Route path="open" element={<OpenTickets />} />
+                        <Route path="inprogress" element={<InProgressTickets />} />
+                        <Route path="resolved" element={<ResolvedTickets />} />
+                        <Route path="failed" element={<FailedTickets />} />
+                        <Route path="rejected" element={<RejectedTickets />} />
                     </Route>
-                    <Route path="/servicedesk/reports" element={<MyReports />} />
+                    <Route path="reports" element={<MyReports />} />
                 </Route>
+
                 <Route path="/employees" element={<EmployeeLayout />}>
-                    <Route index element={<Navigate to="/employees/all" />} />
-                    <Route path="/employees/all" element={<AllEmployees />} />
-                    <Route path="/employees/departments" element={<Department />} />
-                    <Route path="/employees/roles" element={<RolesPermissions />} />
-                    <Route path="/employees/logs" element={<ActivityLog />} />
+                    <Route index element={<AllEmployees />} />
+                    <Route path="all" element={<AllEmployees />} />
+                    <Route path="departments" element={<Department />} />
+                    <Route path="roles" element={<RolesPermissions />} />
+                    <Route path="logs" element={<ActivityLog />} />
                 </Route>
 
                 <Route path="/directory" element={<DirectoryLayout />}>
-                    <Route index element={<Navigate to="/directory/departments" />} />
-                    <Route path="/directory/telephones" element={<TelephoneDirectory />} />
-                    <Route path="/directory/internet" element={<InternetDirectory />} />
-                    <Route path="/directory/ipaddress" element={<IpAddressDirectory />} />
-                    <Route path="/directory/anydesks" element={<AnydeskDirectory />} />
-                    <Route path="/directory/printers" element={<PrinterDirectory />} />
+                    <Route index element={<Department />} />
+                    <Route path="telephones" element={<TelephoneDirectory />} />
+                    <Route path="internet" element={<InternetDirectory />} />
+                    <Route path="ipaddress" element={<IpAddressDirectory />} />
+                    <Route path="anydesks" element={<AnydeskDirectory />} />
+                    <Route path="printers" element={<PrinterDirectory />} />
                 </Route>
             </Route>
 
-            <Route element={<PrivateRoute element={<ProfileLayout />} />}>
+            <Route element={<PrivateRoute element={<ProfileLayout />} allowedRoles={['admin', 'manager', 'staff', 'head']} />}>
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/settings" element={<Settings />} />
             </Route>
@@ -101,7 +101,7 @@ function App() {
             <Route path="/500" element={<ErrorPage errorCode={500} />} />
             <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
-    )
+    );
 }
 
-export default App
+export default App;

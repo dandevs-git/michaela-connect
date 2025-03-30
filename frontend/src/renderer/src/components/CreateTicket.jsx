@@ -6,10 +6,11 @@ function CreateTicket() {
     const [loadingBtn, setLoadingBtn] = useState(false)
     const [message, setMessage] = useState('')
     const [departments, setDepartments] = useState([])
+    const [priorities, setPriorities] = useState([])
     const [ticketData, setTicketData] = useState({
         title: '',
         description: '',
-        priority: 'normal',
+        priority_id: 0,
         department_id: ''
     })
 
@@ -41,7 +42,7 @@ function CreateTicket() {
                 setTicketData({
                     title: '',
                     description: '',
-                    priority: 'normal',
+                    priority_id: '',
                     department_id: ''
                 })
 
@@ -60,6 +61,7 @@ function CreateTicket() {
 
     useEffect(() => {
         fetchData('/departments', setDepartments)
+        fetchData('/priorities', setPriorities)
     }, [])
 
     useEffect(() => {
@@ -74,7 +76,7 @@ function CreateTicket() {
             setTicketData({
                 title: '',
                 description: '',
-                priority: 'normal',
+                priority_id: '',
                 department_id: ''
             })
             document.querySelector('.needs-validation')?.classList.remove('was-validated')
@@ -172,14 +174,19 @@ function CreateTicket() {
                                     <select
                                         className="form-select"
                                         id="ticketPriority"
-                                        name="priority"
-                                        value={ticketData.priority}
+                                        name="priority_id"
+                                        value={ticketData.priority_id}
                                         onChange={handleInputChange}
                                         required
                                     >
-                                        <option value="normal">Normal</option>
-                                        <option value="priority">Priority</option>
-                                        <option value="urgent">Urgent</option>
+                                        <option value="" disabled>
+                                            Select Priority
+                                        </option>
+                                        {priorities.map((priority) => (
+                                            <option key={priority.id} value={priority.id}>
+                                                {priority.name}
+                                            </option>
+                                        ))}
                                     </select>
                                     <div className="invalid-feedback">
                                         Please select priority level.

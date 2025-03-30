@@ -10,6 +10,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\InternetController;
 use App\Http\Controllers\IpAddressController;
 use App\Http\Controllers\PrinterController;
+use App\Http\Controllers\PriorityController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TelephoneController;
@@ -25,11 +26,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/change-password', [PasswordController::class, 'changePassword'])->name('password.change');
 
-    Route::get('/role', [UserController::class, 'checkUserRole'])->name('user.role');
+    Route::get('/role', [UserController::class, 'getAuthenticatedUserRole'])->name('user.role');
 
     Route::apiResources([
         'tickets' => TicketController::class,
         'departments' => DepartmentController::class,
+        'priorities' => PriorityController::class,
         'telephones' => TelephoneController::class,
         'internet' => InternetController::class,
         'ipaddress' => IpAddressController::class,

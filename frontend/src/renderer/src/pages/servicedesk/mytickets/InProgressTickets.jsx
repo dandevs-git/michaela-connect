@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaCheckCircle, FaTimesCircle, FaUndo } from 'react-icons/fa'
+import { FaUndo, FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
+import StatusBadge from '../../../components/badge/StatusBadge'
 
 function InProgressTickets() {
     const { fetchData } = useAPI()
@@ -19,8 +20,12 @@ function InProgressTickets() {
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority' },
-        { header: 'Status', accessorKey: 'status' },
+        { header: 'Priority Level', accessorKey: 'priority.name' },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: ({ row }) => <StatusBadge status={row.original.status} />
+        },
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
         {

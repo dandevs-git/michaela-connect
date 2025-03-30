@@ -12,7 +12,7 @@ import {
     FaTicketAlt,
     FaUser
 } from 'react-icons/fa'
-import '../assets/styles/sideNavigationStyle.css'
+import '../assets/styles/css/sideNavigationStyle.css'
 
 const pages = [
     {
