@@ -83,7 +83,6 @@ class Ticket extends Model
         return $query->where('status', 'failed');
     }
 
-    /** 📌 ACCESSORS (Format Dates) */
     public function getFormattedDate($value)
     {
         return $value ? Carbon::parse($value)->format('F j, Y') : null;

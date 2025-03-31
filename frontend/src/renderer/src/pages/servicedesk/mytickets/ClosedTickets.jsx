@@ -12,11 +12,11 @@ function ClosedTickets() {
 
     useEffect(() => {
         fetchData('/tickets?status=closed', setTickets, setLoading)
-        console.log(tickets)
+        // console.log(tickets)
     }, [])
 
     const handleShowModal = (tickets) => {
-        console.log(tickets)
+        // console.log(tickets)
         setSelectedTickets(tickets)
     }
 
@@ -30,6 +30,11 @@ function ClosedTickets() {
         },
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
+        {
+            header: 'Department',
+            accessorKey: 'department_id',
+            cell: ({ row }) => row.original.requester.department?.name || '-'
+        },
         {
             header: 'Actions',
             accessorKey: 'actions',

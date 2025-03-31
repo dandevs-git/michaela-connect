@@ -20,13 +20,14 @@ function Login() {
         setMessage('')
         setLoading(true)
 
-        const response = await login(username, password)
-
-        if (!response.includes('Invalid') && !response.includes('Access denied')) {
-            await getAuthenticatedUserDetails()
-            navigate('/dashboard')
-        }else{
-            setMessage(response)
+        try {
+            const response = await login(username, password)
+            if (!response.includes('Invalid') && !response.includes('Access denied')) {
+                await getAuthenticatedUserDetails()
+                navigate('/dashboard')
+            }
+        } catch (error) {
+            setMessage(error.response)
         }
         setLoading(false)
     }

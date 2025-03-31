@@ -14,7 +14,7 @@ function PrinterDirectory() {
     }, [])
 
     const handleShowModal = (telephone) => {
-        console.log(telephone)
+        // console.log(telephone)
         setSelectedprinter(telephone)
     }
 

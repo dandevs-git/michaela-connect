@@ -12,7 +12,6 @@ export const APIProvider = ({ children }) => {
 
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token)
-                api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
             }
 
             return response.data.message
@@ -61,7 +60,9 @@ export const APIProvider = ({ children }) => {
         try {
             const response = await api.get('/auth')
             setAuthenticatedUserDetails(response.data)
-            return response.data.role
+            // console.log(response.data)
+
+            return response.data
         } catch (error) {
             console.error('Failed to fetch user details:', error.response?.data || error.message)
             return null

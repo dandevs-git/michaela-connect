@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAPI } from './contexts/APIContext'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect } from 'react'
 
 import MainLayout from './layouts/MainLayout'
 import AuthLayout from './layouts/AuthLayout'
@@ -36,18 +36,18 @@ import IpAddressDirectory from './pages/directory/IpAddressDirectory'
 import AnydeskDirectory from './pages/directory/AnydeskDirectory'
 import PrinterDirectory from './pages/directory/PrinterDirectory'
 import InternetDirectory from './pages/directory/InternetDirectory'
+import NewTickets from './pages/servicedesk/mytickets/NewTickets'
 
-const PrivateRoute = ({ element, allowedRoles }) => {
-    const { authenticatedUserDetails } = useAPI()
-
-    const isAuthenticated = useMemo(() => !!authenticatedUserDetails, [authenticatedUserDetails])
-    const userRole = authenticatedUserDetails?.role
-
-    if (!isAuthenticated) {
+const PrivateRoute = ({ element, allowedRoles, isAuth, authenticatedUserDetails }) => {
+    if (!isAuth) {
         return <Navigate to="/login" replace />
     }
 
-    if (allowedRoles && !allowedRoles.includes(userRole)) {
+    if (
+        authenticatedUserDetails &&
+        allowedRoles &&
+        !allowedRoles.includes(authenticatedUserDetails?.role)
+    ) {
         return <Navigate to="/403" replace />
     }
 
@@ -56,66 +56,69 @@ const PrivateRoute = ({ element, allowedRoles }) => {
 
 function App() {
     const { authenticatedUserDetails, getAuthenticatedUserDetails } = useAPI()
-    const [auth, setAuth] = useState(!!authenticatedUserDetails)
+    const isAuth = !!localStorage.getItem('token')
 
     useEffect(() => {
-        getAuthenticatedUserDetails()
-    }, [])
-
-    useEffect(() => {
-        setAuth(!!authenticatedUserDetails)
-    }, [authenticatedUserDetails])
+        if (isAuth && !authenticatedUserDetails) {
+            getAuthenticatedUserDetails()
+        }
+    }, [isAuth, authenticatedUserDetails, getAuthenticatedUserDetails])
 
     return (
         <Routes>
-            <Route path="/" element={<Navigate to={auth ? '/dashboard' : '/login'} />} />
+            <Route path="/" element={<Navigate to={isAuth ? '/dashboard' : '/login'} />} />
 
             <Route element={<AuthLayout />}>
                 <Route path="/login" element={<Login />} />
             </Route>
 
-            <Route element={<PrivateRoute element={<MainLayout />} />}>
-                <Route path="/dashboard">
-                    <Route index element={<Navigate to="overview" replace />} />
-                    <Route path=":section" element={<DashboardLayout />} />
-                </Route>
+            <Route
+                element={
+                    <PrivateRoute
+                        element={<MainLayout />}
+                        allowedRoles={['admin', 'manager', 'head', 'staff']}
+                        isAuth={isAuth}
+                        authenticatedUserDetails={authenticatedUserDetails}
+                    />
+                }
+            >
+                <Route path="/dashboard" element={<DashboardLayout />} />
 
                 <Route path="/servicedesk" element={<ServiceDeskLayout />}>
-                    <Route index element={<Navigate to="/servicedesk/overview" />} />
-                    <Route path="/servicedesk/overview" element={<MyOverview />} />
-                    <Route path="/servicedesk/tickets" element={<ServiceDeskTicketLayout />}>
-                        <Route index element={<Navigate to="/servicedesk/tickets/all" />} />
-                        <Route path="/servicedesk/tickets/all" element={<AllTickets />} />
-                        <Route path="/servicedesk/tickets/pending" element={<PendingTickets />} />
-                        <Route path="/servicedesk/tickets/closed" element={<ClosedTickets />} />
-                        <Route path="/servicedesk/tickets/open" element={<OpenTickets />} />
-                        <Route
-                            path="/servicedesk/tickets/inprogress"
-                            element={<InProgressTickets />}
-                        />
-                        <Route path="/servicedesk/tickets/resolved" element={<ResolvedTickets />} />
-                        <Route path="/servicedesk/tickets/failed" element={<FailedTickets />} />
-                        <Route path="/servicedesk/tickets/rejected" element={<RejectedTickets />} />
-                        {/* <Route path="/servicedesk/tickets/completed" element={<CompletedTickets />} /> */}
+                    <Route index element={<Navigate to="overview" replace />} />
+                    <Route path="overview" element={<MyOverview />} />
+                    <Route path="reports" element={<MyReports />} />
+
+                    <Route path="tickets" element={<ServiceDeskTicketLayout />}>
+                        <Route index element={<Navigate to="all" replace />} />
+                        <Route path="all" element={<AllTickets />} />
+                        <Route path="pending" element={<PendingTickets />} />
+                        <Route path="closed" element={<ClosedTickets />} />
+                        <Route path="new" element={<NewTickets />} />
+                        <Route path="open" element={<OpenTickets />} />
+                        <Route path="inprogress" element={<InProgressTickets />} />
+                        <Route path="resolved" element={<ResolvedTickets />} />
+                        <Route path="failed" element={<FailedTickets />} />
+                        <Route path="rejected" element={<RejectedTickets />} />
                     </Route>
-                    {/* <Route path="/servicedesk/tickets/*" element={<ServiceDeskTicketLayout />} /> */}
-                    <Route path="/servicedesk/reports" element={<MyReports />} />
                 </Route>
+
                 <Route path="/employees" element={<EmployeeLayout />}>
-                    <Route index element={<Navigate to="/employees/all" />} />
-                    <Route path="/employees/all" element={<AllEmployees />} />
-                    <Route path="/employees/departments" element={<Department />} />
-                    <Route path="/employees/roles" element={<RolesPermissions />} />
-                    <Route path="/employees/logs" element={<ActivityLog />} />
+                    <Route index element={<Navigate to="all" replace />} />
+                    <Route path="all" element={<AllEmployees />} />
+                    <Route path="departments" element={<Department />} />
+                    <Route path="roles" element={<RolesPermissions />} />
+                    <Route path="logs" element={<ActivityLog />} />
                 </Route>
 
                 <Route path="/directory" element={<DirectoryLayout />}>
-                    <Route index element={<Navigate to="/directory/departments" />} />
-                    <Route path="/directory/telephones" element={<TelephoneDirectory />} />
-                    <Route path="/directory/internet" element={<InternetDirectory />} />
-                    <Route path="/directory/ipaddress" element={<IpAddressDirectory />} />
-                    <Route path="/directory/anydesks" element={<AnydeskDirectory />} />
-                    <Route path="/directory/printers" element={<PrinterDirectory />} />
+                    <Route index element={<Navigate to="departments" replace />} />
+                    <Route path="departments" element={<Department />} />
+                    <Route path="telephones" element={<TelephoneDirectory />} />
+                    <Route path="internet" element={<InternetDirectory />} />
+                    <Route path="ipaddress" element={<IpAddressDirectory />} />
+                    <Route path="anydesks" element={<AnydeskDirectory />} />
+                    <Route path="printers" element={<PrinterDirectory />} />
                 </Route>
             </Route>
 

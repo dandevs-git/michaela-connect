@@ -29,6 +29,11 @@ function OpenTickets() {
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
         {
+            header: 'Department',
+            accessorKey: 'department_id',
+            cell: ({ row }) => row.original.requester.department?.name || '-'
+        },
+        {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (

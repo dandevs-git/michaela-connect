@@ -14,7 +14,7 @@ function AnydeskDirectory() {
     }, [])
 
     const handleShowModal = (telephone) => {
-        console.log(telephone)
+        // console.log(telephone)
         setSelectedAnydesk(telephone)
     }
 

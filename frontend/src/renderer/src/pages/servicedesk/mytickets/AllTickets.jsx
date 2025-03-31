@@ -11,11 +11,11 @@ function AllTickets() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets?requester=me&assigned_to=me', setTickets, setLoading)
+        fetchData('/tickets', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {
-        console.log(tickets)
+        // console.log(tickets)
         setSelectedTickets(tickets)
     }
 
@@ -30,9 +30,9 @@ function AllTickets() {
         { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
         {
-            header: 'Assigned To',
-            accessorKey: 'assigned_to',
-            cell: ({ row }) => row.original.assigned_to?.name || '-'
+            header: 'Department',
+            accessorKey: 'department_id',
+            cell: ({ row }) => row.original.requester.department?.name || '-'
         },
         {
             header: 'Actions',

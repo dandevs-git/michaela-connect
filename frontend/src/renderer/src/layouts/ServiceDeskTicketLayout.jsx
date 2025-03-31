@@ -2,35 +2,40 @@ import { FaPlus } from 'react-icons/fa'
 import { NavLink, Outlet } from 'react-router-dom'
 import CreateTicket from '../components/CreateTicket'
 import { useAPI } from '../contexts/APIContext'
-import { useEffect, useState } from 'react'
 
 const tabs = [
-    { tab: 'All Tickets', link: '/servicedesk/tickets/all', role: ['admin', 'manager', 'head'] },
     {
-        tab: 'Pending',
-        link: '/servicedesk/tickets/pending',
-        role: ['admin', 'manager', 'staff', 'head']
+        tab: 'All Tickets',
+        link: '/servicedesk/tickets/all',
+        roles: ['admin', 'staff', 'head', 'manager']
     },
-    { tab: 'New', link: '/servicedesk/tickets/new', role: ['admin', 'manager', 'staff'] },
-    { tab: 'Open', link: '/servicedesk/tickets/open' },
-    { tab: 'In Progress', link: '/servicedesk/tickets/inprogress' },
-    { tab: 'Resolved', link: '/servicedesk/tickets/resolved' },
-    { tab: 'Closed', link: '/servicedesk/tickets/closed' },
-    { tab: 'Failed', link: '/servicedesk/tickets/failed' },
-    { tab: 'Reject', link: '/servicedesk/tickets/rejected', role: ['admin'] }
+    { tab: 'Pending', link: '/servicedesk/tickets/pending', roles: ['admin', 'head'] },
+    { tab: 'New', link: '/servicedesk/tickets/new', roles: ['admin', 'head'] },
+    { tab: 'Open', link: '/servicedesk/tickets/open', roles: ['admin', 'head', 'staff'] },
+    {
+        tab: 'In Progress',
+        link: '/servicedesk/tickets/inprogress',
+        roles: ['admin', 'staff', 'head']
+    },
+    {
+        tab: 'Resolved',
+        link: '/servicedesk/tickets/resolved',
+        roles: ['admin', 'staff', 'head', 'manager']
+    },
+    {
+        tab: 'Closed',
+        link: '/servicedesk/tickets/closed',
+        roles: ['admin', 'staff', 'head', 'manager']
+    },
+    { tab: 'Failed', link: '/servicedesk/tickets/failed', roles: ['admin', 'manager', 'staff'] },
+    { tab: 'Rejected', link: '/servicedesk/tickets/rejected', roles: ['admin', 'manager'] }
 ]
 
 function ServiceDeskTicketLayout() {
-    const { fetchData } = useAPI()
-    const [userRole, setUserRole] = useState([])
+    const { authenticatedUserDetails } = useAPI()
+    const userRole = authenticatedUserDetails?.role
 
-    useEffect(() => {
-        fetchData('/role', setUserRole)
-    }, [])
-
-    const filteredTabs = tabs.filter(
-        (tab) => !tab.role || tab.role.some((r) => userRole?.includes(r))
-    )
+    const visibleTabs = tabs.filter((tab) => !tab.roles || tab.roles.includes(userRole))
 
     return (
         <>
@@ -41,7 +46,7 @@ function ServiceDeskTicketLayout() {
 
                 <div className="card-body">
                     <div className="p-3">
-                        <nav className="navbar navbar-expand-lg mb-4 border rounded-pill shadow ">
+                        <nav className="navbar navbar-expand-lg mb-4 border rounded-pill shadow">
                             <div className="px-2">
                                 <button
                                     className="btn btn-primary text-nowrap mx-2 border-end rounded-start-pill"
@@ -66,7 +71,7 @@ function ServiceDeskTicketLayout() {
                                 </button>
                                 <div className="collapse navbar-collapse" id="ticketTabs">
                                     <ul className="nav nav-pills d-flex w-100">
-                                        {filteredTabs.map((tab, index) => (
+                                        {visibleTabs.map((tab, index) => (
                                             <li
                                                 className="nav-item flex-grow-1 text-center"
                                                 key={index}
@@ -86,7 +91,9 @@ function ServiceDeskTicketLayout() {
                             </div>
                         </nav>
 
-                        <Outlet />
+                        <div className="bg-light-subtle border p-4 rounded-4 shadow m-0 flex-grow-1">
+                            <Outlet />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,77 +104,3 @@ function ServiceDeskTicketLayout() {
 }
 
 export default ServiceDeskTicketLayout
-
-// import { NavLink, useLocation } from 'react-router-dom';
-// import TicketsTable from '../components/TicketsTable';
-// import CreateTicket from '../components/CreateTicket';
-
-// const tabs = [
-//     { tab: 'All Tickets', link: '/servicedesk/tickets/all', status: '' },
-//     { tab: 'Pending', link: '/servicedesk/tickets/pending', status: 'pending' },
-//     { tab: 'New', link: '/servicedesk/tickets/new', status: 'new' },
-//     { tab: 'Open', link: '/servicedesk/tickets/open', status: 'open' },
-//     { tab: 'In Progress', link: '/servicedesk/tickets/inprogress', status: 'in_progress' },
-//     { tab: 'Resolved', link: '/servicedesk/tickets/resolved', status: 'resolved' },
-//     { tab: 'Closed', link: '/servicedesk/tickets/closed', status: 'closed' },
-//     { tab: 'Failed', link: '/servicedesk/tickets/failed', status: 'failed' },
-//     { tab: 'Rejected', link: '/servicedesk/tickets/rejected', status: 'rejected' }
-// ];
-
-// function ServiceDeskTicketLayout() {
-//     const location = useLocation()
-//     const currentTab = tabs.find((tab) => location.pathname.includes(tab.link)) || tabs[0]
-//     const endpoint = currentTab.status ? `/tickets?status=${currentTab.status}` : '/tickets'
-
-//     return (
-//         <>
-//             <div className="card shadow w-100">
-//                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-//                     My Tickets
-//                 </div>
-
-//                 <div className="card-body">
-//                     <div className="p-3">
-//                         <nav className="navbar navbar-expand-lg border rounded-pill mb-4 shadow">
-//                             <div className="container-fluid py-1 px-3">
-//                                 <button
-//                                     className="navbar-toggler"
-//                                     type="button"
-//                                     data-bs-toggle="collapse"
-//                                     data-bs-target="#ticketTabs"
-//                                     aria-controls="ticketTabs"
-//                                     aria-expanded="false"
-//                                     aria-label="Toggle navigation"
-//                                 >
-//                                     <span className="navbar-toggler-icon"></span>
-//                                 </button>
-//                                 <div className="collapse navbar-collapse" id="ticketTabs">
-//                                     <ul className="nav nav-pills d-flex w-100">
-//                                         {tabs.map((tab, index) => (
-//                                             <li className="nav-item flex-grow-1 text-center" key={index}>
-//                                                 <NavLink
-//                                                     className={({ isActive }) =>
-//                                                         `nav-link rounded-pill ${isActive ? 'active' : 'link-body-emphasis bg-light-subtle'}`
-//                                                     }
-//                                                     to={tab.link}
-//                                                 >
-//                                                     <span className="mx-2">{tab.tab}</span>
-//                                                 </NavLink>
-//                                             </li>
-//                                         ))}
-//                                     </ul>
-//                                 </div>
-//                             </div>
-//                         </nav>
-
-//                         <TicketsTable endpoint={endpoint} title={currentTab.tab} />
-//                     </div>
-//                 </div>
-//             </div>
-
-//             <CreateTicket />
-//         </>
-//     );
-// }
-
-// export default ServiceDeskTicketLayout;

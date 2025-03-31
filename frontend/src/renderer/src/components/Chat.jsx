@@ -4,7 +4,7 @@ function Chat() {
     const [message, setMessage] = useState('')
 
     const sendMessage = () => {
-        console.log('Hello')
+        // console.log('Hello')
     }
 
     return (
@@ -28,7 +28,7 @@ function Chat() {
             >
                 <div className="card rounded-4">
                     <div className="d-flex card-header align-items-center bg-primary text-white py-2">
-                        <span className='fs-5'>IT DEPARTMENT</span>
+                        <span className="fs-5">IT DEPARTMENT</span>
                         <i
                             className="text-success bi bi-circle-fill ms-2"
                             style={{ fontSize: '0.5rem' }}
