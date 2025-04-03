@@ -22,6 +22,11 @@ Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->na
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::get('/tickets/status', [TicketController::class, 'ticketStatusData']);
+    Route::get('/tickets/trends', [TicketController::class, 'ticketVolumeTrends']);
+    Route::get('/tickets/departments', [TicketController::class, 'departmentResolutionTime']);
+
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/change-password', [PasswordController::class, 'changePassword'])->name('password.change');
@@ -43,6 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/approve', [TicketController::class, 'approve'])->name('tickets.approve');
         Route::post('/reject', [TicketController::class, 'reject'])->name('tickets.reject');
         Route::post('/assign', [TicketController::class, 'assign'])->name('tickets.assign');
+        Route::post('/start', [TicketController::class, 'startTask'])->name('tickets.start');
         Route::post('/status', [TicketController::class, 'updateStatus'])->name('tickets.status');
         Route::post('/verify', [TicketController::class, 'verifyResolution'])->name('tickets.verify');
         Route::post('/close', [TicketController::class, 'close'])->name('tickets.close');

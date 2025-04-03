@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAPI } from '../contexts/APIContext'
+import { Modal, Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
 
 function CreateTicket() {
     const { addTicket, fetchData } = useAPI()
@@ -10,7 +11,7 @@ function CreateTicket() {
     const [ticketData, setTicketData] = useState({
         title: '',
         description: '',
-        priority_id: 0,
+        priority_id: '',
         department_id: ''
     })
 
@@ -36,8 +37,8 @@ function CreateTicket() {
         try {
             const response = await addTicket(ticketData)
 
-            if (response?.success) {
-                setMessage('Ticket created successfully.')
+            if (response?.ticket?.id) {
+                setMessage('✅ Ticket created successfully.')
 
                 setTicketData({
                     title: '',
@@ -46,22 +47,36 @@ function CreateTicket() {
                     department_id: ''
                 })
 
+                // Hide Modal
                 const modalElement = document.getElementById('addTicketModal')
-                const modalInstance = bootstrap.Modal.getInstance(modalElement)
+                const modalInstance = Modal.getInstance(modalElement)
                 modalInstance?.hide()
+
+                // Refresh Ticket List
+                await fetchData('/tickets')
+
+                // Show Toast
+                const toastElement = document.getElementById('liveToast')
+                if (toastElement) {
+                    const toastInstance = new Toast(toastElement)
+                    toastInstance.show()
+                }
             } else {
-                setMessage(response?.message || 'Failed to create ticket.')
+                setMessage(response?.message || '❌ Failed to create ticket. Please try again.')
             }
         } catch (error) {
-            setMessage(error?.message || 'An error occurred. Please try again.')
+            setMessage(error?.message || '❌ An error occurred. Please try again.')
         } finally {
             setLoadingBtn(false)
         }
     }
 
     useEffect(() => {
-        fetchData('/departments', setDepartments)
-        fetchData('/priorities', setPriorities)
+        const fetchDropdownData = async () => {
+            await fetchData('/departments', setDepartments)
+            await fetchData('/priorities', setPriorities)
+        }
+        fetchDropdownData()
     }, [])
 
     useEffect(() => {
@@ -94,7 +109,7 @@ function CreateTicket() {
     return (
         <>
             <div
-                className="modal fade static"
+                className="modal fade"
                 id="addTicketModal"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
@@ -103,7 +118,9 @@ function CreateTicket() {
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Create New Ticket</h5>
+                            <h5 className="modal-title text-uppercase fw-semibold">
+                                Create New Ticket
+                            </h5>
                             <button
                                 type="button"
                                 className="btn-close"
@@ -117,11 +134,7 @@ function CreateTicket() {
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {message && (
-                                    <div className="alert alert-danger text-center py-1">
-                                        {message}
-                                    </div>
-                                )}
+                                {message && <div className="alert text-center py-1">{message}</div>}
 
                                 <div className="col-md-12">
                                     <label htmlFor="ticketTitle" className="form-label">
@@ -201,7 +214,7 @@ function CreateTicket() {
                                         className="form-control"
                                         id="ticketDescription"
                                         name="description"
-                                        rows="3"
+                                        rows="7"
                                         value={ticketData.description}
                                         onChange={handleInputChange}
                                         required
@@ -214,7 +227,7 @@ function CreateTicket() {
                                 <div className="modal-footer">
                                     <button
                                         type="submit"
-                                        className="btn btn-success text-light"
+                                        className="btn btn-primary text-light"
                                         disabled={loadingBtn}
                                     >
                                         {loadingBtn ? (
@@ -235,7 +248,54 @@ function CreateTicket() {
                     </div>
                 </div>
             </div>
+
+            <div className="toast-container position-fixed top-50 start-50 translate-middle p-3">
+                <div
+                    id="liveToast"
+                    className="toast align-items-center shadow-lg border-1 fw-semibold rounded-3"
+                    role="alert"
+                    aria-live="assertive"
+                    aria-atomic="true"
+                >
+                    <div className="toast-header rounded-top-3">
+                        <strong className="me-auto">Notification</strong>
+                        {/* <small>11 mins ago</small> */}
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="toast"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div className="toast-body bg-light text-center w-100 p-3 rounded-bottom-3 fs-3 text-uppercase">
+                        Successfully created the ticket!
+                    </div>
+                </div>
+            </div>
+
+            {/* <div className="toast-container position-fixed bottom-0 end-0 p-3">
+                <div
+                    id="liveToast"
+                    className="toast align-items-center text-bg-primary border-0"
+                    role="alert"
+                    aria-live="assertive"
+                    aria-atomic="true"
+                >
+                    <div className="d-flex">
+                        <div className="toast-body">
+                            {message || 'Successfully created the ticket!'}
+                        </div>
+                        <button
+                            type="button"
+                            className="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                </div>
+            </div> */}
         </>
     )
 }
+
 export default CreateTicket

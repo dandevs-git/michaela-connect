@@ -82,7 +82,10 @@ function App() {
                     />
                 }
             >
-                <Route path="/dashboard" element={<DashboardLayout />} />
+                <Route path="/dashboard">
+                    <Route index element={<Navigate to="overview" replace />} />
+                    <Route path=":section" element={<DashboardLayout />} />
+                </Route>
 
                 <Route path="/servicedesk" element={<ServiceDeskLayout />}>
                     <Route index element={<Navigate to="overview" replace />} />

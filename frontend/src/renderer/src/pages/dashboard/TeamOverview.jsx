@@ -1,90 +1,104 @@
+import { useEffect, useState } from 'react'
 import CustomBarChart from '../../components/charts/CustomBarChart'
 import CustomLineChart from '../../components/charts/CustomLineChart'
 import CustomPieChart from '../../components/charts/CustomPieChart'
+import { useAPI } from '../../contexts/APIContext'
 
 function TeamOverview() {
-    const ticketStatusData = [
-        { name: 'Resolved', value: 123 },
-        { name: 'Open', value: 300 },
-        { name: 'In Progress', value: 300 },
-        { name: 'Failed', value: 200 }
-    ]
+    // const ticketStatusData = [
+    //     { name: 'Resolved', value: 123 },
+    //     { name: 'Open', value: 300 },
+    //     { name: 'In Progress', value: 300 },
+    //     { name: 'Failed', value: 200 }
+    // ]
 
-    const ticketVolumeTrends = [
-        {
-            name: 'January',
-            Created: 5375,
-            Resolved: 5443,
-            Failed: 1234
-        },
-        {
-            name: 'February',
-            Created: 3577,
-            Resolved: 5643,
-            Failed: 2573
-        },
-        {
-            name: 'March',
-            Created: 4854,
-            Resolved: 2514,
-            Failed: 3625
-        },
-        {
-            name: 'April',
-            Created: 5274,
-            Resolved: 1885,
-            Failed: 1747
-        },
-        {
-            name: 'May',
-            Created: 2838,
-            Resolved: 2738,
-            Failed: 3747
-        }
-    ]
+    // const ticketVolumeTrends = [
+    //     {
+    //         name: 'January',
+    //         Created: 5375,
+    //         Resolved: 5443,
+    //         Failed: 1234
+    //     },
+    //     {
+    //         name: 'February',
+    //         Created: 3577,
+    //         Resolved: 5643,
+    //         Failed: 2573
+    //     },
+    //     {
+    //         name: 'March',
+    //         Created: 4854,
+    //         Resolved: 2514,
+    //         Failed: 3625
+    //     },
+    //     {
+    //         name: 'April',
+    //         Created: 5274,
+    //         Resolved: 1885,
+    //         Failed: 1747
+    //     },
+    //     {
+    //         name: 'May',
+    //         Created: 2838,
+    //         Resolved: 2738,
+    //         Failed: 3747
+    //     }
+    // ]
 
-    const ticketsByDepartment = [
-        {
-            name: 'Accounting',
-            tickets: 4000
-        },
-        {
-            name: 'Admin',
-            tickets: 3000
-        },
-        {
-            name: 'Sales',
-            tickets: 2000
-        },
-        {
-            name: 'Warehouse',
-            tickets: 2780
-        },
-        {
-            name: 'HRIS',
-            tickets: 1890
-        },
-        {
-            name: 'Payroll',
-            tickets: 2390
-        },
-        {
-            name: 'Marketing',
-            tickets: 3490
-        },
-        {
-            name: 'Electronic Data',
-            tickets: 3490
-        },
-        {
-            name: 'Purchasing',
-            tickets: 3490
-        },
-        {
-            name: 'MCares',
-            tickets: 3490
-        }
-    ]
+    // const ticketsByDepartment = [
+    //     {
+    //         name: 'Accounting',
+    //         tickets: 4000
+    //     },
+    //     {
+    //         name: 'Admin',
+    //         tickets: 3000
+    //     },
+    //     {
+    //         name: 'Sales',
+    //         tickets: 2000
+    //     },
+    //     {
+    //         name: 'Warehouse',
+    //         tickets: 2780
+    //     },
+    //     {
+    //         name: 'HRIS',
+    //         tickets: 1890
+    //     },
+    //     {
+    //         name: 'Payroll',
+    //         tickets: 2390
+    //     },
+    //     {
+    //         name: 'Marketing',
+    //         tickets: 3490
+    //     },
+    //     {
+    //         name: 'Electronic Data',
+    //         tickets: 3490
+    //     },
+    //     {
+    //         name: 'Purchasing',
+    //         tickets: 3490
+    //     },
+    //     {
+    //         name: 'MCares',
+    //         tickets: 3490
+    //     }
+    // ]
+
+    const { fetchData } = useAPI()
+    const [ticketStatusData, setTicketStatusData] = useState([])
+    const [ticketVolumeTrends, setTicketVolumeTrends] = useState([])
+    const [ticketsByDepartment, setTicketsByDepartment] = useState([])
+
+    useEffect(() => {
+        fetchData('/tickets/status', setTicketStatusData)
+        fetchData('/tickets/trends', setTicketVolumeTrends)
+        fetchData('/tickets/departments', setTicketsByDepartment)
+    }, [])
+
     return (
         <>
             <div className="col-xl-8 m-0 p-4">

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->foreignId('priority_id')->constrained('priorities')->onDelete('cascade');
-            $table->enum('status', ['pending', 'open', 'rejected', 'in_progress', 'resolved', 'failed', 'closed', 'reopened'])->default('pending');
+            $table->enum('status', ['pending', 'new', 'open', 'rejected', 'in_progress', 'resolved', 'failed', 'closed', 'reopened'])->default('pending');
 
             $table->foreignId('requester_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');

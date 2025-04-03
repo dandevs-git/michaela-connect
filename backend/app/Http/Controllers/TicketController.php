@@ -174,7 +174,7 @@ class TicketController extends Controller
     public function approve($id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket->update(['status' => 'open']);
+        $ticket->update(['status' => 'new']);
 
         $this->logActivity("Head Department approved Ticket #{$ticket->id}");
 
@@ -201,7 +201,7 @@ class TicketController extends Controller
         }
 
         $ticket->update([
-            'status' => 'in_progress',
+            'status' => 'open',
             'assigned_to' => $request->assigned_to,
         ]);
 
@@ -209,6 +209,27 @@ class TicketController extends Controller
 
         return response()->json(['message' => 'Ticket assigned successfully']);
     }
+
+    public function startTask($id)
+    {
+        $user = Auth::user();
+        $ticket = Ticket::findOrFail($id);
+
+        if ($ticket->assigned_to !== $user->id) {
+            return response()->json(['message' => 'Unauthorized. Only the assigned user can start working on this ticket.'], 403);
+        }
+
+        if (!in_array($ticket->status, ['open', 'assigned'])) {
+            return response()->json(['message' => 'Ticket must be open or assigned to start working on it.'], 422);
+        }
+
+        $ticket->update(['status' => 'in_progress']);
+
+        $this->logActivity("User {$user->name} started working on Ticket #{$ticket->id}");
+
+        return response()->json(['message' => 'Ticket status updated to In Progress', 'ticket' => $ticket]);
+    }
+
 
     public function updateStatus(Request $request, $id)
     {
@@ -348,6 +369,49 @@ class TicketController extends Controller
 
         return response()->json(['message' => 'Comment permanently deleted']);
     }
+
+    public function ticketStatusData()
+    {
+        $data = [
+            ['name' => 'Resolved', 'value' => Ticket::where('status', 'resolved')->count()],
+            ['name' => 'Open', 'value' => Ticket::where('status', 'open')->count()],
+            ['name' => 'In Progress', 'value' => Ticket::where('status', 'in_progress')->count()],
+            ['name' => 'Failed', 'value' => Ticket::where('status', 'failed')->count()],
+        ];
+        return response()->json($data);
+    }
+
+    public function ticketVolumeTrends()
+    {
+        $trends = Ticket::selectRaw("DATE_FORMAT(created_at, '%M') as month, COUNT(*) as Created")
+            ->groupBy('month')
+            ->get();
+        return response()->json($trends);
+    }
+
+    public function departmentResolutionTime()
+    {
+        $departments = Ticket::with(['requester.department', 'assignedTo.department'])
+            ->whereNotNull('resolved_at')
+            ->get()
+            ->flatMap(function ($ticket) {
+                $resolutionTime = $ticket->created_at->diffInMinutes($ticket->resolved_at);
+                return [
+                    ['department' => $ticket->requester->department->name ?? null, 'resolution_time' => $resolutionTime],
+                    ['department' => $ticket->assignedTo->department->name ?? null, 'resolution_time' => $resolutionTime]
+                ];
+            })
+            ->filter(fn($item) => !is_null($item['department']))
+            ->groupBy('department')
+            ->map(function ($tickets, $department) {
+                $avgResolutionTime = collect($tickets)->avg('resolution_time');
+                return ['name' => $department, 'resolution_time' => round($avgResolutionTime, 2)];
+            })
+            ->values();
+        return response()->json($departments);
+    }
+
+
 
     private function logActivity($message)
     {

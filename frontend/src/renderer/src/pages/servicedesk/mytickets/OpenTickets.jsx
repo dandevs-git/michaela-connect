@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaUserCheck } from 'react-icons/fa'
+import { FaPlay, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 
@@ -38,15 +38,9 @@ function OpenTickets() {
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-success btn-sm position-relative">
-                        <FaUserCheck /> Assign
-                        <span className="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                            <span className="visually-hidden">New alerts</span>
-                        </span>
+                    <button className="btn text-light btn-warning btn-sm">
+                        <FaPlay /> Start Task
                     </button>
-                    {/* <button className="btn text-light btn-info btn-sm">
-                        <FaHandPaper /> Assign to me
-                    </button> */}
                 </div>
             )
         }
