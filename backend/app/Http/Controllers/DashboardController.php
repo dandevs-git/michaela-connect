@@ -14,25 +14,18 @@ class DashboardController extends Controller
         $currentDate = Carbon::now();
         $pastDate = Carbon::now()->subDays(30);
 
-        // Total tickets
         $totalTickets = Ticket::count();
 
-        // Resolved tickets count
         $resolvedTickets = Ticket::resolved()->count();
 
-        // SLA compliance
         $slaCompliance = $this->calculateSlaCompliance($currentDate, $pastDate);
 
-        // Average resolution time
         $avgResolutionTime = $this->calculateAverageResolutionTime($currentDate, $pastDate);
 
-        // Average response time
         $avgResponseTime = $this->calculateAverageResponseTime($currentDate, $pastDate);
 
-        // Pending approvals
         $pendingApprovals = Ticket::pending()->count();
 
-        // Ticket deltas for current and past month
         $totalTicketsDelta = $this->getDelta($totalTickets, Ticket::whereBetween('created_at', [$pastDate, $currentDate])->count());
         $resolvedTicketsDelta = $this->getDelta($resolvedTickets, Ticket::resolved()->whereBetween('updated_at', [$pastDate, $currentDate])->count());
         $slaComplianceDelta = $this->getDelta($slaCompliance, $this->calculateSlaCompliance($pastDate, $pastDate));
@@ -77,7 +70,6 @@ class DashboardController extends Controller
 
         foreach ($resolvedTickets as $ticket) {
             if ($ticket->resolved_at) {
-                // Assuming resolved_at exists and is formatted in the Ticket model
                 $totalResolutionTime += $ticket->resolved_at->diffInMinutes($ticket->created_at);
                 $ticketCount++;
             }
@@ -128,7 +120,7 @@ class DashboardController extends Controller
             SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as Failed
         ")
             ->groupBy('month')
-            ->orderByRaw("STR_TO_DATE(month, '%M')") // Ensure correct month order
+            ->orderByRaw("STR_TO_DATE(month, '%M')")
             ->get();
 
         return response()->json($trends);
