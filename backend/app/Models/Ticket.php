@@ -31,6 +31,7 @@ class Ticket extends Model
         'resolved_at' => 'datetime',
         'failed_at' => 'datetime',
         'completed_at' => 'datetime',
+        'update_at' => 'datetime',
         'response_deadline' => 'datetime',
         'resolution_deadline' => 'datetime',
         'sla_breached' => 'boolean',
@@ -88,6 +89,11 @@ class Ticket extends Model
         return $value ? Carbon::parse($value)->format('F j, Y') : null;
     }
 
+    public function getFormattedTime($value)
+    {
+        return $value ? Carbon::parse($value)->format('h:i A') : null;
+    }
+
     public function getResolvedAtAttribute($value)
     {
         return $this->getFormattedDate($value);
@@ -111,5 +117,20 @@ class Ticket extends Model
     public function getUpdatedAtAttribute($value)
     {
         return $this->getFormattedDate($value);
+    }
+
+    public function getResponseDeadlineAttribute($value)
+    {
+        return $value
+            ? $this->getFormattedDate($value) . ' : ' . $this->getFormattedTime($value)
+            : null;
+    }
+
+
+    public function getResolutionDeadlineAttribute($value)
+    {
+        return $value
+            ? $this->getFormattedDate($value) . ' : ' . $this->getFormattedTime($value)
+            : null;
     }
 }

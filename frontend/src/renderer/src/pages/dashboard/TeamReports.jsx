@@ -146,7 +146,11 @@ function TeamReports() {
                             </div>
                             <div className="d-flex flex-column card-body align-items-center justify-content-center">
                                 <p className="card-text display-3 m-0 fw-bold">
-                                    99<span className="fs-5">%</span>
+                                    5.0
+                                    <span className="fs-5">
+                                        /5.0
+                                        <i className="bi bi-star-fill text-warning"></i>
+                                    </span>
                                 </p>
                                 <span className="text-success fs-5 fw-bold">
                                     <i className="bi bi-arrow-up-short"></i>1%

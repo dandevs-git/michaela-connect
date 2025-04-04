@@ -370,49 +370,6 @@ class TicketController extends Controller
         return response()->json(['message' => 'Comment permanently deleted']);
     }
 
-    public function ticketStatusData()
-    {
-        $data = [
-            ['name' => 'Resolved', 'value' => Ticket::where('status', 'resolved')->count()],
-            ['name' => 'Open', 'value' => Ticket::where('status', 'open')->count()],
-            ['name' => 'In Progress', 'value' => Ticket::where('status', 'in_progress')->count()],
-            ['name' => 'Failed', 'value' => Ticket::where('status', 'failed')->count()],
-        ];
-        return response()->json($data);
-    }
-
-    public function ticketVolumeTrends()
-    {
-        $trends = Ticket::selectRaw("DATE_FORMAT(created_at, '%M') as month, COUNT(*) as Created")
-            ->groupBy('month')
-            ->get();
-        return response()->json($trends);
-    }
-
-    public function departmentResolutionTime()
-    {
-        $departments = Ticket::with(['requester.department', 'assignedTo.department'])
-            ->whereNotNull('resolved_at')
-            ->get()
-            ->flatMap(function ($ticket) {
-                $resolutionTime = $ticket->created_at->diffInMinutes($ticket->resolved_at);
-                return [
-                    ['department' => $ticket->requester->department->name ?? null, 'resolution_time' => $resolutionTime],
-                    ['department' => $ticket->assignedTo->department->name ?? null, 'resolution_time' => $resolutionTime]
-                ];
-            })
-            ->filter(fn($item) => !is_null($item['department']))
-            ->groupBy('department')
-            ->map(function ($tickets, $department) {
-                $avgResolutionTime = collect($tickets)->avg('resolution_time');
-                return ['name' => $department, 'resolution_time' => round($avgResolutionTime, 2)];
-            })
-            ->values();
-        return response()->json($departments);
-    }
-
-
-
     private function logActivity($message)
     {
         ActivityLog::create([

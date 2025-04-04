@@ -24,21 +24,6 @@ function ViewTicketDetails({ id, data }) {
         }
     }
 
-    const getPriority = (priorityId) => {
-        switch (priorityId) {
-            case 1:
-                return 'Low'
-            case 2:
-                return 'Medium'
-            case 3:
-                return 'High'
-            case 4:
-                return 'Critical'
-            default:
-                return 'Unknown'
-        }
-    }
-
     return (
         <>
             <div
@@ -71,53 +56,71 @@ function ViewTicketDetails({ id, data }) {
                                 <p className="text-muted">{data?.description}</p>
                             </div>
 
-                            <div className="row g-3">
+                            <div className="row g-2">
                                 <div className="col-md-6">
-                                    <div className="card shadow p-3">
+                                    <div className="card shadow-sm p-3">
                                         <h6 className="fw-bold">Status:</h6>
-                                        <span
-                                            className={`badge bg-${getStatusColor(data?.status)}`}
-                                        >
+                                        <span className="bg-warning rounded-pill text-light text-center fw-semibold">
                                             {data?.status.replace('_', ' ').toUpperCase()}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="col-md-6">
-                                    <div className="card shadow p-3">
+                                    <div className="card shadow-sm p-3">
                                         <h6 className="fw-bold">Priority:</h6>
-                                        <span className="badge bg-danger">
-                                            {getPriority(data?.priority_id)}
+                                        <span className="bg-danger rounded-pill text-light text-center fw-semibold">
+                                            {data?.priority.name.replace('_', ' ').toUpperCase()}
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="row g-3 mt-2">
+                            <div className="row g-2 mt-2">
                                 <div className="col-md-6">
-                                    <div className="card shadow p-3">
-                                        <h6 className="fw-bold">Assigned To:</h6>
-                                        {data?.assigned_to ? (
-                                            <span className="text-success fw-bold">
-                                                {data?.assigned_to}
+                                    <div className="card shadow-sm p-3 h-100">
+                                        <h5 className="fw-bold">Requester:</h5>
+                                        <div>
+                                            <span className="me-2">Name:</span>
+                                            <span className="text-primary fw-bold">
+                                                {data?.requester?.name}
                                             </span>
+                                        </div>
+                                        <div>
+                                            <span className="me-2">Department:</span>
+                                            <span className="text-primary fw-bold">
+                                                {data?.requester?.department?.name}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <div className="card shadow-sm p-3 h-100">
+                                        <h5 className="fw-bold">Assign To:</h5>
+                                        {data?.assigned_to ? (
+                                            <div>
+                                                <div>
+                                                    <span className="me-2">Name:</span>
+                                                    <span className="text-primary fw-bold">
+                                                        {data?.assignedTo}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <span className="me-2">Department:</span>
+                                                    <span className="text-primary fw-bold">
+                                                        {data?.requester?.department?.name}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         ) : (
                                             <span className="text-danger">Not Assigned</span>
                                         )}
                                     </div>
                                 </div>
-                                <div className="col-md-6">
-                                    <div className="card shadow p-3">
-                                        <h6 className="fw-bold">Requester:</h6>
-                                        <span className="text-primary fw-bold">
-                                            {data?.requester.name}
-                                        </span>
-                                    </div>
-                                </div>
                             </div>
 
-                            <div className="row g-3 mt-2">
+                            <div className="row g-2 mt-2">
                                 <div className="col-md-6">
-                                    <div className="card shadow p-3">
+                                    <div className="card shadow-sm p-3">
                                         <h6 className="fw-bold">Response Deadline:</h6>
                                         <span className="text-muted">
                                             {data?.response_deadline || 'N/A'}
@@ -125,7 +128,7 @@ function ViewTicketDetails({ id, data }) {
                                     </div>
                                 </div>
                                 <div className="col-md-6">
-                                    <div className="card shadow p-3">
+                                    <div className="card shadow-sm p-3">
                                         <h6 className="fw-bold">Resolution Deadline:</h6>
                                         <span className="text-muted">
                                             {data?.resolution_deadline || 'N/A'}
@@ -135,7 +138,7 @@ function ViewTicketDetails({ id, data }) {
                             </div>
 
                             <div className="mt-4">
-                                <div className="card shadow p-3 text-center">
+                                <div className="card shadow-sm p-3 text-center">
                                     <h6 className="fw-bold">SLA Compliance:</h6>
                                     {data?.sla_breached ? (
                                         <span className="py-1 rounded-pill text-light bg-danger">
@@ -150,7 +153,6 @@ function ViewTicketDetails({ id, data }) {
                             </div>
                         </div>
 
-                        {/* Footer */}
                         <div className="modal-footer d-flex justify-content-between">
                             <button
                                 type="button"

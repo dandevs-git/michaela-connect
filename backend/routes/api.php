@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AnydeskController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\InternetController;
 use App\Http\Controllers\IpAddressController;
@@ -21,6 +22,12 @@ Route::post('/forgot-password', [PasswordController::class, 'requestReset'])->na
 Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->name('password.reset');
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'getDashboardData']);
+    Route::get('/ticket-status-data', [DashboardController::class, 'ticketStatusData']);
+    Route::get('/ticket-volume-trends', [DashboardController::class, 'ticketVolumeTrends']);
+    Route::get('/department-resolution-time', [DashboardController::class, 'departmentResolutionTime']);
+
 
     Route::get('/tickets/status', [TicketController::class, 'ticketStatusData']);
     Route::get('/tickets/trends', [TicketController::class, 'ticketVolumeTrends']);

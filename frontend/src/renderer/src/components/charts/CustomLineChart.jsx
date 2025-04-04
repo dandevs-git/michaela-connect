@@ -11,6 +11,8 @@ import {
 import { COLORS } from '../../constants/config'
 
 function CustomLineChart({ data }) {
+    const lineKeys = data?.length > 0 ? Object.keys(data[0]).filter((key) => key !== 'month') : []
+
     return (
         <ResponsiveContainer width={'100%'} height={350}>
             <LineChart data={data}>
@@ -26,30 +28,17 @@ function CustomLineChart({ data }) {
                     }}
                 />
                 <Legend />
-                <Line
-                    type="monotone"
-                    dataKey="Created"
-                    stroke={COLORS[0]}
-                    strokeWidth={2}
-                    dot={{ r: 5, fill: COLORS[0] }}
-                    activeDot={{ r: 8 }}
-                />
-                <Line
-                    type="monotone"
-                    dataKey="Resolved"
-                    stroke={COLORS[1]}
-                    strokeWidth={2}
-                    dot={{ r: 5, fill: COLORS[1] }}
-                    activeDot={{ r: 8 }}
-                />
-                <Line
-                    type="monotone"
-                    dataKey="Failed"
-                    stroke={COLORS[3]}
-                    strokeWidth={2}
-                    dot={{ r: 5, fill: COLORS[3] }}
-                    activeDot={{ r: 8 }}
-                />
+                {lineKeys.map((key, index) => (
+                    <Line
+                        key={key}
+                        type="monotone"
+                        dataKey={key}
+                        stroke={COLORS[index % COLORS.length]}
+                        strokeWidth={2}
+                        dot={{ r: 5, fill: COLORS[index % COLORS.length] }}
+                        activeDot={{ r: 8 }}
+                    />
+                ))}
             </LineChart>
         </ResponsiveContainer>
     )

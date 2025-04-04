@@ -5,98 +5,17 @@ import CustomPieChart from '../../components/charts/CustomPieChart'
 import { useAPI } from '../../contexts/APIContext'
 
 function TeamOverview() {
-    // const ticketStatusData = [
-    //     { name: 'Resolved', value: 123 },
-    //     { name: 'Open', value: 300 },
-    //     { name: 'In Progress', value: 300 },
-    //     { name: 'Failed', value: 200 }
-    // ]
-
-    // const ticketVolumeTrends = [
-    //     {
-    //         name: 'January',
-    //         Created: 5375,
-    //         Resolved: 5443,
-    //         Failed: 1234
-    //     },
-    //     {
-    //         name: 'February',
-    //         Created: 3577,
-    //         Resolved: 5643,
-    //         Failed: 2573
-    //     },
-    //     {
-    //         name: 'March',
-    //         Created: 4854,
-    //         Resolved: 2514,
-    //         Failed: 3625
-    //     },
-    //     {
-    //         name: 'April',
-    //         Created: 5274,
-    //         Resolved: 1885,
-    //         Failed: 1747
-    //     },
-    //     {
-    //         name: 'May',
-    //         Created: 2838,
-    //         Resolved: 2738,
-    //         Failed: 3747
-    //     }
-    // ]
-
-    // const ticketsByDepartment = [
-    //     {
-    //         name: 'Accounting',
-    //         tickets: 4000
-    //     },
-    //     {
-    //         name: 'Admin',
-    //         tickets: 3000
-    //     },
-    //     {
-    //         name: 'Sales',
-    //         tickets: 2000
-    //     },
-    //     {
-    //         name: 'Warehouse',
-    //         tickets: 2780
-    //     },
-    //     {
-    //         name: 'HRIS',
-    //         tickets: 1890
-    //     },
-    //     {
-    //         name: 'Payroll',
-    //         tickets: 2390
-    //     },
-    //     {
-    //         name: 'Marketing',
-    //         tickets: 3490
-    //     },
-    //     {
-    //         name: 'Electronic Data',
-    //         tickets: 3490
-    //     },
-    //     {
-    //         name: 'Purchasing',
-    //         tickets: 3490
-    //     },
-    //     {
-    //         name: 'MCares',
-    //         tickets: 3490
-    //     }
-    // ]
-
     const { fetchData } = useAPI()
     const [ticketStatusData, setTicketStatusData] = useState([])
     const [ticketVolumeTrends, setTicketVolumeTrends] = useState([])
     const [ticketsByDepartment, setTicketsByDepartment] = useState([])
+    const [dashboardStats, setDashboardStats] = useState([])
 
     useEffect(() => {
-        fetchData('/tickets/status', setTicketStatusData)
-        fetchData('/tickets/trends', setTicketVolumeTrends)
-        fetchData('/tickets/departments', setTicketsByDepartment)
+        fetchData('/dashboard', setDashboardStats)
+        fetchData('/ticket-status-data', setTicketStatusData)
+        fetchData('/ticket-volume-trends', setTicketVolumeTrends)
+        fetchData('/department-resolution-time', setTicketsByDepartment)
     }, [])
 
     return (
@@ -114,9 +33,12 @@ function TeamOverview() {
                                     Total Tickets
                                 </div>
                                 <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                    <p className="card-text display-3 m-0 fw-bold">3</p>
+                                    <p className="card-text display-3 m-0 fw-bold">
+                                        {dashboardStats.totalTickets}
+                                    </p>
                                     <span className="text-success fs-5 fw-bold">
-                                        <i className="bi bi-arrow-up-short"></i>5
+                                        <i className="bi bi-arrow-up-short"></i>
+                                        {dashboardStats.totalTicketsDelta}
                                         <i className="bi bi-ticket-perforated ms-2"></i>
                                     </span>
                                     <span style={{ fontSize: '0.8rem' }} className="text-muted">
@@ -131,9 +53,12 @@ function TeamOverview() {
                                     Resolved Tickets
                                 </div>
                                 <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                    <p className="card-text display-3 m-0 fw-bold">10</p>
+                                    <p className="card-text display-3 m-0 fw-bold">
+                                        {dashboardStats.resolvedTickets}
+                                    </p>
                                     <span className="text-danger fs-5 fw-bold">
-                                        <i className="bi bi-arrow-down-short"></i>2
+                                        <i className="bi bi-arrow-down-short"></i>{' '}
+                                        {dashboardStats.resolvedTicketsDelta}
                                         <i className="bi bi-clipboard-check ms-2"></i>
                                     </span>
                                     <span style={{ fontSize: '0.8rem' }} className="text-muted">
@@ -247,7 +172,7 @@ function TeamOverview() {
                     <div className="d-flex card-body align-items-center justify-content-center">
                         <CustomBarChart
                             data={ticketsByDepartment}
-                            datakey={'tickets'}
+                            datakey={'resolution_time'}
                             display={'Avarage Resolution Time'}
                         />
                     </div>

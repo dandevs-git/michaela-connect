@@ -32,7 +32,7 @@ function CustomBarChart({ data, datakey, display }) {
                     fill={COLORS[0]}
                     barSize={50}
                     radius={[10, 10, 0, 0]}
-                    activeBar={<Rectangle fill={COLORS[3]} stroke="#000000" />}
+                    activeBar={<Rectangle fill={COLORS[1]} stroke="#000000" />}
                 />
             </BarChart>
         </ResponsiveContainer>
