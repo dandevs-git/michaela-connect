@@ -252,14 +252,14 @@ function CreateTicket() {
             <div className="toast-container position-fixed top-50 start-50 translate-middle p-3">
                 <div
                     id="liveToast"
-                    className="toast align-items-center shadow-lg border-1 fw-semibold rounded-3"
+                    className="toast align-items-center shadow-lg border-1 fw-semibold rounded-3 bg-light"
                     role="alert"
                     aria-live="assertive"
                     aria-atomic="true"
                 >
                     <div className="toast-header rounded-top-3">
                         <strong className="me-auto">Notification</strong>
-                        {/* <small>11 mins ago</small> */}
+                        <small>11 mins ago</small>
                         <button
                             type="button"
                             className="btn-close"
@@ -267,7 +267,7 @@ function CreateTicket() {
                             aria-label="Close"
                         ></button>
                     </div>
-                    <div className="toast-body bg-light text-center w-100 p-3 rounded-bottom-3 fs-3 text-uppercase">
+                    <div className="toast-body text-center w-100 p-3 rounded-bottom-3 fs-3 text-uppercase">
                         Successfully created the ticket!
                     </div>
                 </div>

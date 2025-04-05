@@ -18,6 +18,17 @@ class ActivityLogController extends Controller
         return response()->json($logs, 200);
     }
 
+    public function getTicketLogs(Request $request)
+    {
+        $category = $request->query('category', 'Ticket Management');
+
+        $logs = ActivityLog::with('user')
+            ->where('category', $category)
+            ->get();
+
+        return response()->json($logs, 200);
+    }
+
 
     /**
      * Show the form for creating a new resource.

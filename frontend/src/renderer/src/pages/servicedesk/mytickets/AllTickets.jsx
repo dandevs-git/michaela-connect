@@ -16,7 +16,6 @@ function AllTickets() {
     }, [])
 
     const handleShowModal = (tickets) => {
-        console.log(tickets)
         setSelectedTickets(tickets)
     }
 

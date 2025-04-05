@@ -11,12 +11,65 @@ function TeamOverview() {
     const [ticketsByDepartment, setTicketsByDepartment] = useState([])
     const [dashboardStats, setDashboardStats] = useState([])
 
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
-        fetchData('/dashboard', setDashboardStats)
-        fetchData('/ticket-status-data', setTicketStatusData)
-        fetchData('/ticket-volume-trends', setTicketVolumeTrends)
-        fetchData('/department-resolution-time', setTicketsByDepartment)
+        const fetchAllData = async () => {
+            setLoading(true)
+            try {
+                await Promise.all([
+                    fetchData('/dashboard', setDashboardStats),
+                    fetchData('/ticket-status-data', setTicketStatusData),
+                    fetchData('/ticket-volume-trends', setTicketVolumeTrends),
+                    fetchData('/department-resolution-time', setTicketsByDepartment)
+                ])
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchAllData()
     }, [])
+
+    const renderStatCard = (title, value, delta, iconClass, trend, unit = '') => (
+        <div className="col-xl-4 h-50 p-3">
+            <div className="card h-100 rounded-4 shadow text-center mb-3">
+                <div className="card-header text-uppercase fw-semibold">{title}</div>
+                <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                    {loading ? (
+                        <>
+                            <span className="placeholder-glow w-50">
+                                <span className="placeholder col-12 display-3"></span>
+                            </span>
+                            <span className="placeholder-glow w-75 mt-2">
+                                <span className="placeholder col-8 fs-5"></span>
+                            </span>
+                            <span className="placeholder col-6 mt-2"></span>
+                        </>
+                    ) : (
+                        <>
+                            <p className="card-text display-3 m-0 fw-bold">
+                                {value > 0 ? value : '-'}
+                                {unit && value > 0 ? <span className="fs-5">{unit}</span> : ''}
+                            </p>
+                            <span className={`fs-5 fw-bold text-${trend}`}>
+                                <i
+                                    className={`bi ${trend === 'success' ? 'bi-arrow-up-short' : 'bi-arrow-down-short'}`}
+                                ></i>
+                                {delta > 0 ? delta + (unit ? ` ${unit}` : '') : '-'}
+                                <i className={`bi ${iconClass} ms-2`}></i>
+                            </span>
+                            <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                vs previous 30 days
+                            </span>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    )
 
     return (
         <>
@@ -27,158 +80,115 @@ function TeamOverview() {
                         <div>Here’s an Overview of the latest activity.</div>
                     </div>
                     <div className="d-flex row card-body align-items-center justify-content-center m-0 px-3">
-                        <div className="col-xl-4 h-50 p-3">
-                            <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                <div className="card-header text-uppercase fw-semibold">
-                                    Total Tickets
-                                </div>
-                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                    <p className="card-text display-3 m-0 fw-bold">
-                                        {dashboardStats.totalTickets}
-                                    </p>
-                                    <span className="text-success fs-5 fw-bold">
-                                        <i className="bi bi-arrow-up-short"></i>
-                                        {dashboardStats.totalTicketsDelta}
-                                        <i className="bi bi-ticket-perforated ms-2"></i>
-                                    </span>
-                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                        vs previews 30 days
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-4 h-50 p-3">
-                            <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                <div className="card-header text-uppercase fw-semibold">
-                                    Resolved Tickets
-                                </div>
-                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                    <p className="card-text display-3 m-0 fw-bold">
-                                        {dashboardStats.resolvedTickets}
-                                    </p>
-                                    <span className="text-danger fs-5 fw-bold">
-                                        <i className="bi bi-arrow-down-short"></i>{' '}
-                                        {dashboardStats.resolvedTicketsDelta}
-                                        <i className="bi bi-clipboard-check ms-2"></i>
-                                    </span>
-                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                        vs previews 30 days
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-4 h-50 p-3">
-                            <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                <div className="card-header text-uppercase fw-semibold">
-                                    SLA Compliance
-                                </div>
-                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                    <p className="card-text display-3 m-0 fw-bold">
-                                        98<span className="fs-5">%</span>
-                                    </p>
-                                    <span className="text-success fs-5 fw-bold">
-                                        <i className="bi bi-arrow-up-short"></i>8%
-                                        <i className="bi bi-shield-check ms-2"></i>
-                                    </span>
-                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                        vs previews 30 days
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-4 h-50 p-3">
-                            <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                <div className="card-header text-uppercase fw-semibold">
-                                    Avg Resolution Time
-                                </div>
-                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                    <p className="card-text display-3 m-0 fw-bold">
-                                        30<span className="fs-5">mins</span>
-                                    </p>
-                                    <span className="text-danger fs-5 fw-bold">
-                                        <i className="bi bi-arrow-up-short"></i>10 mins
-                                        <i className="bi bi-lightning-fill ms-2"></i>
-                                    </span>
-                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                        vs previews 30 days
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-4 h-50 p-3">
-                            <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                <div className="card-header text-uppercase fw-semibold">
-                                    Avg Response Time
-                                </div>
-                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                    <p className="card-text display-3 m-0 fw-bold">
-                                        10<span className="fs-5">mins</span>
-                                    </p>
-                                    <span className="text-danger fs-5 fw-bold">
-                                        <i className="bi bi-arrow-up-short"></i>17 mins
-                                        <i className="bi bi-clock-history ms-2"></i>
-                                    </span>
-                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                        vs previews 30 days
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-4 h-50 p-3">
-                            <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                <div className="card-header text-uppercase fw-semibold">
-                                    Pending Approvals
-                                </div>
-                                <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                    <p className="card-text display-3 m-0 fw-bold">5</p>
-                                    <span className="text-success fs-5 fw-bold">
-                                        <i className="bi bi-arrow-down-short"></i>10
-                                        <i className="bi bi-hourglass-top ms-2"></i>
-                                    </span>
-                                    <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                        vs previews 30 days
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                        {renderStatCard(
+                            'Total Tickets',
+                            dashboardStats.totalTickets,
+                            dashboardStats.totalTicketsDelta,
+                            'bi-ticket-perforated',
+                            'success'
+                        )}
+                        {renderStatCard(
+                            'Resolved Tickets',
+                            dashboardStats.resolvedTickets,
+                            dashboardStats.resolvedTicketsDelta,
+                            'bi-clipboard-check',
+                            'danger'
+                        )}
+                        {renderStatCard(
+                            'SLA Compliance',
+                            dashboardStats.slaCompliance,
+                            dashboardStats.slaComplianceDelta,
+                            'bi-shield-check',
+                            'success',
+                            '%'
+                        )}
+                        {renderStatCard(
+                            'Avg Resolution Time',
+                            dashboardStats.avgResolutionTime,
+                            dashboardStats.avgResolutionTimeDelta,
+                            'bi-lightning-fill',
+                            'danger',
+                            'mins'
+                        )}
+                        {renderStatCard(
+                            'Avg Response Time',
+                            dashboardStats.avgResponseTime,
+                            dashboardStats.avgResponseTimeDelta,
+                            'bi-clock-history',
+                            'danger',
+                            'mins'
+                        )}
+                        {renderStatCard(
+                            'Pending Approvals',
+                            dashboardStats.pendingApprovals,
+                            dashboardStats.pendingApprovals,
+                            'bi-hourglass-top',
+                            'success'
+                        )}
                     </div>
                 </div>
             </div>
+
             <div className="col-xl-4 p-4">
                 <div className="card h-100 rounded-4 shadow text-center mb-3">
                     <div className="card-header text-uppercase fs-3 fw-semibold">
                         Ticket Status Data
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
-                        <CustomPieChart data={ticketStatusData} />
+                        {loading ? (
+                            <div className="spinner-grow" role="status"></div>
+                        ) : (
+                            <CustomPieChart data={ticketStatusData} />
+                        )}
                     </div>
                 </div>
             </div>
+
             <div className="col-xl-6 p-4">
                 <div className="card h-100 rounded-4 shadow text-center mb-3">
                     <div className="card-header text-uppercase fs-3 fw-semibold">
                         Ticket Trends Over Time
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
-                        <CustomLineChart data={ticketVolumeTrends} />
+                        {loading ? (
+                            <span className="placeholder-glow w-100">
+                                <div
+                                    className="placeholder col-12"
+                                    style={{ height: '300px' }}
+                                ></div>
+                            </span>
+                        ) : (
+                            <CustomLineChart data={ticketVolumeTrends} />
+                        )}
                     </div>
                 </div>
             </div>
+
             <div className="col-xl-6 p-4">
                 <div className="card h-100 rounded-4 shadow text-center mb-3">
                     <div className="card-header text-uppercase fs-3 fw-semibold">
                         Department-Wise Resolution Time
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
-                        <CustomBarChart
-                            data={ticketsByDepartment}
-                            datakey={'resolution_time'}
-                            display={'Avarage Resolution Time'}
-                        />
+                        {loading ? (
+                            <span className="placeholder-glow w-100">
+                                <div
+                                    className="placeholder col-12"
+                                    style={{ height: '300px' }}
+                                ></div>
+                            </span>
+                        ) : (
+                            <CustomBarChart
+                                data={ticketsByDepartment}
+                                datakey={'resolution_time'}
+                                display={'Average Resolution Time'}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
         </>
     )
 }
+
 export default TeamOverview

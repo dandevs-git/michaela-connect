@@ -59,8 +59,12 @@ class DashboardController extends Controller
         $totalResolved = Ticket::resolved()
             ->whereBetween('updated_at', [$startDate, $endDate])
             ->count();
-        return $totalResolved > 0 ? ($resolvedOnTime / $totalResolved) * 100 : 0;
+
+        $percentage = $totalResolved > 0 ? ($resolvedOnTime / $totalResolved) * 100 : 0;
+
+        return round($percentage, 2); // Return as float (e.g., 90.75)
     }
+
 
     private function calculateAverageResolutionTime($startDate, $endDate)
     {
@@ -75,8 +79,9 @@ class DashboardController extends Controller
             }
         }
 
-        return $ticketCount > 0 ? round($totalResolutionTime / $ticketCount, 2) : 0;
+        return $ticketCount > 0 ? round($totalResolutionTime / $ticketCount, 2) : 0; // Return minutes as float
     }
+
 
     private function calculateAverageResponseTime($startDate, $endDate)
     {
@@ -91,13 +96,37 @@ class DashboardController extends Controller
             }
         }
 
-        return $ticketCount > 0 ? round($totalResponseTime / $ticketCount, 2) : 0;
+        return $ticketCount > 0 ? round($totalResponseTime / $ticketCount, 2) : 0; // Return minutes
+    }
+
+
+    private function formatMinutesToHours($minutes)
+    {
+        $hours = floor($minutes / 60);
+        $remainingMinutes = $minutes % 60;
+        return sprintf('%02d:%02d', $hours, $remainingMinutes);
     }
 
     private function getDelta($currentValue, $previousValue)
     {
-        return round(($currentValue - $previousValue), 2);
+        if (is_numeric($currentValue) && is_numeric($previousValue)) {
+            return round($currentValue - $previousValue, 2);
+        }
+
+        if (is_string($currentValue) && preg_match('/^\d{2}:\d{2}$/', $currentValue)) {
+            [$currH, $currM] = explode(':', $currentValue);
+            [$prevH, $prevM] = explode(':', $previousValue);
+
+            $currentMinutes = ((int) $currH * 60) + (int) $currM;
+            $previousMinutes = ((int) $prevH * 60) + (int) $prevM;
+
+            return $currentMinutes - $previousMinutes;
+        }
+
+        return 0;
     }
+
+
 
     public function ticketStatusData()
     {

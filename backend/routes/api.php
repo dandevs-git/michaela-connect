@@ -28,13 +28,32 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/ticket-volume-trends', [DashboardController::class, 'ticketVolumeTrends']);
     Route::get('/department-resolution-time', [DashboardController::class, 'departmentResolutionTime']);
 
+    Route::prefix('tickets')->group(function () {
+        Route::get('/status', [TicketController::class, 'ticketStatusData']);
+        Route::get('/trends', [TicketController::class, 'ticketVolumeTrends']);
+        Route::get('/departments', [TicketController::class, 'departmentResolutionTime']);
 
-    Route::get('/tickets/status', [TicketController::class, 'ticketStatusData']);
-    Route::get('/tickets/trends', [TicketController::class, 'ticketVolumeTrends']);
-    Route::get('/tickets/departments', [TicketController::class, 'departmentResolutionTime']);
+        Route::post('{ticket}/approve', [TicketController::class, 'approve'])->name('tickets.approve');
+        Route::post('{ticket}/reject', [TicketController::class, 'reject'])->name('tickets.reject');
+        Route::post('{ticket}/assign', [TicketController::class, 'assign'])->name('tickets.assign');
+        Route::post('{ticket}/start', [TicketController::class, 'startTask'])->name('tickets.start');
+        Route::post('{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.status');
+        Route::post('{ticket}/verify', [TicketController::class, 'verifyResolution'])->name('tickets.verify');
+        Route::post('{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
 
+        Route::prefix('{ticket}/comments')->group(function () {
+            Route::post('/', [TicketController::class, 'addComment'])->name('tickets.comments.add');
+            Route::get('/', [TicketController::class, 'getComments'])->name('tickets.comments.list');
+            Route::put('{comment}', [TicketController::class, 'editComment'])->name('comments.edit');
+            Route::delete('{comment}', [TicketController::class, 'deleteComment'])->name('comments.delete');
+            Route::post('{comment}/restore', [TicketController::class, 'restoreComment'])->name('comments.restore');
+            Route::delete('{comment}/force-delete', [TicketController::class, 'forceDeleteComment'])->name('comments.forceDelete');
+        });
+    });
 
-    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    Route::get('/logs', [ActivityLogController::class, 'index'])->name('logs.index');
+    Route::get('/logs/ticket', [ActivityLogController::class, 'getTicketLogs'])->name('logs.ticket');
+
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/change-password', [PasswordController::class, 'changePassword'])->name('password.change');
 
@@ -51,40 +70,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'printers' => PrinterController::class,
     ]);
 
-    Route::prefix('tickets/{ticket}')->group(function () {
-        Route::post('/approve', [TicketController::class, 'approve'])->name('tickets.approve');
-        Route::post('/reject', [TicketController::class, 'reject'])->name('tickets.reject');
-        Route::post('/assign', [TicketController::class, 'assign'])->name('tickets.assign');
-        Route::post('/start', [TicketController::class, 'startTask'])->name('tickets.start');
-        Route::post('/status', [TicketController::class, 'updateStatus'])->name('tickets.status');
-        Route::post('/verify', [TicketController::class, 'verifyResolution'])->name('tickets.verify');
-        Route::post('/close', [TicketController::class, 'close'])->name('tickets.close');
-
-        Route::prefix('/comments')->group(function () {
-            Route::post('/', [TicketController::class, 'addComment'])->name('tickets.comments.add');
-            Route::get('/', [TicketController::class, 'getComments'])->name('tickets.comments.list');
-        });
-    });
-
-    Route::prefix('/comments/{comment}')->group(function () {
-        Route::put('/', [TicketController::class, 'editComment'])->name('comments.edit');
-        Route::delete('/', [TicketController::class, 'deleteComment'])->name('comments.delete');
-    });
-
     Route::middleware(['role:admin'])->group(function () {
+
         Route::apiResources([
             'users' => UserController::class,
             'roles' => RoleController::class,
         ]);
+
         Route::get('/users/{id}/subordinates', [UserController::class, 'getSubordinates']);
         Route::patch('/users/{id}/lock', [UserController::class, 'lockUnlockUser'])->name('users.lock');
         Route::post('/admin-reset-password/{id}', [PasswordController::class, 'adminResetPassword'])->name('password.adminReset');
-
-        Route::get('/logs', [ActivityLogController::class, 'index'])->name('logs.index');
-
-        Route::prefix('/comments/{comment}')->group(function () {
-            Route::post('/restore', [TicketController::class, 'restoreComment'])->name('comments.restore');
-            Route::delete('/force-delete', [TicketController::class, 'forceDeleteComment'])->name('comments.forceDelete');
-        });
     });
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 });

@@ -22,6 +22,11 @@ class ActivityLog extends Model
 
     protected $appends = ['formatted_date', 'formatted_time'];
 
+    public function scopeCategory($query, $category)
+    {
+        return $query->where('category', $category);
+    }
+
     public function getFormattedDateAttribute()
     {
         return Carbon::parse($this->created_at)->format('F d, Y');

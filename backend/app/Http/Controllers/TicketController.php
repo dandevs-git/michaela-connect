@@ -79,8 +79,6 @@ class TicketController extends Controller
         return response()->json($tickets, 200);
     }
 
-
-
     public function show($id)
     {
         $ticket = Ticket::with([
@@ -89,6 +87,8 @@ class TicketController extends Controller
             'department:id,name',
             'comments.user:id,name',
         ])->findOrFail($id);
+
+        if (!$ticket) return response()->json(['message' => 'Invalid priority ID']);
 
         return response()->json($ticket, 200);
     }
@@ -126,6 +126,7 @@ class TicketController extends Controller
             'resolution_deadline' => Carbon::now()->addMinutes($priority->resolution_time),
         ]);
 
+        $this->logActivity("Create Ticket", "Ticket #{$ticket->id} created");
         return response()->json(['message' => 'Ticket created successfully', 'ticket' => $ticket], 201);
     }
 
@@ -145,7 +146,7 @@ class TicketController extends Controller
 
         $ticket->update($request->only(['title', 'description', 'priority', 'assigned_to', 'status']));
 
-        $this->logActivity("Ticket #{$ticket->id} updated");
+        $this->logActivity("Update Ticket", "Ticket #{$ticket->id} updated");
 
         return response()->json(['message' => 'Ticket updated successfully', 'ticket' => $ticket]);
     }
@@ -155,7 +156,7 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
         $ticket->delete();
 
-        $this->logActivity("Ticket #{$ticket->id} deleted");
+        $this->logActivity("Delete Ticket", "Ticket #{$ticket->id} deleted");
 
         return response()->json(['message' => 'Ticket deleted successfully']);
     }
@@ -176,7 +177,7 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
         $ticket->update(['status' => 'new']);
 
-        $this->logActivity("Head Department approved Ticket #{$ticket->id}");
+        $this->logActivity("Approve Ticket", "Head Department approved Ticket #{$ticket->id}");
 
         return response()->json(['message' => 'Ticket approved']);
     }
@@ -186,7 +187,7 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
         $ticket->update(['status' => 'rejected']);
 
-        $this->logActivity("Head Department rejected Ticket #{$ticket->id}");
+        $this->logActivity("Reject Ticket", "Head Department rejected Ticket #{$ticket->id}");
 
         return response()->json(['message' => 'Ticket rejected']);
     }
@@ -205,7 +206,7 @@ class TicketController extends Controller
             'assigned_to' => $request->assigned_to,
         ]);
 
-        $this->logActivity("Ticket #{$ticket->id} assigned to Staff ID {$request->assigned_to}");
+        $this->logActivity("Assign Ticket", "Ticket #{$ticket->id} assigned to Staff ID {$request->assigned_to}");
 
         return response()->json(['message' => 'Ticket assigned successfully']);
     }
@@ -225,7 +226,7 @@ class TicketController extends Controller
 
         $ticket->update(['status' => 'in_progress']);
 
-        $this->logActivity("User {$user->name} started working on Ticket #{$ticket->id}");
+        $this->logActivity("Start Ticket", "User {$user->name} started working on Ticket #{$ticket->id}");
 
         return response()->json(['message' => 'Ticket status updated to In Progress', 'ticket' => $ticket]);
     }
@@ -238,13 +239,16 @@ class TicketController extends Controller
 
         if ($request->status === 'resolved') {
             $ticket->update(['status' => 'resolved', 'resolved_at' => now()]);
-            $this->logActivity("Staff marked Ticket #{$ticket->id} as Resolved");
+            $this->logActivity(
+                "Update Status",
+                "Staff marked Ticket #{$ticket->id} as Resolved"
+            );
         } elseif ($request->status === 'failed') {
             $ticket->update(['status' => 'failed', 'failed_at' => now()]);
-            $this->logActivity("Staff marked Ticket #{$ticket->id} as Failed");
+            $this->logActivity("Update Status", "Staff marked Ticket #{$ticket->id} as Failed");
         } elseif ($request->status === 'reopened') {
             $ticket->update(['status' => 'in_progress']);
-            $this->logActivity("Staff reopened Ticket #{$ticket->id} for further action");
+            $this->logActivity("Update Status", "Staff reopened Ticket #{$ticket->id} for further action");
         }
 
         return response()->json(['message' => 'Ticket status updated']);
@@ -257,13 +261,13 @@ class TicketController extends Controller
 
         if ($request->status === 'closed') {
             $ticket->update(['status' => 'closed', 'completed_at' => now()]);
-            $this->logActivity("Requester verified Ticket #{$ticket->id} as Completed");
+            $this->logActivity("Verify Resolution", "Requester verified Ticket #{$ticket->id} as Completed");
         } elseif ($request->status === 'reopened') {
             $ticket->update(['status' => 'in_progress']);
-            $this->logActivity("Requester reopened Ticket #{$ticket->id}");
+            $this->logActivity("Verify Resolution", "Requester reopened Ticket #{$ticket->id}");
         } elseif ($request->status === 'failed') {
             $ticket->update(['status' => 'failed']);
-            $this->logActivity("Requester acknowledged Ticket #{$ticket->id} as Failed");
+            $this->logActivity("Verify Resolution", "Requester acknowledged Ticket #{$ticket->id} as Failed");
         }
 
         return response()->json(['message' => 'Ticket verification updated']);
@@ -274,9 +278,9 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
 
         if ($ticket->status === 'completed') {
-            $this->logActivity("System closed Ticket #{$ticket->id} as Completed");
+            $this->logActivity("Close Ticket", "System closed Ticket #{$ticket->id} as Completed");
         } elseif ($ticket->status === 'failed') {
-            $this->logActivity("System closed Ticket #{$ticket->id} as Failed");
+            $this->logActivity("Close Ticket", "System closed Ticket #{$ticket->id} as Failed");
         } else {
             return response()->json(['message' => 'Ticket need to updated resolution status before closing']);
         }
@@ -286,7 +290,9 @@ class TicketController extends Controller
 
     public function addComment(Request $request, $ticket_id)
     {
-        $request->validate(['comment' => 'required|string']);
+        $request->validate([
+            'comment' => 'required|string',
+        ]);
 
         $ticket = Ticket::findOrFail($ticket_id);
 
@@ -296,10 +302,16 @@ class TicketController extends Controller
             'comment' => $request->comment,
         ]);
 
-        $this->logActivity("User " . Auth::user()->name . " commented on Ticket #{$ticket->id}");
+        $comment->load('user:id,name');
 
-        return response()->json(['message' => 'Comment added successfully', 'comment' => $comment]);
+        $this->logActivity("Add Comment", "User " . Auth::user()->name . " commented on Ticket #{$ticket->id}");
+
+        return response()->json([
+            'message' => 'Comment added successfully',
+            'comment' => $comment,
+        ]);
     }
+
 
     public function getComments($ticket_id)
     {
@@ -311,21 +323,31 @@ class TicketController extends Controller
 
     public function editComment(Request $request, $comment_id)
     {
-        $request->validate(['comment' => 'required|string']);
+        $request->validate([
+            'comment' => 'required|string',
+        ]);
 
         $comment = TicketComment::where('id', $comment_id)
             ->where('user_id', Auth::id())
-            ->firstOrFail();
+            ->first();
+
+        if (!$comment) {
+            return response()->json(['comment id' => $comment_id, 'user_id' => $comment_id, 'message' => 'Comment not found or you are not authorized to edit this comment'], 403);
+        }
 
         $comment->update([
             'comment' => $request->comment,
             'edited_at' => now(),
         ]);
 
-        $this->logActivity("User " . Auth::user()->name . " edited comment on Ticket #{$comment->ticket_id}");
+        $this->logActivity("Edit Comment", "User " . Auth::user()->name . " edited comment on Ticket #{$comment->ticket_id}");
 
-        return response()->json(['message' => 'Comment updated successfully', 'comment' => $comment]);
+        return response()->json([
+            'message' => 'Comment updated successfully',
+            'comment' => $comment,
+        ]);
     }
+
 
     public function deleteComment($comment_id)
     {
@@ -335,7 +357,7 @@ class TicketController extends Controller
 
         $comment->delete();
 
-        $this->logActivity("User " . Auth::user()->name . " deleted a comment on Ticket #{$comment->ticket_id}");
+        $this->logActivity("Delete Comment", "User " . Auth::user()->name . " deleted a comment on Ticket #{$comment->ticket_id}");
 
         return response()->json(['message' => 'Comment deleted successfully']);
     }
@@ -350,7 +372,10 @@ class TicketController extends Controller
 
         $comment->restore();
 
-        $this->logActivity("Admin restored a deleted comment on Ticket #{$comment->ticket_id}");
+        $this->logActivity(
+            "Restore Comment",
+            "Admin restored a deleted comment on Ticket #{$comment->ticket_id}"
+        );
 
         return response()->json(['message' => 'Comment restored successfully']);
     }
@@ -365,17 +390,17 @@ class TicketController extends Controller
 
         $comment->forceDelete();
 
-        $this->logActivity("Admin permanently deleted a comment on Ticket #{$comment->ticket_id}");
+        $this->logActivity("Force Delete Comment", "Admin permanently deleted a comment on Ticket #{$comment->ticket_id}");
 
         return response()->json(['message' => 'Comment permanently deleted']);
     }
 
-    private function logActivity($message)
+    private function logActivity($action, $message)
     {
         ActivityLog::create([
             'user_id' => Auth::id(),
             'category' => 'Ticket Management',
-            'action' => $message,
+            'action' => $action,
             'details' => $message,
             'ip_address' => request()->ip(),
             'pc_name' => gethostname(),

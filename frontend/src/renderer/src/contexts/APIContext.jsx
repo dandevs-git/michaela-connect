@@ -1,34 +1,34 @@
-import { createContext, useState, useEffect, useContext } from 'react'
+import { createContext, useState, useContext, useEffect } from 'react'
 import api from '../api'
 
 export const APIContext = createContext()
 
 export const APIProvider = ({ children }) => {
     const [authenticatedUserDetails, setAuthenticatedUserDetails] = useState(null)
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (token) {
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        }
+    }, [])
 
     const login = async (username, password) => {
         try {
-            const response = await api.post('/login', { username, password })
+            const { data } = await api.post('/login', { username, password })
 
-            if (response.data.token) {
-                localStorage.setItem('token', response.data.token)
+            if (data.token) {
+                localStorage.setItem('token', data.token)
+                api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
             }
 
-            return response.data.message
+            return data.message || 'Login successful'
         } catch (error) {
-            if (error.response) {
-                const { status, data } = error.response
+            const status = error?.response?.status
+            const message = error?.response?.data?.message || 'Something went wrong'
 
-                if (status === 401) {
-                    return 'Invalid username or password'
-                } else if (status === 403) {
-                    return 'Access denied. Please contact the administrator.'
-                } else {
-                    return data.message || 'Something went wrong'
-                }
-            } else {
-                return 'Network error. Please try again later.'
-            }
+            if (status === 401) return 'Invalid username or password'
+            if (status === 403) return 'Access denied. Please contact the administrator.'
+            return message
         }
     }
 
@@ -36,7 +36,7 @@ export const APIProvider = ({ children }) => {
         try {
             await api.post('/logout')
         } catch (error) {
-            console.warn('Logout API failed, but proceeding with logout.')
+            console.warn('Logout failed:', error?.response?.data?.message || error.message)
         } finally {
             localStorage.removeItem('token')
             delete api.defaults.headers.common['Authorization']
@@ -44,13 +44,12 @@ export const APIProvider = ({ children }) => {
     }
 
     const fetchData = async (endpoint, setData, setLoading) => {
-        if (setLoading) setLoading(true)
-
         try {
-            const response = await api.get(endpoint)
-            if (setData) setData(response.data)
+            if (setLoading) setLoading(true)
+            const { data } = await api.get(endpoint)
+            if (setData) setData(data)
         } catch (error) {
-            console.error(`Error fetching data from ${endpoint}:`, error)
+            console.error(`Error fetching ${endpoint}:`, error?.response?.data || error.message)
         } finally {
             if (setLoading) setLoading(false)
         }
@@ -58,36 +57,75 @@ export const APIProvider = ({ children }) => {
 
     const getAuthenticatedUserDetails = async () => {
         try {
-            const response = await api.get('/auth')
-            setAuthenticatedUserDetails(response.data)
-            // console.log(response.data)
-
-            return response.data
+            const { data } = await api.get('/auth')
+            setAuthenticatedUserDetails(data)
+            return data
         } catch (error) {
-            console.error('Failed to fetch user details:', error.response?.data || error.message)
+            console.error('Fetch user failed:', error?.response?.data || error.message)
             return null
         }
     }
 
     const addTicket = async (ticketData) => {
         try {
-            const response = await api.post('/tickets', ticketData)
-            return response.data
+            const { data } = await api.post('/tickets', ticketData)
+            return data
         } catch (error) {
-            console.error('Failed to add ticket:', error.response?.data || error.message)
-            return error
+            console.error('Add ticket failed:', error?.response?.data || error.message)
+            return null
         }
     }
 
     const assignTicket = async (ticketId, assignedTo) => {
         try {
-            const response = await api.post(`/tickets/${ticketId}/assign`, {
+            const { data } = await api.post(`/tickets/${ticketId}/assign`, {
                 assigned_to: assignedTo
             })
+            return data
+        } catch (error) {
+            console.error('Assign ticket failed:', error?.response?.data || error.message)
+            return null
+        }
+    }
+
+    const deleteTicket = async (ticketId) => {
+        try {
+            const { data } = await api.delete(`/tickets/${ticketId}`)
+            return data
+        } catch (error) {
+            console.error('Delete ticket failed:', error?.response?.data || error.message)
+            return null
+        }
+    }
+
+    const addComment = async (ticketId, commentData) => {
+        try {
+            const response = await api.post(`/tickets/${ticketId}/comments`, commentData)
             return response.data
         } catch (error) {
-            console.error('Failed to assign ticket:', error.response?.data || error.message)
-            return error
+            console.error('Failed to add comment:', error)
+        }
+    }
+
+    const updateComment = async (ticketId, commentId, commentData) => {
+        try {
+            const response = await api.put(
+                `/tickets/${ticketId}/comments/${commentId}`,
+                commentData
+            )
+            return response.data
+        } catch (error) {
+            console.error('Failed to update comment:', error)
+        }
+    }
+
+    const deleteComment = async (ticketId, commentId) => {
+        try {
+            const { data } = await api.delete(`/tickets/${ticketId}/comments/${commentId}`)
+            return data
+        } catch (error) {
+            console.error('Delete comment failed:', error?.response?.data || error.message)
+            return null
         }
     }
 
@@ -95,13 +133,21 @@ export const APIProvider = ({ children }) => {
         <APIContext.Provider
             value={{
                 authenticatedUserDetails,
-                getAuthenticatedUserDetails,
                 setAuthenticatedUserDetails,
+                getAuthenticatedUserDetails,
+
                 login,
                 logout,
+
                 fetchData,
+
                 addTicket,
-                assignTicket
+                assignTicket,
+                deleteTicket,
+
+                addComment,
+                updateComment,
+                deleteComment
             }}
         >
             {children}

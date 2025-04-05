@@ -1,153 +1,75 @@
+import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-
-const columnsLogs = [
-    {
-        header: 'User',
-        accessorKey: 'user'
-    },
-    {
-        header: 'Action',
-        accessorKey: 'action'
-    },
-    {
-        header: 'Affected Ticket/Module',
-        accessorKey: 'ticket'
-    },
-    {
-        header: 'Timestamp',
-        accessorKey: 'timestamp'
-    },
-    {
-        header: 'PC Name',
-        accessorKey: 'pcName'
-    },
-    {
-        header: 'IP Address',
-        accessorKey: 'ipAddress'
-    }
-]
-
-const dataLogs = [
-    {
-        user: 'JohnDoe',
-        action: 'Approved Ticket',
-        ticket: '#1025 - Server Downtime',
-        timestamp: '2:30 PM',
-        pcName: 'Workstation-12',
-        ipAddress: '192.168.1.5'
-    },
-    {
-        user: 'JaneSmith',
-        action: 'Started Processing',
-        ticket: '#2048 - Software Installation',
-        timestamp: '3:15 PM',
-        pcName: 'Laptop-5',
-        ipAddress: '192.168.1.9'
-    },
-    {
-        user: 'Admin',
-        action: 'Updated SLA Policy',
-        ticket: 'SLA Management',
-        timestamp: '4:00 PM',
-        pcName: 'Admin-PC',
-        ipAddress: '192.168.1.2'
-    },
-    {
-        user: 'Support Team',
-        action: 'Resolved Ticket',
-        ticket: '#2090 - Printer Issue',
-        timestamp: '4:30 PM',
-        pcName: 'SupportDesk-3',
-        ipAddress: '192.168.1.12'
-    },
-    {
-        user: 'HR Manager',
-        action: 'Assigned Ticket to HR',
-        ticket: '#3001 - Employee Access Request',
-        timestamp: '5:00 PM',
-        pcName: 'HR-Desk1',
-        ipAddress: '192.168.1.8'
-    }
-]
-
-const columnsTask = [
-    {
-        header: 'Task Name',
-        accessorKey: 'taskName'
-    },
-    {
-        header: 'Assigned To',
-        accessorKey: 'assignedTo'
-    },
-    {
-        header: 'Due Date',
-        accessorKey: 'dueDate'
-    },
-    {
-        header: 'Priority',
-        accessorKey: 'priority'
-    },
-    {
-        header: 'Status',
-        accessorKey: 'status'
-    },
-    {
-        header: 'Time Remaining',
-        accessorKey: 'timeRemaining'
-    }
-]
-
-const dataTask = [
-    {
-        taskName: 'Approve network issue ticket',
-        assignedTo: 'Head of IT',
-        dueDate: 'March 22',
-        priority: 'High',
-        status: 'Pending Approval',
-        timeRemaining: '2 Days Left'
-    },
-    {
-        taskName: 'Assign ticket to HR team',
-        assignedTo: 'HR Manager',
-        dueDate: 'March 24',
-        priority: 'Medium',
-        status: 'Waiting for Assignment',
-        timeRemaining: '4 Days Left'
-    },
-    {
-        taskName: 'Process workstation request',
-        assignedTo: 'IT Support',
-        dueDate: 'March 25',
-        priority: 'Low',
-        status: 'In Progress',
-        timeRemaining: '5 Days Left'
-    },
-    {
-        taskName: 'Review new software request',
-        assignedTo: 'Software Team',
-        dueDate: 'March 26',
-        priority: 'High',
-        status: 'Not Started',
-        timeRemaining: '6 Days Left'
-    },
-    {
-        taskName: 'Investigate email issue',
-        assignedTo: 'Network Team',
-        dueDate: 'March 27',
-        priority: 'Medium',
-        status: 'Under Investigation',
-        timeRemaining: '7 Days Left'
-    }
-]
+import { useAPI } from '../../contexts/APIContext'
 
 function TeamActivities() {
+    const { fetchData } = useAPI()
+    const [dataLogs, setDataLogs] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        fetchData('/logs/ticket', setDataLogs, setLoading)
+    }, [])
+
+    const columnsLogs = [
+        {
+            header: 'User',
+            accessorKey: 'user.name'
+        },
+        {
+            header: 'Action',
+            accessorKey: 'action'
+        },
+        {
+            header: 'Affected Ticket/Module',
+            accessorKey: 'details'
+        },
+        {
+            header: 'Timestamp',
+            accessorKey: 'formatted_time'
+        },
+        {
+            header: 'PC Name',
+            accessorKey: 'pc_name'
+        },
+        {
+            header: 'IP Address',
+            accessorKey: 'ip_address'
+        }
+    ]
+    // const columnsTask = [
+    //     {
+    //         header: 'Task Name',
+    //         accessorKey: 'taskName'
+    //     },
+    //     {
+    //         header: 'Assigned To',
+    //         accessorKey: 'assignedTo'
+    //     },
+    //     {
+    //         header: 'Due Date',
+    //         accessorKey: 'dueDate'
+    //     },
+    //     {
+    //         header: 'Priority',
+    //         accessorKey: 'priority'
+    //     },
+    //     {
+    //         header: 'Status',
+    //         accessorKey: 'status'
+    //     },
+    //     {
+    //         header: 'Time Remaining',
+    //         accessorKey: 'timeRemaining'
+    //     }
+    // ]
     return (
         <>
             <div className="col-12 p-4">
                 <h4 className="text-start fw-semibold">Recent Tasks & Assignments</h4>
-                <CustomTable columns={columnsLogs} data={dataLogs} />
-                <h4 className="text-start fw-semibold">Upcoming Deadlines</h4>
-                <CustomTable columns={columnsTask} data={dataTask} />
+                <CustomTable isloading={loading} columns={columnsLogs} data={dataLogs} />
+                {/* <h4 className="text-start fw-semibold">Upcoming Deadlines</h4>
+                <CustomTable columns={columnsTask} data={dataTask} /> */}
             </div>
         </>
     )
