@@ -5,13 +5,15 @@ import { useAPI } from '../../contexts/APIContext'
 function ViewTicketDetails({ id, data }) {
     const { addComment, updateComment } = useAPI()
 
-    const [comments, setComments] = useState(data?.comments || [])
+    const [comments, setComments] = useState(data?.comments)
     const [commentInput, setCommentInput] = useState('')
     const [editingCommentId, setEditingCommentId] = useState(null)
     const [editedComment, setEditedComment] = useState('')
 
+    console.log(comments)
+
     useEffect(() => {
-        setComments(data?.comments || [])
+        setComments(data?.comments)
     }, [data?.comments])
 
     const handleAddComment = async () => {
@@ -38,10 +40,14 @@ function ViewTicketDetails({ id, data }) {
                 comment: editedComment
             })
 
-            console.log(updated?.comment)
-
-            // setComments(editingCommentId ? { comment: updated?.comment } )
-            setComments((prev) => [updated?.comment])
+            setComments((prev) =>
+                prev.map((comment) =>
+                    comment.id === editingCommentId
+                        ? { ...comment, comment: updated.comment }
+                        : comment
+                )
+            )
+            console.log(comments)
 
             setEditingCommentId(null)
             setEditedComment('')
@@ -188,7 +194,7 @@ function ViewTicketDetails({ id, data }) {
                                         className="overflow-auto p-3 border-top border-bottom"
                                         style={{ maxHeight: '300px' }}
                                     >
-                                        {comments.length > 0 ? (
+                                        {/* {comments.length > 0 ? (
                                             comments.map((comment) => (
                                                 <div key={comment?.id} className="mb-3">
                                                     <div className="d-flex justify-content-between align-items-center">
@@ -225,7 +231,7 @@ function ViewTicketDetails({ id, data }) {
                                             ))
                                         ) : (
                                             <div className="text-muted">No comments yet</div>
-                                        )}
+                                        )} */}
                                     </div>
 
                                     <div className="d-flex mt-3">

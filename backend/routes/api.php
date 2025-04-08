@@ -44,10 +44,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::prefix('{ticket}/comments')->group(function () {
             Route::post('/', [TicketController::class, 'addComment'])->name('tickets.comments.add');
             Route::get('/', [TicketController::class, 'getComments'])->name('tickets.comments.list');
-            Route::put('{comment}', [TicketController::class, 'editComment'])->name('comments.edit');
-            Route::delete('{comment}', [TicketController::class, 'deleteComment'])->name('comments.delete');
-            Route::post('{comment}/restore', [TicketController::class, 'restoreComment'])->name('comments.restore');
-            Route::delete('{comment}/force-delete', [TicketController::class, 'forceDeleteComment'])->name('comments.forceDelete');
+            Route::get('{comment}', [TicketController::class, 'getCommentShow'])->name('tickets.comments.show');
+            Route::put('{comment}', [TicketController::class, 'editComment'])->name('tickets.comments.edit');
+            Route::delete('{comment}', [TicketController::class, 'deleteComment'])->name('tickets.comments.delete');
+            Route::post('{comment}/restore', [TicketController::class, 'restoreComment'])->name('tickets.comments.restore');
+            Route::delete('{comment}/force-delete', [TicketController::class, 'forceDeleteComment'])->name('tickets.comments.forceDelete');
         });
     });
 

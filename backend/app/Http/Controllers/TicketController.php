@@ -48,7 +48,9 @@ class TicketController extends Controller
                 // }
 
                 if ($user->role === 'head') {
-                    $q->orWhere('requester.department?.name', $user->department_id);
+                    $q->orWhereHas('requester', function ($query) use ($user) {
+                        $query->where('department_id', $user->department_id);
+                    });
                 }
             });
         }
@@ -87,8 +89,6 @@ class TicketController extends Controller
             'department:id,name',
             'comments.user:id,name',
         ])->findOrFail($id);
-
-        if (!$ticket) return response()->json(['message' => 'Invalid priority ID']);
 
         return response()->json($ticket, 200);
     }
@@ -139,7 +139,7 @@ class TicketController extends Controller
         $request->validate([
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'priority' => 'sometimes|in:normal,priority,urgent',
+            'priority_id' => 'sometimes|exists:priorities,id',
             'assigned_to' => 'sometimes|exists:users,id',
             'status' => 'sometimes|in:pending,in_progress,resolved,failed,reopened,completed',
         ]);
@@ -257,18 +257,22 @@ class TicketController extends Controller
     public function verifyResolution(Request $request, $id)
     {
         $ticket = Ticket::findOrFail($id);
-        $request->validate(['status' => 'required|in:closed,reopened,failed']);
+        $request->validate(['status' => 'required|in:resolved,reopened,failed']);
 
-        if ($request->status === 'closed') {
-            $ticket->update(['status' => 'closed', 'completed_at' => now()]);
-            $this->logActivity("Verify Resolution", "Requester verified Ticket #{$ticket->id} as Completed");
-        } elseif ($request->status === 'reopened') {
-            $ticket->update(['status' => 'in_progress']);
-            $this->logActivity("Verify Resolution", "Requester reopened Ticket #{$ticket->id}");
-        } elseif ($request->status === 'failed') {
-            $ticket->update(['status' => 'failed']);
-            $this->logActivity("Verify Resolution", "Requester acknowledged Ticket #{$ticket->id} as Failed");
-        }
+        $status = $request->status;
+        $logMessages = [
+            'closed' => 'Requester verified Ticket #%s as Completed',
+            'reopened' => 'Requester reopened Ticket #%s',
+            'failed' => 'Requester acknowledged Ticket #%s as Failed'
+        ];
+
+        $updateData = ['status' => $status];
+        if ($status === 'closed') $updateData['completed_at'] = now();
+        elseif ($status === 'failed') $updateData['failed_at'] = now();
+
+        $ticket->update($updateData);
+        $this->logActivity("Verify Resolution", sprintf($logMessages[$status], $ticket->id));
+
 
         return response()->json(['message' => 'Ticket verification updated']);
     }
@@ -321,7 +325,25 @@ class TicketController extends Controller
         return response()->json($comments);
     }
 
-    public function editComment(Request $request, $comment_id)
+    public function getCommentShow($ticket_id, $comment_id)
+    {
+        $ticket = Ticket::findOrFail($ticket_id);
+
+        $comment = $ticket->comments()
+            ->where('id', $comment_id)
+            ->with('user:id,name')
+            ->first();
+
+        if (!$comment) {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+
+        return response()->json($comment);
+    }
+
+
+
+    public function editComment(Request $request, $ticket_id, $comment_id)
     {
         $request->validate([
             'comment' => 'required|string',
@@ -340,7 +362,7 @@ class TicketController extends Controller
             'edited_at' => now(),
         ]);
 
-        $this->logActivity("Edit Comment", "User " . Auth::user()->name . " edited comment on Ticket #{$comment->ticket_id}");
+        $this->logActivity("Edit Comment", "User " . Auth::user()->name . " edited comment on Ticket #{$ticket_id}");
 
         return response()->json([
             'message' => 'Comment updated successfully',
@@ -349,7 +371,7 @@ class TicketController extends Controller
     }
 
 
-    public function deleteComment($comment_id)
+    public function deleteComment($ticket_id, $comment_id)
     {
         $comment = TicketComment::where('id', $comment_id)
             ->where('user_id', Auth::id())
@@ -357,12 +379,12 @@ class TicketController extends Controller
 
         $comment->delete();
 
-        $this->logActivity("Delete Comment", "User " . Auth::user()->name . " deleted a comment on Ticket #{$comment->ticket_id}");
+        $this->logActivity("Delete Comment", "User " . Auth::user()->name . " deleted a comment on Ticket #{$ticket_id}");
 
         return response()->json(['message' => 'Comment deleted successfully']);
     }
 
-    public function restoreComment($comment_id)
+    public function restoreComment($ticket_id, $comment_id)
     {
         $comment = TicketComment::onlyTrashed()->findOrFail($comment_id);
 
@@ -374,13 +396,13 @@ class TicketController extends Controller
 
         $this->logActivity(
             "Restore Comment",
-            "Admin restored a deleted comment on Ticket #{$comment->ticket_id}"
+            "Admin restored a deleted comment on Ticket #{$ticket_id}"
         );
 
         return response()->json(['message' => 'Comment restored successfully']);
     }
 
-    public function forceDeleteComment($comment_id)
+    public function forceDeleteComment($ticket_id, $comment_id)
     {
         $comment = TicketComment::onlyTrashed()->findOrFail($comment_id);
 
@@ -390,7 +412,7 @@ class TicketController extends Controller
 
         $comment->forceDelete();
 
-        $this->logActivity("Force Delete Comment", "Admin permanently deleted a comment on Ticket #{$comment->ticket_id}");
+        $this->logActivity("Force Delete Comment", "Admin permanently deleted a comment on Ticket #{$ticket_id}");
 
         return response()->json(['message' => 'Comment permanently deleted']);
     }

@@ -66,6 +66,26 @@ export const APIProvider = ({ children }) => {
         }
     }
 
+    const getComments = async (ticketId) => {
+        try {
+            const { data } = await api.get(`/tickets/${ticketId}/comments`)
+            return data
+        } catch (error) {
+            console.error('Show tickets failed:', error?.response?.data || error.message)
+            return null
+        }
+    }
+
+    const showComment = async (ticketId, commentId) => {
+        try {
+            const data = await api.get(`/tickets/${ticketId}/comments/${commentId}`)
+            return data
+        } catch (error) {
+            console.error('Show tickets failed:', error?.response?.data || error.message)
+            return null
+        }
+    }
+
     const addTicket = async (ticketData) => {
         try {
             const { data } = await api.post('/tickets', ticketData)
@@ -145,6 +165,8 @@ export const APIProvider = ({ children }) => {
                 assignTicket,
                 deleteTicket,
 
+                getComments,
+                showComment,
                 addComment,
                 updateComment,
                 deleteComment
