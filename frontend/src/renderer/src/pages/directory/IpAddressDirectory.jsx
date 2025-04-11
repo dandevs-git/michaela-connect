@@ -4,13 +4,13 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function IpAddressDirectory() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [ipaddress, setIpaddress] = useState([])
     const [selectedIpaddress, setSelectedIpaddress] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/ipaddress', setIpaddress, setLoading)
+        getData('/ipaddress', setIpaddress, setLoading)
     }, [])
 
     const handleShowModal = (telephone) => {

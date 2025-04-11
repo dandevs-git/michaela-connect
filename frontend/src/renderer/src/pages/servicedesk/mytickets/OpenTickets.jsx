@@ -5,13 +5,13 @@ import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 
 function OpenTickets() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/tickets?status=open', setTickets, setLoading)
+        getData('/tickets?status=open', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {

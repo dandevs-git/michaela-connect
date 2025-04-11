@@ -4,13 +4,13 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function AnydeskDirectory() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [anydesk, setAnydesk] = useState([])
     const [selectedAnydesk, setSelectedAnydesk] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/anydesks', setAnydesk, setLoading)
+        getData('/anydesks', setAnydesk, setLoading)
     }, [])
 
     const handleShowModal = (telephone) => {

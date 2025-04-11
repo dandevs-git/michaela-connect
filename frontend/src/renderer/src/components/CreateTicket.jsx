@@ -1,13 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../contexts/APIContext'
 import { Modal, Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
 
-function CreateTicket() {
-    const { addTicket, fetchData } = useAPI()
-    const [loadingBtn, setLoadingBtn] = useState(false)
+function CreateTicket({ onTicketCreated }) {
+    const { addTicket, getData } = useAPI()
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
     const [message, setMessage] = useState('')
     const [departments, setDepartments] = useState([])
     const [priorities, setPriorities] = useState([])
+
+    const toastRef = useRef(null)
+    const modalRef = useRef(null)
+
     const [ticketData, setTicketData] = useState({
         title: '',
         description: '',
@@ -20,11 +25,23 @@ function CreateTicket() {
         setTicketData((prev) => ({ ...prev, [name]: value }))
     }
 
+    const resetForm = () => {
+        setTicketData({
+            title: '',
+            description: '',
+            priority_id: '',
+            department_id: ''
+        })
+        setMessage('')
+        setError('')
+        document.querySelector('.needs-validation')?.classList.remove('was-validated')
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
-
         const form = e.target
         setMessage('')
+        setError('')
         form.classList.remove('was-validated')
 
         if (!form.checkValidity()) {
@@ -32,93 +49,67 @@ function CreateTicket() {
             return
         }
 
-        setLoadingBtn(true)
+        setLoading(true)
 
         try {
             const response = await addTicket(ticketData)
 
             if (response?.ticket?.id) {
-                setMessage('✅ Ticket created successfully.')
+                setMessage('Ticket created successfully!')
+                resetForm()
 
-                setTicketData({
-                    title: '',
-                    description: '',
-                    priority_id: '',
-                    department_id: ''
-                })
-
-                // Hide Modal
-                const modalElement = document.getElementById('addTicketModal')
-                const modalInstance = Modal.getInstance(modalElement)
+                const modalInstance = Modal.getInstance(modalRef.current)
                 modalInstance?.hide()
 
-                // Refresh Ticket List
-                await fetchData('/tickets')
-
-                // Show Toast
-                const toastElement = document.getElementById('liveToast')
-                if (toastElement) {
-                    const toastInstance = new Toast(toastElement)
-                    toastInstance.show()
+                if (toastRef.current) {
+                    const toast = new Toast(toastRef.current, { delay: 4000 })
+                    toast.show()
                 }
             } else {
-                setMessage(response?.message || '❌ Failed to create ticket. Please try again.')
+                setError(response?.message || 'Failed to create ticket.')
             }
-        } catch (error) {
-            setMessage(error?.message || '❌ An error occurred. Please try again.')
+        } catch (err) {
+            setError(err?.message || 'Something went wrong.')
         } finally {
-            setLoadingBtn(false)
+            setLoading(false)
         }
     }
 
     useEffect(() => {
-        const fetchDropdownData = async () => {
-            await fetchData('/departments', setDepartments)
-            await fetchData('/priorities', setPriorities)
-        }
-        fetchDropdownData()
+        getData('/departments', setDepartments)
+        getData('/priorities', setPriorities)
     }, [])
 
     useEffect(() => {
-        const modalElement = document.getElementById('addTicketModal')
+        const modalElement = modalRef.current
 
-        const handleModalShown = () => {
-            document.getElementById('ticketTitle')?.focus()
-        }
+        const handleShown = () => document.getElementById('ticketTitle')?.focus()
+        const handleHidden = resetForm
 
-        const handleModalHidden = () => {
-            setMessage('')
-            setTicketData({
-                title: '',
-                description: '',
-                priority_id: '',
-                department_id: ''
-            })
-            document.querySelector('.needs-validation')?.classList.remove('was-validated')
-        }
-
-        modalElement?.addEventListener('shown.bs.modal', handleModalShown)
-        modalElement?.addEventListener('hidden.bs.modal', handleModalHidden)
+        modalElement?.addEventListener('shown.bs.modal', handleShown)
+        modalElement?.addEventListener('hidden.bs.modal', handleHidden)
 
         return () => {
-            modalElement?.removeEventListener('shown.bs.modal', handleModalShown)
-            modalElement?.removeEventListener('hidden.bs.modal', handleModalHidden)
+            modalElement?.removeEventListener('shown.bs.modal', handleShown)
+            modalElement?.removeEventListener('hidden.bs.modal', handleHidden)
         }
     }, [])
 
     return (
         <>
+            {/* Modal */}
             <div
                 className="modal fade"
                 id="addTicketModal"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 tabIndex="-1"
+                ref={modalRef}
             >
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title text-uppercase fw-semibold">
+                            <h5 className="modal-title fw-semibold text-uppercase">
                                 Create New Ticket
                             </h5>
                             <button
@@ -128,13 +119,22 @@ function CreateTicket() {
                                 aria-label="Close"
                             ></button>
                         </div>
+
                         <div className="modal-body p-3">
                             <form
                                 className="row g-3 needs-validation p-3"
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {message && <div className="alert text-center py-1">{message}</div>}
+                                {(message || error) && (
+                                    <div
+                                        className={`alert text-center py-2 ${
+                                            error ? 'alert-danger' : 'alert-success'
+                                        }`}
+                                    >
+                                        {error || message}
+                                    </div>
+                                )}
 
                                 <div className="col-md-12">
                                     <label htmlFor="ticketTitle" className="form-label">
@@ -149,9 +149,7 @@ function CreateTicket() {
                                         onChange={handleInputChange}
                                         required
                                     />
-                                    <div className="invalid-feedback">
-                                        Please enter a ticket title.
-                                    </div>
+                                    <div className="invalid-feedback">Please enter a title.</div>
                                 </div>
 
                                 <div className="col-md-6">
@@ -176,7 +174,7 @@ function CreateTicket() {
                                         ))}
                                     </select>
                                     <div className="invalid-feedback">
-                                        Please select a department.
+                                        Please choose a department.
                                     </div>
                                 </div>
 
@@ -202,7 +200,7 @@ function CreateTicket() {
                                         ))}
                                     </select>
                                     <div className="invalid-feedback">
-                                        Please select priority level.
+                                        Please select a priority.
                                     </div>
                                 </div>
 
@@ -214,7 +212,7 @@ function CreateTicket() {
                                         className="form-control"
                                         id="ticketDescription"
                                         name="description"
-                                        rows="7"
+                                        rows="6"
                                         value={ticketData.description}
                                         onChange={handleInputChange}
                                         required
@@ -227,16 +225,17 @@ function CreateTicket() {
                                 <div className="modal-footer">
                                     <button
                                         type="submit"
-                                        className="btn btn-primary text-light"
-                                        disabled={loadingBtn}
+                                        className="btn btn-primary w-100"
+                                        disabled={loading}
                                     >
-                                        {loadingBtn ? (
+                                        {loading ? (
                                             <>
                                                 <span
-                                                    className="spinner-grow spinner-grow-sm"
+                                                    className="spinner-border spinner-border-sm me-2"
+                                                    role="status"
                                                     aria-hidden="true"
                                                 ></span>
-                                                <span className="ms-2">Submitting...</span>
+                                                Submitting...
                                             </>
                                         ) : (
                                             'Submit Ticket'
@@ -249,17 +248,18 @@ function CreateTicket() {
                 </div>
             </div>
 
+            {/* Toast Notification */}
             <div className="toast-container position-fixed top-50 start-50 translate-middle p-3">
                 <div
                     id="liveToast"
-                    className="toast align-items-center shadow-lg border-1 fw-semibold rounded-3 bg-light"
+                    className="toast shadow-sm border-1 rounded-3 bg-light"
                     role="alert"
                     aria-live="assertive"
                     aria-atomic="true"
+                    ref={toastRef}
                 >
-                    <div className="toast-header rounded-top-3">
-                        <strong className="me-auto">Notification</strong>
-                        <small>11 mins ago</small>
+                    <div className="toast-header">
+                        <strong className="me-auto">Success</strong>
                         <button
                             type="button"
                             className="btn-close"
@@ -267,33 +267,11 @@ function CreateTicket() {
                             aria-label="Close"
                         ></button>
                     </div>
-                    <div className="toast-body text-center w-100 p-3 rounded-bottom-3 fs-3 text-uppercase">
-                        Successfully created the ticket!
+                    <div className="toast-body text-center text-success">
+                        {message || 'Ticket submitted successfully!'}
                     </div>
                 </div>
             </div>
-
-            {/* <div className="toast-container position-fixed bottom-0 end-0 p-3">
-                <div
-                    id="liveToast"
-                    className="toast align-items-center text-bg-primary border-0"
-                    role="alert"
-                    aria-live="assertive"
-                    aria-atomic="true"
-                >
-                    <div className="d-flex">
-                        <div className="toast-body">
-                            {message || 'Successfully created the ticket!'}
-                        </div>
-                        <button
-                            type="button"
-                            className="btn-close btn-close-white me-2 m-auto"
-                            data-bs-dismiss="toast"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                </div>
-            </div> */}
         </>
     )
 }

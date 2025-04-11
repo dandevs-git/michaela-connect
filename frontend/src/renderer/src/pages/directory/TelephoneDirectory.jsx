@@ -4,13 +4,13 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function TelephoneDirectory() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [telephones, setTelephones] = useState([])
     const [selectedTelephone, setSelectedTelephone] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/telephones', setTelephones, setLoading)
+        getData('/telephones', setTelephones, setLoading)
     }, [])
 
     const handleShowModal = (telephone) => {

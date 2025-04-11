@@ -3,23 +3,44 @@ import CustomTable from '../../../components/tables/CustomTable'
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
+import ConfirmationModal from '../../../components/modals/ConfirmationModal'
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 function PendingTickets() {
-    const { fetchData } = useAPI()
+    const { getData, postData } = useAPI()
     const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
+    const [confirmType, setConfirmType] = useState('')
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        fetchData('/tickets?status=pending', setTickets, setLoading)
+        getData('/tickets?status=pending', setTickets, setLoading, setError)
     }, [])
 
-    const handleShowModal = (tickets) => {
-        setSelectedTickets(tickets)
+    const handleApproveButton = (ticket) => {
+        setSelectedTickets(ticket)
+        setConfirmType('approve')
+        const modal = new bootstrap.Modal(document.getElementById('confirmModal'))
+        modal.show()
     }
 
-    const handleApproveButton = (tickets) => {
-        setSelectedTickets(tickets)
+    const handleRejectButton = (ticket) => {
+        setSelectedTickets(ticket)
+        setConfirmType('reject')
+        const modal = new bootstrap.Modal(document.getElementById('confirmModal'))
+        modal.show()
+    }
+
+    const handleConfirm = () => {
+        if (!selectedTickets) return
+
+        const url =
+            confirmType === 'approve'
+                ? `/tickets/${selectedTickets.id}/approve`
+                : `/tickets/${selectedTickets.id}/reject`
+
+        postData(url, null, setLoading, setError)
     }
 
     const columns = [
@@ -43,12 +64,15 @@ function PendingTickets() {
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
                     <button
-                        onClick={handleApproveButton}
+                        onClick={() => handleApproveButton(row.original)}
                         className="btn text-light btn-success btn-sm"
                     >
                         <FaCheck /> Approve
                     </button>
-                    <button className="btn text-light btn-danger btn-sm">
+                    <button
+                        onClick={() => handleRejectButton(row.original)}
+                        className="btn text-light btn-danger btn-sm"
+                    >
                         <FaTimes /> Reject
                     </button>
                 </div>
@@ -69,46 +93,19 @@ function PendingTickets() {
                 </div>
             </div>
 
-            {/* <div className="modal fade" id="employeesModal" tabIndex="-1">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">
-                                Employees for {selectedTickets?.telephone_number}
-                            </h5>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            ></button>
-                        </div>
-                        <div className="modal-body text-center p-3">
-                            {selectedTickets?.users?.length > 0 ? (
-                                <ul className="list-group">
-                                    {selectedTickets.users.map((perm) => (
-                                        <li key={perm.id} className="list-group-item">
-                                            {perm.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-muted">No employees assigned.</p>
-                            )}
-                        </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-danger"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
+            <ConfirmationModal
+                id="confirmModal"
+                title={`${confirmType === 'approve' ? 'Approve' : 'Reject'} Ticket`}
+                message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
+                confirmLabel={confirmType === 'approve' ? 'Approve' : 'Reject'}
+                confirmClass={
+                    confirmType === 'approve' ? 'btn-success text-light' : 'btn-danger text-light'
+                }
+                cancelLabel="Cancel"
+                onConfirm={handleConfirm}
+            />
         </>
     )
 }
+
 export default PendingTickets
