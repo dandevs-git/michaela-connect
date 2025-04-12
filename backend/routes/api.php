@@ -71,14 +71,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'printers' => PrinterController::class,
     ]);
 
+
+    // Route::middleware(['role:head'])->group(function () {
+    Route::get('/users/subordinates', [UserController::class, 'getSubordinates']);
+    // });
+
     Route::middleware(['role:admin'])->group(function () {
 
         Route::apiResources([
             'users' => UserController::class,
             'roles' => RoleController::class,
         ]);
-
-        Route::get('/users/{id}/subordinates', [UserController::class, 'getSubordinates']);
+        Route::get('/users/{id}/subordinates', [UserController::class, 'getUserSubordinates']);
         Route::patch('/users/{id}/lock', [UserController::class, 'lockUnlockUser'])->name('users.lock');
         Route::post('/admin-reset-password/{id}', [PasswordController::class, 'adminResetPassword'])->name('password.adminReset');
     });

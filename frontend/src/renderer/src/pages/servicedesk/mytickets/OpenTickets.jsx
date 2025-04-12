@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaPlay, FaUserCheck } from 'react-icons/fa'
+import { FaPlay, FaPlus, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
+import CreateTicket from '../../../components/CreateTicket'
 
 function OpenTickets() {
     const { getData } = useAPI()
-    const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
+    const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
         getData('/tickets?status=open', setTickets, setLoading)
     }, [])
 
-    const handleShowModal = (tickets) => {
+    const getSelectedTicket = (tickets) => {
         setSelectedTickets(tickets)
     }
 
@@ -54,50 +56,29 @@ function OpenTickets() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable isloading={loading} columns={columns} data={tickets} />
+                        <CustomTable
+                            topComponent={
+                                <button
+                                    className="btn btn-primary text-nowrap border me-4"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addTicketModal"
+                                >
+                                    <FaPlus /> New Ticket
+                                </button>
+                            }
+                            isloading={loading}
+                            columns={columns}
+                            data={tickets}
+                        />
                     </div>
                 </div>
             </div>
 
-            {/* <div className="modal fade" id="employeesModal" tabIndex="-1">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">
-                                Employees for {selectedTickets?.telephone_number}
-                            </h5>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            ></button>
-                        </div>
-                        <div className="modal-body text-center p-3">
-                            {selectedTickets?.users?.length > 0 ? (
-                                <ul className="list-group">
-                                    {selectedTickets.users.map((perm) => (
-                                        <li key={perm.id} className="list-group-item">
-                                            {perm.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-muted">No employees assigned.</p>
-                            )}
-                        </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-danger"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
+            <CreateTicket
+                resetTickets={setTickets}
+                resetLoading={setLoading}
+                resetError={setError}
+            />
         </>
     )
 }

@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaCheck, FaTimes } from 'react-icons/fa'
+import { FaCheck, FaPlus, FaTimes } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import CreateTicket from '../../../components/CreateTicket'
 
 function PendingTickets() {
     const { getData, postData } = useAPI()
-    const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
-    const [confirmType, setConfirmType] = useState('')
+    const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [confirmType, setConfirmType] = useState('')
 
     useEffect(() => {
         getData('/tickets?status=pending', setTickets, setLoading, setError)
@@ -40,7 +41,8 @@ function PendingTickets() {
                 ? `/tickets/${selectedTickets.id}/approve`
                 : `/tickets/${selectedTickets.id}/reject`
 
-        postData(url, null, setLoading, setError)
+        postData(url, '', setLoading, setError)
+        getData('/tickets?status=pending', setTickets, setLoading, setError)
     }
 
     const columns = [
@@ -88,10 +90,29 @@ function PendingTickets() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable isloading={loading} columns={columns} data={tickets} />
+                        <CustomTable
+                            topComponent={
+                                <button
+                                    className="btn btn-primary text-nowrap border me-4"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addTicketModal"
+                                >
+                                    <FaPlus /> New Ticket
+                                </button>
+                            }
+                            isloading={loading}
+                            columns={columns}
+                            data={tickets}
+                        />
                     </div>
                 </div>
             </div>
+
+            <CreateTicket
+                resetTickets={setTickets}
+                resetLoading={setLoading}
+                resetError={setError}
+            />
 
             <ConfirmationModal
                 id="confirmModal"

@@ -156,4 +156,24 @@ class UserController extends Controller
         ]);
     }
 
+    public function getSubordinates()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Eager load department to avoid N+1 query problem
+        $subordinates = $user->subordinates()->with('department')->get();
+
+        return response()->json($subordinates, 200);
+    }
+
+    public function getUserSubordinates($id)
+    {
+        $user = User::with('subordinates.department')->findOrFail($id);
+
+        return response()->json($user->subordinates, 200);
+    }
 }

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../contexts/APIContext'
 import { Modal, Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
 
-function CreateTicket({ onTicketCreated }) {
+function CreateTicket({ resetTickets, resetLoading, resetError }) {
     const { addTicket, getData } = useAPI()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -58,6 +58,8 @@ function CreateTicket({ onTicketCreated }) {
                 setMessage('Ticket created successfully!')
                 resetForm()
 
+                getData('/tickets', resetTickets, resetLoading, resetError)
+
                 const modalInstance = Modal.getInstance(modalRef.current)
                 modalInstance?.hide()
 
@@ -97,7 +99,6 @@ function CreateTicket({ onTicketCreated }) {
 
     return (
         <>
-            {/* Modal */}
             <div
                 className="modal fade"
                 id="addTicketModal"
@@ -149,7 +150,9 @@ function CreateTicket({ onTicketCreated }) {
                                         onChange={handleInputChange}
                                         required
                                     />
-                                    <div className="invalid-feedback">Please enter a title.</div>
+                                    <div className="invalid-feedback">
+                                        PleaddTicketModalase enter a title.
+                                    </div>
                                 </div>
 
                                 <div className="col-md-6">
@@ -231,7 +234,7 @@ function CreateTicket({ onTicketCreated }) {
                                         {loading ? (
                                             <>
                                                 <span
-                                                    className="spinner-border spinner-border-sm me-2"
+                                                    className="spinner-grow spinner-grow-sm me-2"
                                                     role="status"
                                                     aria-hidden="true"
                                                 ></span>
@@ -248,17 +251,16 @@ function CreateTicket({ onTicketCreated }) {
                 </div>
             </div>
 
-            {/* Toast Notification */}
             <div className="toast-container position-fixed top-50 start-50 translate-middle p-3">
                 <div
                     id="liveToast"
-                    className="toast shadow-sm border-1 rounded-3 bg-light"
+                    className="toast shadow-lg border-1 rounded-4 bg-light"
                     role="alert"
                     aria-live="assertive"
                     aria-atomic="true"
                     ref={toastRef}
                 >
-                    <div className="toast-header">
+                    <div className="toast-header rounded-top-4">
                         <strong className="me-auto">Success</strong>
                         <button
                             type="button"
@@ -267,7 +269,7 @@ function CreateTicket({ onTicketCreated }) {
                             aria-label="Close"
                         ></button>
                     </div>
-                    <div className="toast-body text-center text-success">
+                    <div className="toast-body text-uppercase fw-semibold text-center fs-4 rounded-bottom-4">
                         {message || 'Ticket submitted successfully!'}
                     </div>
                 </div>

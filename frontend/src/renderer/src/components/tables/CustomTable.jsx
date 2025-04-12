@@ -16,7 +16,7 @@ function CustomTable({
     data,
     columns,
     caption,
-    topContent,
+    topComponent,
     isloading
 }) {
     const [globalFilter, setGlobalFilter] = useState('')
@@ -54,7 +54,7 @@ function CustomTable({
                         {/* Search & Entries Selection */}
                         <div className="d-flex row align-items-center justify-content-between mb-3">
                             <div className="col-8 d-flex align-items-center">
-                                {topContent && topContent}
+                                {topComponent && topComponent}
 
                                 {!hasEntriesNumber && (
                                     <div className="text-start">

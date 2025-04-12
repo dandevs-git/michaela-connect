@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'username' => 'admin',
             'password' => Hash::make('110686'),
-            'role' => $adminRole->name,
+            'role' => $headRole->name,
             'status' => 'active',
             'department_id' => 1,
         ]);
@@ -73,20 +73,23 @@ class DatabaseSeeder extends Seeder
             'department_id' => 3,
         ]);
 
-        $staff = User::create([
-            'rfid' => '0000000003',
-            'name' => 'Staff',
-            'username' => 'staff',
-            'password' => Hash::make('110686'),
-            'role' => $staffRole->name,
-            'status' => 'active',
-            'department_id' => 4,
-        ]);
+        for ($i = 10; $i <= 20; $i++) {
+            $staff = User::create([
+                'rfid' => str_pad($i, 10, '0', STR_PAD_LEFT), // RFID: 0000000010+
+                'name' => "Staff $i",
+                'username' => "staff$i",
+                'password' => Hash::make('110686'),
+                'role' => $staffRole->name,
+                'status' => 'active',
+                'department_id' => 3,
+            ]);
+
+            $staff->assignRole($staffRole);
+        }
 
         $admin->assignRole($adminRole);
         $manager->assignRole($managerRole);
         $head->assignRole($headRole);
-        $staff->assignRole($staffRole);
 
         $manageUsers = Permission::firstOrCreate(['name' => 'manage users', 'guard_name' => 'web']);
         $createTickets = Permission::firstOrCreate(['name' => 'create tickets', 'guard_name' => 'web']);

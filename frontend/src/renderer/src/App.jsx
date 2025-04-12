@@ -73,14 +73,15 @@ function App() {
             </Route>
 
             <Route
-                element={
-                    <PrivateRoute
-                        element={<MainLayout />}
-                        allowedRoles={['admin', 'manager', 'head', 'staff']}
-                        isAuth={isAuth}
-                        authenticatedUserDetails={authenticatedUserDetails}
-                    />
-                }
+                element={<MainLayout />}
+                // element={
+                //     <PrivateRoute
+                //         element={<MainLayout />}
+                //         allowedRoles={['admin', 'manager', 'head', 'staff']}
+                //         isAuth={isAuth}
+                //         authenticatedUserDetails={authenticatedUserDetails}
+                //     />
+                // }
             >
                 <Route path="/dashboard">
                     <Route index element={<Navigate to="overview" replace />} />

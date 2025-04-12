@@ -1,24 +1,35 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaCheck, FaTimes, FaUserCheck } from 'react-icons/fa'
+import { FaArrowRight, FaCheck, FaHandPaper, FaPlus, FaTimes, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
+import CreateTicket from '../../../components/CreateTicket'
+
+const subordinates = [
+    { id: 1, name: 'Anna Dela Cruz', position: 'IT Support Specialist', request_id: 68 },
+    { id: 2, name: 'Mark Reyes', position: 'Junior Developer', request_id: 62 },
+    { id: 3, name: 'Janine Santos', position: 'Technical Staff', request_id: 61 },
+    { id: 4, name: 'Carlos Gutierrez', position: 'Service Desk Agent', request_id: 38 },
+    { id: 5, name: 'Sarah Lim', position: 'Network Assistant' }
+]
 
 function NewTickets() {
     const { getData } = useAPI()
-    const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
+    const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
+    const [subordinates, setSubordinates] = useState([])
 
     useEffect(() => {
         getData('/tickets?status=new', setTickets, setLoading)
     }, [])
 
-    const handleShowModal = (tickets) => {
-        setSelectedTickets(tickets)
-    }
+    useEffect(() => {
+        getData(`/users/subordinates`, setSubordinates)
+    }, [])
 
-    const handleApproveButton = (tickets) => {
+    const getSelectedTicket = (tickets) => {
         setSelectedTickets(tickets)
     }
 
@@ -42,15 +53,63 @@ function NewTickets() {
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-success btn-sm position-relative">
-                        <FaUserCheck /> Assign
-                        <span className="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                            <span className="visually-hidden">New alerts</span>
-                        </span>
-                    </button>
+                    <div className="dropdown">
+                        <div
+                            className="btn bg-success btn-sm text-light dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <FaUserCheck /> Assign
+                        </div>
+                        <ul className="dropdown-menu dropdown-menu-start">
+                            {subordinates.length > 0 ? (
+                                <>
+                                    {subordinates
+                                        .filter((user) => user.request_id)
+                                        .map((user) => (
+                                            <li key={user.id}>
+                                                <button
+                                                    className="dropdown-item"
+                                                    onClick={() =>
+                                                        assignTicket(row.original.id, user.id)
+                                                    }
+                                                >
+                                                    {user.name}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    <li>
+                                        <hr className="dropdown-divider" />
+                                    </li>
+                                    <li className="dropdown-header text-center fw-bold">
+                                        Accept Request
+                                    </li>
+                                    {subordinates
+                                        .filter((user) => !user.request_id)
+                                        .map((user) => (
+                                            <li key={user.id}>
+                                                <button
+                                                    className="dropdown-item"
+                                                    onClick={() =>
+                                                        assignTicket(row.original.id, user.id)
+                                                    }
+                                                >
+                                                    {user.name}
+                                                </button>
+                                            </li>
+                                        ))}
+                                </>
+                            ) : (
+                                <li className="dropdown-header text-center fw-bold">
+                                    No Subordinates
+                                </li>
+                            )}
+                        </ul>
+                    </div>
                     {/* <button className="btn text-light btn-info btn-sm">
-                                <FaHandPaper /> Assign to me
-                            </button> */}
+                        <FaHandPaper /> Assign to me
+                    </button> */}
                 </div>
             )
         }
@@ -64,50 +123,29 @@ function NewTickets() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable isloading={loading} columns={columns} data={tickets} />
+                        <CustomTable
+                            topComponent={
+                                <button
+                                    className="btn btn-primary text-nowrap border me-4"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addTicketModal"
+                                >
+                                    <FaPlus /> New Ticket
+                                </button>
+                            }
+                            isloading={loading}
+                            columns={columns}
+                            data={tickets}
+                        />
                     </div>
                 </div>
             </div>
 
-            {/* <div className="modal fade" id="employeesModal" tabIndex="-1">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">
-                                Employees for {selectedTickets?.telephone_number}
-                            </h5>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            ></button>
-                        </div>
-                        <div className="modal-body text-center p-3">
-                            {selectedTickets?.users?.length > 0 ? (
-                                <ul className="list-group">
-                                    {selectedTickets.users.map((perm) => (
-                                        <li key={perm.id} className="list-group-item">
-                                            {perm.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-muted">No employees assigned.</p>
-                            )}
-                        </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-danger"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
+            <CreateTicket
+                resetTickets={setTickets}
+                resetLoading={setLoading}
+                resetError={setError}
+            />
         </>
     )
 }

@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEye } from 'react-icons/fa'
+import { FaEye, FaPlus } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import ViewTicketDetails from '../../../components/modals/ViewTicketDetails'
+import CreateTicket from '../../../components/CreateTicket'
 
 function AllTickets() {
     const { getData } = useAPI()
-    const [tickets, setTickets] = useState([])
     const [selectedTickets, setSelectedTickets] = useState(null)
+    const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
         getData('/tickets', setTickets, setLoading)
     }, [])
 
-    const handleShowModal = (tickets) => {
+    const getSelectedTicket = (tickets) => {
         setSelectedTickets(tickets)
     }
 
@@ -42,7 +44,7 @@ function AllTickets() {
                     className="btn text-light btn-info btn-sm"
                     data-bs-toggle="modal"
                     data-bs-target="#viewTicketModal"
-                    onClick={() => handleShowModal(row.original)}
+                    onClick={() => getSelectedTicket(row.original)}
                 >
                     <FaEye /> View
                 </button>
@@ -57,12 +59,31 @@ function AllTickets() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable isloading={loading} columns={columns} data={tickets} />
+                        <CustomTable
+                            topComponent={
+                                <button
+                                    className="btn btn-primary text-nowrap border me-4"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addTicketModal"
+                                >
+                                    <FaPlus /> New Ticket
+                                </button>
+                            }
+                            isloading={loading}
+                            columns={columns}
+                            data={tickets}
+                        />
                     </div>
                 </div>
             </div>
 
             <ViewTicketDetails id={'viewTicketModal'} data={selectedTickets} />
+
+            <CreateTicket
+                resetTickets={setTickets}
+                resetLoading={setLoading}
+                resetError={setError}
+            />
         </>
     )
 }

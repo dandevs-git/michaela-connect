@@ -1,6 +1,4 @@
-import { FaPlus } from 'react-icons/fa'
 import { NavLink, Outlet } from 'react-router-dom'
-import CreateTicket from '../components/CreateTicket'
 import { useAPI } from '../contexts/APIContext'
 
 const tabs = [
@@ -47,17 +45,7 @@ function ServiceDeskTicketLayout() {
                 <div className="card-body">
                     <div className="p-3">
                         <nav className="navbar navbar-expand-lg mb-4 border rounded-pill shadow">
-                            <div className="px-2">
-                                <button
-                                    className="btn btn-primary text-nowrap mx-2 border-end rounded-start-pill"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#addTicketModal"
-                                >
-                                    <FaPlus /> New Ticket
-                                </button>
-                            </div>
-                            <div className="vr"></div>
-                            <div className="px-4 w-100">
+                            <div className="px-3 w-100">
                                 <button
                                     className="navbar-toggler"
                                     type="button"
@@ -97,8 +85,6 @@ function ServiceDeskTicketLayout() {
                     </div>
                 </div>
             </div>
-
-            <CreateTicket />
         </>
     )
 }
