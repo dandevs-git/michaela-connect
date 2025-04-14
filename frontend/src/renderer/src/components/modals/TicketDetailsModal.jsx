@@ -38,13 +38,6 @@ function TicketDetailsModal({ id, data }) {
                 comment: editedComment
             })
 
-<<<<<<< HEAD:frontend/src/renderer/src/components/modals/ViewTicketDetails.jsx
-            setComments((prevComments) =>
-                prevComments.map((c) =>
-                    c.id === editingCommentId ? { ...c, comment: updated?.comment?.comment } : c
-                )
-            )
-=======
             console.log(updated)
 
             setComments((prev) =>
@@ -56,7 +49,6 @@ function TicketDetailsModal({ id, data }) {
             )
 
             console.log(comments)
->>>>>>> ad1c91ed2af6520e15e0ab040cb2abbbc574295e:frontend/src/renderer/src/components/modals/TicketDetailsModal.jsx
 
             setEditingCommentId(null)
             setEditedComment('')
