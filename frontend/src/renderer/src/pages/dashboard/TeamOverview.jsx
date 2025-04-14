@@ -121,7 +121,7 @@ function TeamOverview() {
                         {renderStatCard(
                             'Pending Approvals',
                             dashboardStats.pendingApprovals,
-                            dashboardStats.pendingApprovals,
+                            dashboardStats.pendingApprovalsDelta,
                             'bi-hourglass-top',
                             'success'
                         )}

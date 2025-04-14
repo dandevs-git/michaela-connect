@@ -18,7 +18,7 @@ function ViewTicketDetails({ id, data }) {
         if (!commentInput.trim()) return
         try {
             const newComment = await addComment(data?.id, { comment: commentInput })
-            setComments((prev) => [newComment.comment, ...prev])
+            setComments((prev) => [newComment?.comment, ...prev])
             setCommentInput('')
         } catch (error) {
             console.error('Failed to add comment:', error)
@@ -38,10 +38,11 @@ function ViewTicketDetails({ id, data }) {
                 comment: editedComment
             })
 
-            console.log(updated?.comment)
-
-            // setComments(editingCommentId ? { comment: updated?.comment } )
-            setComments((prev) => [updated?.comment])
+            setComments((prevComments) =>
+                prevComments.map((c) =>
+                    c.id === editingCommentId ? { ...c, comment: updated?.comment?.comment } : c
+                )
+            )
 
             setEditingCommentId(null)
             setEditedComment('')
@@ -244,6 +245,15 @@ function ViewTicketDetails({ id, data }) {
                                                     className="btn btn-primary ms-2"
                                                 >
                                                     Update
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setEditingCommentId(null)
+                                                        setEditedComment('')
+                                                    }}
+                                                    className="btn btn-secondary ms-2"
+                                                >
+                                                    Cancel
                                                 </button>
                                             </>
                                         ) : (
