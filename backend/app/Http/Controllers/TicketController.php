@@ -37,23 +37,30 @@ class TicketController extends Controller
         //         ->toArray();
         // }
 
-        if ($user->role !== 'admin') {
-            // $query->where(function ($q) use ($user, $managerDepartmentIds) {
+        // Only apply role-based scoping if NOT admin
+        if (!$user->hasRole('admin')) {
             $query->where(function ($q) use ($user) {
                 $q->where('requester_id', $user->id)
                     ->orWhere('assigned_to', $user->id);
 
-                // if ($user->role === 'manager' && !empty($managerDepartmentIds)) {
-                //     $q->orWhereIn('department_id', $managerDepartmentIds);
-                // }
-
-                if ($user->role === 'head') {
-                    $q->orWhereHas('requester', function ($query) use ($user) {
-                        $query->where('department_id', $user->department_id);
+                if ($user->hasRole('head')) {
+                    $q->orWhereHas('requester', function ($subQuery) use ($user) {
+                        $subQuery->where('department_id', $user->department_id);
                     });
                 }
+
+                // Optional: if using manager roles and departments
+                // if ($user->hasRole('manager')) {
+                //     $managerDeptIds = Department::where('id', $user->department_id)
+                //         ->orWhere('parent_id', $user->department_id)
+                //         ->pluck('id')
+                //         ->toArray();
+
+                //     $q->orWhereIn('department_id', $managerDeptIds);
+                // }
             });
         }
+
 
         $query->when($request->filled('status'), function ($q) use ($request) {
             $q->where('status', $request->query('status'));
@@ -75,7 +82,8 @@ class TicketController extends Controller
         //     });
         // });
 
-        $tickets = $query->orderBy('created_at', 'desc')->get();
+        $tickets = $query->get();
+        // $tickets = $query->orderBy('created_at', 'desc')->get();
         // $tickets = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json($tickets, 200);
@@ -267,8 +275,10 @@ class TicketController extends Controller
         ];
 
         $updateData = ['status' => $status];
-        if ($status === 'closed') $updateData['completed_at'] = now();
-        elseif ($status === 'failed') $updateData['failed_at'] = now();
+        if ($status === 'closed')
+            $updateData['completed_at'] = now();
+        elseif ($status === 'failed')
+            $updateData['failed_at'] = now();
 
         $ticket->update($updateData);
         $this->logActivity("Verify Resolution", sprintf($logMessages[$status], $ticket->id));

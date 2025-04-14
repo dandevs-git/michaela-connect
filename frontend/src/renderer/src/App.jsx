@@ -58,11 +58,11 @@ function App() {
     const { authenticatedUserDetails, getAuthenticatedUserDetails } = useAPI()
     const isAuth = !!localStorage.getItem('token')
 
-    useEffect(() => {
-        if (isAuth && !authenticatedUserDetails) {
-            getAuthenticatedUserDetails()
-        }
-    }, [isAuth, authenticatedUserDetails, getAuthenticatedUserDetails])
+    // useEffect(() => {
+    //     if (isAuth && !authenticatedUserDetails) {
+    //         getAuthenticatedUserDetails()
+    //     }
+    // }, [isAuth, authenticatedUserDetails, getAuthenticatedUserDetails])
 
     return (
         <Routes>
@@ -73,15 +73,15 @@ function App() {
             </Route>
 
             <Route
-                element={<MainLayout />}
-                // element={
-                //     <PrivateRoute
-                //         element={<MainLayout />}
-                //         allowedRoles={['admin', 'manager', 'head', 'staff']}
-                //         isAuth={isAuth}
-                //         authenticatedUserDetails={authenticatedUserDetails}
-                //     />
-                // }
+                // element={<MainLayout />}
+                element={
+                    <PrivateRoute
+                        element={<MainLayout />}
+                        allowedRoles={['admin', 'manager', 'head', 'staff']}
+                        isAuth={isAuth}
+                        authenticatedUserDetails={authenticatedUserDetails}
+                    />
+                }
             >
                 <Route path="/dashboard">
                     <Route index element={<Navigate to="overview" replace />} />

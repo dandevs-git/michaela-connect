@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaCheck, FaPlus, FaTimes } from 'react-icons/fa'
+import { FaCheck, FaEye, FaPlus, FaTimes } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
-import CreateTicket from '../../../components/CreateTicket'
+import CreateTicketModal from '../../../components/modals/CreateTicketModal'
+import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function PendingTickets() {
-    const { getData, postData } = useAPI()
+    const { getData, postData, userRole } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -53,30 +54,37 @@ function PendingTickets() {
             accessorKey: 'status',
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
-        { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
-        {
-            header: 'Department',
-            accessorKey: 'department_id',
-            cell: ({ row }) => row.original.requester.department?.name || '-'
-        },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center">
+                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
                     <button
-                        onClick={() => handleApproveButton(row.original)}
-                        className="btn text-light btn-success btn-sm"
+                        className="btn text-light btn-info btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#ticketDetailsModal"
+                        onClick={() => setSelectedTickets(row.original)}
                     >
-                        <FaCheck /> Approve
+                        <FaEye /> View
                     </button>
-                    <button
-                        onClick={() => handleRejectButton(row.original)}
-                        className="btn text-light btn-danger btn-sm"
-                    >
-                        <FaTimes /> Reject
-                    </button>
+
+                    {['head'].includes(userRole) && (
+                        <>
+                            <button
+                                onClick={() => handleApproveButton(row.originals)}
+                                className="btn text-light btn-success btn-sm"
+                            >
+                                <FaCheck /> Approve
+                            </button>
+                            <button
+                                onClick={() => handleRejectButton(row.original)}
+                                className="btn text-light btn-danger btn-sm"
+                            >
+                                <FaTimes /> Reject
+                            </button>
+                        </>
+                    )}
                 </div>
             )
         }
@@ -95,7 +103,7 @@ function PendingTickets() {
                                 <button
                                     className="btn btn-primary text-nowrap border me-4"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#addTicketModal"
+                                    data-bs-target="#createTicketModal"
                                 >
                                     <FaPlus /> New Ticket
                                 </button>
@@ -108,7 +116,10 @@ function PendingTickets() {
                 </div>
             </div>
 
-            <CreateTicket
+            <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+
+            <CreateTicketModal
+                id={'createTicketModal'}
                 resetTickets={setTickets}
                 resetLoading={setLoading}
                 resetError={setError}

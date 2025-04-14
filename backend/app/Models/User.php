@@ -70,6 +70,7 @@ class User extends Authenticatable
         return $this->hasMany(User::class, 'head_id');
     }
 
+
     // public function getCreatedAtAttribute($value)
     // {
     //     return $value ? Carbon::parse($value)->format('F j, Y') : null;

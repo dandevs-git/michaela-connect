@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import { useAPI } from '../contexts/APIContext'
+import { useAPI } from '../../contexts/APIContext'
 import { Modal, Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
 
-function CreateTicket({ resetTickets, resetLoading, resetError }) {
+function CreateTicketModal({ id, resetTickets, resetLoading, resetError }) {
     const { addTicket, getData } = useAPI()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -101,7 +101,7 @@ function CreateTicket({ resetTickets, resetLoading, resetError }) {
         <>
             <div
                 className="modal fade"
-                id="addTicketModal"
+                id={id}
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 tabIndex="-1"
@@ -278,4 +278,4 @@ function CreateTicket({ resetTickets, resetLoading, resetError }) {
     )
 }
 
-export default CreateTicket
+export default CreateTicketModal

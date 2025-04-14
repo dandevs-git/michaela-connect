@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { FaPlay, FaPaperPlane, FaEdit } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
-function ViewTicketDetails({ data }) {
+function TicketDetailsModal({ id, data }) {
     const { addComment, updateComment } = useAPI()
 
     const [comments, setComments] = useState(data?.comments || [])
@@ -60,7 +60,7 @@ function ViewTicketDetails({ data }) {
     return (
         <div
             className="modal fade"
-            id="viewTicketModal"
+            id={id}
             data-bs-backdrop="static"
             data-bs-keyboard="false"
             tabIndex="-1"
@@ -294,4 +294,4 @@ function ViewTicketDetails({ data }) {
     )
 }
 
-export default ViewTicketDetails
+export default TicketDetailsModal

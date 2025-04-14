@@ -1,16 +1,36 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 import api from '../api'
+import { useNavigate } from 'react-router-dom'
 
 export const APIContext = createContext()
 
 export const APIProvider = ({ children }) => {
     const [authenticatedUserDetails, setAuthenticatedUserDetails] = useState(null)
+    const [authLoading, setAuthLoading] = useState(false)
+    const [userRole, setSetUserRole] = useState(false)
+
+    const navigate = useNavigate()
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        if (token) {
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        const fetchUserDetails = async () => {
+            setAuthLoading(true)
+            const token = localStorage.getItem('token')
+            if (token) {
+                api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+                const data = await getAuthenticatedUserDetails()
+                if (data) {
+                    setAuthenticatedUserDetails(data)
+                    setSetUserRole(data.role)
+                } else {
+                    localStorage.removeItem('token')
+                    delete api.defaults.headers.common['Authorization']
+                    navigate('/login')
+                }
+            }
+            setAuthLoading(false)
         }
+
+        fetchUserDetails()
     }, [])
 
     const makeRequest = async (method, endpoint, data = null, setLoading, setData, setError) => {
@@ -49,12 +69,9 @@ export const APIProvider = ({ children }) => {
                 localStorage.setItem('token', data.token)
                 api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
             }
-            return data.message || 'Login successful'
+            return data.message
         } catch (error) {
-            const status = error?.response?.status
             const message = error?.response?.data?.message || 'Something went wrong'
-            if (status === 401) return 'Invalid username or password'
-            if (status === 403) return 'Access denied. Please contact the administrator.'
             return message
         }
     }
@@ -112,6 +129,7 @@ export const APIProvider = ({ children }) => {
                 authenticatedUserDetails,
                 setAuthenticatedUserDetails,
                 getAuthenticatedUserDetails,
+                userRole,
 
                 getData,
                 postData,
@@ -130,7 +148,24 @@ export const APIProvider = ({ children }) => {
                 deleteComment
             }}
         >
-            {children}
+            {authLoading ? (
+                <div className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center flex-column">
+                    <div className="d-flex gap-4">
+                        <div className="spinner-grow text-light" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                        <div className="spinner-grow text-light" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                        <div className="spinner-grow text-light" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <h4 className="text-light mt-3">Authenticating</h4>
+                </div>
+            ) : (
+                children
+            )}
         </APIContext.Provider>
     )
 }

@@ -3,7 +3,8 @@ import CustomTable from '../../../components/tables/CustomTable'
 import { FaEye, FaTrash, FaEdit, FaPlus } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
-import CreateTicket from '../../../components/CreateTicket'
+import CreateTicketModal from '../../../components/modals/CreateTicketModal'
+import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function FailedTickets() {
     const { getData } = useAPI()
@@ -28,27 +29,31 @@ function FailedTickets() {
             accessorKey: 'status',
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
-        { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
-        {
-            header: 'Department',
-            accessorKey: 'department_id',
-            cell: ({ row }) => row.original.requester.department?.name || '-'
-        },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-info btn-sm">
+                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
+                    <button
+                        className="btn text-light btn-info btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#ticketDetailsModal"
+                        onClick={() => setSelectedTickets(row.original)}
+                    >
                         <FaEye /> View
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
-                    </button>
+
+                    {['admin'].includes(userRole) && (
+                        <>
+                            <button className="btn text-light btn-warning btn-sm">
+                                <FaEdit /> Edit
+                            </button>
+                            <button className="btn text-light btn-danger btn-sm">
+                                <FaTrash /> Delete
+                            </button>
+                        </>
+                    )}
                 </div>
             )
         }
@@ -67,7 +72,7 @@ function FailedTickets() {
                                 <button
                                     className="btn btn-primary text-nowrap border me-4"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#addTicketModal"
+                                    data-bs-target="#createTicketModal"
                                 >
                                     <FaPlus /> New Ticket
                                 </button>
@@ -80,7 +85,10 @@ function FailedTickets() {
                 </div>
             </div>
 
-            <CreateTicket
+            <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+
+            <CreateTicketModal
+                id={'createTicketModal'}
                 resetTickets={setTickets}
                 resetLoading={setLoading}
                 resetError={setError}

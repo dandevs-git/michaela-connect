@@ -7,13 +7,17 @@ const tabs = [
         link: '/servicedesk/tickets/all',
         roles: ['admin', 'staff', 'head', 'manager']
     },
-    { tab: 'Pending', link: '/servicedesk/tickets/pending', roles: ['admin', 'head'] },
+    { tab: 'Pending', link: '/servicedesk/tickets/pending', roles: ['admin', 'head', 'manager'] },
     { tab: 'New', link: '/servicedesk/tickets/new', roles: ['admin', 'head'] },
-    { tab: 'Open', link: '/servicedesk/tickets/open', roles: ['admin', 'head', 'staff'] },
+    {
+        tab: 'Open',
+        link: '/servicedesk/tickets/open',
+        roles: ['admin', 'head', 'staff', 'manager']
+    },
     {
         tab: 'In Progress',
         link: '/servicedesk/tickets/inprogress',
-        roles: ['admin', 'staff', 'head']
+        roles: ['admin', 'staff', 'head', 'manager']
     },
     {
         tab: 'Resolved',

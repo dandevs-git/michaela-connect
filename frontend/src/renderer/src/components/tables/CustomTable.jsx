@@ -44,7 +44,7 @@ function CustomTable({
                         className="d-flex flex-column justify-content-center align-items-center"
                         style={{ minHeight: '200px' }}
                     >
-                        <div className="spinner-border text-primary mb-2" role="status">
+                        <div className="spinner-grow text-primary mb-2" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </div>
                         <p className="text-muted fw-semibold">Fetching data, please wait...</p>
@@ -96,7 +96,10 @@ function CustomTable({
                         </div>
 
                         {/* Table */}
-                        <div className="table-responsive rounded-3 border mb-3">
+                        <div
+                            className="table-responsive rounded-3 border mb-3"
+                            style={{ overflow: 'visible' }}
+                        >
                             <table className="table table-hover text-wrap mb-3 text-center">
                                 {caption && <caption className="text-center">{caption}</caption>}
                                 <thead>

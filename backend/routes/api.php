@@ -29,10 +29,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/department-resolution-time', [DashboardController::class, 'departmentResolutionTime']);
 
     Route::prefix('tickets')->group(function () {
-        Route::get('/status', [TicketController::class, 'ticketStatusData']);
-        Route::get('/trends', [TicketController::class, 'ticketVolumeTrends']);
-        Route::get('/departments', [TicketController::class, 'departmentResolutionTime']);
-
         Route::post('{ticket}/approve', [TicketController::class, 'approve'])->name('tickets.approve');
         Route::post('{ticket}/reject', [TicketController::class, 'reject'])->name('tickets.reject');
         Route::post('{ticket}/assign', [TicketController::class, 'assign'])->name('tickets.assign');
@@ -83,6 +79,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             'roles' => RoleController::class,
         ]);
         Route::get('/users/{id}/subordinates', [UserController::class, 'getUserSubordinates']);
+        Route::get('/users/{id}/head', [UserController::class, 'getUserHead']);
         Route::patch('/users/{id}/lock', [UserController::class, 'lockUnlockUser'])->name('users.lock');
         Route::post('/admin-reset-password/{id}', [PasswordController::class, 'adminResetPassword'])->name('password.adminReset');
     });
