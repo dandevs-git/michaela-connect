@@ -21,7 +21,7 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json([
                 'message' => 'Invalid username'
-            ], 401);
+            ], 404);
         }
 
         if ($user->status === 'locked') {

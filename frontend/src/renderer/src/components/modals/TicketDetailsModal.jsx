@@ -17,8 +17,10 @@ function TicketDetailsModal({ id, data }) {
     const handleAddComment = async () => {
         if (!commentInput.trim()) return
         try {
-            const newComment = await addComment(data?.id, { comment: commentInput })
-            setComments((prev) => [newComment?.comment, ...prev])
+            const newComment = await addComment(data?.id, { text: commentInput })
+            
+            setComments((prev) => [newComment.comment, ...prev])
+            
             setCommentInput('')
         } catch (error) {
             console.error('Failed to add comment:', error)
@@ -35,20 +37,16 @@ function TicketDetailsModal({ id, data }) {
 
         try {
             const updated = await updateComment(data?.id, editingCommentId, {
-                comment: editedComment
+                text: editedComment
             })
-
-            console.log(updated)
-
+            
             setComments((prev) =>
                 prev.map((comment) =>
                     comment?.id === editingCommentId
-                        ? { ...comment, comment: updated?.comment?.comment }
+                        ? { ...comment, text: updated?.comment?.text }
                         : comment
                 )
             )
-
-            console.log(comments)
 
             setEditingCommentId(null)
             setEditedComment('')
@@ -197,7 +195,7 @@ function TicketDetailsModal({ id, data }) {
                                     >
                                         {comments?.length > 0 ? (
                                             comments.map((comment) => (
-                                                <div key={comment?.id} className="mb-3">
+                                                <div key={comment.id} className="mb-3">
                                                     <div className="d-flex justify-content-between align-items-center">
                                                         <div>
                                                             <span className="fw-bold text-primary">
@@ -215,7 +213,7 @@ function TicketDetailsModal({ id, data }) {
                                                                 onClick={() =>
                                                                     handleEditComment(
                                                                         comment?.id,
-                                                                        comment?.comment
+                                                                        comment?.text
                                                                     )
                                                                 }
                                                             >
@@ -226,7 +224,7 @@ function TicketDetailsModal({ id, data }) {
                                                     </div>
 
                                                     <div className="text-muted">
-                                                        {comment?.comment}
+                                                        {comment?.text}
                                                     </div>
                                                 </div>
                                             ))

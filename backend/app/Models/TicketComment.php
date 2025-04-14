@@ -11,9 +11,16 @@ class TicketComment extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['ticket_id', 'user_id', 'comment', 'edited_at'];
+    protected $fillable = ['ticket_id', 'user_id', 'text', 'edited_at'];
 
-    protected $dates = ['edited_at', 'deleted_at'];
+    protected $casts = [
+        'edited_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    protected $appends = ['formatted_created_at', 'formatted_updated_at'];
 
     public function ticket()
     {
@@ -25,12 +32,13 @@ class TicketComment extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function getCreatedAtAttribute($value)
-    // {
-    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
-    // }
-    // public function getUpdatedAtAttribute($value)
-    // {
-    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
-    // }
+    public function getFormattedCreatedAtAttribute()
+    {
+        return $this->created_at ? $this->created_at->format('F j, Y g:i A') : null;
+    }
+
+    public function getFormattedUpdatedAtAttribute()
+    {
+        return $this->updated_at ? $this->updated_at->format('F j, Y g:i A') : null;
+    }
 }

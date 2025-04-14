@@ -304,82 +304,44 @@ class TicketController extends Controller
 
     public function addComment(Request $request, $ticket_id)
     {
-        $request->validate([
-            'comment' => 'required|string',
-        ]);
-
-        $ticket = Ticket::findOrFail($ticket_id);
+        $request->validate(['text' => 'required|string']);
 
         $comment = TicketComment::create([
-            'ticket_id' => $ticket->id,
+            'ticket_id' => $ticket_id,
             'user_id' => Auth::id(),
-            'comment' => $request->comment,
+            'text' => $request->text,
         ]);
 
         $comment->load('user:id,name');
+        $this->logActivity('Add Comment', "Comment added on Ticket #{$ticket_id}");
 
-        $this->logActivity("Add Comment", "User " . Auth::user()->name . " commented on Ticket #{$ticket->id}");
-
-        return response()->json([
-            'message' => 'Comment added successfully',
-            'comment' => $comment,
-        ]);
+        return response()->json(['message' => 'Comment added Successfully', 'comment' => $comment]);
     }
-
 
     public function getComments($ticket_id)
     {
-        $ticket = Ticket::findOrFail($ticket_id);
-        $comments = $ticket->comments()->with('user:id,name')->latest()->get();
+        $comments = TicketComment::where('ticket_id', $ticket_id)
+            ->with('user:id,name')
+            ->latest()
+            ->get();
 
         return response()->json($comments);
     }
 
-    public function getCommentShow($ticket_id, $comment_id)
-    {
-        $ticket = Ticket::findOrFail($ticket_id);
-
-        $comment = $ticket->comments()
-            ->where('id', $comment_id)
-            ->with('user:id,name')
-            ->first();
-
-        if (!$comment) {
-            return response()->json(['message' => 'Comment not found'], 404);
-        }
-
-        return response()->json($comment);
-    }
-
-
-
     public function editComment(Request $request, $ticket_id, $comment_id)
     {
-        $request->validate([
-            'comment' => 'required|string',
-        ]);
+        $request->validate(['text' => 'required|string']);
 
         $comment = TicketComment::where('id', $comment_id)
             ->where('user_id', Auth::id())
-            ->first();
+            ->firstOrFail();
 
-        if (!$comment) {
-            return response()->json(['comment id' => $comment_id, 'user_id' => $comment_id, 'message' => 'Comment not found or you are not authorized to edit this comment'], 403);
-        }
+        $comment->update(['text' => $request->text, 'edited_at' => now()]);
 
-        $comment->update([
-            'comment' => $request->comment,
-            'edited_at' => now(),
-        ]);
+        $this->logActivity('Edit Comment', "Edited comment on Ticket #{$ticket_id}");
 
-        $this->logActivity("Edit Comment", "User " . Auth::user()->name . " edited comment on Ticket #{$ticket_id}");
-
-        return response()->json([
-            'message' => 'Comment updated successfully',
-            'comment' => $comment,
-        ]);
+        return response()->json(['message' => 'Comment updated', 'comment' => $comment]);
     }
-
 
     public function deleteComment($ticket_id, $comment_id)
     {
@@ -388,41 +350,35 @@ class TicketController extends Controller
             ->firstOrFail();
 
         $comment->delete();
+        $this->logActivity('Delete Comment', "Deleted comment on Ticket #{$ticket_id}");
 
-        $this->logActivity("Delete Comment", "User " . Auth::user()->name . " deleted a comment on Ticket #{$ticket_id}");
-
-        return response()->json(['message' => 'Comment deleted successfully']);
+        return response()->json(['message' => 'Comment deleted']);
     }
 
     public function restoreComment($ticket_id, $comment_id)
     {
         $comment = TicketComment::onlyTrashed()->findOrFail($comment_id);
 
-        if (Auth::user()->role !== 'admin') {
+        if (!Auth::user()->hasRole('admin')) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $comment->restore();
+        $this->logActivity('Restore Comment', "Restored comment on Ticket #{$ticket_id}");
 
-        $this->logActivity(
-            "Restore Comment",
-            "Admin restored a deleted comment on Ticket #{$ticket_id}"
-        );
-
-        return response()->json(['message' => 'Comment restored successfully']);
+        return response()->json(['message' => 'Comment restored']);
     }
 
     public function forceDeleteComment($ticket_id, $comment_id)
     {
         $comment = TicketComment::onlyTrashed()->findOrFail($comment_id);
 
-        if (Auth::user()->role !== 'admin') {
+        if (!Auth::user()->hasRole('admin')) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $comment->forceDelete();
-
-        $this->logActivity("Force Delete Comment", "Admin permanently deleted a comment on Ticket #{$ticket_id}");
+        $this->logActivity('Force Delete Comment', "Permanently deleted comment on Ticket #{$ticket_id}");
 
         return response()->json(['message' => 'Comment permanently deleted']);
     }
