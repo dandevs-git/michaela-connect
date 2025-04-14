@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaArrowRight, FaCheck, FaHandPaper, FaPlus, FaTimes, FaUserCheck } from 'react-icons/fa'
+import { FaArrowRight, FaCheck, FaEye, FaHandPaper, FaPlus, FaTimes, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
@@ -17,7 +17,7 @@ const subordinates = [
 ]
 
 function NewTickets() {
-    const { getData, postData } = useAPI()
+    const { getData, postData, userRole } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [selectedUser, setSelectedUser] = useState(null)
     const [tickets, setTickets] = useState([])

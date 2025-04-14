@@ -72,7 +72,7 @@ function PendingTickets() {
                     {['head'].includes(userRole) && (
                         <>
                             <button
-                                onClick={() => handleApproveButton(row.originals)}
+                                onClick={() => handleApproveButton(row.original)}
                                 className="btn text-light btn-success btn-sm"
                             >
                                 <FaCheck /> Approve

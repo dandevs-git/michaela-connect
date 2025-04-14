@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaPlay, FaPlus, FaUserCheck } from 'react-icons/fa'
+import { FaEye, FaPlay, FaPlus, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import CreateTicketModal from '../../../components/modals/CreateTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function OpenTickets() {
-    const { getData } = useAPI()
+    const { getData, userRole } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)

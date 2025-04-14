@@ -7,7 +7,7 @@ import CreateTicketModal from '../../../components/modals/CreateTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function ClosedTickets() {
-    const { getData } = useAPI()
+    const { getData, userRole } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
