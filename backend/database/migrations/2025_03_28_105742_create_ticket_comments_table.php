@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->text('comment');
+            $table->text('text');
             $table->timestamp('edited_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

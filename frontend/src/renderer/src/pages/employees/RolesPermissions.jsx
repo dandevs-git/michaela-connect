@@ -4,13 +4,13 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function RolesPermissions() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [roles, setRoles] = useState([])
     const [selectedRole, setSelectedRole] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/roles', setRoles, setLoading)
+        getData('/roles', setRoles, setLoading)
     }, [])
 
     const handleShowModal = (role) => {

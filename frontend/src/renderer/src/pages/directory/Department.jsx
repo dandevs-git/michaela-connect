@@ -4,12 +4,12 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function Department() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [departments, setDepartments] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/departments', setDepartments, setLoading)
+        getData('/departments', setDepartments, setLoading)
     }, [])
 
     const columns = [

@@ -4,13 +4,13 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function PrinterDirectory() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [printer, setPrinter] = useState([])
     const [selectedprinter, setSelectedprinter] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/printers', setPrinter, setLoading)
+        getData('/printers', setPrinter, setLoading)
     }, [])
 
     const handleShowModal = (telephone) => {

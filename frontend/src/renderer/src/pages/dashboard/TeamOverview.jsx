@@ -5,28 +5,26 @@ import CustomPieChart from '../../components/charts/CustomPieChart'
 import { useAPI } from '../../contexts/APIContext'
 
 function TeamOverview() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [ticketStatusData, setTicketStatusData] = useState([])
     const [ticketVolumeTrends, setTicketVolumeTrends] = useState([])
     const [ticketsByDepartment, setTicketsByDepartment] = useState([])
     const [dashboardStats, setDashboardStats] = useState([])
 
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
         const fetchAllData = async () => {
-            setLoading(true)
             try {
                 await Promise.all([
-                    fetchData('/dashboard', setDashboardStats),
-                    fetchData('/ticket-status-data', setTicketStatusData),
-                    fetchData('/ticket-volume-trends', setTicketVolumeTrends),
-                    fetchData('/department-resolution-time', setTicketsByDepartment)
+                    getData('/dashboard', setDashboardStats, setLoading, setError),
+                    getData('/ticket-status-data', setTicketStatusData),
+                    getData('/ticket-volume-trends', setTicketVolumeTrends),
+                    getData('/department-resolution-time', setTicketsByDepartment)
                 ])
             } catch (error) {
                 console.error('Error fetching dashboard data:', error)
-            } finally {
-                setLoading(false)
             }
         }
 

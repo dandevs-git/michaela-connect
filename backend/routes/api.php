@@ -29,10 +29,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/department-resolution-time', [DashboardController::class, 'departmentResolutionTime']);
 
     Route::prefix('tickets')->group(function () {
-        Route::get('/status', [TicketController::class, 'ticketStatusData']);
-        Route::get('/trends', [TicketController::class, 'ticketVolumeTrends']);
-        Route::get('/departments', [TicketController::class, 'departmentResolutionTime']);
-
         Route::post('{ticket}/approve', [TicketController::class, 'approve'])->name('tickets.approve');
         Route::post('{ticket}/reject', [TicketController::class, 'reject'])->name('tickets.reject');
         Route::post('{ticket}/assign', [TicketController::class, 'assign'])->name('tickets.assign');
@@ -44,10 +40,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::prefix('{ticket}/comments')->group(function () {
             Route::post('/', [TicketController::class, 'addComment'])->name('tickets.comments.add');
             Route::get('/', [TicketController::class, 'getComments'])->name('tickets.comments.list');
-            Route::put('{comment}', [TicketController::class, 'editComment'])->name('comments.edit');
-            Route::delete('{comment}', [TicketController::class, 'deleteComment'])->name('comments.delete');
-            Route::post('{comment}/restore', [TicketController::class, 'restoreComment'])->name('comments.restore');
-            Route::delete('{comment}/force-delete', [TicketController::class, 'forceDeleteComment'])->name('comments.forceDelete');
+            Route::get('{comment}', [TicketController::class, 'getCommentShow'])->name('tickets.comments.show');
+            Route::put('{comment}', [TicketController::class, 'editComment'])->name('tickets.comments.edit');
+            Route::delete('{comment}', [TicketController::class, 'deleteComment'])->name('tickets.comments.delete');
+            Route::post('{comment}/restore', [TicketController::class, 'restoreComment'])->name('tickets.comments.restore');
+            Route::delete('{comment}/force-delete', [TicketController::class, 'forceDeleteComment'])->name('tickets.comments.forceDelete');
         });
     });
 
@@ -70,14 +67,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'printers' => PrinterController::class,
     ]);
 
+
+    // Route::middleware(['role:head'])->group(function () {
+    Route::get('/users/subordinates', [UserController::class, 'getSubordinates']);
+    // });
+
     Route::middleware(['role:admin'])->group(function () {
 
         Route::apiResources([
             'users' => UserController::class,
             'roles' => RoleController::class,
         ]);
-
-        Route::get('/users/{id}/subordinates', [UserController::class, 'getSubordinates']);
+        Route::get('/users/{id}/subordinates', [UserController::class, 'getUserSubordinates']);
+        Route::get('/users/{id}/head', [UserController::class, 'getUserHead']);
         Route::patch('/users/{id}/lock', [UserController::class, 'lockUnlockUser'])->name('users.lock');
         Route::post('/admin-reset-password/{id}', [PasswordController::class, 'adminResetPassword'])->name('password.adminReset');
     });

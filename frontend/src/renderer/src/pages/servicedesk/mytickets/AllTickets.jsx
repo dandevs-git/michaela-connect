@@ -1,23 +1,21 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEye } from 'react-icons/fa'
+import { FaEye, FaPlus } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
-import ViewTicketDetails from '../../../components/modals/ViewTicketDetails'
+import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
+import CreateTicketModal from '../../../components/modals/CreateTicketModal'
 
 function AllTickets() {
-    const { fetchData } = useAPI()
-    const [tickets, setTickets] = useState([])
+    const { getData, userRole } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
+    const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        fetchData('/tickets', setTickets, setLoading)
+        getData('/tickets', setTickets, setLoading)
     }, [])
-
-    const handleShowModal = (tickets) => {
-        setSelectedTickets(tickets)
-    }
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
@@ -27,25 +25,21 @@ function AllTickets() {
             accessorKey: 'status',
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
-        { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
-        {
-            header: 'Department',
-            accessorKey: 'department_id',
-            cell: ({ row }) => row.original.requester.department?.name || '-'
-        },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <button
-                    className="btn text-light btn-info btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#viewTicketModal"
-                    onClick={() => handleShowModal(row.original)}
-                >
-                    <FaEye /> View
-                </button>
+                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
+                    <button
+                        className="btn text-light btn-info btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#ticketDetailsModal"
+                        onClick={() => setSelectedTickets(row.original)}
+                    >
+                        <FaEye /> View
+                    </button>
+                </div>
             )
         }
     ]
@@ -57,12 +51,32 @@ function AllTickets() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable isloading={loading} columns={columns} data={tickets} />
+                        <CustomTable
+                            topComponent={
+                                <button
+                                    className="btn btn-primary text-nowrap border me-4"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#createTicketModal"
+                                >
+                                    <FaPlus /> New Ticket
+                                </button>
+                            }
+                            isloading={loading}
+                            columns={columns}
+                            data={tickets}
+                        />
                     </div>
                 </div>
             </div>
 
-            <ViewTicketDetails id={'viewTicketModal'} data={selectedTickets} />
+            <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+
+            <CreateTicketModal
+                id={'createTicketModal'}
+                resetTickets={setTickets}
+                resetLoading={setLoading}
+                resetError={setError}
+            />
         </>
     )
 }

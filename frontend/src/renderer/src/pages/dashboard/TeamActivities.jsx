@@ -3,12 +3,12 @@ import CustomTable from '../../components/tables/CustomTable'
 import { useAPI } from '../../contexts/APIContext'
 
 function TeamActivities() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [dataLogs, setDataLogs] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/logs/ticket', setDataLogs, setLoading)
+        getData('/logs/ticket', setDataLogs, setLoading)
     }, [])
 
     const columnsLogs = [

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { FaPlay, FaPaperPlane, FaEdit } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
-function ViewTicketDetails({ id, data }) {
+function TicketDetailsModal({ id, data }) {
     const { addComment, updateComment } = useAPI()
 
     const [comments, setComments] = useState(data?.comments || [])
@@ -11,7 +11,7 @@ function ViewTicketDetails({ id, data }) {
     const [editedComment, setEditedComment] = useState('')
 
     useEffect(() => {
-        setComments(data?.comments || [])
+        setComments(data?.comments)
     }, [data?.comments])
 
     const handleAddComment = async () => {
@@ -38,11 +38,25 @@ function ViewTicketDetails({ id, data }) {
                 comment: editedComment
             })
 
+<<<<<<< HEAD:frontend/src/renderer/src/components/modals/ViewTicketDetails.jsx
             setComments((prevComments) =>
                 prevComments.map((c) =>
                     c.id === editingCommentId ? { ...c, comment: updated?.comment?.comment } : c
                 )
             )
+=======
+            console.log(updated)
+
+            setComments((prev) =>
+                prev.map((comment) =>
+                    comment?.id === editingCommentId
+                        ? { ...comment, comment: updated?.comment?.comment }
+                        : comment
+                )
+            )
+
+            console.log(comments)
+>>>>>>> ad1c91ed2af6520e15e0ab040cb2abbbc574295e:frontend/src/renderer/src/components/modals/TicketDetailsModal.jsx
 
             setEditingCommentId(null)
             setEditedComment('')
@@ -66,7 +80,7 @@ function ViewTicketDetails({ id, data }) {
                     <div className="modal-header bg-primary text-light">
                         <h5 className="modal-title">
                             <span className="small">Ticket# </span>
-                            <span className="fw-bold">{data?.ticket_number}</span>
+                            <span className="fw-bold">{data?.ticket_number ?? 'No Ticket'}</span>
                         </h5>
                         <button
                             type="button"
@@ -189,7 +203,7 @@ function ViewTicketDetails({ id, data }) {
                                         className="overflow-auto p-3 border-top border-bottom"
                                         style={{ maxHeight: '300px' }}
                                     >
-                                        {comments.length > 0 ? (
+                                        {comments?.length > 0 ? (
                                             comments.map((comment) => (
                                                 <div key={comment?.id} className="mb-3">
                                                     <div className="d-flex justify-content-between align-items-center">
@@ -297,4 +311,4 @@ function ViewTicketDetails({ id, data }) {
     )
 }
 
-export default ViewTicketDetails
+export default TicketDetailsModal

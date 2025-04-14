@@ -156,4 +156,45 @@ class UserController extends Controller
         ]);
     }
 
+    public function getSubordinates()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $subordinates = $user->subordinates()->with(['department', 'head'])->get();
+
+        if ($subordinates->isEmpty()) {
+            return response()->json(['message' => 'No subordinates found'], 200);
+        }
+
+        return response()->json($subordinates, 200);
+    }
+
+
+    public function getUserSubordinates($id)
+    {
+        $user = User::with(['subordinates.department'])->findOrFail($id);
+
+        return response()->json($user->subordinates, 200);
+    }
+
+
+    public function getUserHead($id)
+    {
+        $user = User::with('department')->findOrFail($id);
+
+        $head = User::where('department_id', $user->department_id)
+            ->where('role', 'head')
+            ->first();
+
+        return response()->json([
+            'user' => $user->name,
+            'department' => $user->department->name ?? 'No Department',
+            'head_of_department' => $head ? $head->name : 'No head assigned',
+        ]);
+    }
+
 }

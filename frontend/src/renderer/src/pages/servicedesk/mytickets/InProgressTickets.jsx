@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaUndo, FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
+import { FaUndo, FaCheckCircle, FaTimesCircle, FaPlus, FaEye } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
+import CreateTicketModal from '../../../components/modals/CreateTicketModal'
+import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function InProgressTickets() {
-    const { fetchData } = useAPI()
-    const [tickets, setTickets] = useState([])
+    const { getData, userRole } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
+    const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        fetchData('/tickets?status=in_progress&&assigned_to=me', setTickets, setLoading)
+        getData('/tickets?status=in_progress&&assigned_to=me', setTickets, setLoading)
     }, [])
 
-    const handleShowModal = (tickets) => {
+    const getSelectedTicket = (tickets) => {
         setSelectedTickets(tickets)
     }
 
@@ -26,27 +29,34 @@ function InProgressTickets() {
             accessorKey: 'status',
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
-        { header: 'Description', accessorKey: 'description' },
         { header: 'Title', accessorKey: 'title' },
-        {
-            header: 'Department',
-            accessorKey: 'department_id',
-            cell: ({ row }) => row.original.requester.department?.name || '-'
-        },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-success btn-sm">
-                        <FaCheckCircle /> Resolved
+                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
+                    <button
+                        className="btn text-light btn-info btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#ticketDetailsModal"
+                        onClick={() => setSelectedTickets(row.original)}
+                    >
+                        <FaEye /> View
                     </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTimesCircle /> Failed
-                    </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaUndo /> Reopened
-                    </button>
+
+                    {['head', 'staff'].includes(userRole) && (
+                        <>
+                            <button className="btn text-light btn-success btn-sm">
+                                <FaCheckCircle /> Resolved
+                            </button>
+                            <button className="btn text-light btn-danger btn-sm">
+                                <FaTimesCircle /> Failed
+                            </button>
+                            <button className="btn text-light btn-warning btn-sm">
+                                <FaUndo /> Reopened
+                            </button>
+                        </>
+                    )}
                 </div>
             )
         }
@@ -60,50 +70,32 @@ function InProgressTickets() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable isloading={loading} columns={columns} data={tickets} />
+                        <CustomTable
+                            topComponent={
+                                <button
+                                    className="btn btn-primary text-nowrap border me-4"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#createTicketModal"
+                                >
+                                    <FaPlus /> New Ticket
+                                </button>
+                            }
+                            isloading={loading}
+                            columns={columns}
+                            data={tickets}
+                        />
                     </div>
                 </div>
             </div>
 
-            {/* <div className="modal fade" id="employeesModal" tabIndex="-1">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">
-                                Employees for {selectedTickets?.telephone_number}
-                            </h5>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            ></button>
-                        </div>
-                        <div className="modal-body text-center p-3">
-                            {selectedTickets?.users?.length > 0 ? (
-                                <ul className="list-group">
-                                    {selectedTickets.users.map((perm) => (
-                                        <li key={perm.id} className="list-group-item">
-                                            {perm.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-muted">No employees assigned.</p>
-                            )}
-                        </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-danger"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
+            <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+
+            <CreateTicketModal
+                id={'createTicketModal'}
+                resetTickets={setTickets}
+                resetLoading={setLoading}
+                resetError={setError}
+            />
         </>
     )
 }

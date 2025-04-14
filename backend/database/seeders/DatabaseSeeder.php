@@ -4,12 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\Anydesk;
 use App\Models\Department;
-use App\Models\DirectoryCategory;
-use App\Models\DirectoryEntry;
 use App\Models\Internet;
 use App\Models\IpAddress;
 use App\Models\Printer;
+use App\Models\Priority;
 use App\Models\Telephone;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -24,12 +24,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Priority::factory()->count(3)->create();
+
+        // // Then seed tickets using valid foreign keys
+
         DB::table('priorities')->insert([
             ['name' => 'Low', 'response_time' => 480, 'resolution_time' => 8640],  // 8 hours, 6 days
             ['name' => 'Medium', 'response_time' => 240, 'resolution_time' => 4320], // 4 hours, 3 days
             ['name' => 'High', 'response_time' => 60, 'resolution_time' => 720], // 1 hour, 12 hours
             ['name' => 'Urgent', 'response_time' => 15, 'resolution_time' => 240], // 15 min, 4 hours
         ]);
+
 
         Department::factory()->count(6)->create();
         Telephone::factory()->count(10)->create();
@@ -73,25 +78,36 @@ class DatabaseSeeder extends Seeder
             'department_id' => 3,
         ]);
 
-        $staff = User::create([
-            'rfid' => '0000000003',
-            'name' => 'Staff',
-            'username' => 'staff',
-            'password' => Hash::make('110686'),
-            'role' => $staffRole->name,
-            'status' => 'active',
-            'department_id' => 4,
-        ]);
+        $head->update(['head_id' => $head->id]);
+
+        for ($i = 10; $i <= 20; $i++) {
+            $staff = User::create([
+                'rfid' => str_pad($i, 10, '0', STR_PAD_LEFT),
+                'name' => "Staff $i",
+                'username' => "staff$i",
+                'password' => Hash::make('110686'),
+                'role' => $staffRole->name,
+                'status' => 'active',
+                'department_id' => 3,
+                'head_id' => $head->id,
+            ]);
+
+            $staff->assignRole($staffRole);
+        }
+
 
         $admin->assignRole($adminRole);
         $manager->assignRole($managerRole);
         $head->assignRole($headRole);
-        $staff->assignRole($staffRole);
 
         $manageUsers = Permission::firstOrCreate(['name' => 'manage users', 'guard_name' => 'web']);
         $createTickets = Permission::firstOrCreate(['name' => 'create tickets', 'guard_name' => 'web']);
         $approveTickets = Permission::firstOrCreate(['name' => 'approve tickets', 'guard_name' => 'web']);
 
         $adminRole->givePermissionTo([$manageUsers, $createTickets, $approveTickets]);
+
+
+        Ticket::factory()->count(100)->create();
+
     }
 }

@@ -4,13 +4,13 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function InternetDirectory() {
-    const { fetchData } = useAPI()
+    const { getData } = useAPI()
     const [internet, setInternet] = useState([])
     const [selectedInternet, setSelectedInternet] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchData('/internet', setInternet, setLoading)
+        getData('/internet', setInternet, setLoading)
     }, [])
 
     const handleShowModal = (Internet) => {
