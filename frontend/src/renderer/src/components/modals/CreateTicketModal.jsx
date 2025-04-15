@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal, Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
+import { FaPlus } from 'react-icons/fa'
 
 function CreateTicketModal({ id, resetTickets, resetLoading, resetError }) {
     const { addTicket, getData } = useAPI()
@@ -99,6 +100,13 @@ function CreateTicketModal({ id, resetTickets, resetLoading, resetError }) {
 
     return (
         <>
+            <button
+                className="btn btn-primary text-nowrap border me-4"
+                data-bs-toggle="modal"
+                data-bs-target="#createTicketModal"
+            >
+                <FaPlus /> New Ticket
+            </button>
             <div
                 className="modal fade"
                 id={id}

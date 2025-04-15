@@ -30,16 +30,20 @@ function AllTickets() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
-                    <button
-                        className="btn text-light btn-info btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#ticketDetailsModal"
-                        onClick={() => setSelectedTickets(row.original)}
-                    >
-                        <FaEye /> View
-                    </button>
-                </div>
+                <>
+                    <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
+                        <button
+                            className="btn text-light btn-info btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#ticketDetailsModal"
+                            onClick={() => setSelectedTickets(row.original)}
+                        >
+                            <FaEye /> View
+                        </button>
+                    </div>
+
+                    <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+                </>
             )
         }
     ]
@@ -68,15 +72,6 @@ function AllTickets() {
                     </div>
                 </div>
             </div>
-
-            <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
-
-            <CreateTicketModal
-                id={'createTicketModal'}
-                resetTickets={setTickets}
-                resetLoading={setLoading}
-                resetError={setError}
-            />
         </>
     )
 }

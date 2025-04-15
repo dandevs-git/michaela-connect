@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { FaPlay, FaPaperPlane, FaEdit } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
+import StatusBadge from '../badge/StatusBadge'
 
 function TicketDetailsModal({ id, data }) {
     const { addComment, updateComment, authenticatedUserDetails } = useAPI()
@@ -103,17 +104,15 @@ function TicketDetailsModal({ id, data }) {
                             <div className="col-6 p-3">
                                 <div className="row g-3 mb-3">
                                     <div className="col-md-6">
-                                        <div className="card shadow p-3">
+                                        <div className="card shadow p-3 rounded-4">
                                             <h6 className="fw-bold">Status:</h6>
-                                            <span className="bg-warning rounded-pill text-light text-center fw-semibold">
-                                                {data?.status.replace('_', ' ').toUpperCase()}
-                                            </span>
+                                            {data?.status ?? <StatusBadge status={data?.status} />}
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         <div className="card shadow p-3">
                                             <h6 className="fw-bold">Priority:</h6>
-                                            <span className="bg-danger rounded-pill text-light text-center fw-semibold">
+                                            <span className="text-center fw-semibold">
                                                 {data?.priority?.name
                                                     .replace('_', ' ')
                                                     .toUpperCase()}
