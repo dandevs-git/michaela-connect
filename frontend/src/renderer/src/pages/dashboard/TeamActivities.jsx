@@ -37,32 +37,6 @@ function TeamActivities() {
             accessorKey: 'ip_address'
         }
     ]
-    // const columnsTask = [
-    //     {
-    //         header: 'Task Name',
-    //         accessorKey: 'taskName'
-    //     },
-    //     {
-    //         header: 'Assigned To',
-    //         accessorKey: 'assignedTo'
-    //     },
-    //     {
-    //         header: 'Due Date',
-    //         accessorKey: 'dueDate'
-    //     },
-    //     {
-    //         header: 'Priority',
-    //         accessorKey: 'priority'
-    //     },
-    //     {
-    //         header: 'Status',
-    //         accessorKey: 'status'
-    //     },
-    //     {
-    //         header: 'Time Remaining',
-    //         accessorKey: 'timeRemaining'
-    //     }
-    // ]
     return (
         <>
             <div className="col-12 p-4">

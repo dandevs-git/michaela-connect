@@ -41,8 +41,6 @@ function AllTickets() {
                             <FaEye /> View
                         </button>
                     </div>
-
-                    <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
                 </>
             )
         }
@@ -57,13 +55,12 @@ function AllTickets() {
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <button
-                                    className="btn btn-primary text-nowrap border me-4"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#createTicketModal"
-                                >
-                                    <FaPlus /> New Ticket
-                                </button>
+                                <CreateTicketModal
+                                    id={'createTicketModal'}
+                                    resetTickets={setTickets}
+                                    resetLoading={setLoading}
+                                    resetError={setError}
+                                />
                             }
                             isloading={loading}
                             columns={columns}
@@ -72,6 +69,8 @@ function AllTickets() {
                     </div>
                 </div>
             </div>
+
+            <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
         </>
     )
 }

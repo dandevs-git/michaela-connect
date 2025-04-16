@@ -18,10 +18,10 @@ function TeamOverview() {
         const fetchAllData = async () => {
             try {
                 await Promise.all([
-                    getData('/dashboard', setDashboardStats, setLoading, setError),
-                    getData('/ticket-status-data', setTicketStatusData),
-                    getData('/ticket-volume-trends', setTicketVolumeTrends),
-                    getData('/department-resolution-time', setTicketsByDepartment)
+                    getData('/dashboard?department_id=1', setDashboardStats, setLoading, setError),
+                    getData('/ticket-status-data?department_id=1', setTicketStatusData),
+                    getData('/ticket-volume-trends?department_id=1', setTicketVolumeTrends),
+                    getData('/department-resolution-time?department_id=1', setTicketsByDepartment)
                 ])
             } catch (error) {
                 console.error('Error fetching dashboard data:', error)

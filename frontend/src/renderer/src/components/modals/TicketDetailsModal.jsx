@@ -85,7 +85,7 @@ function TicketDetailsModal({ id, data }) {
                     <div className="modal-header bg-primary text-light">
                         <h5 className="modal-title">
                             <span className="small">Ticket# </span>
-                            <span className="fw-bold">{data?.ticket_number ?? 'No Ticket'}</span>
+                            <span className="fw-bold">{data?.ticket_number}</span>
                         </h5>
                         <button
                             type="button"
@@ -106,7 +106,7 @@ function TicketDetailsModal({ id, data }) {
                                     <div className="col-md-6">
                                         <div className="card shadow p-3 rounded-4">
                                             <h6 className="fw-bold">Status:</h6>
-                                            {data?.status ?? <StatusBadge status={data?.status} />}
+                                            {<StatusBadge status={data?.status} />}
                                         </div>
                                     </div>
                                     <div className="col-md-6">

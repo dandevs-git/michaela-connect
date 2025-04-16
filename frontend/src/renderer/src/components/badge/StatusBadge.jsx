@@ -30,7 +30,7 @@ function StatusBadge({ status }) {
 
     return (
         <span
-            className={`${info?.class} text-nowrap text-light small rounded-pill py-1 px-3 text-center`}
+            className={`${info?.class} text-uppercase text-nowrap text-light small rounded-pill py-1 px-3 text-center`}
         >
             {info?.icon} {status ?? status?.replace('_', ' ').toUpperCase()}
         </span>

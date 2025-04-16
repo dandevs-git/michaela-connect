@@ -66,13 +66,12 @@ function OpenTickets() {
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <button
-                                    className="btn btn-primary text-nowrap border me-4"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#createTicketModal"
-                                >
-                                    <FaPlus /> New Ticket
-                                </button>
+                                <CreateTicketModal
+                                    id={'createTicketModal'}
+                                    resetTickets={setTickets}
+                                    resetLoading={setLoading}
+                                    resetError={setError}
+                                />
                             }
                             isloading={loading}
                             columns={columns}
@@ -84,13 +83,6 @@ function OpenTickets() {
             </div>
 
             <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
-
-            <CreateTicketModal
-                id={'createTicketModal'}
-                resetTickets={setTickets}
-                resetLoading={setLoading}
-                resetError={setError}
-            />
         </>
     )
 }
