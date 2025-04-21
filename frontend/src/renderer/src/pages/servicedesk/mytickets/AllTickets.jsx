@@ -4,22 +4,29 @@ import { FaEye, FaPlus } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
-import CreateTicketModal from '../../../components/modals/CreateTicketModal'
+import AddTicketModal from '../../../components/modals/AddTicketModal'
 
 function AllTickets() {
-    const { getData, userRole } = useAPI()
+    const { getData, authenticatedUserDetails } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/tickets', setTickets, setLoading)
+        getData(
+            `/tickets?department_id=${authenticatedUserDetails?.department?.id}`,
+            setTickets,
+            setLoading
+        )
     }, [])
+
+    console.log(authenticatedUserDetails?.department?.id)
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },
+        { header: 'Department', accessorKey: 'requester.department.name' },
         {
             header: 'Status',
             accessorKey: 'status',
@@ -55,8 +62,8 @@ function AllTickets() {
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <CreateTicketModal
-                                    id={'createTicketModal'}
+                                <AddTicketModal
+                                    id={'AddTicketModal'}
                                     resetTickets={setTickets}
                                     resetLoading={setLoading}
                                     resetError={setError}

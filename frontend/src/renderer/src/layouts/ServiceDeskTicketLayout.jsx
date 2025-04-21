@@ -83,9 +83,9 @@ function ServiceDeskTicketLayout() {
                             </div>
                         </nav>
 
-                        <div className="bg-light-subtle border p-4 rounded-4 shadow m-0 flex-grow-1">
-                            <Outlet />
-                        </div>
+                        {/* <div className="bg-light-subtle border p-4 rounded-4 shadow m-0 flex-grow-1"> */}
+                        <Outlet />
+                        {/* </div> */}
                     </div>
                 </div>
             </div>

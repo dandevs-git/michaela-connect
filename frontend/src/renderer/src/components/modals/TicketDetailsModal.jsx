@@ -104,13 +104,13 @@ function TicketDetailsModal({ id, data }) {
                             <div className="col-6 p-3">
                                 <div className="row g-3 mb-3">
                                     <div className="col-md-6">
-                                        <div className="card shadow p-3 rounded-4">
+                                        <div className="card shadow p-3 h-100 rounded-4">
                                             <h6 className="fw-bold">Status:</h6>
                                             {<StatusBadge status={data?.status} />}
                                         </div>
                                     </div>
                                     <div className="col-md-6">
-                                        <div className="card shadow p-3">
+                                        <div className="card shadow p-3 h-100 rounded-4">
                                             <h6 className="fw-bold">Priority:</h6>
                                             <span className="text-center fw-semibold">
                                                 {data?.priority?.name
@@ -123,7 +123,7 @@ function TicketDetailsModal({ id, data }) {
 
                                 <div className="row g-3 mb-3">
                                     <div className="col-md-6">
-                                        <div className="card shadow p-3 h-100">
+                                        <div className="card shadow p-3 h-100 rounded-4">
                                             <h5 className="fw-bold">Requester:</h5>
                                             <div>
                                                 <span className="me-2">Name:</span>
@@ -140,7 +140,7 @@ function TicketDetailsModal({ id, data }) {
                                         </div>
                                     </div>
                                     <div className="col-md-6">
-                                        <div className="card shadow p-3 h-100">
+                                        <div className="card shadow p-3 h-100 rounded-4">
                                             <h5 className="fw-bold">Assign To:</h5>
                                             {data?.assigned_to ? (
                                                 <div>
@@ -166,7 +166,7 @@ function TicketDetailsModal({ id, data }) {
 
                                 <div className="row g-3 mb-3">
                                     <div className="col-md-6">
-                                        <div className="card shadow p-3">
+                                        <div className="card shadow p-3 h-100 rounded-4">
                                             <h6 className="fw-bold">Response Deadline:</h6>
                                             <span className="text-muted">
                                                 {data?.response_deadline || 'N/A'}
@@ -174,7 +174,7 @@ function TicketDetailsModal({ id, data }) {
                                         </div>
                                     </div>
                                     <div className="col-md-6">
-                                        <div className="card shadow p-3">
+                                        <div className="card shadow p-3 h-100 rounded-4">
                                             <h6 className="fw-bold">Resolution Deadline:</h6>
                                             <span className="text-muted">
                                                 {data?.resolution_deadline || 'N/A'}
@@ -184,7 +184,7 @@ function TicketDetailsModal({ id, data }) {
                                 </div>
 
                                 <div className="mt-4">
-                                    <div className="card shadow p-3 text-center">
+                                    <div className="card shadow p-3 h-100 rounded-4 text-center">
                                         <h6 className="fw-bold">SLA Compliance:</h6>
                                         {data?.sla_breached ? (
                                             <span className="py-1 rounded-pill text-light bg-danger">
@@ -200,7 +200,7 @@ function TicketDetailsModal({ id, data }) {
                             </div>
 
                             <div className="col-6 p-3">
-                                <div className="card shadow p-3 rounded-3">
+                                <div className="card shadow p-3 h-100 rounded-4">
                                     <h4 className="fw-bold mb-2">Comments</h4>
                                     <div
                                         ref={commentsContainerRef}

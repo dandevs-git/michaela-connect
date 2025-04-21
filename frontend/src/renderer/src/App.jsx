@@ -56,7 +56,8 @@ const PrivateRoute = ({ element, allowedRoles, isAuth, authenticatedUserDetails 
 
 function App() {
     const { authenticatedUserDetails, getAuthenticatedUserDetails } = useAPI()
-    const isAuth = !!localStorage.getItem('token')
+    // const isAuth = !!localStorage.getItem('token')
+    const isAuth = !!sessionStorage.getItem('token')
 
     // useEffect(() => {
     //     if (isAuth && !authenticatedUserDetails) {

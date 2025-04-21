@@ -62,7 +62,7 @@ class DashboardController extends Controller
 
         $percentage = $totalResolved > 0 ? ($resolvedOnTime / $totalResolved) * 100 : 0;
 
-        return round($percentage, 2); // Return as float (e.g., 90.75)
+        return round($percentage, 2);
     }
 
 
@@ -79,7 +79,7 @@ class DashboardController extends Controller
             }
         }
 
-        return $ticketCount > 0 ? round($totalResolutionTime / $ticketCount, 2) : 0; // Return minutes as float
+        return $ticketCount > 0 ? round($totalResolutionTime / $ticketCount, 2) : 0;
     }
 
 

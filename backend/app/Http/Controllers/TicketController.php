@@ -29,65 +29,50 @@ class TicketController extends Controller
             'comments.user:id,name'
         ]);
 
-        // $managerDepartmentIds = [];
-        // if ($user->role === 'manager') {
-        //     $managerDepartmentIds = Department::whereIn('id', $user->departments->pluck('id'))
-        //         ->orWhereIn('parent_id', $user->departments->pluck('id'))
-        //         ->pluck('id')
-        //         ->toArray();
-        // }
+        if ($user->can('view all tickets')) {
+        } elseif ($user->can('view department tickets')) {
+            $managedDeptIds = Department::where('id', $user->department_id)
+                ->orWhere('parent_id', $user->department_id)
+                ->pluck('id')
+                ->toArray();
 
-        // Only apply role-based scoping if NOT admin
-        if (!$user->hasRole('admin')) {
+            $query->whereHas('requester', function ($q) use ($managedDeptIds) {
+                $q->whereIn('department_id', $managedDeptIds);
+            })->orWhereHas('assignedTo', function ($q) use ($managedDeptIds) {
+                $q->whereIn('department_id', $managedDeptIds);
+            });
+
+        } elseif ($user->can('view own department tickets')) {
+            $query->whereHas('requester', function ($q) use ($user) {
+                $q->where('department_id', $user->department_id);
+            });
+
+        } elseif ($user->can('view own tickets')) {
             $query->where(function ($q) use ($user) {
                 $q->where('requester_id', $user->id)
                     ->orWhere('assigned_to', $user->id);
+            });
+        } else {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
-                if ($user->hasRole('head')) {
-                    $q->orWhereHas('requester', function ($subQuery) use ($user) {
-                        $subQuery->where('department_id', $user->department_id);
-                    });
-                }
+        $query->when($request->filled('status'), fn($q) => $q->where('status', $request->query('status')));
+        $query->when($request->filled('priority'), fn($q) => $q->where('priority_id', $request->query('priority')));
 
-                // Optional: if using manager roles and departments
-                // if ($user->hasRole('manager')) {
-                //     $managerDeptIds = Department::where('id', $user->department_id)
-                //         ->orWhere('parent_id', $user->department_id)
-                //         ->pluck('id')
-                //         ->toArray();
-
-                //     $q->orWhereIn('department_id', $managerDeptIds);
-                // }
+        if ($request->filled('search')) {
+            $query->where(function ($subQuery) use ($request) {
+                $term = '%' . $request->query('search') . '%';
+                $subQuery->where('title', 'like', $term)
+                    ->orWhere('description', 'like', $term);
             });
         }
 
-
-        $query->when($request->filled('status'), function ($q) use ($request) {
-            $q->where('status', $request->query('status'));
-        });
-
-        $query->when($request->filled('priority'), function ($q) use ($request) {
-            $q->where('priority_id', $request->query('priority'));
-        });
-
-        $query->when($request->filled('department_id'), function ($q) use ($request) {
-            $q->where('department_id', $request->query('department_id'));
-        });
-
-        // $query->when($request->filled('search'), function ($q) use ($request) {
-        //     $q->where(function ($subQuery) use ($request) {
-        //         $searchTerm = '%' . $request->query('search') . '%';
-        //         $subQuery->where('title', 'like', $searchTerm)
-        //             ->orWhere('description', 'like', $searchTerm);
-        //     });
-        // });
-
-        $tickets = $query->get();
-        // $tickets = $query->orderBy('created_at', 'desc')->get();
-        // $tickets = $query->orderBy('created_at', 'desc')->paginate(10);
+        $tickets = $query->orderBy('created_at', 'desc')->get();
 
         return response()->json($tickets, 200);
     }
+
+
 
     public function show($id)
     {

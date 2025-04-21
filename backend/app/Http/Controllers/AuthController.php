@@ -33,7 +33,7 @@ class AuthController extends Controller
             );
 
             return response()->json([
-                'message' => 'Your account is temporarily locked due to multiple failed login attempts.'
+                'message' => 'Access denied: Your account is temporarily locked due to multiple failed login attempts.'
             ], 403);
         }
 
@@ -50,7 +50,7 @@ class AuthController extends Controller
                 );
 
                 return response()->json([
-                    'message' => 'Your account has been temporarily locked due to too many failed attempts.'
+                    'message' => 'Access denied: Your account has been temporarily locked due to too many failed attempts.'
                 ], 403);
             }
 

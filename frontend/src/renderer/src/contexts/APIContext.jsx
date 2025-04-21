@@ -14,7 +14,8 @@ export const APIProvider = ({ children }) => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             setAuthLoading(true)
-            const token = localStorage.getItem('token')
+            // const token = localStorage.getItem('token')
+            const token = sessionStorage.getItem('token')
             if (token) {
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`
                 const data = await getAuthenticatedUserDetails()
@@ -22,7 +23,8 @@ export const APIProvider = ({ children }) => {
                     setAuthenticatedUserDetails(data)
                     setSetUserRole(data.role)
                 } else {
-                    localStorage.removeItem('token')
+                    // localStorage.removeItem('token')
+                    sessionStorage.removeItem('token')
                     delete api.defaults.headers.common['Authorization']
                     navigate('/login')
                 }
@@ -66,7 +68,8 @@ export const APIProvider = ({ children }) => {
         try {
             const { data } = await api.post('/login', { username, password })
             if (data.token) {
-                localStorage.setItem('token', data.token)
+                // localStorage.setItem('token', data.token)
+                sessionStorage.setItem('token', data.token)
                 api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
             }
             return data.message
@@ -82,7 +85,8 @@ export const APIProvider = ({ children }) => {
         } catch (error) {
             console.warn('Logout failed:', error?.response?.data?.message || error.message)
         } finally {
-            localStorage.removeItem('token')
+            // localStorage.removeItem('token')
+            sessionStorage.removeItem('token')
             delete api.defaults.headers.common['Authorization']
         }
     }

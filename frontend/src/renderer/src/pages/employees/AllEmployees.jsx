@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
+import AddEmployeeModal from '../../components/modals/AddEmployeeModal'
 
 function AllEmployees() {
     const { getData } = useAPI()
@@ -54,6 +55,7 @@ function AllEmployees() {
             <div className="card-body">
                 <div className="col-12 p-4">
                     <CustomTable
+                        topComponent={<AddEmployeeModal />}
                         isloading={loading}
                         topContent={topContent}
                         columns={columns}

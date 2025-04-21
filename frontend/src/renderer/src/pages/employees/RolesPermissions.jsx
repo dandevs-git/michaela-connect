@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
+import AddRoleModal from '../../components/modals/AddRoleModal'
 
 function RolesPermissions() {
     const { getData } = useAPI()
@@ -62,6 +63,14 @@ function RolesPermissions() {
                 <div className="card-body">
                     <div className="col-12 p-4">
                         <CustomTable
+                            topComponent={
+                                <AddRoleModal
+                                // id={'AddTicketModal'}
+                                // resetTickets={setTickets}
+                                // resetLoading={setLoading}
+                                // resetError={setError}
+                                />
+                            }
                             isloading={loading}
                             topContent={topContent}
                             columns={columns}
@@ -78,7 +87,7 @@ function RolesPermissions() {
                 aria-labelledby="permissionsModalLabel"
                 aria-hidden="true"
             >
-                <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="permissionsModalLabel">
@@ -96,7 +105,7 @@ function RolesPermissions() {
                                 <ul className="list-group">
                                     {selectedRole.permissions.map((perm) => (
                                         <li key={perm.id} className="list-group-item">
-                                            {perm.name}
+                                            Can {perm.name}
                                         </li>
                                     ))}
                                 </ul>

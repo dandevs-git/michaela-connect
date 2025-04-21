@@ -26,10 +26,10 @@ function Login() {
                 await getAuthenticatedUserDetails()
                 navigate('/dashboard')
             }
+            console.log('response')
             setMessage(response)
         } catch (error) {
             setMessage(error.response)
-            console.log('Hello')
         }
         setLoading(false)
     }

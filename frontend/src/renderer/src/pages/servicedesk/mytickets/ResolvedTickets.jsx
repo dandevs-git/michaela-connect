@@ -3,7 +3,7 @@ import CustomTable from '../../../components/tables/CustomTable'
 import { FaCheckCircle, FaEye, FaPlus, FaTimesCircle, FaUndo } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
-import CreateTicketModal from '../../../components/modals/CreateTicketModal'
+import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function ResolvedTickets() {
@@ -34,6 +34,7 @@ function ResolvedTickets() {
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
+        { header: 'Assigned To', accessorKey: 'assigned_to.name' },
         {
             header: 'Actions',
             accessorKey: 'actions',
@@ -76,8 +77,8 @@ function ResolvedTickets() {
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <CreateTicketModal
-                                    id={'createTicketModal'}
+                                <AddTicketModal
+                                    id={'AddTicketModal'}
                                     resetTickets={setTickets}
                                     resetLoading={setLoading}
                                     resetError={setError}

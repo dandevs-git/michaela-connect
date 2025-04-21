@@ -3,7 +3,7 @@ import { useAPI } from '../../contexts/APIContext'
 import { Modal, Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
 
-function CreateTicketModal({ id, resetTickets, resetLoading, resetError }) {
+function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
     const { addTicket, getData } = useAPI()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -103,7 +103,7 @@ function CreateTicketModal({ id, resetTickets, resetLoading, resetError }) {
             <button
                 className="btn btn-primary text-nowrap border me-4"
                 data-bs-toggle="modal"
-                data-bs-target="#createTicketModal"
+                data-bs-target="#AddTicketModal"
             >
                 <FaPlus /> New Ticket
             </button>
@@ -286,4 +286,4 @@ function CreateTicketModal({ id, resetTickets, resetLoading, resetError }) {
     )
 }
 
-export default CreateTicketModal
+export default AddTicketModal

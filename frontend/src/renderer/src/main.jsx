@@ -15,6 +15,7 @@ import { APIProvider } from './contexts/APIContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 
 // localStorage.removeItem('token')
+// sessionStorage.removeItem('token')
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>

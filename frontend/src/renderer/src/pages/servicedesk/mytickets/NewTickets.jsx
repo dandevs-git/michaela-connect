@@ -13,7 +13,7 @@ import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
-import CreateTicketModal from '../../../components/modals/CreateTicketModal'
+import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 const subordinates = [
@@ -109,7 +109,7 @@ function NewTickets() {
                                     {subordinates.length > 0 ? (
                                         <>
                                             {subordinates
-                                                // .filter((user) => !user.request_id)
+                                                .filter((user) => !user.request_id)
                                                 .map((user) => (
                                                     <li key={user.id}>
                                                         <button
@@ -173,8 +173,8 @@ function NewTickets() {
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <CreateTicketModal
-                                    id={'createTicketModal'}
+                                <AddTicketModal
+                                    id={'AddTicketModal'}
                                     resetTickets={setTickets}
                                     resetLoading={setLoading}
                                     resetError={setError}
