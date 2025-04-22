@@ -25,7 +25,7 @@ const subordinates = [
 ]
 
 function NewTickets() {
-    const { getData, postData, userRole } = useAPI()
+    const { getData, postData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [selectedUser, setSelectedUser] = useState(null)
     const [tickets, setTickets] = useState([])
@@ -94,38 +94,33 @@ function NewTickets() {
                         <FaEye /> View
                     </button>
 
-                    {['head'].includes(userRole) && (
-                        <>
-                            <div className="dropdown">
-                                <div
-                                    className="btn bg-success btn-sm text-light dropdown-toggle"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    <FaUserCheck /> Assign
-                                </div>
-                                <ul className="dropdown-menu dropdown-menu-start">
-                                    {subordinates.length > 0 ? (
-                                        <>
-                                            {subordinates
-                                                .filter((user) => !user.request_id)
-                                                .map((user) => (
-                                                    <li key={user.id}>
-                                                        <button
-                                                            className="dropdown-item"
-                                                            onClick={() =>
-                                                                handleAssignButton(
-                                                                    row.original,
-                                                                    user
-                                                                )
-                                                            }
-                                                        >
-                                                            {user.name}
-                                                        </button>
-                                                    </li>
-                                                ))}
-                                            {/* <li>
+                    <div className="dropdown">
+                        <div
+                            className="btn bg-success btn-sm text-light dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <FaUserCheck /> Assign
+                        </div>
+                        <ul className="dropdown-menu dropdown-menu-start">
+                            {subordinates.length > 0 ? (
+                                <>
+                                    {subordinates
+                                        .filter((user) => !user.request_id)
+                                        .map((user) => (
+                                            <li key={user.id}>
+                                                <button
+                                                    className="dropdown-item"
+                                                    onClick={() =>
+                                                        handleAssignButton(row.original, user)
+                                                    }
+                                                >
+                                                    {user.name}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    {/* <li>
                                         <hr className="dropdown-divider" />
                                     </li>
                                     <li className="dropdown-header text-center fw-bold">
@@ -145,19 +140,17 @@ function NewTickets() {
                                                 </button>
                                             </li>
                                         ))} */}
-                                        </>
-                                    ) : (
-                                        <li className="dropdown-header text-center fw-bold">
-                                            No Subordinates
-                                        </li>
-                                    )}
-                                </ul>
-                            </div>
-                            {/* <button className="btn text-light btn-info btn-sm">
+                                </>
+                            ) : (
+                                <li className="dropdown-header text-center fw-bold">
+                                    No Subordinates
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                    {/* <button className="btn text-light btn-info btn-sm">
                         <FaHandPaper /> Assign to me
                     </button> */}
-                        </>
-                    )}
                 </div>
             )
         }

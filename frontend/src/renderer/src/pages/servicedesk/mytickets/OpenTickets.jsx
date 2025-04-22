@@ -7,7 +7,7 @@ import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function OpenTickets() {
-    const { getData, userRole } = useAPI()
+    const { getData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -45,14 +45,9 @@ function OpenTickets() {
                     >
                         <FaEye /> View
                     </button>
-
-                    {['head', 'staff'].includes(userRole) && (
-                        <>
-                            <button className="btn text-light btn-warning btn-sm">
-                                <FaPlay /> Start Task
-                            </button>
-                        </>
-                    )}
+                    <button className="btn text-light btn-warning btn-sm">
+                        <FaPlay /> Start Task
+                    </button>
                 </div>
             )
         }

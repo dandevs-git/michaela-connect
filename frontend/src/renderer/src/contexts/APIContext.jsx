@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom'
 export const APIContext = createContext()
 
 export const APIProvider = ({ children }) => {
-    const [authenticatedUserDetails, setAuthenticatedUserDetails] = useState(null)
+    const [authUser, setAuthUser] = useState(null)
+    const [authPermissions, setAuthPermissions] = useState(null)
     const [authLoading, setAuthLoading] = useState(false)
-    const [userRole, setSetUserRole] = useState(false)
 
     const navigate = useNavigate()
 
@@ -18,10 +18,10 @@ export const APIProvider = ({ children }) => {
             const token = sessionStorage.getItem('token')
             if (token) {
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-                const data = await getAuthenticatedUserDetails()
+                const data = await getAuthUser()
                 if (data) {
-                    setAuthenticatedUserDetails(data)
-                    setSetUserRole(data.role)
+                    setAuthUser(data)
+                    setAuthPermissions(data?.all_permissions)
                 } else {
                     // localStorage.removeItem('token')
                     sessionStorage.removeItem('token')
@@ -31,7 +31,6 @@ export const APIProvider = ({ children }) => {
             }
             setAuthLoading(false)
         }
-
         fetchUserDetails()
     }, [])
 
@@ -91,10 +90,10 @@ export const APIProvider = ({ children }) => {
         }
     }
 
-    const getAuthenticatedUserDetails = async () => {
+    const getAuthUser = async () => {
         try {
             const { data } = await api.get('/auth')
-            setAuthenticatedUserDetails(data)
+            setAuthUser(data)
             return data
         } catch (error) {
             console.error('Fetch user failed:', error?.response?.data || error.message)
@@ -130,10 +129,10 @@ export const APIProvider = ({ children }) => {
             value={{
                 login,
                 logout,
-                authenticatedUserDetails,
-                setAuthenticatedUserDetails,
-                getAuthenticatedUserDetails,
-                userRole,
+                authUser,
+                setAuthUser,
+                getAuthUser,
+                authPermissions,
 
                 getData,
                 postData,
@@ -166,6 +165,7 @@ export const APIProvider = ({ children }) => {
                         </div>
                     </div>
                     <h4 className="text-light mt-3">Authenticating</h4>
+                    {console.log(authUser)}
                 </div>
             ) : (
                 children

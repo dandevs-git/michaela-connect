@@ -30,6 +30,7 @@ class TicketController extends Controller
         ]);
 
         if ($user->can('view all tickets')) {
+
         } elseif ($user->can('view department tickets')) {
             $managedDeptIds = Department::where('id', $user->department_id)
                 ->orWhere('parent_id', $user->department_id)
@@ -53,7 +54,7 @@ class TicketController extends Controller
                     ->orWhere('assigned_to', $user->id);
             });
         } else {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return response()->json(['message' => 'Unauthorizedsdsds'], 403);
         }
 
         $query->when($request->filled('status'), fn($q) => $q->where('status', $request->query('status')));

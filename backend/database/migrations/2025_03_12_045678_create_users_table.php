@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('email')->unique()->nullable(); // for incoming hosting;
             $table->string('profile_picture')->nullable();
             $table->string('password');
-            $table->enum('role', ['staff', 'head', 'manager', 'admin'])->default('staff');
+            $table->string('role');
             $table->enum('status', ['active', 'inactive', 'suspended', 'locked'])->default('active');
             $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
             $table->foreignId('head_id')->nullable()->constrained('users')->onDelete('set null');

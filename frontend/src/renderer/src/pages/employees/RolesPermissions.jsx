@@ -8,10 +8,11 @@ function RolesPermissions() {
     const { getData } = useAPI()
     const [roles, setRoles] = useState([])
     const [selectedRole, setSelectedRole] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/roles', setRoles, setLoading)
+        getData('/roles', setRoles, setLoading, setError)
     }, [])
 
     const handleShowModal = (role) => {

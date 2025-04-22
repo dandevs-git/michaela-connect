@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 function Login() {
     const { darkMode } = useContext(ThemeContext)
-    const { login, getAuthenticatedUserDetails } = useAPI()
+    const { login, getAuthUser } = useAPI()
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
@@ -23,7 +23,7 @@ function Login() {
         try {
             const response = await login(username, password)
             if (!response.includes('Invalid') && !response.includes('Access denied')) {
-                await getAuthenticatedUserDetails()
+                await getAuthUser()
                 navigate('/dashboard')
             }
             console.log('response')

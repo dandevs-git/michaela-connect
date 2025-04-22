@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('department', 'roles')->get();
+        $users = User::with('department', 'roles.permissions')->get();
         return response()->json($users, 200);
     }
     public function store(Request $request)
@@ -90,8 +90,10 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        $user->load('department', 'roles.permissions');
         return response()->json($user, 200);
     }
+
 
     public function lockUnlockUser($id)
     {
@@ -129,7 +131,7 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully']);
     }
 
-    public function getAuthenticatedUserDetails()
+    public function getAuthUser()
     {
         $user = Auth::user();
 
@@ -137,7 +139,9 @@ class UserController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user->load('department');
+        $user->load('department', 'roles.permissions');
+
+        $role = $user->roles->first();
 
         return response()->json([
             'id' => $user->id,
@@ -145,16 +149,21 @@ class UserController extends Controller
             'username' => $user->username,
             'email' => $user->email,
             'profile_picture' => $user->profile_picture,
-            'role' => $user->getRoleNames()->first() ?? 'No Role',
             'status' => $user->status,
             'department' => $user->department ? [
                 'id' => $user->department->id,
                 'name' => $user->department->name,
             ] : null,
-            'created_at' => $user->created_at,
-            'updated_at' => $user->updated_at,
+            'role' => $role ? [
+                'id' => $role->id,
+                'name' => $role->name,
+            ] : null,
+            'all_permissions' => $user->getAllPermissions()->pluck('name'),
+            'created_at' => $user->created_at->toDateTimeString(),
+            'updated_at' => $user->updated_at->toDateTimeString(),
         ]);
     }
+
 
     public function getSubordinates()
     {

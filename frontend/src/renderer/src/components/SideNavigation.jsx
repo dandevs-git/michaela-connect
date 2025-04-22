@@ -89,7 +89,7 @@ const pages = [
 ]
 
 function SideNavigation() {
-    const { authenticatedUserDetails } = useAPI()
+    const { authUser } = useAPI()
     const { darkMode } = useContext(ThemeContext)
     const location = useLocation()
     const [openMenus, setOpenMenus] = useState({})
@@ -170,10 +170,9 @@ function SideNavigation() {
             </div>
             <div className="bg-primary border text-center text-white mt-auto small flex-column d-flex">
                 <strong className="text-uppercase border-bottom p-1">
-                    {authenticatedUserDetails?.department?.name || 'User'}{' '}
-                    {authenticatedUserDetails?.role || 'User'}
+                    {authUser?.department?.name || 'User'} {authUser?.role?.name || 'User'}
                 </strong>
-                <span className='p-2'>&copy; 2025 Goldnines</span>
+                <span className="p-2">&copy; 2025 Goldnines</span>
             </div>
         </div>
     )

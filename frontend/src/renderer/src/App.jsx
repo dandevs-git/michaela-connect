@@ -38,32 +38,22 @@ import PrinterDirectory from './pages/directory/PrinterDirectory'
 import InternetDirectory from './pages/directory/InternetDirectory'
 import NewTickets from './pages/servicedesk/mytickets/NewTickets'
 
-const PrivateRoute = ({ element, allowedRoles, isAuth, authenticatedUserDetails }) => {
+const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
         return <Navigate to="/login" replace />
     }
 
-    if (
-        authenticatedUserDetails &&
-        allowedRoles &&
-        !allowedRoles.includes(authenticatedUserDetails?.role)
-    ) {
-        return <Navigate to="/403" replace />
-    }
+    // if (authUser && allowedRoles && !allowedRoles.includes(authUser?.role)) {
+    //     return <Navigate to="/403" replace />
+    // }
 
     return element
 }
 
 function App() {
-    const { authenticatedUserDetails, getAuthenticatedUserDetails } = useAPI()
+    const { authUser } = useAPI()
     // const isAuth = !!localStorage.getItem('token')
     const isAuth = !!sessionStorage.getItem('token')
-
-    // useEffect(() => {
-    //     if (isAuth && !authenticatedUserDetails) {
-    //         getAuthenticatedUserDetails()
-    //     }
-    // }, [isAuth, authenticatedUserDetails, getAuthenticatedUserDetails])
 
     return (
         <Routes>
@@ -78,9 +68,9 @@ function App() {
                 element={
                     <PrivateRoute
                         element={<MainLayout />}
-                        allowedRoles={['admin', 'manager', 'head', 'staff']}
+                        // allowedRoles={['admin', 'manager', 'head', 'staff']}
                         isAuth={isAuth}
-                        authenticatedUserDetails={authenticatedUserDetails}
+                        authUser={authUser}
                     />
                 }
             >

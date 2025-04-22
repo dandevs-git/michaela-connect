@@ -7,21 +7,15 @@ import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 
 function AllTickets() {
-    const { getData, authenticatedUserDetails } = useAPI()
+    const { getData, authUser } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData(
-            `/tickets?department_id=${authenticatedUserDetails?.department?.id}`,
-            setTickets,
-            setLoading
-        )
+        getData(`/tickets?department_id=${authUser?.department?.id}`, setTickets, setLoading)
     }, [])
-
-    console.log(authenticatedUserDetails?.department?.id)
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },

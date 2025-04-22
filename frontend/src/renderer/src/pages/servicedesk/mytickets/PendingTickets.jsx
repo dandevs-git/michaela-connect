@@ -9,7 +9,7 @@ import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function PendingTickets() {
-    const { getData, postData, userRole } = useAPI()
+    const { getData, postData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -68,23 +68,18 @@ function PendingTickets() {
                     >
                         <FaEye /> View
                     </button>
-
-                    {['head'].includes(userRole) && (
-                        <>
-                            <button
-                                onClick={() => handleApproveButton(row.original)}
-                                className="btn text-light btn-success btn-sm"
-                            >
-                                <FaCheck /> Approve
-                            </button>
-                            <button
-                                onClick={() => handleRejectButton(row.original)}
-                                className="btn text-light btn-danger btn-sm"
-                            >
-                                <FaTimes /> Reject
-                            </button>
-                        </>
-                    )}
+                    <button
+                        onClick={() => handleApproveButton(row.original)}
+                        className="btn text-light btn-success btn-sm"
+                    >
+                        <FaCheck /> Approve
+                    </button>
+                    <button
+                        onClick={() => handleRejectButton(row.original)}
+                        className="btn text-light btn-danger btn-sm"
+                    >
+                        <FaTimes /> Reject
+                    </button>
                 </div>
             )
         }

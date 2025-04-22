@@ -7,7 +7,7 @@ import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function FailedTickets() {
-    const { getData, userRole } = useAPI()
+    const { getData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -44,16 +44,12 @@ function FailedTickets() {
                         <FaEye /> View
                     </button>
 
-                    {['admin'].includes(userRole) && (
-                        <>
-                            <button className="btn text-light btn-warning btn-sm">
-                                <FaEdit /> Edit
-                            </button>
-                            <button className="btn text-light btn-danger btn-sm">
-                                <FaTrash /> Delete
-                            </button>
-                        </>
-                    )}
+                    <button className="btn text-light btn-warning btn-sm">
+                        <FaEdit /> Edit
+                    </button>
+                    <button className="btn text-light btn-danger btn-sm">
+                        <FaTrash /> Delete
+                    </button>
                 </div>
             )
         }

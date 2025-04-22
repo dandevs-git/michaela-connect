@@ -10,90 +10,136 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // 🛡️ Permissions
-        $permissions = [
-            // User Management
-            'manage users',
-            'manage roles',
-            'view activity logs',
+        $rolePermissions = [
+            'superadmin' => [],
+            'admin' => [
+                // User Management
+                'manage users',
+                'manage roles',
+                'view activity logs',
 
-            // Ticket Permissions
-            'create tickets',
-            'view tickets',
-            'update tickets',
-            'delete tickets',
+                // Ticket Permissions
+                'create tickets',
+                'view tickets',
+                'update tickets',
+                'delete tickets',
 
-            // Role-based Viewing
-            'view all tickets',
-            'view department tickets',
-            'view own department tickets',
-            'view own tickets',
+                // Role-based Viewing
+                'view all tickets',
 
-            // Ticket Actions
-            'assign tickets',
-            'approve tickets',
-            'reject tickets',
-            'close tickets',
-            'escalate tickets',
+                // Ticket Actions
+                'assign tickets',
+                'approve tickets',
+                'reject tickets',
+                'close tickets',
+                'escalate tickets',
 
-            // Comments & History
-            'comment on tickets',
-            'view ticket comments',
-            'view ticket history',
+                // Comments & History
+                'comment on tickets',
+                'view ticket comments',
+                'view ticket history',
 
-            // Attachments
-            'upload attachments',
-            'view attachments',
-            'delete attachments',
+                // Attachments
+                'upload attachments',
+                'view attachments',
+                'delete attachments',
 
-            // Notifications
-            'receive notifications',
-            'send notifications',
+                // Notifications
+                'receive notifications',
+                'send notifications',
 
-            // SLA & Analytics
-            'view SLA reports',
-            'view ticket analytics',
-            'view performance reports',
+                // SLA & Analytics
+                'view SLA reports',
+                'view ticket analytics',
+                'view performance reports',
 
-            // Departments
-            'manage departments',
-            'view departments',
+                // Departments
+                'manage departments',
+                'view departments',
 
-            // System
-            'manage settings',
-            'manage system logs',
+                // System
+                'manage settings',
+                'manage system logs',
+
+                // Service Desk Tabs
+                'view tickets tab',
+                'view pending tickets tab',
+                'view new tickets tab',
+                'view open tickets tab',
+                'view inprogress tickets tab',
+                'view resolved tickets tab',
+                'view closed tickets tab',
+                'view failed tickets tab',
+                'view rejected tickets tab',
+            ],
+
+            'manager' => [
+                'view department tickets',
+                'assign tickets',
+                'comment on tickets',
+                'view SLA reports',
+                'view ticket analytics',
+
+                // Tabs
+                'view tickets tab',
+                'view pending tickets tab',
+                'view resolved tickets tab',
+                'view closed tickets tab',
+                'view failed tickets tab',
+            ],
+
+            'head' => [
+                'view own department tickets',
+                'approve tickets',
+                'comment on tickets',
+                'view ticket comments',
+                'view ticket history',
+                'receive notifications',
+
+                // Tabs
+                'view tickets tab',
+                'view pending tickets tab',
+                'view open tickets tab',
+                'view inprogress tickets tab',
+                'view resolved tickets tab',
+                'view closed tickets tab',
+            ],
+
+            'staff' => [
+                'create tickets',
+                'view own tickets',
+                'comment on tickets',
+                'upload attachments',
+                'view attachments',
+                'receive notifications',
+
+                // Tabs
+                'view tickets tab',
+                'view pending tickets tab',
+                'view new tickets tab',
+                'view open tickets tab',
+                'view inprogress tickets tab',
+                'view resolved tickets tab',
+            ],
         ];
 
-        foreach ($permissions as $permission) {
+        $allPermissions = collect($rolePermissions)
+            ->flatten()
+            ->unique()
+            ->values();
+
+        foreach ($allPermissions as $permission) {
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        $admin = Role::firstOrCreate(['name' => 'admin']);
-        $admin->syncPermissions(Permission::all());
+        foreach ($rolePermissions as $role => $permissions) {
+            $roleModel = Role::firstOrCreate(['name' => $role]);
 
-        $manager = Role::firstOrCreate(['name' => 'manager']);
-        $manager->syncPermissions([
-            'view department tickets',
-            'assign tickets',
-            'comment on tickets',
-            'view SLA reports',
-            'view ticket analytics',
-        ]);
-
-        $head = Role::firstOrCreate(['name' => 'head']);
-        $head->syncPermissions([
-            'view own department tickets',
-            'approve tickets',
-            'comment on tickets',
-        ]);
-
-        $staff = Role::firstOrCreate(['name' => 'staff']);
-        $staff->syncPermissions([
-            'create tickets',
-            'view own tickets',
-            'comment on tickets',
-            'upload attachments',
-            'receive notifications',
-        ]);
+            if ($role === 'superadmin') {
+                $roleModel->syncPermissions(Permission::all());
+            } else {
+                $roleModel->syncPermissions($permissions);
+            }
+        }
     }
 }

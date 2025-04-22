@@ -7,7 +7,7 @@ import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
 function ResolvedTickets() {
-    const { getData, userRole } = useAPI()
+    const { getData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -49,19 +49,15 @@ function ResolvedTickets() {
                         <FaEye /> View
                     </button>
 
-                    {['staff', 'head'].includes(userRole) && (
-                        <>
-                            <button className="btn text-light btn-success btn-sm">
-                                <FaCheckCircle /> Completed
-                            </button>
-                            <button className="btn text-light btn-danger btn-sm">
-                                <FaUndo /> Reopened
-                            </button>
-                            <button className="btn text-light btn-warning btn-sm">
-                                <FaTimesCircle /> Failed
-                            </button>
-                        </>
-                    )}
+                    <button className="btn text-light btn-success btn-sm">
+                        <FaCheckCircle /> Completed
+                    </button>
+                    <button className="btn text-light btn-danger btn-sm">
+                        <FaUndo /> Reopened
+                    </button>
+                    <button className="btn text-light btn-warning btn-sm">
+                        <FaTimesCircle /> Failed
+                    </button>
                 </div>
             )
         }

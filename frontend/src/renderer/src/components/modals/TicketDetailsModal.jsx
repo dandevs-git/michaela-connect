@@ -4,7 +4,7 @@ import { useAPI } from '../../contexts/APIContext'
 import StatusBadge from '../badge/StatusBadge'
 
 function TicketDetailsModal({ id, data }) {
-    const { addComment, updateComment, authenticatedUserDetails } = useAPI()
+    const { addComment, updateComment, authUser } = useAPI()
 
     const [comments, setComments] = useState(data?.comments || [])
     const [commentInput, setCommentInput] = useState('')
@@ -236,8 +236,7 @@ function TicketDetailsModal({ id, data }) {
                                                             )}
                                                         </div>
                                                         <div>
-                                                            {comment?.user?.id ==
-                                                                authenticatedUserDetails.id && (
+                                                            {comment?.user?.id == authUser.id && (
                                                                 <button
                                                                     className="btn btn-sm btn-outline-secondary"
                                                                     onClick={() =>

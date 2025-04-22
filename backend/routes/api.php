@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/change-password', [PasswordController::class, 'changePassword'])->name('password.change');
 
-    Route::get('/auth', [UserController::class, 'getAuthenticatedUserDetails'])->name('user.auth');
+    Route::get('/auth', [UserController::class, 'getAuthUser'])->name('user.auth');
 
     Route::apiResources([
         'tickets' => TicketController::class,
@@ -68,12 +68,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     ]);
 
 
-    // Route::middleware(['role:head'])->group(function () {
     Route::get('/users/subordinates', [UserController::class, 'getSubordinates']);
-    // });
 
-    Route::middleware(['role:admin'])->group(function () {
-
+    Route::middleware(['role:superadmin'])->group(function () {
         Route::apiResources([
             'users' => UserController::class,
             'roles' => RoleController::class,
