@@ -26,7 +26,6 @@ function Login() {
                 await getAuthUser()
                 navigate('/dashboard')
             }
-            console.log('response')
             setMessage(response)
         } catch (error) {
             setMessage(error.response)

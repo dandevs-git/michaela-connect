@@ -13,10 +13,13 @@ function Department() {
         getData('/departments', setDepartments, setLoading)
     }, [])
 
+    {
+        console.log(departments)
+    }
     const columns = [
         { header: 'No.', accessorKey: 'id' },
         { header: 'Name', accessorKey: 'name' },
-        { header: 'Description', accessorKey: 'description' },
+        { header: 'Parent Department', accessorKey: 'parent.name' },
         {
             header: 'Actions',
             accessorKey: 'actions',

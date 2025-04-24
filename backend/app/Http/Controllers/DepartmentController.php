@@ -12,7 +12,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $department = Department::all();
+        $department = Department::with(['parent', 'children'])->get();
         return response()->json($department, 200);
     }
 
@@ -21,7 +21,14 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:departments,id',
+        ]);
+
+        $department = Department::create($validated);
+
+        return response()->json($department, 201);
     }
 
     /**
@@ -29,8 +36,10 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        //
+        $department->load('parent', 'children');
+        return response()->json($department);
     }
+
 
     /**
      * Update the specified resource in storage.

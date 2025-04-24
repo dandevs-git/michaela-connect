@@ -71,6 +71,9 @@ class PermissionSeeder extends Seeder
                 'view closed tickets tab',
                 'view failed tickets tab',
                 'view rejected tickets tab',
+
+                // Action Buttons
+                'view ticket details',
             ],
 
             'manager' => [

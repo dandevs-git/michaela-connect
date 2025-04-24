@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "192.168.2.254",
+            "port": 1106,
+            "driver": "MySQL",
+            "name": "Michaela Server 254",
+            "database": "michaela_connect_db",
+            "username": "IT_ADMIN"
+        }
+    ]
+}

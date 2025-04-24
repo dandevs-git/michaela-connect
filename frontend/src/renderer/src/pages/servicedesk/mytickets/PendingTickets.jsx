@@ -7,6 +7,7 @@ import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
+import PermissionButton from '../../../components/buttons/PermissionButton'
 
 function PendingTickets() {
     const { getData, postData } = useAPI()
@@ -60,14 +61,25 @@ function PendingTickets() {
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
-                    <button
-                        className="btn text-light btn-info btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#ticketDetailsModal"
+                    {/* {authUser.can('view tickets') && (
+                        <button
+                            className="btn text-light btn-info btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#ticketDetailsModal"
+                            onClick={() => setSelectedTickets(row.original)}
+                        >
+                            <FaEye /> View
+                        </button>
+                    )} */}
+
+                    <PermissionButton
+                        permission="view ticket details"
                         onClick={() => setSelectedTickets(row.original)}
+                        className="btn text-light btn-info btn-sm"
                     >
                         <FaEye /> View
-                    </button>
+                    </PermissionButton>
+
                     <button
                         onClick={() => handleApproveButton(row.original)}
                         className="btn text-light btn-success btn-sm"

@@ -28,12 +28,14 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Urgent', 'response_time' => 15, 'resolution_time' => 240],
         ]);
 
-        Department::factory()->count(6)->create();
         Telephone::factory()->count(10)->create();
         Internet::factory()->count(10)->create();
         IpAddress::factory()->count(10)->create();
         Anydesk::factory()->count(10)->create();
         Printer::factory()->count(10)->create();
+
+        Department::factory()->count(3)->create();
+        Department::factory()->count(5)->withParent()->create();
 
         $departmentId = Department::first()->id ?? 1;
 

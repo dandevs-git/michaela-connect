@@ -2,7 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { useAPI } from '../contexts/APIContext'
 
 function ServiceDeskTicketLayout() {
-    const { authPermissions } = useAPI()
+    const { authUser } = useAPI()
 
     const tabs = [
         { tab: 'All Tickets', link: '/servicedesk/tickets/all', permission: 'view tickets tab' },
@@ -39,14 +39,13 @@ function ServiceDeskTicketLayout() {
             permission: 'view rejected tickets tab'
         }
     ]
-
     const visibleTabs = tabs.filter(
-        (tab) => !tab.permission || authPermissions?.includes(tab.permission)
+        (tab) => !tab.permission || authUser?.all_permissions?.includes(tab.permission)
     )
 
     return (
         <div className="card shadow w-100">
-            <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
+            <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text  -center">
                 My Tickets
             </div>
 

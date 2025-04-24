@@ -36,10 +36,7 @@ function TopNavigation() {
     ]
 
     return (
-        <div
-            className="navbar navbar-expand-md bg-light-subtle shadow-lg sticky-top"
-            style={{ minHeight: '5vh' }}
-        >
+        <div className="navbar navbar-expand-md bg-light-subtle shadow-lg sticky-top">
             <div className="col d-flex justify-content-between order-3">
                 <nav className="d-flex align-items-center mx-4">
                     <ol className="breadcrumb mb-0">{breadcrumbItems}</ol>

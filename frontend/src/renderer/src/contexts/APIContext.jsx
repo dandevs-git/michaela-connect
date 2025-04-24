@@ -6,7 +6,6 @@ export const APIContext = createContext()
 
 export const APIProvider = ({ children }) => {
     const [authUser, setAuthUser] = useState(null)
-    const [authPermissions, setAuthPermissions] = useState(null)
     const [authLoading, setAuthLoading] = useState(false)
 
     const navigate = useNavigate()
@@ -21,7 +20,6 @@ export const APIProvider = ({ children }) => {
                 const data = await getAuthUser()
                 if (data) {
                     setAuthUser(data)
-                    setAuthPermissions(data?.all_permissions)
                 } else {
                     // localStorage.removeItem('token')
                     sessionStorage.removeItem('token')
@@ -132,7 +130,6 @@ export const APIProvider = ({ children }) => {
                 authUser,
                 setAuthUser,
                 getAuthUser,
-                authPermissions,
 
                 getData,
                 postData,
