@@ -27,6 +27,7 @@ function AllTickets() {
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
+        { header: 'Updated At', accessorKey: 'updated_at' },
         {
             header: 'Actions',
             accessorKey: 'actions',

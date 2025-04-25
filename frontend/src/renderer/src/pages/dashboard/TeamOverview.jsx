@@ -18,7 +18,7 @@ function TeamOverview() {
         const fetchAllData = async () => {
             try {
                 await Promise.all([
-                    getData('/dashboard?department_id=1', setDashboardStats, setLoading, setError),
+                    getData('/dashboard', setDashboardStats, setLoading, setError),
                     getData('/ticket-status-data?department_id=1', setTicketStatusData),
                     getData('/ticket-volume-trends?department_id=1', setTicketVolumeTrends),
                     getData('/department-resolution-time?department_id=1', setTicketsByDepartment)
@@ -78,6 +78,7 @@ function TeamOverview() {
                         <div>Here’s an Overview of the latest activity.</div>
                     </div>
                     <div className="d-flex row card-body align-items-center justify-content-center m-0 px-3">
+                        {console.log(dashboardStats)}
                         {renderStatCard(
                             'Total Tickets',
                             dashboardStats.totalTickets,

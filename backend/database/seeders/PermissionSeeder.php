@@ -101,6 +101,7 @@ class PermissionSeeder extends Seeder
 
                 // Tabs
                 'view tickets tab',
+                'view new tickets tab',
                 'view pending tickets tab',
                 'view open tickets tab',
                 'view inprogress tickets tab',
@@ -118,8 +119,6 @@ class PermissionSeeder extends Seeder
 
                 // Tabs
                 'view tickets tab',
-                'view pending tickets tab',
-                'view new tickets tab',
                 'view open tickets tab',
                 'view inprogress tickets tab',
                 'view resolved tickets tab',

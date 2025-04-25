@@ -37,7 +37,6 @@ class DatabaseSeeder extends Seeder
         Department::factory()->count(3)->create();
         Department::factory()->count(5)->withParent()->create();
 
-        $departmentId = Department::first()->id ?? 1;
 
         $roles = [
             'superadmin' => Role::firstOrCreate(['name' => 'superadmin']),
@@ -46,6 +45,9 @@ class DatabaseSeeder extends Seeder
             'head' => Role::firstOrCreate(['name' => 'head']),
             'staff' => Role::firstOrCreate(['name' => 'staff']),
         ];
+
+
+        $departmentId = Department::first()->id ?? 1;
 
         $superadmin = User::create([
             'rfid' => '1111111111',
@@ -58,41 +60,51 @@ class DatabaseSeeder extends Seeder
         ]);
         $superadmin->assignRole($roles['superadmin']);
 
-        $admin = User::create([
-            'rfid' => '0000000000',
-            'name' => 'Admin',
-            'username' => 'admin',
-            'password' => Hash::make('110686'),
-            'role' => 'admin',
-            'status' => 'active',
-            'department_id' => $departmentId,
-        ]);
-        $admin->assignRole($roles['admin']);
+        for ($i = 1; $i < 10; $i++) {
+            $admin = User::create([
+                'rfid' => str_pad($i, 10, '0', STR_PAD_LEFT),
+                'name' => "Admin $i",
+                'username' => "admin$i",
+                'password' => Hash::make('110686'),
+                'role' => 'admin',
+                'status' => 'active',
+                'department_id' => Department::inRandomOrder()->value('id') ?? $departmentId,
+                // 'head_id' => $admin->id,
+            ]);
+            $admin->assignRole($roles['admin']);
+        }
 
-        $manager = User::create([
-            'rfid' => '0000000001',
-            'name' => 'Manager',
-            'username' => 'manager',
-            'password' => Hash::make('110686'),
-            'role' => 'manager',
-            'status' => 'active',
-            'department_id' => $departmentId,
-        ]);
-        $manager->assignRole($roles['manager']);
 
-        $head = User::create([
-            'rfid' => '0000000002',
-            'name' => 'Head',
-            'username' => 'head',
-            'password' => Hash::make('110686'),
-            'role' => 'head',
-            'status' => 'active',
-            'department_id' => $departmentId,
-        ]);
-        $head->update(['head_id' => $head->id]);
-        $head->assignRole($roles['head']);
+        for ($i = 11; $i < 20; $i++) {
+            $manager = User::create([
+                'rfid' => str_pad($i, 10, '0', STR_PAD_LEFT),
+                'name' => "Manager $i",
+                'username' => "manager$i",
+                'password' => Hash::make('110686'),
+                'role' => 'manager',
+                'status' => 'active',
+                'department_id' => Department::inRandomOrder()->value('id') ?? $departmentId,
+                // 'head_id' => $manager->id,
+            ]);
+            $manager->assignRole($roles['manager']);
+        }
 
-        for ($i = 10; $i < 20; $i++) {
+
+        for ($i = 21; $i < 30; $i++) {
+            $head = User::create([
+                'rfid' => str_pad($i, 10, '0', STR_PAD_LEFT),
+                'name' => "Head $i",
+                'username' => "head$i",
+                'password' => Hash::make('110686'),
+                'role' => 'head',
+                'status' => 'active',
+                'department_id' => Department::inRandomOrder()->value('id') ?? $departmentId,
+            ]);
+            $head->update(['head_id' => $head->id]);
+            $head->assignRole($roles['head']);
+        }
+
+        for ($i = 31; $i < 40; $i++) {
             $staff = User::create([
                 'rfid' => str_pad($i, 10, '0', STR_PAD_LEFT),
                 'name' => "Staff $i",
@@ -100,12 +112,12 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('110686'),
                 'role' => 'staff',
                 'status' => 'active',
-                'department_id' => $departmentId,
+                'department_id' => Department::inRandomOrder()->value('id') ?? $departmentId,
                 'head_id' => $head->id,
             ]);
             $staff->assignRole($roles['staff']);
         }
 
-        Ticket::factory()->count(100)->create();
+        Ticket::factory()->count(5000)->create();
     }
 }

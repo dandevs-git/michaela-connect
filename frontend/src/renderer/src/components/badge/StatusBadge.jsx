@@ -15,7 +15,7 @@ const statusIcons = {
     pending: { icon: <FaClock />, class: 'bg-warning' },
     new: { icon: <FaClipboardList />, class: 'bg-secondary' },
     open: { icon: <FaHourglassHalf />, class: 'bg-primary' },
-    in_progress: { icon: <FaSpinner className="fa-spin" />, class: 'bg-info' },
+    in_progress: { icon: <FaSpinner />, class: 'bg-info' },
     on_hold: { icon: <FaPause />, class: 'bg-warning' },
     resolved: { icon: <FaCheckCircle />, class: 'bg-success' },
     reopened: { icon: <FaRedo />, class: 'bg-info' },

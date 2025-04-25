@@ -11,8 +11,8 @@ class DashboardController extends Controller
 {
     public function getDashboardData()
     {
-        $currentDate = Carbon::now();
-        $pastDate = Carbon::now()->subDays(30);
+        $currentDate = Carbon::now()->toDateString();
+        $pastDate = Carbon::now()->subDays(30)->toDateString();
 
         $totalTickets = Ticket::count();
 
@@ -52,12 +52,12 @@ class DashboardController extends Controller
     private function calculateSlaCompliance($startDate, $endDate)
     {
         $resolvedOnTime = Ticket::resolved()
-            ->whereBetween('updated_at', [$startDate, $endDate])
+            ->whereBetween(DB::raw('DATE(updated_at)'), [$startDate, $endDate])
             ->where('sla_breached', false)
             ->count();
 
         $totalResolved = Ticket::resolved()
-            ->whereBetween('updated_at', [$startDate, $endDate])
+            ->whereBetween(DB::raw('DATE(updated_at)'), [$startDate, $endDate])
             ->count();
 
         $percentage = $totalResolved > 0 ? ($resolvedOnTime / $totalResolved) * 100 : 0;

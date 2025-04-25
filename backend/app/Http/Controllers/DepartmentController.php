@@ -10,11 +10,19 @@ class DepartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $department = Department::with(['parent', 'children'])->get();
-        return response()->json($department, 200);
+        if ($request->has('main')) {
+            $departments = Department::whereNull('parent_id')
+                ->with('parent')
+                ->get();
+        } else {
+            $departments = Department::with(['parent', 'children'])->get();
+        }
+
+        return response()->json($departments);
     }
+
 
     /**
      * Store a newly created resource in storage.

@@ -11,7 +11,8 @@
             "driver": "MySQL",
             "name": "Michaela Server 254",
             "database": "michaela_connect_db",
-            "username": "IT_ADMIN"
+            "username": "IT_ADMIN",
+            "password": "Hyper@g9s110686"
         }
     ]
 }
