@@ -169,7 +169,7 @@ class TicketController extends Controller
     public function approve($id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket->update(['status' => 'new']);
+        $ticket->update(['status' => 'new', 'approved_at' => now()]);
 
         $this->logActivity("Approve Ticket", "Head Department approved Ticket #{$ticket->id}");
 
@@ -179,7 +179,7 @@ class TicketController extends Controller
     public function reject($id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket->update(['status' => 'rejected']);
+        $ticket->update(['status' => 'rejected', 'rejected_at' => now()]);
 
         $this->logActivity("Reject Ticket", "Head Department rejected Ticket #{$ticket->id}");
 
@@ -218,7 +218,7 @@ class TicketController extends Controller
             return response()->json(['message' => 'Ticket must be open or assigned to start working on it.'], 422);
         }
 
-        $ticket->update(['status' => 'in_progress']);
+        $ticket->update(['status' => 'in_progress', 'start_at' => now()]);
 
         $this->logActivity("Start Ticket", "User {$user->name} started working on Ticket #{$ticket->id}");
 

@@ -9,28 +9,104 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+
+    // By Month
+    // public function getDashboardData()
+    // {
+    //     $pastDate = Carbon::now('Asia/Manila')->subMonthNoOverflow()->startOfMonth()->toDateString();
+    //     $currentDate = Carbon::now('Asia/Manila')->subMonthNoOverflow()->endOfMonth()->toDateString();
+
+    //     $totalTickets = Ticket::whereBetween('created_at', [$pastDate, $currentDate])->count();
+
+    //     $resolvedTickets = Ticket::resolved()->whereBetween('updated_at', [$pastDate, $currentDate])->count();
+
+    //     $slaCompliance = $this->calculateSlaCompliance($pastDate, $currentDate);
+
+    //     $avgResolutionTime = $this->calculateAverageResolutionTime($pastDate, $currentDate);
+
+    //     $avgResponseTime = $this->calculateAverageResponseTime($pastDate, $currentDate);
+
+    //     $pendingApprovals = Ticket::pending()->whereBetween('created_at', [$pastDate, $currentDate])->count();
+
+    //     $prevPastDate = Carbon::now()->subMonthsNoOverflow(2)->startOfMonth()->toDateString();
+    //     $prevCurrentDate = Carbon::now()->subMonthsNoOverflow(2)->endOfMonth()->toDateString();
+
+    //     $totalTicketsDelta = $this->getDelta(
+    //         $totalTickets,
+    //         Ticket::whereBetween('created_at', [$prevPastDate, $prevCurrentDate])->count()
+    //     );
+
+    //     $resolvedTicketsDelta = $this->getDelta(
+    //         $resolvedTickets,
+    //         Ticket::resolved()->whereBetween('updated_at', [$prevPastDate, $prevCurrentDate])->count()
+    //     );
+
+    //     $slaComplianceDelta = $this->getDelta(
+    //         $slaCompliance,
+    //         $this->calculateSlaCompliance($prevPastDate, $prevCurrentDate)
+    //     );
+
+    //     $avgResolutionTimeDelta = $this->getDelta(
+    //         $avgResolutionTime,
+    //         $this->calculateAverageResolutionTime($prevPastDate, $prevCurrentDate)
+    //     );
+
+    //     $avgResponseTimeDelta = $this->getDelta(
+    //         $avgResponseTime,
+    //         $this->calculateAverageResponseTime($prevPastDate, $prevCurrentDate)
+    //     );
+
+    //     $pendingApprovalsDelta = $this->getDelta(
+    //         $pendingApprovals,
+    //         Ticket::pending()->whereBetween('created_at', [$prevPastDate, $prevCurrentDate])->count()
+    //     );
+
+    //     return response()->json([
+    //         'prevPastDate' => $prevPastDate,
+    //         'prevCurrentDate' => $prevCurrentDate,
+    //         'pastDate' => $pastDate,
+    //         'currentDate' => $currentDate,
+
+
+    //         'totalTickets' => $totalTickets,
+    //         'resolvedTickets' => $resolvedTickets,
+    //         'slaCompliance' => $slaCompliance,
+    //         'avgResolutionTime' => $avgResolutionTime,
+    //         'avgResponseTime' => $avgResponseTime,
+    //         'pendingApprovals' => $pendingApprovals,
+    //         'totalTicketsDelta' => $totalTicketsDelta,
+    //         'resolvedTicketsDelta' => $resolvedTicketsDelta,
+    //         'slaComplianceDelta' => $slaComplianceDelta,
+    //         'avgResolutionTimeDelta' => $avgResolutionTimeDelta,
+    //         'avgResponseTimeDelta' => $avgResponseTimeDelta,
+    //         'pendingApprovalsDelta' => $pendingApprovalsDelta,
+    //     ]);
+    // }
+
+
+    // By Past 30 days
     public function getDashboardData()
     {
         $currentDate = Carbon::now()->toDateString();
         $pastDate = Carbon::now()->subDays(30)->toDateString();
 
-        $totalTickets = Ticket::count();
+        $totalTickets = Ticket::whereBetween('created_at', [$pastDate, $currentDate])->count();
 
-        $resolvedTickets = Ticket::resolved()->count();
+        $resolvedTickets = Ticket::resolved()->whereBetween('resolved_at', [$pastDate, $currentDate])->count();
 
-        $slaCompliance = $this->calculateSlaCompliance($currentDate, $pastDate);
+        $slaCompliance = $this->calculateSlaCompliance($pastDate, $currentDate);
 
-        $avgResolutionTime = $this->calculateAverageResolutionTime($currentDate, $pastDate);
+        $avgResolutionTime = $this->calculateAverageResolutionTime($pastDate, $currentDate);
 
-        $avgResponseTime = $this->calculateAverageResponseTime($currentDate, $pastDate);
+        $avgResponseTime = $this->calculateAverageResponseTime($pastDate, $currentDate);
 
         $pendingApprovals = Ticket::pending()->count();
 
         $totalTicketsDelta = $this->getDelta($totalTickets, Ticket::whereBetween('created_at', [$pastDate, $currentDate])->count());
         $resolvedTicketsDelta = $this->getDelta($resolvedTickets, Ticket::resolved()->whereBetween('updated_at', [$pastDate, $currentDate])->count());
-        $slaComplianceDelta = $this->getDelta($slaCompliance, $this->calculateSlaCompliance($pastDate, $pastDate));
-        $avgResolutionTimeDelta = $this->getDelta($avgResolutionTime, $this->calculateAverageResolutionTime($pastDate, $pastDate));
-        $avgResponseTimeDelta = $this->getDelta($avgResponseTime, $this->calculateAverageResponseTime($pastDate, $pastDate));
+        $slaComplianceDelta = $this->getDelta($slaCompliance, $this->calculateSlaCompliance($pastDate, $currentDate));
+        $avgResolutionTimeDelta = $this->getDelta($avgResolutionTime, $this->calculateAverageResolutionTime($pastDate, $currentDate));
+        $avgResponseTimeDelta = $this->getDelta($avgResponseTime, $this->calculateAverageResponseTime($pastDate, $currentDate));
         $pendingApprovalsDelta = $this->getDelta($pendingApprovals, Ticket::pending()->whereBetween('created_at', [$pastDate, $currentDate])->count());
 
         return response()->json([
@@ -52,12 +128,12 @@ class DashboardController extends Controller
     private function calculateSlaCompliance($startDate, $endDate)
     {
         $resolvedOnTime = Ticket::resolved()
-            ->whereBetween(DB::raw('DATE(updated_at)'), [$startDate, $endDate])
+            ->whereBetween('resolved_at', [$startDate, $endDate])
             ->where('sla_breached', false)
             ->count();
 
         $totalResolved = Ticket::resolved()
-            ->whereBetween(DB::raw('DATE(updated_at)'), [$startDate, $endDate])
+            ->whereBetween('resolved_at', [$startDate, $endDate])
             ->count();
 
         $percentage = $totalResolved > 0 ? ($resolvedOnTime / $totalResolved) * 100 : 0;
@@ -65,46 +141,40 @@ class DashboardController extends Controller
         return round($percentage, 2);
     }
 
-
     private function calculateAverageResolutionTime($startDate, $endDate)
     {
-        $resolvedTickets = Ticket::resolved()->whereBetween('updated_at', [$startDate, $endDate])->get();
+        // Ito po ay from start_at to resolved_at
+        $resolvedTickets = Ticket::resolved()
+            ->whereBetween('resolved_at', [$startDate, $endDate])
+            ->get();
+
         $totalResolutionTime = 0;
         $ticketCount = 0;
 
         foreach ($resolvedTickets as $ticket) {
-            if ($ticket->resolved_at) {
-                $totalResolutionTime += $ticket->resolved_at->diffInMinutes($ticket->created_at);
+            if ($ticket->resolved_at && $ticket->start_at) {
+                $totalResolutionTime += $ticket->start_at->diffInMinutes($ticket->resolved_at);
                 $ticketCount++;
             }
         }
-
         return $ticketCount > 0 ? round($totalResolutionTime / $ticketCount, 2) : 0;
     }
 
-
     private function calculateAverageResponseTime($startDate, $endDate)
     {
-        $tickets = Ticket::where('status', '!=', 'new')->whereBetween('created_at', [$startDate, $endDate])->get();
+        // Ito po ay from created_at to approved_at
+        $tickets = Ticket::where('status', '!=', 'new')->whereBetween('approved_at', [$startDate, $endDate])->get();
         $totalResponseTime = 0;
         $ticketCount = 0;
 
         foreach ($tickets as $ticket) {
-            if ($ticket->first_response_at) {
-                $totalResponseTime += $ticket->first_response_at->diffInMinutes($ticket->created_at);
+            if ($ticket->approved_at && $ticket->created_at) {
+                $totalResponseTime += $ticket->created_at->diffInMinutes($ticket->approved_at);
                 $ticketCount++;
             }
         }
 
-        return $ticketCount > 0 ? round($totalResponseTime / $ticketCount, 2) : 0; // Return minutes
-    }
-
-
-    private function formatMinutesToHours($minutes)
-    {
-        $hours = floor($minutes / 60);
-        $remainingMinutes = $minutes % 60;
-        return sprintf('%02d:%02d', $hours, $remainingMinutes);
+        return $ticketCount > 0 ? round($totalResponseTime / $ticketCount, 2) : 0;
     }
 
     private function getDelta($currentValue, $previousValue)

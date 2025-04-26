@@ -21,6 +21,8 @@ class Ticket extends Model
         'assigned_to',
         'resolved_at',
         'failed_at',
+        'approved_at',
+        'start_at',
         'completed_at',
         'response_deadline',
         'resolution_deadline',
@@ -28,6 +30,8 @@ class Ticket extends Model
     ];
 
     protected $casts = [
+        'approved_at' => 'datetime',
+        'start_at' => 'datetime',
         'resolved_at' => 'datetime',
         'failed_at' => 'datetime',
         'completed_at' => 'datetime',
@@ -69,6 +73,11 @@ class Ticket extends Model
         return $query->where('status', 'pending');
     }
 
+    public function scopeNew($query)
+    {
+        return $query->where('status', 'new');
+    }
+
     public function scopeInProgress($query)
     {
         return $query->where('status', 'in_progress');
@@ -84,53 +93,58 @@ class Ticket extends Model
         return $query->where('status', 'failed');
     }
 
-    public function getFormattedDate($value)
-    {
-        return $value ? Carbon::parse($value)->format('F j, Y') : null;
-    }
+    // public function getFormattedDate($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('F j, Y') : null;
+    // }
 
-    public function getFormattedTime($value)
-    {
-        return $value ? Carbon::parse($value)->format('h:i A') : null;
-    }
+    // public function getFormattedTime($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format('h:i A') : null;
+    // }
 
-    public function getResolvedAtAttribute($value)
-    {
-        return $this->getFormattedDate($value);
-    }
+    // public function getApprovedAtAttribute($value)
+    // {
+    //     return $this->getFormattedDate($value);
+    // }
 
-    public function getFailedAtAttribute($value)
-    {
-        return $this->getFormattedDate($value);
-    }
+    // public function getResolvedAtAttribute($value)
+    // {
+    //     return $this->getFormattedDate($value);
+    // }
 
-    public function getCompletedAtAttribute($value)
-    {
-        return $this->getFormattedDate($value);
-    }
+    // public function getFailedAtAttribute($value)
+    // {
+    //     return $this->getFormattedDate($value);
+    // }
 
-    public function getCreatedAtAttribute($value)
-    {
-        return $this->getFormattedDate($value);
-    }
+    // public function getCompletedAtAttribute($value)
+    // {
+    //     return $this->getFormattedDate($value);
+    // }
 
-    public function getUpdatedAtAttribute($value)
-    {
-        return $this->getFormattedDate($value);
-    }
+    // public function getCreatedAtAttribute($value)
+    // {
+    //     return $this->getFormattedDate($value);
+    // }
 
-    public function getResponseDeadlineAttribute($value)
-    {
-        return $value
-            ? $this->getFormattedDate($value) . ' : ' . $this->getFormattedTime($value)
-            : null;
-    }
+    // public function getUpdatedAtAttribute($value)
+    // {
+    //     return $this->getFormattedDate($value);
+    // }
+
+    // public function getResponseDeadlineAttribute($value)
+    // {
+    //     return $value
+    //         ? $this->getFormattedDate($value) . ' : ' . $this->getFormattedTime($value)
+    //         : null;
+    // }
 
 
-    public function getResolutionDeadlineAttribute($value)
-    {
-        return $value
-            ? $this->getFormattedDate($value) . ' : ' . $this->getFormattedTime($value)
-            : null;
-    }
+    // public function getResolutionDeadlineAttribute($value)
+    // {
+    //     return $value
+    //         ? $this->getFormattedDate($value) . ' : ' . $this->getFormattedTime($value)
+    //         : null;
+    // }
 }

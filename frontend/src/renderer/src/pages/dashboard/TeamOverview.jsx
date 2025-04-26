@@ -50,7 +50,7 @@ function TeamOverview() {
                         <>
                             <p className="card-text display-3 m-0 fw-bold">
                                 {value > 0 ? value : '-'}
-                                {unit && value > 0 ? <span className="fs-5">{unit}</span> : ''}
+                                {unit && value ? <span className="fs-5">{unit}</span> : ''}
                             </p>
                             <span className={`fs-5 fw-bold text-${trend}`}>
                                 <i
@@ -68,6 +68,34 @@ function TeamOverview() {
             </div>
         </div>
     )
+
+    function formatMinutesVerbose(minutes) {
+        minutes = Math.abs(minutes)
+
+        const hours = Math.floor(minutes / 60)
+        const remainingMinutes = Math.round(minutes % 60)
+
+        let parts = []
+
+        if (hours > 0) {
+            parts.push(
+                <span className="fs-3 me-2" key="hours">
+                    {hours} <span className="fs-5">hr{hours > 1 ? 's' : ''}</span>
+                </span>
+            )
+        }
+
+        if (remainingMinutes > 0) {
+            parts.push(
+                <span className="fs-3" key="minutes">
+                    {remainingMinutes}{' '}
+                    <span className="fs-5">min{remainingMinutes > 1 ? 's' : ''}</span>
+                </span>
+            )
+        }
+
+        return parts
+    }
 
     return (
         <>
@@ -103,11 +131,10 @@ function TeamOverview() {
                         )}
                         {renderStatCard(
                             'Avg Resolution Time',
-                            dashboardStats.avgResolutionTime,
-                            dashboardStats.avgResolutionTimeDelta,
+                            formatMinutesVerbose(dashboardStats.avgResolutionTime),
+                            formatMinutesVerbose(dashboardStats.avgResolutionTimeDelta),
                             'bi-lightning-fill',
-                            'danger',
-                            'mins'
+                            'danger'
                         )}
                         {renderStatCard(
                             'Avg Response Time',

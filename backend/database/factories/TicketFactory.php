@@ -29,6 +29,8 @@ class TicketFactory extends Factory
             'status' => $status,
             'requester_id' => User::inRandomOrder()->first()->id ?? 1,
             'assigned_to' => User::inRandomOrder()->first()->id ?? 1,
+            'start_at' => $status === 'in_progress' || $status === 'resolved' ? now()->subDays(rand(1, 10)) : null,
+            'approved_at' => $status === 'new' ? now()->subDays(rand(1, 10)) : null,
             'resolved_at' => $status === 'resolved' ? now()->subDays(rand(1, 10)) : null,
             'failed_at' => $status === 'failed' ? now()->subDays(rand(1, 10)) : null,
             'completed_at' => in_array($status, ['resolved', 'failed']) ? now()->subDays(rand(1, 5)) : null,
