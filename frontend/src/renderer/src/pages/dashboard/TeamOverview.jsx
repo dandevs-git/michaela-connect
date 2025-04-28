@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import CustomBarChart from '../../components/charts/CustomBarChart'
 import CustomLineChart from '../../components/charts/CustomLineChart'
 import CustomPieChart from '../../components/charts/CustomPieChart'
@@ -6,99 +6,166 @@ import { useAPI } from '../../contexts/APIContext'
 
 function TeamOverview() {
     const { getData } = useAPI()
+
     const [ticketStatusData, setTicketStatusData] = useState([])
     const [ticketVolumeTrends, setTicketVolumeTrends] = useState([])
     const [ticketsByDepartment, setTicketsByDepartment] = useState([])
-    const [dashboardStats, setDashboardStats] = useState([])
+    const [dashboardStats, setDashboardStats] = useState({ current: {}, delta: {} })
 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
-    useEffect(() => {
-        const fetchAllData = async () => {
-            try {
-                await Promise.all([
-                    getData('/dashboard', setDashboardStats, setLoading, setError),
-                    getData('/ticket-status-data?department_id=1', setTicketStatusData),
-                    getData('/ticket-volume-trends?department_id=1', setTicketVolumeTrends),
-                    getData('/department-resolution-time?department_id=1', setTicketsByDepartment)
-                ])
-            } catch (error) {
-                console.error('Error fetching dashboard data:', error)
-            }
+    const fetchAllData = useCallback(async () => {
+        setLoading(true)
+        setError('')
+        try {
+            await Promise.all([
+                getData('/dashboard', setDashboardStats),
+                getData('/ticket-status-data?department_id=1', setTicketStatusData),
+                getData('/ticket-volume-trends?department_id=1', setTicketVolumeTrends),
+                getData('/department-resolution-time?department_id=1', setTicketsByDepartment)
+            ])
+        } catch (err) {
+            console.error('Error fetching dashboard data:', err)
+            setError('Failed to load dashboard data.')
+        } finally {
+            setLoading(false)
         }
+    }, [getData])
 
+    useEffect(() => {
         fetchAllData()
-    }, [])
+    }, [fetchAllData])
 
-    const renderStatCard = (title, value, delta, iconClass, trend, unit = '') => (
-        <div className="col-xl-4 h-50 p-3">
-            <div className="card h-100 rounded-4 shadow text-center mb-3">
-                <div className="card-header text-uppercase fw-semibold">{title}</div>
-                <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                    {loading ? (
-                        <>
-                            <span className="placeholder-glow w-50">
-                                <span className="placeholder col-12 display-3"></span>
-                            </span>
-                            <span className="placeholder-glow w-75 mt-2">
-                                <span className="placeholder col-8 fs-5"></span>
-                            </span>
-                            <span className="placeholder col-6 mt-2"></span>
-                        </>
-                    ) : (
-                        <>
-                            <p className="card-text display-3 m-0 fw-bold">
-                                {value > 0 ? value : '-'}
-                                {unit && value ? <span className="fs-5">{unit}</span> : ''}
-                            </p>
-                            <span className={`fs-5 fw-bold text-${trend}`}>
-                                <i
-                                    className={`bi ${trend === 'success' ? 'bi-arrow-up-short' : 'bi-arrow-down-short'}`}
-                                ></i>
-                                {delta > 0 ? delta + (unit ? ` ${unit}` : '') : '-'}
-                                <i className={`bi ${iconClass} ms-2`}></i>
-                            </span>
-                            <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                vs previous 30 days
-                            </span>
-                        </>
-                    )}
-                </div>
-            </div>
+    const renderPlaceholder = (height = '300px') => (
+        <div className="placeholder-glow w-100">
+            <div className="placeholder col-12" style={{ height }}></div>
         </div>
     )
 
-    function formatMinutesVerbose(minutes) {
+    const formatMinutesVerbose = (minutes, large = true) => {
+        if (minutes === null || minutes === undefined || minutes === 0) return 0
+
         minutes = Math.abs(minutes)
 
-        const hours = Math.floor(minutes / 60)
-        const remainingMinutes = Math.round(minutes % 60)
+        let seconds = 0
+        if (minutes < 1) {
+            seconds = Math.round(minutes * 60)
+        }
 
-        let parts = []
+        const totalMinutes = minutes >= 1 ? Math.round(minutes) : 0
+
+        const hours = Math.floor(totalMinutes / 60)
+        const remainingMinutes = totalMinutes % 60
+
+        const parts = []
 
         if (hours > 0) {
             parts.push(
-                <span className="fs-3 me-2" key="hours">
-                    {hours} <span className="fs-5">hr{hours > 1 ? 's' : ''}</span>
-                </span>
+                <div key="hours" className={`${large ? 'display-5' : 'fs-6'} fw-bold me-2`}>
+                    {hours} <span className="fs-6">hr{hours > 1 ? 's' : ''}</span>
+                </div>
             )
         }
-
-        if (remainingMinutes > 0) {
+        if (remainingMinutes > 0 || (hours === 0 && seconds === 0)) {
             parts.push(
-                <span className="fs-3" key="minutes">
+                <div
+                    key="minutes"
+                    className={`${large && hours === 0 ? 'display-5' : 'fs-6'} fw-bold`}
+                >
                     {remainingMinutes}{' '}
-                    <span className="fs-5">min{remainingMinutes > 1 ? 's' : ''}</span>
-                </span>
+                    <span className="fs-6">min{remainingMinutes !== 1 ? 's' : ''}</span>
+                </div>
+            )
+        }
+        if (seconds > 0) {
+            parts.push(
+                <div
+                    key="seconds"
+                    className={`${large && hours === 0 ? 'display-5' : 'fs-6'} fw-bold`}
+                >
+                    {seconds} <span className="fs-6">sec{seconds !== 1 ? 's' : ''}</span>
+                </div>
             )
         }
 
         return parts
     }
 
+    const RenderStatCard = ({ title, value, delta, iconClass, unit = '', isTime = false }) => {
+        const trend = delta > 0 ? 'success' : delta < 0 ? 'danger' : 'secondary'
+        const isZero = value === null || value === undefined || value === 0
+
+        let displayValue = value
+        let displayDelta = delta
+
+        if (isTime) {
+            displayValue = formatMinutesVerbose(value, true)
+            displayDelta =
+                delta !== null && delta !== undefined ? formatMinutesVerbose(delta, false) : '-'
+        } else {
+            displayValue = Math.abs(displayValue)
+            displayDelta = Math.abs(displayDelta)
+        }
+
+        return (
+            <div className="col-xl-4 h-50 p-3">
+                <div className="card h-100 rounded-4 shadow text-center mb-3">
+                    <div className="card-header text-uppercase fw-semibold">{title}</div>
+                    <div className="card-body d-flex flex-column align-items-center justify-content-center">
+                        {loading ? (
+                            renderPlaceholder('80px')
+                        ) : (
+                            <div className="card-text display-4 m-0 fw-bold">
+                                {isZero && !isTime ? '-' : displayValue}
+                                {unit && !isZero && !isTime && <span className="fs-6">{unit}</span>}
+                            </div>
+                        )}
+                    </div>
+                    <div className="card-footer border mb-0">
+                        {loading ? (
+                            renderPlaceholder('40px')
+                        ) : (
+                            <div className="d-flex flex-column">
+                                <span
+                                    className={`fs-6 fw-bold text-${trend} d-flex align-items-center justify-content-center`}
+                                >
+                                    {delta !== null && delta !== undefined && delta !== 0 ? (
+                                        <>
+                                            <i
+                                                className={`bi ${trend === 'success' ? 'bi-arrow-up-short' : 'bi-arrow-down-short'}`}
+                                            ></i>
+                                            {displayDelta}
+                                            {unit && !isTime && (
+                                                <span className="fs-6">{unit}</span>
+                                            )}
+                                            <i className={`bi ${iconClass} ms-2`}></i>
+                                        </>
+                                    ) : (
+                                        '-'
+                                    )}
+                                </span>
+                                <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                    vs previous 30 days
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="alert alert-danger" role="alert">
+                {error}
+            </div>
+        )
+    }
+
     return (
-        <>
+        <div className="row m-0">
             <div className="col-xl-8 m-0 p-4">
                 <div className="card bg-light-subtle h-100 p-0 rounded-4 shadow text-center mb-3">
                     <div className="card-header">
@@ -106,51 +173,45 @@ function TeamOverview() {
                         <div>Here’s an Overview of the latest activity.</div>
                     </div>
                     <div className="d-flex row card-body align-items-center justify-content-center m-0 px-3">
-                        {console.log(dashboardStats)}
-                        {renderStatCard(
-                            'Total Tickets',
-                            dashboardStats.totalTickets,
-                            dashboardStats.totalTicketsDelta,
-                            'bi-ticket-perforated',
-                            'success'
-                        )}
-                        {renderStatCard(
-                            'Resolved Tickets',
-                            dashboardStats.resolvedTickets,
-                            dashboardStats.resolvedTicketsDelta,
-                            'bi-clipboard-check',
-                            'danger'
-                        )}
-                        {renderStatCard(
-                            'SLA Compliance',
-                            dashboardStats.slaCompliance,
-                            dashboardStats.slaComplianceDelta,
-                            'bi-shield-check',
-                            'success',
-                            '%'
-                        )}
-                        {renderStatCard(
-                            'Avg Resolution Time',
-                            formatMinutesVerbose(dashboardStats.avgResolutionTime),
-                            formatMinutesVerbose(dashboardStats.avgResolutionTimeDelta),
-                            'bi-lightning-fill',
-                            'danger'
-                        )}
-                        {renderStatCard(
-                            'Avg Response Time',
-                            dashboardStats.avgResponseTime,
-                            dashboardStats.avgResponseTimeDelta,
-                            'bi-clock-history',
-                            'danger',
-                            'mins'
-                        )}
-                        {renderStatCard(
-                            'Pending Approvals',
-                            dashboardStats.pendingApprovals,
-                            dashboardStats.pendingApprovalsDelta,
-                            'bi-hourglass-top',
-                            'success'
-                        )}
+                        <RenderStatCard
+                            title="Total Tickets"
+                            value={dashboardStats.current?.totalTickets}
+                            delta={dashboardStats.delta?.totalTicketsDelta}
+                            iconClass="bi-ticket-perforated"
+                        />
+                        <RenderStatCard
+                            title="Resolved Tickets"
+                            value={dashboardStats.current?.resolvedTickets}
+                            delta={dashboardStats.delta?.resolvedTicketsDelta}
+                            iconClass="bi-clipboard-check"
+                        />
+                        <RenderStatCard
+                            title="SLA Compliance"
+                            value={dashboardStats.current?.slaCompliance}
+                            delta={dashboardStats.delta?.slaComplianceDelta}
+                            iconClass="bi-shield-check"
+                            unit="%"
+                        />
+                        <RenderStatCard
+                            title="Avg Resolution Time"
+                            value={dashboardStats.current?.avgResolutionTime}
+                            delta={dashboardStats.delta?.avgResolutionTimeDelta}
+                            iconClass="bi-lightning-fill"
+                            isTime={true}
+                        />
+                        <RenderStatCard
+                            title="Avg Response Time"
+                            value={dashboardStats.current?.avgResponseTime}
+                            delta={dashboardStats.delta?.avgResponseTimeDelta}
+                            iconClass="bi-clock-history"
+                            isTime={true}
+                        />
+                        <RenderStatCard
+                            title="Pending Approvals"
+                            value={dashboardStats.current?.pendingApprovals}
+                            delta={dashboardStats.delta?.pendingApprovalsDelta}
+                            iconClass="bi-hourglass-top"
+                        />
                     </div>
                 </div>
             </div>
@@ -161,11 +222,7 @@ function TeamOverview() {
                         Ticket Status Data
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
-                        {loading ? (
-                            <div className="spinner-grow" role="status"></div>
-                        ) : (
-                            <CustomPieChart data={ticketStatusData} />
-                        )}
+                        {loading ? renderPlaceholder() : <CustomPieChart data={ticketStatusData} />}
                     </div>
                 </div>
             </div>
@@ -177,12 +234,7 @@ function TeamOverview() {
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
                         {loading ? (
-                            <span className="placeholder-glow w-100">
-                                <div
-                                    className="placeholder col-12"
-                                    style={{ height: '300px' }}
-                                ></div>
-                            </span>
+                            renderPlaceholder()
                         ) : (
                             <CustomLineChart data={ticketVolumeTrends} />
                         )}
@@ -197,23 +249,18 @@ function TeamOverview() {
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
                         {loading ? (
-                            <span className="placeholder-glow w-100">
-                                <div
-                                    className="placeholder col-12"
-                                    style={{ height: '300px' }}
-                                ></div>
-                            </span>
+                            renderPlaceholder()
                         ) : (
                             <CustomBarChart
                                 data={ticketsByDepartment}
-                                datakey={'resolution_time'}
-                                display={'Average Resolution Time'}
+                                datakey="resolution_time"
+                                display="Average Resolution Time"
                             />
                         )}
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

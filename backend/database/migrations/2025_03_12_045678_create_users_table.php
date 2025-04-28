@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->enum('status', ['active', 'inactive', 'suspended', 'locked'])->default('active');
             $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
             $table->foreignId('head_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('manager_id')->nullable()->constrained('users')->onDelete('set null');
             $table->integer('failed_attempts')->default(0);
             $table->rememberToken();
             $table->softDeletes();

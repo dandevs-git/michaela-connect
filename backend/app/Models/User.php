@@ -65,9 +65,14 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'head_id');
     }
 
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+
     public function subordinates()
     {
-        return $this->hasMany(User::class, 'head_id');
+        return $this->hasMany(User::class, 'head_id', 'manager_id');
     }
 
 

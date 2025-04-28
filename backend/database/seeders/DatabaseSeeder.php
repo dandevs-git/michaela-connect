@@ -58,6 +58,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'active',
             'department_id' => $departmentId,
         ]);
+
         $superadmin->assignRole($roles['superadmin']);
 
         for ($i = 1; $i < 10; $i++) {
@@ -69,7 +70,6 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
                 'status' => 'active',
                 'department_id' => Department::inRandomOrder()->value('id') ?? $departmentId,
-                // 'head_id' => $admin->id,
             ]);
             $admin->assignRole($roles['admin']);
         }
@@ -83,8 +83,8 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('110686'),
                 'role' => 'manager',
                 'status' => 'active',
-                'department_id' => Department::inRandomOrder()->value('id') ?? $departmentId,
-                // 'head_id' => $manager->id,
+                'department_id' => Department::whereNull('parent_id')->inRandomOrder()->value('id') ?? $departmentId,
+
             ]);
             $manager->assignRole($roles['manager']);
         }
@@ -117,7 +117,6 @@ class DatabaseSeeder extends Seeder
             ]);
             $staff->assignRole($roles['staff']);
         }
-
-        Ticket::factory()->count(50)->create();
+        Ticket::factory()->count(5000)->create();
     }
 }

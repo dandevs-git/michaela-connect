@@ -17,10 +17,13 @@ function AllTickets() {
         getData(`/tickets?department_id=${authUser?.department?.id}`, setTickets, setLoading)
     }, [])
 
+    console.log(tickets)
+
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },
-        { header: 'Department', accessorKey: 'requester.department.name' },
+        { header: 'Department From', accessorKey: 'requester.department.name' },
+        { header: 'Department To', accessorKey: 'assigned_to.department.name' },
         {
             header: 'Status',
             accessorKey: 'status',

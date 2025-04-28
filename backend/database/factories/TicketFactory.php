@@ -18,8 +18,43 @@ class TicketFactory extends Factory
      */
     public function definition(): array
     {
-        $createdAt = $this->faker->dateTimeBetween('-30 days', 'now');
-        $status = $this->faker->randomElement(['pending', 'in_progress', 'resolved', 'failed']);
+        $isRecent = $this->faker->boolean(70);
+
+        if ($isRecent) {
+            $createdAt = $this->faker->dateTimeBetween('-30 days', 'now');
+        } else {
+            $createdAt = $this->faker->dateTimeBetween('-60 days', '-31 days');
+        }
+
+        $status = $this->faker->randomElement([
+            'pending',
+            'new',
+            'open',
+            'rejected',
+            'in_progress',
+            'resolved',
+            'failed',
+            'closed',
+            'reopened'
+        ]);
+
+        $startAt = in_array($status, ['in_progress', 'resolved', 'failed', 'closed'])
+            ? (clone $createdAt)->modify('+' . rand(1, 5) . ' days')
+            : null;
+
+        $approvedAt = in_array($status, ['new', 'open', 'in_progress', 'resolved', 'failed', 'closed'])
+            ? (clone $createdAt)->modify('+' . rand(0, 2) . ' days')
+            : null;
+
+        $resolvedAt = in_array($status, ['resolved', 'failed', 'closed'])
+            ? (clone $startAt ?? $createdAt)->modify('+' . rand(1, 10) . ' days')
+            : null;
+
+        $failedAt = $status === 'failed' ? $resolvedAt : null;
+
+        $completedAt = in_array($status, ['resolved', 'failed', 'closed'])
+            ? (clone $resolvedAt)->modify('+' . rand(0, 3) . ' days')
+            : null;
 
         return [
             'ticket_number' => strtoupper('TKT-' . $this->faker->unique()->bothify('##??##')),
@@ -29,13 +64,13 @@ class TicketFactory extends Factory
             'status' => $status,
             'requester_id' => User::inRandomOrder()->first()->id ?? 1,
             'assigned_to' => User::inRandomOrder()->first()->id ?? 1,
-            'start_at' => $status === 'in_progress' || $status === 'resolved' ? now()->subDays(rand(1, 10)) : null,
-            'approved_at' => $status === 'new' ? now()->subDays(rand(1, 10)) : null,
-            'resolved_at' => $status === 'resolved' ? now()->subDays(rand(1, 10)) : null,
-            'failed_at' => $status === 'failed' ? now()->subDays(rand(1, 10)) : null,
-            'completed_at' => in_array($status, ['resolved', 'failed']) ? now()->subDays(rand(1, 5)) : null,
-            'response_deadline' => $createdAt->modify('+1 day'),
-            'resolution_deadline' => $createdAt->modify('+3 days'),
+            'start_at' => $startAt,
+            'approved_at' => $approvedAt,
+            'resolved_at' => $resolvedAt,
+            'failed_at' => $failedAt,
+            'completed_at' => $completedAt,
+            'response_deadline' => (clone $createdAt)->modify('+1 day'),
+            'resolution_deadline' => (clone $createdAt)->modify('+3 days'),
             'sla_breached' => (bool) rand(0, 1),
             'created_at' => $createdAt,
             'updated_at' => now(),

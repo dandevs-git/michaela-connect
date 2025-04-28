@@ -8,6 +8,7 @@ use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use App\Models\User;
+use App\Services\TicketQueryService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,44 +19,8 @@ class TicketController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $query = TicketQueryService::queryForCurrentUser()->get();
 
-        $query = Ticket::with([
-            'requester:id,name,department_id',
-            'requester.department:id,name',
-            'assignedTo:id,name,department_id',
-            'assignedTo.department:id,name',
-            'priority:id,name',
-            'comments.user:id,name'
-        ]);
-
-        if ($user->can('view all tickets')) {
-
-        } elseif ($user->can('view department tickets')) {
-            $managedDeptIds = Department::where('id', $user->department_id)
-                ->orWhere('parent_id', $user->department_id)
-                ->pluck('id')
-                ->toArray();
-
-            $query->whereHas('requester', function ($q) use ($managedDeptIds) {
-                $q->whereIn('department_id', $managedDeptIds);
-            })->orWhereHas('assignedTo', function ($q) use ($managedDeptIds) {
-                $q->whereIn('department_id', $managedDeptIds);
-            });
-
-        } elseif ($user->can('view own department tickets')) {
-            $query->whereHas('requester', function ($q) use ($user) {
-                $q->where('department_id', $user->department_id);
-            });
-
-        } elseif ($user->can('view own tickets')) {
-            $query->where(function ($q) use ($user) {
-                $q->where('requester_id', $user->id)
-                    ->orWhere('assigned_to', $user->id);
-            });
-        } else {
-            return response()->json(['message' => 'Unauthorizedsdsds'], 403);
-        }
 
         $query->when($request->filled('status'), fn($q) => $q->where('status', $request->query('status')));
         $query->when($request->filled('priority'), fn($q) => $q->where('priority_id', $request->query('priority')));
@@ -69,21 +34,12 @@ class TicketController extends Controller
         }
 
         $tickets = $query->orderBy('created_at', 'desc')->get();
-
         return response()->json($tickets, 200);
     }
 
-
-
     public function show($id)
     {
-        $ticket = Ticket::with([
-            'requester:id,name',
-            'assignedTo:id,name',
-            'department:id,name',
-            'comments.user:id,name',
-        ])->findOrFail($id);
-
+        $ticket = TicketQueryService::queryForCurrentUser()->findOrFail($id);
         return response()->json($ticket, 200);
     }
 
