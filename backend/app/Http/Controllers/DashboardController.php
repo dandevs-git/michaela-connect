@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Services\TicketQueryService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -19,13 +16,20 @@ class DashboardController extends Controller
         $previousPeriodEnd = $now->copy()->subDays(31);
 
         $currentMetrics = $this->calculateMetrics($currentPeriodStart, $now);
-
         $previousMetrics = $this->calculateMetrics($previousPeriodStart, $previousPeriodEnd);
+
+        $statusData = $this->getTicketStatusData($currentPeriodStart, $now);
+        $volumeTrends = $this->getTicketVolumeTrends();
+
+        $departmentTimes = $this->getDepartmentResolutionTimes($currentPeriodStart, $now, $previousPeriodStart, $previousPeriodEnd);
 
         return response()->json([
             'current' => $currentMetrics,
             'previous' => $previousMetrics,
             'delta' => $this->calculateDeltas($currentMetrics, $previousMetrics),
+            'statusData' => $statusData,
+            'volumeTrends' => $volumeTrends,
+            'departmentTimes' => $departmentTimes,
         ]);
     }
 
@@ -56,7 +60,7 @@ class DashboardController extends Controller
     private function calculateDelta($currentValue, $previousValue)
     {
         if ($previousValue == 0) {
-            return $currentValue == 0 ? 0 : 100;
+            return $currentValue == 0 ? 0 : $currentValue;
         }
         return round($currentValue - $previousValue, 2);
     }
@@ -107,55 +111,81 @@ class DashboardController extends Controller
         return $ticketCount > 0 ? round($totalResponseTime / $ticketCount, 2) : 0;
     }
 
-    public function ticketStatusData()
+    private function getTicketStatusData($startDate, $endDate)
     {
-        $statuses = ['resolved', 'open', 'in_progress', 'failed'];
-
-        $data = collect($statuses)->map(function ($status) {
+        $statusDateMap = [
+            'resolved' => 'resolved_at',
+            'open' => 'approved_at',
+            'in_progress' => 'start_at',
+            'failed' => 'failed_at',
+        ];
+        return collect($statusDateMap)->map(function ($dateField, $status) use ($startDate, $endDate) {
             return [
                 'name' => ucfirst(str_replace('_', ' ', $status)),
-                'value' => TicketQueryService::queryForCurrentUser()->where('status', $status)->count()
+                'value' => TicketQueryService::queryForCurrentUser()
+                    ->where('status', $status)
+                    ->whereBetween($dateField, [$startDate, $endDate])
+                    ->count(),
             ];
-        });
-
-        return response()->json($data);
+        })->values();
     }
 
-    public function ticketVolumeTrends()
+
+    private function getTicketVolumeTrends()
     {
-        $trends = TicketQueryService::queryForCurrentUser()->selectRaw("
-            DATE_FORMAT(created_at, '%M') as month,
-            COUNT(*) as Created,
-            SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END) as Resolved,
-            SUM(CASE WHEN status = 'reopened' THEN 1 ELSE 0 END) as Reopened,
-            SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as Failed
-        ")
-            ->groupBy('month')
-            ->orderByRaw("STR_TO_DATE(month, '%M')")
+        $tickets = Ticket::get();
+        return $tickets->groupBy(function ($ticket) {
+            return $ticket->created_at->format('F Y');
+        })->map(function ($group, $date) {
+            return [
+                'name' => $date,
+                'Created' => $group->count(),
+                'Resolved' => $group->where('status', 'resolved')->count(),
+                'Reopened' => $group->where('status', 'reopened')->count(),
+                'Failed' => $group->where('status', 'failed')->count(),
+            ];
+        })->sortKeys()->values();
+    }
+
+
+    private function getDepartmentResolutionTimes($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate)
+    {
+        $tickets = Ticket::with(['assignedTo.department'])
+            ->whereNotNull('resolved_at')
+            ->where(function ($query) use ($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate) {
+                $query->whereBetween('resolved_at', [$currentStartDate, $currentEndDate])
+                    ->orWhereBetween('resolved_at', [$previousStartDate, $previousEndDate]);
+            })
             ->get();
 
-        return response()->json($trends);
-    }
-
-    public function departmentResolutionTime()
-    {
-        $departments = TicketQueryService::queryForCurrentUser()->with(['assignedTo.department'])
-            ->whereNotNull('resolved_at')
-            ->get()
+        return $tickets
             ->groupBy(function ($ticket) {
                 return $ticket->assignedTo->department->name ?? 'Unknown';
             })
-            ->map(function ($tickets, $department) {
-                $avgResolutionTime = $tickets->avg(function ($ticket) {
+            ->map(function ($tickets, $department) use ($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate) {
+                $current = $tickets->filter(function ($ticket) use ($currentStartDate, $currentEndDate) {
+                    return Carbon::parse($ticket->resolved_at)->between($currentStartDate, $currentEndDate);
+                });
+
+                $previous = $tickets->filter(function ($ticket) use ($previousStartDate, $previousEndDate) {
+                    return Carbon::parse($ticket->resolved_at)->between($previousStartDate, $previousEndDate);
+                });
+
+                $currentAvg = $current->avg(function ($ticket) {
                     return Carbon::parse($ticket->created_at)->diffInMinutes(Carbon::parse($ticket->resolved_at));
                 });
+
+                $previousAvg = $previous->avg(function ($ticket) {
+                    return Carbon::parse($ticket->created_at)->diffInMinutes(Carbon::parse($ticket->resolved_at));
+                });
+
                 return [
                     'name' => $department,
-                    'resolution_time' => round($avgResolutionTime, 2)
+                    'current_resolution_time' => round($currentAvg, 2),
+                    'previous_resolution_time' => round($previousAvg, 2),
                 ];
             })
             ->values();
-
-        return response()->json($departments);
     }
+
 }

@@ -11,7 +11,7 @@ import {
 import { COLORS } from '../../constants/config'
 
 function CustomLineChart({ data }) {
-    const lineKeys = data?.length > 0 ? Object.keys(data[0]).filter((key) => key !== 'month') : []
+    const lineKeys = data?.length > 0 ? Object.keys(data[0]).filter((key) => key !== 'name') : []
 
     return (
         <ResponsiveContainer width={'100%'} height={350}>

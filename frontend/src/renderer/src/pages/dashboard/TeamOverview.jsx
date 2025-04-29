@@ -6,12 +6,7 @@ import { useAPI } from '../../contexts/APIContext'
 
 function TeamOverview() {
     const { getData } = useAPI()
-
-    const [ticketStatusData, setTicketStatusData] = useState([])
-    const [ticketVolumeTrends, setTicketVolumeTrends] = useState([])
-    const [ticketsByDepartment, setTicketsByDepartment] = useState([])
     const [dashboardStats, setDashboardStats] = useState({ current: {}, delta: {} })
-
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
@@ -19,12 +14,7 @@ function TeamOverview() {
         setLoading(true)
         setError('')
         try {
-            await Promise.all([
-                getData('/dashboard', setDashboardStats),
-                getData('/ticket-status-data?department_id=1', setTicketStatusData),
-                getData('/ticket-volume-trends?department_id=1', setTicketVolumeTrends),
-                getData('/department-resolution-time?department_id=1', setTicketsByDepartment)
-            ])
+            await Promise.all([getData('/dashboard', setDashboardStats)])
         } catch (err) {
             console.error('Error fetching dashboard data:', err)
             setError('Failed to load dashboard data.')
@@ -100,9 +90,14 @@ function TeamOverview() {
         let displayDelta = delta
 
         if (isTime) {
-            displayValue = formatMinutesVerbose(value, true)
+            displayValue =
+                value !== null && value !== undefined && value !== 0
+                    ? formatMinutesVerbose(value, true)
+                    : '-'
             displayDelta =
-                delta !== null && delta !== undefined ? formatMinutesVerbose(delta, false) : '-'
+                delta !== null && delta !== undefined && delta !== 0
+                    ? formatMinutesVerbose(delta, false)
+                    : '-'
         } else {
             displayValue = Math.abs(displayValue)
             displayDelta = Math.abs(displayDelta)
@@ -222,7 +217,16 @@ function TeamOverview() {
                         Ticket Status Data
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
-                        {loading ? renderPlaceholder() : <CustomPieChart data={ticketStatusData} />}
+                        {loading ? (
+                            renderPlaceholder()
+                        ) : !dashboardStats?.statusData?.some((e) => e.value > 0) ? (
+                            <div className="text-center text-muted py-4">
+                                <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                <div className="fs-6">No data available</div>
+                            </div>
+                        ) : (
+                            <CustomPieChart data={dashboardStats.statusData} />
+                        )}
                     </div>
                 </div>
             </div>
@@ -235,8 +239,15 @@ function TeamOverview() {
                     <div className="d-flex card-body align-items-center justify-content-center">
                         {loading ? (
                             renderPlaceholder()
+                        ) : !dashboardStats?.volumeTrends?.some(
+                              (e) => e.Created > 0 && e.Failed && e.Reopened && e.Resolved
+                          ) ? (
+                            <div className="text-center text-muted py-4">
+                                <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                <div className="fs-6">No data available</div>
+                            </div>
                         ) : (
-                            <CustomLineChart data={ticketVolumeTrends} />
+                            <CustomLineChart data={dashboardStats?.volumeTrends} />
                         )}
                     </div>
                 </div>
@@ -248,11 +259,19 @@ function TeamOverview() {
                         Department-Wise Resolution Time
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
+                        {console.log(dashboardStats?.departmentTimes)}
                         {loading ? (
                             renderPlaceholder()
+                        ) : !dashboardStats?.departmentTimes?.some(
+                              (e) => e.current_resolution_time > 0 && e.previous_resolution_time
+                          ) ? (
+                            <div className="text-center text-muted py-4">
+                                <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                <div className="fs-6">No data available</div>
+                            </div>
                         ) : (
                             <CustomBarChart
-                                data={ticketsByDepartment}
+                                data={dashboardStats?.departmentTimes}
                                 datakey="resolution_time"
                                 display="Average Resolution Time"
                             />

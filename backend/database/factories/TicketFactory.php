@@ -18,13 +18,8 @@ class TicketFactory extends Factory
      */
     public function definition(): array
     {
-        $isRecent = $this->faker->boolean(70);
-
-        if ($isRecent) {
-            $createdAt = $this->faker->dateTimeBetween('-30 days', 'now');
-        } else {
-            $createdAt = $this->faker->dateTimeBetween('-60 days', '-31 days');
-        }
+        // Created at between 1 year ago and now
+        $createdAt = $this->faker->dateTimeBetween('-1 year', 'now');
 
         $status = $this->faker->randomElement([
             'pending',

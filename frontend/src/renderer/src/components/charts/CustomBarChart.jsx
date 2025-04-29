@@ -10,8 +10,9 @@ import {
     ResponsiveContainer
 } from 'recharts'
 import { COLORS } from '../../constants/config'
+import { formatMinutesVerbose } from '../../utils/formatMinutesVerbose'
 
-function CustomBarChart({ data, datakey, display }) {
+function CustomBarChart({ data }) {
     return (
         <ResponsiveContainer width={'100%'} height={350}>
             <BarChart data={data}>
@@ -25,12 +26,31 @@ function CustomBarChart({ data, datakey, display }) {
                         borderRadius: '10px',
                         color: '#333'
                     }}
+                    labelFormatter={(label) => label}
+                    formatter={(value, name) => [
+                        formatMinutesVerbose(value),
+                        name.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+                    ]}
                 />
-                <Legend formatter={() => display} />
+                <Legend
+                    formatter={(value) =>
+                        value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+                    }
+                />
+
                 <Bar
-                    dataKey={datakey}
+                    dataKey="previous_resolution_time"
+                    name="Previous Resolution Time"
+                    fill={COLORS[2]}
+                    barSize={30}
+                    radius={[10, 10, 0, 0]}
+                    activeBar={<Rectangle fill={COLORS[3]} stroke="#000000" />}
+                />
+                <Bar
+                    dataKey="current_resolution_time"
+                    name="Current Resolution Time"
                     fill={COLORS[0]}
-                    barSize={50}
+                    barSize={30}
                     radius={[10, 10, 0, 0]}
                     activeBar={<Rectangle fill={COLORS[1]} stroke="#000000" />}
                 />

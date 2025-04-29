@@ -19,30 +19,35 @@ class TicketController extends Controller
 {
     public function index(Request $request)
     {
-        $query = TicketQueryService::queryForCurrentUser()->get();
+        $query = TicketQueryService::queryForCurrentUser();
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->query('status'));
+        }
 
-        $query->when($request->filled('status'), fn($q) => $q->where('status', $request->query('status')));
-        $query->when($request->filled('priority'), fn($q) => $q->where('priority_id', $request->query('priority')));
+        if ($request->filled('priority')) {
+            $query->where('priority_id', $request->query('priority'));
+        }
 
         if ($request->filled('search')) {
-            $query->where(function ($subQuery) use ($request) {
-                $term = '%' . $request->query('search') . '%';
+            $term = '%' . $request->query('search') . '%';
+            $query->where(function ($subQuery) use ($term) {
                 $subQuery->where('title', 'like', $term)
                     ->orWhere('description', 'like', $term);
             });
         }
 
-        $tickets = $query->orderBy('created_at', 'desc')->get();
+        $tickets = $query->get();
+
         return response()->json($tickets, 200);
     }
+
 
     public function show($id)
     {
         $ticket = TicketQueryService::queryForCurrentUser()->findOrFail($id);
         return response()->json($ticket, 200);
     }
-
 
     public function store(Request $request)
     {

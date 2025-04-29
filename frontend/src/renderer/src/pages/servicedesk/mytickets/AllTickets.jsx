@@ -14,7 +14,7 @@ function AllTickets() {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData(`/tickets?department_id=${authUser?.department?.id}`, setTickets, setLoading)
+        getData(`/tickets`, setTickets, setLoading)
     }, [])
 
     console.log(tickets)
@@ -22,8 +22,8 @@ function AllTickets() {
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },
-        { header: 'Department From', accessorKey: 'requester.department.name' },
-        { header: 'Department To', accessorKey: 'assigned_to.department.name' },
+        // { header: 'Department From', accessorKey: 'requester?.department?.name' },
+        // { header: 'Department To', accessorKey: 'assigned_to?.department?.name' },
         {
             header: 'Status',
             accessorKey: 'status',

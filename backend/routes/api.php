@@ -24,9 +24,6 @@ Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->na
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'getDashboardData']);
-    Route::get('/ticket-status-data', [DashboardController::class, 'ticketStatusData']);
-    Route::get('/ticket-volume-trends', [DashboardController::class, 'ticketVolumeTrends']);
-    Route::get('/department-resolution-time', [DashboardController::class, 'departmentResolutionTime']);
 
     Route::prefix('tickets')->group(function () {
         Route::post('{ticket}/approve', [TicketController::class, 'approve'])->name('tickets.approve');

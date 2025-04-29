@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Ticket;
 use App\Models\Department;
+use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
 
 class TicketQueryService
@@ -52,6 +52,6 @@ class TicketQueryService
             abort(403, 'Unauthorized');
         }
 
-        return $query;
+        return $query->orderBy('created_at', 'desc');
     }
 }
