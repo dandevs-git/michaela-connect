@@ -15,7 +15,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
             className="fw-bold"
             textAnchor={x > cx ? 'start' : 'end'}
             dominantBaseline="central"
-            fontSize={20}
+            fontSize={12}
             fill="#333333"
         >
             {`${(percent * 100).toFixed(0)}%`}
@@ -27,21 +27,21 @@ function CustomPieChart({ data }) {
     const [activeIndex, setActiveIndex] = useState(null)
 
     return (
-        <ResponsiveContainer width="100%" height={450}>
+        <ResponsiveContainer width="100%" height={200}>
             <PieChart>
                 <Legend
                     layout="horizontal"
                     verticalAlign="bottom"
                     align="center"
                     iconType="circle"
-                    wrapperStyle={{ fontSize: '14px', fontWeight: 'bold' }}
+                    wrapperStyle={{ fontSize: '12px', fontWeight: 'bold' }}
                 />
                 <Pie
                     data={data}
                     cx="50%"
                     cy="45%"
-                    outerRadius={180}
-                    innerRadius={60}
+                    outerRadius={'95%'}
+                    innerRadius={'20%'}
                     label={renderCustomizedLabel}
                     dataKey="value"
                     stroke="white"

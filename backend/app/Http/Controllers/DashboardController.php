@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Services\TicketQueryService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -19,6 +20,7 @@ class DashboardController extends Controller
         $previousMetrics = $this->calculateMetrics($previousPeriodStart, $previousPeriodEnd);
 
         $statusData = $this->getTicketStatusData($currentPeriodStart, $now);
+        $ticketVolume = $this->getTicketVolumeByPriority($currentPeriodStart, $now);
         $volumeTrends = $this->getTicketVolumeTrends();
 
         $departmentTimes = $this->getDepartmentResolutionTimes($currentPeriodStart, $now, $previousPeriodStart, $previousPeriodEnd);
@@ -28,6 +30,7 @@ class DashboardController extends Controller
             'previous' => $previousMetrics,
             'delta' => $this->calculateDeltas($currentMetrics, $previousMetrics),
             'statusData' => $statusData,
+            'ticketVolume' => $ticketVolume,
             'volumeTrends' => $volumeTrends,
             'departmentTimes' => $departmentTimes,
         ]);
@@ -130,13 +133,36 @@ class DashboardController extends Controller
         })->values();
     }
 
+    public function getTicketVolumeByPriority($start, $end)
+    {
+        $current = DB::table('tickets')
+            ->join('priorities', 'tickets.priority_id', '=', 'priorities.id')
+            ->select('priorities.name as priority', DB::raw('COUNT(*) as count'))
+            ->whereNull('tickets.deleted_at')
+            ->whereBetween('tickets.created_at', [$start, $end])
+            ->groupBy('priorities.name')
+            ->pluck('count', 'priority');
+
+        $result = $current->map(function ($count, $priority) {
+            return [
+                'priority' => $priority,
+                'value' => $count,
+            ];
+        })->values();
+
+        return $result;
+    }
+
+
 
     private function getTicketVolumeTrends()
     {
         $tickets = Ticket::get();
+
         return $tickets->groupBy(function ($ticket) {
-            return $ticket->created_at->format('F Y');
-        })->map(function ($group, $date) {
+            return $ticket->created_at->format('Y-m');
+        })->sortKeys()->map(function ($group, $key) {
+            $date = Carbon::createFromFormat('Y-m', $key)->format('F Y');
             return [
                 'name' => $date,
                 'Created' => $group->count(),
@@ -144,8 +170,10 @@ class DashboardController extends Controller
                 'Reopened' => $group->where('status', 'reopened')->count(),
                 'Failed' => $group->where('status', 'failed')->count(),
             ];
-        })->sortKeys()->values();
+        })->values();
     }
+
+
 
 
     private function getDepartmentResolutionTimes($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate)

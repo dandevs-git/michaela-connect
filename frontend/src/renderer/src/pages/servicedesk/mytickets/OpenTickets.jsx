@@ -20,7 +20,6 @@ function OpenTickets() {
     const getSelectedTicket = (tickets) => {
         setSelectedTickets(tickets)
     }
-    console.log(tickets)
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },

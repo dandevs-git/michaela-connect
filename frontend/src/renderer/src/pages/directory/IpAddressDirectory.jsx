@@ -14,7 +14,6 @@ function IpAddressDirectory() {
     }, [])
 
     const handleShowModal = (telephone) => {
-        // console.log(telephone)
         setSelectedIpaddress(telephone)
     }
 

@@ -3,9 +3,7 @@ import { useState } from 'react'
 function Chat() {
     const [message, setMessage] = useState('')
 
-    const sendMessage = () => {
-        // console.log('Hello')
-    }
+    const sendMessage = () => {}
 
     return (
         <>

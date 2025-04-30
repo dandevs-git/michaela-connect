@@ -5,6 +5,7 @@ import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
+import { formatDateVerbose } from '../../../utils/formatDateVerbose'
 
 function AllTickets() {
     const { getData, authUser } = useAPI()
@@ -17,8 +18,6 @@ function AllTickets() {
         getData(`/tickets`, setTickets, setLoading)
     }, [])
 
-    console.log(tickets)
-
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },
@@ -30,7 +29,11 @@ function AllTickets() {
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
-        { header: 'Updated At', accessorKey: 'updated_at' },
+        {
+            header: 'Updated At',
+            accessorKey: 'updated_at',
+            cell: ({ row }) => formatDateVerbose(row.original.updated_at)
+        },
         {
             header: 'Actions',
             accessorKey: 'actions',

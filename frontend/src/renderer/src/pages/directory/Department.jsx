@@ -17,8 +17,6 @@ function Department() {
         getData('/departments?main', setMainDepartments, setLoadingMainDepartments, setError)
     }, [])
 
-    console.log(departments)
-
     const departmentColumns = [
         { header: 'No.', accessorKey: 'id' },
         { header: 'Departments', accessorKey: 'name' },

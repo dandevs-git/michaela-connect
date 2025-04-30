@@ -14,7 +14,6 @@ function InternetDirectory() {
     }, [])
 
     const handleShowModal = (Internet) => {
-        // console.log(Internet)
         setSelectedInternet(Internet)
     }
 

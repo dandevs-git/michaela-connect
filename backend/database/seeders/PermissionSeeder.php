@@ -111,7 +111,8 @@ class PermissionSeeder extends Seeder
 
             'staff' => [
                 'create tickets',
-                'view own tickets',
+                'view own department tickets',
+                // 'view own tickets',
                 'comment on tickets',
                 'upload attachments',
                 'view attachments',

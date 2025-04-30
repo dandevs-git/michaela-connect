@@ -14,7 +14,6 @@ function TelephoneDirectory() {
     }, [])
 
     const handleShowModal = (telephone) => {
-        // console.log(telephone)
         setSelectedTelephone(telephone)
     }
 

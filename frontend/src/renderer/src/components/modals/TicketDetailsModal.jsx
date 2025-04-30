@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { FaPlay, FaPaperPlane, FaEdit } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import StatusBadge from '../badge/StatusBadge'
+import { formatDateAndTimeVerbose } from '../../utils/formatDateAndTimeVerbose'
 
 function TicketDetailsModal({ id, data }) {
     const { addComment, updateComment, authUser } = useAPI()
@@ -222,12 +223,9 @@ function TicketDetailsModal({ id, data }) {
                                                                 {comment?.user?.name}
                                                             </span>
                                                             <span className="text-muted ms-2">
-                                                                {new Date(
-                                                                    comment?.created_at
-                                                                ).toLocaleString('en-US', {
-                                                                    dateStyle: 'medium',
-                                                                    timeStyle: 'short'
-                                                                })}
+                                                                {formatDateAndTimeVerbose(
+                                                                    comment?.created_at || ''
+                                                                )}
                                                             </span>
                                                             {comment?.edited_at && (
                                                                 <span className="badge bg-secondary text-light text-primary ms-2">

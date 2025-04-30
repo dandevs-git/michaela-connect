@@ -3,6 +3,7 @@ import CustomBarChart from '../../components/charts/CustomBarChart'
 import CustomLineChart from '../../components/charts/CustomLineChart'
 import CustomPieChart from '../../components/charts/CustomPieChart'
 import { useAPI } from '../../contexts/APIContext'
+import CustomRadarChart from '../../components/charts/CustomRadarChart'
 
 function TeamOverview() {
     const { getData } = useAPI()
@@ -82,9 +83,18 @@ function TeamOverview() {
         return parts
     }
 
-    const RenderStatCard = ({ title, value, delta, iconClass, unit = '', isTime = false }) => {
-        const trend = delta > 0 ? 'success' : delta < 0 ? 'danger' : 'secondary'
+    const RenderStatCard = ({
+        title,
+        value,
+        delta,
+        iconClass,
+        unit = '',
+        isTime = false,
+        reverseDelta = false
+    }) => {
         const isZero = value === null || value === undefined || value === 0
+        const trend = delta === 0 ? 'secondary' : delta > 0 ? 'success' : 'danger'
+        const trendReverse = delta === 0 ? 'secondary' : delta > 0 ? 'danger' : 'success'
 
         let displayValue = value
         let displayDelta = delta
@@ -119,17 +129,25 @@ function TeamOverview() {
                     </div>
                     <div className="card-footer border mb-0">
                         {loading ? (
-                            renderPlaceholder('40px')
+                            renderPlaceholder('20px')
                         ) : (
                             <div className="d-flex flex-column">
                                 <span
-                                    className={`fs-6 fw-bold text-${trend} d-flex align-items-center justify-content-center`}
+                                    className={`fs-6 fw-bold text-${reverseDelta ? trendReverse : trend} d-flex align-items-center justify-content-center`}
                                 >
                                     {delta !== null && delta !== undefined && delta !== 0 ? (
                                         <>
                                             <i
-                                                className={`bi ${trend === 'success' ? 'bi-arrow-up-short' : 'bi-arrow-down-short'}`}
-                                            ></i>
+                                                className={`bi ${
+                                                    (
+                                                        reverseDelta
+                                                            ? trendReverse === 'danger'
+                                                            : trend === 'success'
+                                                    )
+                                                        ? 'bi-arrow-up-short'
+                                                        : 'bi-arrow-down-short'
+                                                }`}
+                                            />
                                             {displayDelta}
                                             {unit && !isTime && (
                                                 <span className="fs-6">{unit}</span>
@@ -140,6 +158,7 @@ function TeamOverview() {
                                         '-'
                                     )}
                                 </span>
+
                                 <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                     vs previous 30 days
                                 </span>
@@ -193,6 +212,7 @@ function TeamOverview() {
                             delta={dashboardStats.delta?.avgResolutionTimeDelta}
                             iconClass="bi-lightning-fill"
                             isTime={true}
+                            reverseDelta={true}
                         />
                         <RenderStatCard
                             title="Avg Response Time"
@@ -200,33 +220,57 @@ function TeamOverview() {
                             delta={dashboardStats.delta?.avgResponseTimeDelta}
                             iconClass="bi-clock-history"
                             isTime={true}
+                            reverseDelta={true}
                         />
                         <RenderStatCard
                             title="Pending Approvals"
                             value={dashboardStats.current?.pendingApprovals}
                             delta={dashboardStats.delta?.pendingApprovalsDelta}
                             iconClass="bi-hourglass-top"
+                            reverseDelta={true}
                         />
                     </div>
                 </div>
             </div>
 
-            <div className="col-xl-4 p-4">
-                <div className="card h-100 rounded-4 shadow text-center mb-3">
-                    <div className="card-header text-uppercase fs-3 fw-semibold">
-                        Ticket Status Data
+            <div className="row col-xl-4">
+                <div className="col-xl-12 pb-2 pt-4 px-4">
+                    <div className="card h-100 rounded-4 shadow text-center mb-3">
+                        <div className="card-header text-uppercase fs-3 fw-semibold">
+                            Ticket Status Data
+                        </div>
+                        <div className="d-flex card-body align-items-center justify-content-center">
+                            {loading ? (
+                                renderPlaceholder('200px')
+                            ) : !dashboardStats?.statusData?.some((e) => e.value > 0) ? (
+                                <div className="text-center text-muted py-4">
+                                    <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                    <div className="fs-6">No data available</div>
+                                </div>
+                            ) : (
+                                <CustomPieChart data={dashboardStats.statusData} />
+                            )}
+                        </div>
                     </div>
-                    <div className="d-flex card-body align-items-center justify-content-center">
-                        {loading ? (
-                            renderPlaceholder()
-                        ) : !dashboardStats?.statusData?.some((e) => e.value > 0) ? (
-                            <div className="text-center text-muted py-4">
-                                <i className="bi bi-info-circle fs-1 mb-2"></i>
-                                <div className="fs-6">No data available</div>
-                            </div>
-                        ) : (
-                            <CustomPieChart data={dashboardStats.statusData} />
-                        )}
+                </div>
+                <div className="col-xl-12 pt-2 pb-4 px-4">
+                    <div className="card h-100 rounded-4 shadow text-center mb-3">
+                        <div className="card-header text-uppercase fs-3 fw-semibold d-flex flex-column">
+                            <span className="">Ticket Volume</span>
+                            <span style={{ fontSize: '0.8rem' }}>by Priority</span>
+                        </div>
+                        <div className="d-flex card-body align-items-center justify-content-center">
+                            {loading ? (
+                                renderPlaceholder('200px')
+                            ) : !dashboardStats?.statusData?.some((e) => e.value > 0) ? (
+                                <div className="text-center text-muted py-4">
+                                    <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                    <div className="fs-6">No data available</div>
+                                </div>
+                            ) : (
+                                <CustomRadarChart data={dashboardStats.ticketVolume} />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -259,7 +303,6 @@ function TeamOverview() {
                         Department-Wise Resolution Time
                     </div>
                     <div className="d-flex card-body align-items-center justify-content-center">
-                        {console.log(dashboardStats?.departmentTimes)}
                         {loading ? (
                             renderPlaceholder()
                         ) : !dashboardStats?.departmentTimes?.some(

@@ -162,7 +162,6 @@ export const APIProvider = ({ children }) => {
                         </div>
                     </div>
                     <h4 className="text-light mt-3">Authenticating</h4>
-                    {console.log(authUser)}
                 </div>
             ) : (
                 children

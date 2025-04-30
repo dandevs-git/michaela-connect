@@ -104,7 +104,6 @@ function NewTickets() {
                             <FaUserCheck /> Assign
                         </div>
                         <ul className="dropdown-menu dropdown-menu-start">
-                            {console.log(subordinates)}
                             {subordinates.length > 0 ? (
                                 <>
                                     {subordinates
