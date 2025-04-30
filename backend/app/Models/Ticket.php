@@ -17,7 +17,9 @@ class Ticket extends Model
         'description',
         'priority_id',
         'status',
+        'origin_department_id',
         'requester_id',
+        'target_department_id',
         'assigned_to',
         'resolved_at',
         'failed_at',
@@ -58,9 +60,13 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    public function department()
+    public function originDepartment()
     {
-        return $this->belongsTo(Department::class, 'department_id');
+        return $this->belongsTo(Department::class, 'origin_department_id');
+    }
+    public function targetDepartment()
+    {
+        return $this->belongsTo(Department::class, 'target_department_id');
     }
 
     public function comments()

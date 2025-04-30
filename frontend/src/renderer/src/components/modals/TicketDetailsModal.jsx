@@ -159,7 +159,9 @@ function TicketDetailsModal({ id, data }) {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <span className="text-danger">Not Assigned</span>
+                                                <span className="d-flex h-100 justify-content-center align-items-center">
+                                                    {data?.target_department.name}
+                                                </span>
                                             )}
                                         </div>
                                     </div>

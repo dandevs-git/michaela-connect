@@ -71,9 +71,12 @@ function NewTickets() {
         getData('/tickets?status=new', setTickets, setLoading, setError)
     }
 
+    console.log(tickets)
+
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },
+        { header: 'Department', accessorKey: 'requester.department.name' },
         {
             header: 'Status',
             accessorKey: 'status',

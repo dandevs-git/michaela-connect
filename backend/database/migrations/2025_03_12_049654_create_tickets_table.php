@@ -18,7 +18,9 @@ return new class extends Migration {
             $table->foreignId('priority_id')->constrained('priorities')->onDelete('cascade');
             $table->enum('status', ['pending', 'new', 'open', 'rejected', 'in_progress', 'resolved', 'failed', 'closed', 'reopened'])->default('pending');
 
+            $table->foreignId('origin_department_id')->nullable()->constrained('departments')->onDelete('set null');
             $table->foreignId('requester_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('target_department_id')->nullable()->constrained('departments')->onDelete('set null');
             $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');
 
             $table->timestamp('approved_at')->nullable();

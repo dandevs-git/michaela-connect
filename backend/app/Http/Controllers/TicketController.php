@@ -75,8 +75,9 @@ class TicketController extends Controller
             'description' => $request->description,
             'priority_id' => $priority->id,
             'status' => 'pending',
+            'origin_department_id' => $user->department_id,
             'requester_id' => $user->id,
-            'department_id' => $request->department_id,
+            'target_department_id' => $request->department_id,
             'response_deadline' => Carbon::now()->addMinutes($priority->response_time),
             'resolution_deadline' => Carbon::now()->addMinutes($priority->resolution_time),
         ]);

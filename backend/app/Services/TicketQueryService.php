@@ -13,12 +13,12 @@ class TicketQueryService
         $user = Auth::user();
 
         $query = Ticket::with([
+            'originDepartment:id,name',
+            'targetDepartment:id,name',
             'requester:id,name,department_id',
-            'requester.department:id,name',
             'assignedTo:id,name,department_id',
-            'assignedTo.department:id,name',
             'priority:id,name',
-            'comments.user:id,name'
+            'comments.user:id,name',
         ]);
 
         if ($user->can('view all tickets')) {
@@ -29,19 +29,13 @@ class TicketQueryService
                 ->toArray();
 
             $query->where(function ($q) use ($managedDeptIds) {
-                $q->whereHas('requester', function ($sub) use ($managedDeptIds) {
-                    $sub->whereIn('department_id', $managedDeptIds);
-                })->orWhereHas('assignedTo', function ($sub) use ($managedDeptIds) {
-                    $sub->whereIn('department_id', $managedDeptIds);
-                });
+                $q->whereIn('origin_department_id', $managedDeptIds)
+                    ->orWhereIn('target_department_id', $managedDeptIds);
             });
         } elseif ($user->can('view own department tickets')) {
             $query->where(function ($q) use ($user) {
-                $q->whereHas('requester', function ($sub) use ($user) {
-                    $sub->where('department_id', $user->department_id);
-                })->orWhereHas('assignedTo', function ($sub) use ($user) {
-                    $sub->where('department_id', $user->department_id);
-                });
+                $q->where('origin_department_id', $user->department_id)
+                    ->orWhere('target_department_id', $user->department_id);
             });
         } elseif ($user->can('view own tickets')) {
             $query->where(function ($q) use ($user) {
