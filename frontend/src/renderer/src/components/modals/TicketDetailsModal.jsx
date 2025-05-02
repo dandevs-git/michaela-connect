@@ -135,7 +135,7 @@ function TicketDetailsModal({ id, data }) {
                                             <div>
                                                 <span className="me-2">Department:</span>
                                                 <span className="text-primary fw-bold">
-                                                    {data?.requester?.department?.name}
+                                                    {data?.origin_department.name}
                                                 </span>
                                             </div>
                                         </div>
@@ -154,7 +154,7 @@ function TicketDetailsModal({ id, data }) {
                                                     <div>
                                                         <span className="me-2">Department:</span>
                                                         <span className="text-primary fw-bold">
-                                                            {data?.assigned_to?.department?.name}
+                                                            {data?.target_department.name}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -172,7 +172,9 @@ function TicketDetailsModal({ id, data }) {
                                         <div className="card shadow p-3 h-100 rounded-4">
                                             <h6 className="fw-bold">Response Deadline:</h6>
                                             <span className="text-muted">
-                                                {data?.response_deadline || 'N/A'}
+                                                {formatDateAndTimeVerbose(
+                                                    data?.response_deadline
+                                                ) || 'N/A'}
                                             </span>
                                         </div>
                                     </div>
@@ -180,7 +182,9 @@ function TicketDetailsModal({ id, data }) {
                                         <div className="card shadow p-3 h-100 rounded-4">
                                             <h6 className="fw-bold">Resolution Deadline:</h6>
                                             <span className="text-muted">
-                                                {data?.resolution_deadline || 'N/A'}
+                                                {formatDateAndTimeVerbose(
+                                                    data?.resolution_deadline
+                                                ) || 'N/A'}
                                             </span>
                                         </div>
                                     </div>

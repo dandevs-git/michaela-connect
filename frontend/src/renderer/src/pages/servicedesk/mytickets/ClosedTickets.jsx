@@ -20,13 +20,14 @@ function ClosedTickets() {
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },
+        { header: 'From Department', accessorKey: 'origin_department.name' },
+        { header: 'To Department', accessorKey: 'target_department.name' },
         {
             header: 'Status',
             accessorKey: 'status',
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
-        { header: 'Assigned To', accessorKey: 'assigned_to.name' },
         {
             header: 'Actions',
             accessorKey: 'actions',

@@ -13,50 +13,22 @@ class DepartmentFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->randomElement([
-                'DATA ENTRY',
-                'PAYROLL',
-                'SALES',
-                'INVENTORY',
-                'PURCHASING',
-                'PRODUCTION',
-                'MARKETING',
-                'RESEARCH AND DEVELOPMENT',
-                'LOGISTICS',
-                'CUSTOMER SERVICE',
-                'QUALITY ASSURANCE',
-                'TECHNICAL SUPPORT',
-                'ADMINISTRATION',
-                'FINANCE',
-                'LEGAL',
-                'COMPLIANCE',
-                'BUSINESS DEVELOPMENT',
-                'PROJECT MANAGEMENT',
-                'STRATEGY',
-                'TRAINING AND DEVELOPMENT',
-                'PUBLIC RELATIONS',
-                'GRAPHIC DESIGN',
-                'WEB DEVELOPMENT',
-                'SOCIAL MEDIA',
-                'SEO',
-                'CONTENT CREATION',
-                'DATA ANALYSIS',
-                'DATABASE ADMINISTRATION',
-                'NETWORK ADMINISTRATION',
-                'SYSTEMS ADMINISTRATION',
-                'APPLICATION SUPPORT',
-                'HUMAN RESOURCES',
-                'CONCESSION',
-                'ACCOUNTING',
-                'WAREHOUSE',
-                'ENCODER',
+                'MANAGEMENT',
+                'ACCOUNTING DEPARTMENT',
+                'ADMIN DEPARTMENT',
+                'ELECTRONIC DATA DEPARTMENT',
+                'MARKET AND RESEARCH DEVELOPMENT',
+                'HUMAN RESOURCE AND PAYROLL DEPARTMENT',
+                'KENVA PROPERTIES CORPORATION',
+                'LEASING DEPARTMENT',
+                'MCARES DEPARTMENT',
+                'PURCHASING DEPARTMENT',
+                'SALES AND OPERATION DEPARTMENT',
             ]),
-            'parent_id' => null, // default to null
+            'parent_id' => null,
         ];
     }
 
-    /**
-     * Optionally assign a parent department
-     */
     public function withParent(): Factory
     {
         return $this->state(function () {

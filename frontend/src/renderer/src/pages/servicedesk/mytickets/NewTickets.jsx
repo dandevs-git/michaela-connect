@@ -35,11 +35,11 @@ function NewTickets() {
     const [confirmType, setConfirmType] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=new', setTickets, setLoading)
+        getData('/tickets?status=new', setTickets, setLoading, setError)
     }, [])
 
     useEffect(() => {
-        getData(`/users/subordinates`, setSubordinates)
+        getData(`/users/subordinates`, setSubordinates, setLoading, setError)
     }, [])
 
     const handleAssignButton = (ticket, user) => {
@@ -71,12 +71,24 @@ function NewTickets() {
         getData('/tickets?status=new', setTickets, setLoading, setError)
     }
 
-    console.log(tickets)
+    const flattenSubordinates = (users) => {
+        let flat = []
+
+        users.forEach((user) => {
+            flat.push(user)
+            if (user.subordinates && user.subordinates.length > 0) {
+                flat = flat.concat(flattenSubordinates(user.subordinates))
+            }
+        })
+
+        return flat
+    }
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },
-        { header: 'Department', accessorKey: 'requester.department.name' },
+        { header: 'From Department', accessorKey: 'origin_department.name' },
+        { header: 'To Department', accessorKey: 'target_department.name' },
         {
             header: 'Status',
             accessorKey: 'status',
@@ -109,7 +121,7 @@ function NewTickets() {
                         <ul className="dropdown-menu dropdown-menu-start">
                             {subordinates.length > 0 ? (
                                 <>
-                                    {subordinates
+                                    {flattenSubordinates(subordinates)
                                         .filter((user) => !user.request_id)
                                         .map((user) => (
                                             <li key={user.id}>

@@ -24,6 +24,8 @@ function FailedTickets() {
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },
+        { header: 'From Department', accessorKey: 'origin_department.name' },
+        { header: 'To Department', accessorKey: 'target_department.name' },
         {
             header: 'Status',
             accessorKey: 'status',

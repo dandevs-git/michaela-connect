@@ -34,6 +34,7 @@ class UserController extends Controller
         $users = User::with('department', 'roles.permissions')->get();
         return response()->json($users, 200);
     }
+
     public function store(Request $request)
     {
         $admin = Auth::user();
@@ -165,6 +166,23 @@ class UserController extends Controller
     }
 
 
+    public function getSupervisor()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $supervisor = $user->supervisor()->with('department')->first();
+
+        if (!$supervisor) {
+            return response()->json(['message' => 'No supervisor found'], 200);
+        }
+
+        return response()->json($supervisor, 200);
+    }
+
     public function getSubordinates()
     {
         $user = Auth::user();
@@ -173,7 +191,7 @@ class UserController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $subordinates = $user->subordinates()->with(['department', 'head'])->get();
+        $subordinates = $user->subordinates()->with('department')->get();
 
         if ($subordinates->isEmpty()) {
             return response()->json(['message' => 'No subordinates found'], 200);
@@ -182,28 +200,5 @@ class UserController extends Controller
         return response()->json($subordinates, 200);
     }
 
-
-    public function getUserSubordinates($id)
-    {
-        $user = User::with(['subordinates.department'])->findOrFail($id);
-
-        return response()->json($user->subordinates, 200);
-    }
-
-
-    public function getUserHead($id)
-    {
-        $user = User::with('department')->findOrFail($id);
-
-        $head = User::where('department_id', $user->department_id)
-            ->where('role', 'head')
-            ->first();
-
-        return response()->json([
-            'user' => $user->name,
-            'department' => $user->department->name ?? 'No Department',
-            'head_of_department' => $head ? $head->name : 'No head assigned',
-        ]);
-    }
 
 }

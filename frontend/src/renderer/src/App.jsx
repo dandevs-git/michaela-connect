@@ -64,14 +64,8 @@ function App() {
             </Route>
 
             <Route
-                // element={<MainLayout />}
                 element={
-                    <PrivateRoute
-                        element={<MainLayout />}
-                        // allowedRoles={['admin', 'manager', 'head', 'staff']}
-                        isAuth={isAuth}
-                        authUser={authUser}
-                    />
+                    <PrivateRoute element={<MainLayout />} isAuth={isAuth} authUser={authUser} />
                 }
             >
                 <Route path="/dashboard">

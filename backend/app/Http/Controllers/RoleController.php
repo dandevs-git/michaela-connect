@@ -36,9 +36,6 @@ class RoleController extends Controller
         return response()->json(['message' => 'Role created', 'role' => $role], 201);
     }
 
-    /**
-     * Show a single role with permissions.
-     */
     public function show(Role $role)
     {
         return response()->json($role->load('permissions'), 200);
