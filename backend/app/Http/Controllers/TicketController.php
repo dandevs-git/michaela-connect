@@ -19,10 +19,32 @@ class TicketController extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user();
         $query = TicketQueryService::queryForCurrentUser();
 
         if ($request->filled('status')) {
-            $query->where('status', $request->query('status'));
+            $status = $request->query('status');
+            $query->where('status', $status);
+
+            if (!$user->hasRole(['admin', 'superadmin'])) {
+                if ($status === 'pending') {
+                    $query->where('origin_department_id', auth()->user()->department_id);
+                } elseif ($status === 'new') {
+                    $query->where('target_department_id', auth()->user()->department_id);
+                } elseif ($status === 'open') {
+                    $query->where('target_department_id', auth()->user()->department_id);
+                } elseif ($status === 'in_progress') {
+                    $query->where('target_department_id', auth()->user()->department_id);
+                } elseif ($status === 'resolved') {
+                    $query->where('target_department_id', auth()->user()->department_id);
+                } elseif ($status === 'closed') {
+                    $query->where('target_department_id', auth()->user()->department_id);
+                } elseif ($status === 'failed') {
+                    $query->where('target_department_id', auth()->user()->department_id);
+                } elseif ($status === 'rejected') {
+                    $query->where('target_department_id', auth()->user()->department_id);
+                }
+            }
         }
 
         if ($request->filled('priority')) {
@@ -41,6 +63,7 @@ class TicketController extends Controller
 
         return response()->json($tickets, 200);
     }
+
 
 
     public function show($id)

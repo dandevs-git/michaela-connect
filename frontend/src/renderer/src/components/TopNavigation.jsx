@@ -2,7 +2,6 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import id from '../assets/images/photos/id.jpg'
 import ThemeSwitch from './ThemeSwitch'
 import { useAPI } from '../contexts/APIContext'
-import { useEffect, useState } from 'react'
 
 const pages = [
     { page: 'Dashboard', link: '/dashboard' },

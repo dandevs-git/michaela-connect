@@ -5,20 +5,33 @@ import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
+import ConfirmationModal from '../../../components/modals/ConfirmationModal'
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 
 function OpenTickets() {
-    const { getData } = useAPI()
+    const { getData, postData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [confirmType, setConfirmType] = useState('')
 
     useEffect(() => {
         getData('/tickets?status=open', setTickets, setLoading)
     }, [])
 
-    const getSelectedTicket = (tickets) => {
-        setSelectedTickets(tickets)
+    const handleStartButton = (ticket) => {
+        setSelectedTickets(ticket)
+        setConfirmType('start')
+        const modal = new Modal(document.getElementById('confirmModal'))
+        modal.show()
+    }
+
+    const handleConfirm = () => {
+        if (!selectedTickets) return
+        const url = `/tickets/${selectedTickets.id}/start`
+        postData(url, '', setLoading, setError)
+        getData('/tickets?status=pending', setTickets, setLoading, setError)
     }
 
     const columns = [
@@ -46,7 +59,10 @@ function OpenTickets() {
                     >
                         <FaEye /> View
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
+                    <button
+                        onClick={() => handleStartButton(row.original)}
+                        className="btn text-light btn-warning btn-sm"
+                    >
                         <FaPlay /> Start Task
                     </button>
                 </div>
@@ -81,6 +97,20 @@ function OpenTickets() {
             </div>
 
             <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+
+            <ConfirmationModal
+                id="confirmModal"
+                title="Start Ticket"
+                message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
+                confirmLabel={
+                    <>
+                        <FaPlay /> Start Task
+                    </>
+                }
+                confirmClass="btn-warning text-light"
+                cancelLabel="Cancel"
+                onConfirm={handleConfirm}
+            />
         </>
     )
 }

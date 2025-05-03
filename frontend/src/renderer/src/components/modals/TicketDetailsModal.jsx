@@ -160,7 +160,9 @@ function TicketDetailsModal({ id, data }) {
                                                 </div>
                                             ) : (
                                                 <span className="d-flex h-100 justify-content-center align-items-center">
-                                                    {data?.target_department.name}
+                                                    <span className="text-primary fw-bold">
+                                                        {data?.target_department.name}
+                                                    </span>
                                                 </span>
                                             )}
                                         </div>

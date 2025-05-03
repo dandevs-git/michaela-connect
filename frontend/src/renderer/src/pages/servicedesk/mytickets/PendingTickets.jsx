@@ -4,10 +4,10 @@ import { FaCheck, FaEye, FaPlus, FaTimes } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
-import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import PermissionButton from '../../../components/buttons/PermissionButton'
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 
 function PendingTickets() {
     const { getData, postData } = useAPI()
@@ -24,14 +24,14 @@ function PendingTickets() {
     const handleApproveButton = (ticket) => {
         setSelectedTickets(ticket)
         setConfirmType('approve')
-        const modal = new bootstrap.Modal(document.getElementById('confirmModal'))
+        const modal = new Modal(document.getElementById('confirmModal'))
         modal.show()
     }
 
     const handleRejectButton = (ticket) => {
         setSelectedTickets(ticket)
         setConfirmType('reject')
-        const modal = new bootstrap.Modal(document.getElementById('confirmModal'))
+        const modal = new Modal(document.getElementById('confirmModal'))
         modal.show()
     }
 
@@ -63,24 +63,13 @@ function PendingTickets() {
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
-                    {/* {authUser.can('view tickets') && (
-                        <button
-                            className="btn text-light btn-info btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#ticketDetailsModal"
-                            onClick={() => setSelectedTickets(row.original)}
-                        >
-                            <FaEye /> View
-                        </button>
-                    )} */}
-
-                    <PermissionButton
+                    {/* <PermissionButton
                         permission="view ticket details"
                         onClick={() => setSelectedTickets(row.original)}
                         className="btn text-light btn-info btn-sm"
                     >
                         <FaEye /> View
-                    </PermissionButton>
+                    </PermissionButton> */}
 
                     <button
                         onClick={() => handleApproveButton(row.original)}
@@ -88,6 +77,7 @@ function PendingTickets() {
                     >
                         <FaCheck /> Approve
                     </button>
+
                     <button
                         onClick={() => handleRejectButton(row.original)}
                         className="btn text-light btn-danger btn-sm"

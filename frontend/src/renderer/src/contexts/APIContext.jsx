@@ -134,18 +134,7 @@ export const APIProvider = ({ children }) => {
                 getData,
                 postData,
                 putData,
-                deleteData,
-
-                addTicket,
-                approveTicket,
-                assignTicket,
-                deleteTicket,
-
-                getComments,
-                showComment,
-                addComment,
-                updateComment,
-                deleteComment
+                deleteData
             }}
         >
             {authLoading ? (

@@ -1,28 +1,12 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import {
-    FaArrowRight,
-    FaCheck,
-    FaEye,
-    FaHandPaper,
-    FaPlus,
-    FaTimes,
-    FaUserCheck
-} from 'react-icons/fa'
+import { FaEye, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
-import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
-
-const subordinates = [
-    { id: 1, name: 'Anna Dela Cruz', position: 'IT Support Specialist', request_id: 68 },
-    { id: 2, name: 'Mark Reyes', position: 'Junior Developer', request_id: 62 },
-    { id: 3, name: 'Janine Santos', position: 'Technical Staff', request_id: 61 },
-    { id: 4, name: 'Carlos Gutierrez', position: 'Service Desk Agent', request_id: 38 },
-    { id: 5, name: 'Sarah Lim', position: 'Network Assistant' }
-]
 
 function NewTickets() {
     const { getData, postData } = useAPI()
@@ -46,14 +30,14 @@ function NewTickets() {
         setSelectedTickets(ticket)
         setSelectedUser(user)
         setConfirmType('assign')
-        const modal = new bootstrap.Modal(document.getElementById('confirmModal'))
+        const modal = new Modal(document.getElementById('confirmModal'))
         modal.show()
     }
 
     // const handleAcceptButton = (ticket) => {
     //     setSelectedTickets(ticket)
     //     setConfirmType('reject')
-    //     const modal = new bootstrap.Modal(document.getElementById('confirmModal'))
+    //     const modal = new Modal(document.getElementById('confirmModal'))
     //     modal.show()
     // }
 

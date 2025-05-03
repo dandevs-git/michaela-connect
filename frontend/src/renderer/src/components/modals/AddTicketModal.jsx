@@ -1,17 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
-import { Modal, Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
+import ToastNotification from '../toast/ToastNotification'
 
 function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
-    const { addTicket, getData } = useAPI()
+    const { postData, getData } = useAPI()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
     const [departments, setDepartments] = useState([])
     const [priorities, setPriorities] = useState([])
+    const [showToast, setShowToast] = useState(false)
 
-    const toastRef = useRef(null)
     const modalRef = useRef(null)
 
     const [ticketData, setTicketData] = useState({
@@ -50,32 +51,13 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
             return
         }
 
-        setLoading(true)
-
         try {
-            const response = await addTicket(ticketData)
-
-            if (response?.ticket?.id) {
-                setMessage('Ticket created successfully!')
-                resetForm()
-
-                getData('/tickets', resetTickets, resetLoading, resetError)
-
-                const modalInstance = Modal.getInstance(modalRef.current)
-                modalInstance?.hide()
-
-                if (toastRef.current) {
-                    const toast = new Toast(toastRef.current, { delay: 4000 })
-                    toast.show()
-                }
-            } else {
-                setError(response?.message || 'Failed to create ticket.')
-            }
-        } catch (err) {
-            setError(err?.message || 'Something went wrong.')
-        } finally {
-            setLoading(false)
-        }
+            await postData('/tickets', ticketData, setTicketData, setLoading, setError)
+            resetForm()
+            getData('/tickets', resetTickets, resetLoading, resetError)
+            Modal.getInstance(modalRef.current).hide()
+            setShowToast(true)
+        } catch {}
     }
 
     useEffect(() => {
@@ -84,18 +66,8 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
     }, [])
 
     useEffect(() => {
-        const modalElement = modalRef.current
-
-        const handleShown = () => document.getElementById('ticketTitle')?.focus()
-        const handleHidden = resetForm
-
-        modalElement?.addEventListener('shown.bs.modal', handleShown)
-        modalElement?.addEventListener('hidden.bs.modal', handleHidden)
-
-        return () => {
-            modalElement?.removeEventListener('shown.bs.modal', handleShown)
-            modalElement?.removeEventListener('hidden.bs.modal', handleHidden)
-        }
+        getData('/departments', setDepartments)
+        getData('/priorities', setPriorities)
     }, [])
 
     return (
@@ -107,6 +79,7 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
             >
                 <FaPlus /> New Ticket
             </button>
+
             <div
                 className="modal fade"
                 id={id}
@@ -259,29 +232,11 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
                 </div>
             </div>
 
-            <div className="toast-container position-fixed top-50 start-50 translate-middle p-3">
-                <div
-                    id="liveToast"
-                    className="toast shadow-lg border-1 rounded-4 bg-light"
-                    role="alert"
-                    aria-live="assertive"
-                    aria-atomic="true"
-                    ref={toastRef}
-                >
-                    <div className="toast-header rounded-top-4">
-                        <strong className="me-auto">Success</strong>
-                        <button
-                            type="button"
-                            className="btn-close"
-                            data-bs-dismiss="toast"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                    <div className="toast-body text-uppercase fw-semibold text-center fs-4 rounded-bottom-4">
-                        {message || 'Ticket submitted successfully!'}
-                    </div>
-                </div>
-            </div>
+            <ToastNotification
+                message="Your ticket was submitted successfully!"
+                show={showToast}
+                onClose={() => setShowToast(false)}
+            />
         </>
     )
 }
