@@ -36,7 +36,7 @@ class TicketController extends Controller
                 } elseif ($status === 'in_progress') {
                     $query->where('target_department_id', auth()->user()->department_id);
                 } elseif ($status === 'resolved') {
-                    $query->where('target_department_id', auth()->user()->department_id);
+                    $query->where('origin_department_id', auth()->user()->department_id);
                 } elseif ($status === 'closed') {
                     $query->where('target_department_id', auth()->user()->department_id);
                 } elseif ($status === 'failed') {

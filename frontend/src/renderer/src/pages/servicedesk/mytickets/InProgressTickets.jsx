@@ -5,20 +5,56 @@ import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
+import ConfirmationModal from '../../../components/modals/ConfirmationModal'
+import PermissionButton from '../../../components/buttons/PermissionButton'
 
 function InProgressTickets() {
-    const { getData } = useAPI()
+    const { postData, getData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [confirmType, setConfirmType] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=in_progress&&assigned_to=me', setTickets, setLoading)
+        getData('/tickets?status=in_progress', setTickets, setLoading)
     }, [])
 
-    const getSelectedTicket = (tickets) => {
-        setSelectedTickets(tickets)
+    const handleResolvedButton = (ticket) => {
+        setSelectedTickets(ticket)
+        setConfirmType('resolved')
+        const modal = new Modal(document.getElementById('confirmModal'))
+        modal.show()
+    }
+
+    const handleFailedButton = (ticket) => {
+        setSelectedTickets(ticket)
+        setConfirmType('failed')
+        const modal = new Modal(document.getElementById('confirmModal'))
+        modal.show()
+    }
+
+    const handleReopenedButton = (ticket) => {
+        setSelectedTickets(ticket)
+        setConfirmType('reopened')
+        const modal = new Modal(document.getElementById('confirmModal'))
+        modal.show()
+    }
+
+    const handleConfirm = () => {
+        if (!selectedTickets) return
+        const url = `/tickets/${selectedTickets.id}/status`
+
+        const status =
+            confirmType === 'resolved'
+                ? 'resolved'
+                : confirmType === 'failed'
+                  ? 'failed'
+                  : 'reopened'
+
+        postData(url, { status }, null, setLoading, setError)
+        getData('/tickets?status=pending', setTickets, setLoading, setError)
     }
 
     const columns = [
@@ -32,27 +68,35 @@ function InProgressTickets() {
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
-        { header: 'Assigned To', accessorKey: 'assigned_to.name' },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
-                    <button
-                        className="btn text-light btn-info btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#ticketDetailsModal"
+                    <PermissionButton
+                        permission="view ticket details"
                         onClick={() => setSelectedTickets(row.original)}
+                        className="btn text-light btn-info btn-sm"
                     >
                         <FaEye /> View
-                    </button>
-                    <button className="btn text-light btn-success btn-sm">
+                    </PermissionButton>
+
+                    <button
+                        onClick={() => handleResolvedButton(row.original)}
+                        className="btn text-light btn-success btn-sm"
+                    >
                         <FaCheckCircle /> Resolved
                     </button>
-                    <button className="btn text-light btn-danger btn-sm">
+                    <button
+                        onClick={() => handleFailedButton(row.original)}
+                        className="btn text-light btn-danger btn-sm"
+                    >
                         <FaTimesCircle /> Failed
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
+                    <button
+                        onClick={() => handleReopenedButton(row.original)}
+                        className="btn text-light btn-warning btn-sm"
+                    >
                         <FaUndo /> Reopened
                     </button>
                 </div>
@@ -86,6 +130,28 @@ function InProgressTickets() {
             </div>
 
             <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+
+            <ConfirmationModal
+                id="confirmModal"
+                title={`${confirmType === 'resolved' ? 'Resolved' : confirmType === 'failed' ? 'Failed' : 'Reopened'} Ticket`}
+                message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
+                confirmLabel={
+                    confirmType === 'resolved'
+                        ? 'Resolved'
+                        : confirmType === 'failed'
+                          ? 'Failed'
+                          : 'Reopened'
+                }
+                confirmClass={
+                    confirmType === 'resolved'
+                        ? 'btn-success text-light'
+                        : confirmType === 'failed'
+                          ? 'btn-danger text-light'
+                          : 'btn-warning text-light'
+                }
+                cancelLabel="Cancel"
+                onConfirm={handleConfirm}
+            />
         </>
     )
 }

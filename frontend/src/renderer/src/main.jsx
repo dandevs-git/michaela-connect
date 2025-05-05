@@ -13,6 +13,7 @@ import App from './App'
 import { HashRouter } from 'react-router-dom'
 import { APIProvider } from './contexts/APIContext'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { ToastProvider } from './contexts/ToastContext'
 
 // localStorage.removeItem('token')
 // sessionStorage.removeItem('token')
@@ -21,9 +22,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <HashRouter>
             <ThemeProvider>
-                <APIProvider>
-                    <App />
-                </APIProvider>
+                <ToastProvider>
+                    <APIProvider>
+                        <App />
+                    </APIProvider>
+                </ToastProvider>
             </ThemeProvider>
         </HashRouter>
     </React.StrictMode>

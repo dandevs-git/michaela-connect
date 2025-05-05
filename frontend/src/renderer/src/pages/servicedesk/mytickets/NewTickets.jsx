@@ -51,7 +51,7 @@ function NewTickets() {
             url = `/tickets/${selectedTickets.id}/accept/${selectedUser.id}`
             payload = ''
         }
-        postData(url, payload, setLoading, setError)
+        postData(url, payload, null, setLoading, setError)
         getData('/tickets?status=new', setTickets, setLoading, setError)
     }
 

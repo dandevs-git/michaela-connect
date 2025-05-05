@@ -14,7 +14,7 @@ function ResolvedTickets() {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=resolved&requester=me', setTickets, setLoading)
+        getData('/tickets?status=resolved', setTickets, setLoading)
     }, [])
 
     const handleShowModal = (tickets) => {
@@ -36,30 +36,56 @@ function ResolvedTickets() {
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
-        { header: 'Assigned To', accessorKey: 'assigned_to.name' },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
+                <div className="dropdown">
                     <button
-                        className="btn text-light btn-info btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#ticketDetailsModal"
-                        onClick={() => setSelectedTickets(row.original)}
+                        className="btn btn-light border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
                     >
-                        <FaEye /> View
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-
-                    <button className="btn text-light btn-success btn-sm">
-                        <FaCheckCircle /> Completed
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaUndo /> Reopened
-                    </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaTimesCircle /> Failed
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold text-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ticketDetailsModal"
+                                onClick={() => setSelectedTickets(row.original)}
+                            >
+                                <FaEye className="me-1" /> View
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold text-success"
+                                onClick={() => handleStatusChange(row.original, 'completed')}
+                            >
+                                <FaCheckCircle className="me-1" /> Completed
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold text-danger"
+                                onClick={() => handleStatusChange(row.original, 'failed')}
+                            >
+                                <FaTimesCircle className="me-1" /> Failed
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold text-warning"
+                                onClick={() => handleStatusChange(row.original, 'reopened')}
+                            >
+                                <FaUndo className="me-1" /> Reopened
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }

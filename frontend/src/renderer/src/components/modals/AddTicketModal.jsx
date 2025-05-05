@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
-import ToastNotification from '../toast/ToastNotification'
+import { useToast } from '../../contexts/ToastContext'
 
 function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
     const { postData, getData } = useAPI()
@@ -11,9 +11,25 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
     const [message, setMessage] = useState('')
     const [departments, setDepartments] = useState([])
     const [priorities, setPriorities] = useState([])
-    const [showToast, setShowToast] = useState(false)
+    const { showToast } = useToast()
 
+    const titleRef = useRef(null)
     const modalRef = useRef(null)
+
+    useEffect(() => {
+        const modalEl = modalRef.current
+        if (!modalEl) return
+
+        const handleShown = () => {
+            titleRef.current?.focus()
+        }
+
+        modalEl.addEventListener('shown.bs.modal', handleShown)
+
+        return () => {
+            modalEl.removeEventListener('shown.bs.modal', handleShown)
+        }
+    }, [])
 
     const [ticketData, setTicketData] = useState({
         title: '',
@@ -39,13 +55,6 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
         document.querySelector('.needs-validation')?.classList.remove('was-validated')
     }
 
-    useEffect(() => {
-        if (sessionStorage.getItem('showToast') === 'true') {
-            setShowToast(true)
-            sessionStorage.removeItem('showToast')
-        }
-    }, [])
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         const form = e.target
@@ -62,8 +71,12 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
             await postData('/tickets', ticketData, setTicketData, setLoading, setError)
             Modal.getInstance(modalRef.current).hide()
             resetForm()
-
-            sessionStorage.setItem('showToast', 'true')
+            showToast({
+                message: 'Ticket submitted successfully!',
+                title: 'Success',
+                isPositive: true,
+                delay: 5000
+            })
             getData('/tickets', resetTickets, resetLoading, resetError)
         } catch {}
     }
@@ -132,6 +145,7 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
                                         name="title"
                                         value={ticketData.title}
                                         onChange={handleInputChange}
+                                        ref={titleRef}
                                         required
                                     />
                                     <div className="invalid-feedback">
@@ -234,12 +248,6 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
                     </div>
                 </div>
             </div>
-
-            <ToastNotification
-                message="Your ticket was submitted successfully!"
-                show={showToast}
-                onClose={() => setShowToast(false)}
-            />
         </>
     )
 }

@@ -102,7 +102,7 @@ function CustomTable({
                         >
                             <table className="table table-hover text-wrap mb-3 text-center">
                                 {caption && <caption className="text-center">{caption}</caption>}
-                                <thead>
+                                <thead className="rounded-3">
                                     {table.getHeaderGroups().map((headerGroup) => (
                                         <tr key={headerGroup.id}>
                                             {headerGroup.headers.map((header) => (

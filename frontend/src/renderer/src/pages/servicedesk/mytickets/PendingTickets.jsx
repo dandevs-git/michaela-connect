@@ -8,9 +8,11 @@ import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import PermissionButton from '../../../components/buttons/PermissionButton'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
+import { useToast } from '../../../contexts/ToastContext'
 
 function PendingTickets() {
     const { getData, postData } = useAPI()
+    const { showToast } = useToast()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -43,7 +45,13 @@ function PendingTickets() {
                 ? `/tickets/${selectedTickets.id}/approve`
                 : `/tickets/${selectedTickets.id}/reject`
 
-        postData(url, '', setLoading, setError)
+        postData(url, null, null, setLoading, setError)
+        showToast({
+            message: error || `Ticket ${confirmType} successfully!`,
+            title: 'Success',
+            isPositive: true,
+            delay: 5000
+        })
         getData('/tickets?status=pending', setTickets, setLoading, setError)
     }
 

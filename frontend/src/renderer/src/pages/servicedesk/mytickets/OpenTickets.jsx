@@ -7,9 +7,11 @@ import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
+import { useToast } from '../../../contexts/ToastContext'
 
 function OpenTickets() {
     const { getData, postData } = useAPI()
+    const { showToast } = useToast()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -30,8 +32,15 @@ function OpenTickets() {
     const handleConfirm = () => {
         if (!selectedTickets) return
         const url = `/tickets/${selectedTickets.id}/start`
-        postData(url, '', setLoading, setError)
+        postData(url, null, null, setLoading, setError)
         getData('/tickets?status=pending', setTickets, setLoading, setError)
+
+        showToast({
+            message: error.message || `Ticket ${confirmType} successfully!`,
+            title: error.message ? 'Failed' : 'Success',
+            isPositive: error.message ? false : true,
+            delay: 5000
+        })
     }
 
     const columns = [
@@ -45,7 +54,6 @@ function OpenTickets() {
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
-        { header: 'Assigned To', accessorKey: 'assigned_to.name' },
         {
             header: 'Actions',
             accessorKey: 'actions',
@@ -89,7 +97,6 @@ function OpenTickets() {
                             }
                             isloading={loading}
                             columns={columns}
-                            s
                             data={tickets}
                         />
                     </div>

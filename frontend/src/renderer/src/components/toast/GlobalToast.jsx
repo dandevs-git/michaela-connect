@@ -1,7 +1,7 @@
 import { Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { useEffect, useRef } from 'react'
 
-const ToastNotification = ({ message, show, onClose, isPositive = true }) => {
+const GlobalToast = ({ message, show, onClose, isPositive, title, delay }) => {
     const toastRef = useRef(null)
     const toastInstance = useRef(null)
 
@@ -9,10 +9,10 @@ const ToastNotification = ({ message, show, onClose, isPositive = true }) => {
         if (toastRef.current) {
             toastInstance.current = Toast.getOrCreateInstance(toastRef.current, {
                 autohide: true,
-                delay: 3000
+                delay
             })
         }
-    }, [])
+    }, [delay])
 
     useEffect(() => {
         if (show && toastInstance.current) {
@@ -36,17 +36,19 @@ const ToastNotification = ({ message, show, onClose, isPositive = true }) => {
     }, [onClose])
 
     return (
-        <div className="toast-container position-fixed top-0 end-0 p-3 mt-5">
+        <div className="toast-container position-fixed top-0 end-0 p-3 mt-5 z-1055">
             <div
                 ref={toastRef}
-                className={`toast bg-${isPositive ? 'success' : 'danger'}-subtle`}
+                className={`toast bg-${isPositive ? 'success' : 'danger'}-subtle border-0`}
                 role="alert"
                 aria-live="assertive"
                 aria-atomic="true"
             >
                 <div className="toast-header">
-                    <i className="bi bi-bell-fill me-2 text-primary"></i>
-                    <strong className="me-auto">Notification</strong>
+                    <i
+                        className={`bi ${isPositive ? 'bi-check-circle-fill text-success' : 'bi-exclamation-triangle-fill text-danger'} me-2`}
+                    ></i>
+                    <strong className="me-auto">{title}</strong>
                     <small className="text-muted">Just now</small>
                     <button
                         type="button"
@@ -61,4 +63,4 @@ const ToastNotification = ({ message, show, onClose, isPositive = true }) => {
     )
 }
 
-export default ToastNotification
+export default GlobalToast

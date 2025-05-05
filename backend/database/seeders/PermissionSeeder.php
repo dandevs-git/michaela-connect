@@ -127,6 +127,7 @@ class PermissionSeeder extends Seeder
                 'view open tickets tab',
                 'view inprogress tickets tab',
                 'view resolved tickets tab',
+                'view closed tickets tab',
             ],
         ];
 
