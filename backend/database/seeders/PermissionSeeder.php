@@ -62,7 +62,7 @@ class PermissionSeeder extends Seeder
                 'manage system logs',
 
                 // Service Desk Tabs
-                'view tickets tab',
+                'view all tickets tab',
                 'view pending tickets tab',
                 'view new tickets tab',
                 'view open tickets tab',
@@ -84,11 +84,15 @@ class PermissionSeeder extends Seeder
                 'view ticket analytics',
 
                 // Tabs
-                'view tickets tab',
+                'view all tickets tab',
                 'view pending tickets tab',
+                'view new tickets tab',
+                'view open tickets tab',
+                'view inprogress tickets tab',
                 'view resolved tickets tab',
                 'view closed tickets tab',
                 'view failed tickets tab',
+                'view rejected tickets tab',
             ],
 
             'head' => [
@@ -100,7 +104,7 @@ class PermissionSeeder extends Seeder
                 'receive notifications',
 
                 // Tabs
-                'view tickets tab',
+                'view all tickets tab',
                 'view new tickets tab',
                 'view pending tickets tab',
                 'view open tickets tab',
@@ -119,7 +123,7 @@ class PermissionSeeder extends Seeder
                 'receive notifications',
 
                 // Tabs
-                'view tickets tab',
+                'view all tickets tab',
                 'view open tickets tab',
                 'view inprogress tickets tab',
                 'view resolved tickets tab',

@@ -5,7 +5,11 @@ function ServiceDeskTicketLayout() {
     const { authUser } = useAPI()
 
     const tabs = [
-        { tab: 'All Tickets', link: '/servicedesk/tickets/all', permission: 'view tickets tab' },
+        {
+            tab: 'All Tickets',
+            link: '/servicedesk/tickets/all',
+            permission: 'view all tickets tab'
+        },
         {
             tab: 'Pending',
             link: '/servicedesk/tickets/pending',

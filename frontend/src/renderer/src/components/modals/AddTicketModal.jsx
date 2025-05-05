@@ -39,6 +39,13 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
         document.querySelector('.needs-validation')?.classList.remove('was-validated')
     }
 
+    useEffect(() => {
+        if (sessionStorage.getItem('showToast') === 'true') {
+            setShowToast(true)
+            sessionStorage.removeItem('showToast')
+        }
+    }, [])
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         const form = e.target
@@ -53,17 +60,13 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
 
         try {
             await postData('/tickets', ticketData, setTicketData, setLoading, setError)
-            resetForm()
-            getData('/tickets', resetTickets, resetLoading, resetError)
             Modal.getInstance(modalRef.current).hide()
-            setShowToast(true)
+            resetForm()
+
+            sessionStorage.setItem('showToast', 'true')
+            getData('/tickets', resetTickets, resetLoading, resetError)
         } catch {}
     }
-
-    useEffect(() => {
-        getData('/departments', setDepartments)
-        getData('/priorities', setPriorities)
-    }, [])
 
     useEffect(() => {
         getData('/departments', setDepartments)

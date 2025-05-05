@@ -17,9 +17,6 @@ function AllTickets() {
     useEffect(() => {
         getData(`/tickets`, setTickets, setLoading)
     }, [])
-
-    console.log(tickets)
-
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
         { header: 'Priority Level', accessorKey: 'priority.name' },

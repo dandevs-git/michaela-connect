@@ -1,7 +1,7 @@
+import { Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { useEffect, useRef } from 'react'
-import { Toast } from 'bootstrap'
 
-const ToastNotification = ({ message, show, onClose }) => {
+const ToastNotification = ({ message, show, onClose, isPositive = true }) => {
     const toastRef = useRef(null)
     const toastInstance = useRef(null)
 
@@ -39,7 +39,7 @@ const ToastNotification = ({ message, show, onClose }) => {
         <div className="toast-container position-fixed top-0 end-0 p-3 mt-5">
             <div
                 ref={toastRef}
-                className="toast"
+                className={`toast bg-${isPositive ? 'success' : 'danger'}-subtle`}
                 role="alert"
                 aria-live="assertive"
                 aria-atomic="true"
