@@ -6,7 +6,6 @@ import StatusBadge from '../../../components/badge/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
-import PermissionButton from '../../../components/buttons/PermissionButton'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { useToast } from '../../../contexts/ToastContext'
 
@@ -45,14 +44,20 @@ function PendingTickets() {
                 ? `/tickets/${selectedTickets.id}/approve`
                 : `/tickets/${selectedTickets.id}/reject`
 
-        postData(url, null, null, setLoading, setError)
+        postData(
+            url,
+            () => {},
+            () => {},
+            () => {},
+            setError
+        )
+        getData('/tickets?status=pending', setTickets, setLoading, setError)
         showToast({
-            message: error || `Ticket ${confirmType} successfully!`,
-            title: 'Success',
-            isPositive: true,
+            message: error.message || `Ticket ${confirmType} successfully!`,
+            title: error.message ? 'Failed' : 'Success',
+            isPositive: error.message ? false : true,
             delay: 5000
         })
-        getData('/tickets?status=pending', setTickets, setLoading, setError)
     }
 
     const columns = [
@@ -70,28 +75,34 @@ function PendingTickets() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
-                    {/* <PermissionButton
-                        permission="view ticket details"
-                        onClick={() => setSelectedTickets(row.original)}
-                        className="btn text-light btn-info btn-sm"
-                    >
-                        <FaEye /> View
-                    </PermissionButton> */}
-
+                <div className="dropdown">
                     <button
-                        onClick={() => handleApproveButton(row.original)}
-                        className="btn text-light btn-success btn-sm"
+                        className="btn btn-light text-dark border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
                     >
-                        <FaCheck /> Approve
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-
-                    <button
-                        onClick={() => handleRejectButton(row.original)}
-                        className="btn text-light btn-danger btn-sm"
-                    >
-                        <FaTimes /> Reject
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                onClick={() => handleApproveButton(row.original)}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                            >
+                                <FaCheck /> Approve
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => handleRejectButton(row.original)}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                            >
+                                <FaTimes /> Reject
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }
@@ -126,9 +137,9 @@ function PendingTickets() {
 
             <ConfirmationModal
                 id="confirmModal"
-                title={`${confirmType === 'approve' ? 'Approve' : 'Reject'} Ticket`}
+                title={`${confirmType} Ticket`}
                 message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
-                confirmLabel={confirmType === 'approve' ? 'Approve' : 'Reject'}
+                confirmLabel={confirmType}
                 confirmClass={
                     confirmType === 'approve' ? 'btn-success text-light' : 'btn-danger text-light'
                 }

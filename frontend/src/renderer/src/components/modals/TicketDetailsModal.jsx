@@ -6,6 +6,8 @@ import { formatDateAndTimeVerbose } from '../../utils/formatDateAndTimeVerbose'
 
 function TicketDetailsModal({ id, data }) {
     const { addComment, updateComment, authUser } = useAPI()
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
     const [comments, setComments] = useState(data?.comments || [])
     const [commentInput, setCommentInput] = useState('')
@@ -22,7 +24,12 @@ function TicketDetailsModal({ id, data }) {
     const handleAddComment = async () => {
         if (!commentInput.trim()) return
         try {
-            const newComment = await addComment(data?.id, { text: commentInput })
+            const newComment = await addComment(
+                data?.id,
+                { text: commentInput },
+                setLoading,
+                setError
+            )
             setComments((prev) => [newComment.comment, ...prev])
             setCommentInput('')
 
@@ -310,8 +317,17 @@ function TicketDetailsModal({ id, data }) {
                                                 <button
                                                     onClick={handleAddComment}
                                                     className="btn btn-primary rounded-3 rounded-start-0"
+                                                    disabled={loading}
                                                 >
-                                                    <FaPaperPlane />
+                                                    {loading ? (
+                                                        <span
+                                                            className="grower-border spinner-border-sm"
+                                                            role="status"
+                                                            aria-hidden="true"
+                                                        ></span>
+                                                    ) : (
+                                                        <FaPaperPlane />
+                                                    )}
                                                 </button>
                                             </>
                                         )}

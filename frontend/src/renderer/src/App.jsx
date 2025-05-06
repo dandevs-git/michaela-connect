@@ -42,11 +42,6 @@ const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
         return <Navigate to="/login" replace />
     }
-
-    // if (authUser && allowedRoles && !allowedRoles.includes(authUser?.role)) {
-    //     return <Navigate to="/403" replace />
-    // }
-
     return element
 }
 

@@ -104,8 +104,8 @@ export const APIProvider = ({ children }) => {
     const showComment = async (ticketId, commentId) =>
         await getData(`/tickets/${ticketId}/comments/${commentId}`)
 
-    const addComment = async (ticketId, commentData) =>
-        await postData(`/tickets/${ticketId}/comments`, commentData)
+    const addComment = async (ticketId, commentData, setLoading, setError) =>
+        await postData(`/tickets/${ticketId}/comments`, commentData, () => {}, setLoading, setError)
 
     const updateComment = async (ticketId, commentId, commentData) =>
         await putData(`/tickets/${ticketId}/comments/${commentId}`, commentData)
@@ -134,7 +134,18 @@ export const APIProvider = ({ children }) => {
                 getData,
                 postData,
                 putData,
-                deleteData
+                deleteData,
+
+                addTicket,
+                approveTicket,
+                assignTicket,
+                deleteTicket,
+
+                getComments,
+                showComment,
+                addComment,
+                updateComment,
+                deleteComment
             }}
         >
             {authLoading ? (

@@ -3,9 +3,14 @@ import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
 import { useToast } from '../../contexts/ToastContext'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
     const { postData, getData } = useAPI()
+
+    const navigate = useNavigate()
+    const location = useLocation()
+
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
@@ -77,13 +82,15 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
                 isPositive: true,
                 delay: 5000
             })
-            getData('/tickets', resetTickets, resetLoading, resetError)
+            if (location.pathname == '/servicedesk/tickets/all')
+                getData('/tickets', resetTickets, resetLoading, resetError)
+            else navigate('/servicedesk/tickets/all')
         } catch {}
     }
 
     useEffect(() => {
-        getData('/departments', setDepartments)
-        getData('/priorities', setPriorities)
+        getData('/departments', setDepartments, setLoading, setError)
+        getData('/priorities', setPriorities, setLoading, setError)
     }, [])
 
     return (

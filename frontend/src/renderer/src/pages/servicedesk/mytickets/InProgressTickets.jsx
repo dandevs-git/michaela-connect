@@ -7,10 +7,11 @@ import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
-import PermissionButton from '../../../components/buttons/PermissionButton'
+import { useToast } from '../../../contexts/ToastContext'
 
 function InProgressTickets() {
     const { postData, getData } = useAPI()
+    const { showToast } = useToast()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -21,23 +22,9 @@ function InProgressTickets() {
         getData('/tickets?status=in_progress', setTickets, setLoading)
     }, [])
 
-    const handleResolvedButton = (ticket) => {
+    const handleStatusChange = (ticket, status) => {
         setSelectedTickets(ticket)
-        setConfirmType('resolved')
-        const modal = new Modal(document.getElementById('confirmModal'))
-        modal.show()
-    }
-
-    const handleFailedButton = (ticket) => {
-        setSelectedTickets(ticket)
-        setConfirmType('failed')
-        const modal = new Modal(document.getElementById('confirmModal'))
-        modal.show()
-    }
-
-    const handleReopenedButton = (ticket) => {
-        setSelectedTickets(ticket)
-        setConfirmType('reopened')
+        setConfirmType(status)
         const modal = new Modal(document.getElementById('confirmModal'))
         modal.show()
     }
@@ -46,15 +33,23 @@ function InProgressTickets() {
         if (!selectedTickets) return
         const url = `/tickets/${selectedTickets.id}/status`
 
-        const status =
-            confirmType === 'resolved'
-                ? 'resolved'
-                : confirmType === 'failed'
-                  ? 'failed'
-                  : 'reopened'
+        const status = confirmType
 
-        postData(url, { status }, null, setLoading, setError)
-        getData('/tickets?status=pending', setTickets, setLoading, setError)
+        postData(
+            url,
+            { status },
+            () => {},
+            () => {},
+            setError
+        )
+        getData('/tickets?status=in_progress', setTickets, setLoading, setError)
+
+        showToast({
+            message: error.message || `Ticket ${confirmType} successfully!`,
+            title: error.message ? 'Failed' : 'Success',
+            isPositive: error.message ? false : true,
+            delay: 5000
+        })
     }
 
     const columns = [
@@ -72,33 +67,52 @@ function InProgressTickets() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
-                    <PermissionButton
-                        permission="view ticket details"
-                        onClick={() => setSelectedTickets(row.original)}
-                        className="btn text-light btn-info btn-sm"
-                    >
-                        <FaEye /> View
-                    </PermissionButton>
-
+                <div className="dropdown">
                     <button
-                        onClick={() => handleResolvedButton(row.original)}
-                        className="btn text-light btn-success btn-sm"
+                        className="btn btn-light text-dark border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
                     >
-                        <FaCheckCircle /> Resolved
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-                    <button
-                        onClick={() => handleFailedButton(row.original)}
-                        className="btn text-light btn-danger btn-sm"
-                    >
-                        <FaTimesCircle /> Failed
-                    </button>
-                    <button
-                        onClick={() => handleReopenedButton(row.original)}
-                        className="btn text-light btn-warning btn-sm"
-                    >
-                        <FaUndo /> Reopened
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ticketDetailsModal"
+                                onClick={() => setSelectedTickets(row.original)}
+                            >
+                                <FaEye /> View
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => handleStatusChange(row.original, 'resolved')}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                            >
+                                <FaCheckCircle /> Resolved
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => handleStatusChange(row.original, 'failed')}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                            >
+                                <FaTimesCircle /> Failed
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => handleStatusChange(row.original, 'reopened')}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                            >
+                                <FaUndo /> Reopened
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }
@@ -133,15 +147,9 @@ function InProgressTickets() {
 
             <ConfirmationModal
                 id="confirmModal"
-                title={`${confirmType === 'resolved' ? 'Resolved' : confirmType === 'failed' ? 'Failed' : 'Reopened'} Ticket`}
+                title={`${confirmType} Ticket`}
                 message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
-                confirmLabel={
-                    confirmType === 'resolved'
-                        ? 'Resolved'
-                        : confirmType === 'failed'
-                          ? 'Failed'
-                          : 'Reopened'
-                }
+                confirmLabel={confirmType}
                 confirmClass={
                     confirmType === 'resolved'
                         ? 'btn-success text-light'

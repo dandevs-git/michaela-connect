@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Department;
 use App\Models\Priority;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -57,7 +58,9 @@ class TicketFactory extends Factory
             'description' => $this->faker->paragraph(),
             'priority_id' => Priority::inRandomOrder()->first()->id ?? 1,
             'status' => $status,
+            'origin_department_id' => Department::inRandomOrder()->first()->id ?? 1,
             'requester_id' => User::inRandomOrder()->first()->id ?? 1,
+            'target_department_id' => Department::inRandomOrder()->first()->id ?? 1,
             'assigned_to' => User::inRandomOrder()->first()->id ?? 1,
             'start_at' => $startAt,
             'approved_at' => $approvedAt,

@@ -5,24 +5,49 @@ import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badge/StatusBadge'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
+import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 
 function ResolvedTickets() {
-    const { getData } = useAPI()
+    const { postData, getData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [confirmType, setConfirmType] = useState('')
 
     useEffect(() => {
         getData('/tickets?status=resolved', setTickets, setLoading)
     }, [])
 
-    const handleShowModal = (tickets) => {
-        setSelectedTickets(tickets)
+    const handleStatusChange = (ticket, status) => {
+        setSelectedTickets(ticket)
+        setConfirmType(status)
+        const modal = new Modal(document.getElementById('confirmModal'))
+        modal.show()
     }
 
-    const handleAddModal = (tickets) => {
-        setSelectedTickets(tickets)
+    const handleConfirm = () => {
+        if (!selectedTickets) return
+        const url = `/tickets/${selectedTickets.id}/verify`
+
+        const status = confirmType
+
+        postData(
+            url,
+            { status },
+            () => {},
+            () => {},
+            setError
+        )
+        getData('/tickets?status=in_progress', setTickets, setLoading, setError)
+
+        showToast({
+            message: error.message || `Ticket ${confirmType} successfully!`,
+            title: error.message ? 'Failed' : 'Success',
+            isPositive: error.message ? false : true,
+            delay: 5000
+        })
     }
 
     const columns = [
@@ -42,7 +67,7 @@ function ResolvedTickets() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn btn-light border-0"
+                        className="btn btn-light text-dark border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"
@@ -53,7 +78,7 @@ function ResolvedTickets() {
                     <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
                         <li>
                             <button
-                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold text-primary"
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
                                 data-bs-target="#ticketDetailsModal"
                                 onClick={() => setSelectedTickets(row.original)}
@@ -63,15 +88,15 @@ function ResolvedTickets() {
                         </li>
                         <li>
                             <button
-                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold text-success"
-                                onClick={() => handleStatusChange(row.original, 'completed')}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                onClick={() => handleStatusChange(row.original, 'closed')}
                             >
                                 <FaCheckCircle className="me-1" /> Completed
                             </button>
                         </li>
                         <li>
                             <button
-                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold text-danger"
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 onClick={() => handleStatusChange(row.original, 'failed')}
                             >
                                 <FaTimesCircle className="me-1" /> Failed
@@ -79,7 +104,7 @@ function ResolvedTickets() {
                         </li>
                         <li>
                             <button
-                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold text-warning"
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 onClick={() => handleStatusChange(row.original, 'reopened')}
                             >
                                 <FaUndo className="me-1" /> Reopened
@@ -117,6 +142,22 @@ function ResolvedTickets() {
             </div>
 
             <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+
+            <ConfirmationModal
+                id="confirmModal"
+                title={`${confirmType} Ticket`}
+                message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
+                confirmLabel={confirmType}
+                confirmClass={
+                    confirmType === 'resolved'
+                        ? 'btn-success text-light'
+                        : confirmType === 'failed'
+                          ? 'btn-danger text-light'
+                          : 'btn-warning text-light'
+                }
+                cancelLabel="Cancel"
+                onConfirm={handleConfirm}
+            />
         </>
     )
 }

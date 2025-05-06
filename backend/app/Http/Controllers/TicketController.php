@@ -120,7 +120,7 @@ class TicketController extends Controller
             'description' => 'sometimes|string',
             'priority_id' => 'sometimes|exists:priorities,id',
             'assigned_to' => 'sometimes|exists:users,id',
-            'status' => 'sometimes|in:pending,in_progress,resolved,failed,reopened,completed',
+            'status' => 'sometimes|in:pending,in_progress,resolved,failed,reopened,closed',
         ]);
 
         $ticket->update($request->only(['title', 'description', 'priority', 'assigned_to', 'status']));
@@ -236,20 +236,22 @@ class TicketController extends Controller
     public function verifyResolution(Request $request, $id)
     {
         $ticket = Ticket::findOrFail($id);
-        $request->validate(['status' => 'required|in:resolved,reopened,failed']);
+        $request->validate(['status' => 'required|in:closed,failed,reopened']);
 
         $status = $request->status;
         $logMessages = [
             'closed' => 'Requester verified Ticket #%s as Completed',
-            'reopened' => 'Requester reopened Ticket #%s',
-            'failed' => 'Requester acknowledged Ticket #%s as Failed'
+            'failed' => 'Requester acknowledged Ticket #%s as Failed',
+            'reopened' => 'Requester reopened Ticket #%s'
         ];
 
         $updateData = ['status' => $status];
+
         if ($status === 'closed')
             $updateData['completed_at'] = now();
         elseif ($status === 'failed')
             $updateData['failed_at'] = now();
+        // elseif ($status === 'reopened')
 
         $ticket->update($updateData);
         $this->logActivity("Verify Resolution", sprintf($logMessages[$status], $ticket->id));
@@ -262,7 +264,7 @@ class TicketController extends Controller
     {
         $ticket = Ticket::findOrFail($id);
 
-        if ($ticket->status === 'completed') {
+        if ($ticket->status === 'closed') {
             $this->logActivity("Close Ticket", "System closed Ticket #{$ticket->id} as Completed");
         } elseif ($ticket->status === 'failed') {
             $this->logActivity("Close Ticket", "System closed Ticket #{$ticket->id} as Failed");

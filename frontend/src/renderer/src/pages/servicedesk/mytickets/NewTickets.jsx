@@ -7,9 +7,11 @@ import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
+import { useToast } from '../../../contexts/ToastContext'
 
 function NewTickets() {
     const { getData, postData } = useAPI()
+    const { showToast } = useToast()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [selectedUser, setSelectedUser] = useState(null)
     const [tickets, setTickets] = useState([])
@@ -51,8 +53,21 @@ function NewTickets() {
             url = `/tickets/${selectedTickets.id}/accept/${selectedUser.id}`
             payload = ''
         }
-        postData(url, payload, null, setLoading, setError)
+        postData(
+            url,
+            payload,
+            () => {},
+            () => {},
+            setError
+        )
         getData('/tickets?status=new', setTickets, setLoading, setError)
+
+        showToast({
+            message: error.message || `Ticket ${confirmType} successfully!`,
+            title: error.message ? 'Failed' : 'Success',
+            isPositive: error.message ? false : true,
+            delay: 5000
+        })
     }
 
     const flattenSubordinates = (users) => {
@@ -83,29 +98,46 @@ function NewTickets() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
+                <div className="dropdown">
                     <button
-                        className="btn text-light btn-info btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#ticketDetailsModal"
-                        onClick={() => setSelectedTickets(row.original)}
+                        className="btn btn-light text-dark border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
                     >
-                        <FaEye /> View
+                        <i className="bi bi-list fs-5"></i>
                     </button>
+                    <ul
+                        className="dropdown-menu dropdown-menu-end shadow-sm rounded-3"
+                        data-bs-auto-close="outside"
+                    >
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ticketDetailsModal"
+                                onClick={() => setSelectedTickets(row.original)}
+                            >
+                                <FaEye /> View
+                            </button>
+                        </li>
+                        <li className="dropdown">
+                            <button
+                                className="dropdown-item w-100 d-flex align-items-center gap-2 fw-semibold dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <span className="me-5">
+                                    <FaUserCheck /> Assign
+                                </span>
+                            </button>
 
-                    <div className="dropdown">
-                        <div
-                            className="btn bg-success btn-sm text-light dropdown-toggle"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                        >
-                            <FaUserCheck /> Assign
-                        </div>
-                        <ul className="dropdown-menu dropdown-menu-start">
-                            {subordinates.length > 0 ? (
-                                <>
-                                    {flattenSubordinates(subordinates)
+                            <ul className="dropdown-menu">
+                                {subordinates.length > 0 ? (
+                                    flattenSubordinates(subordinates)
                                         .filter((user) => !user.request_id)
                                         .map((user) => (
                                             <li key={user.id}>
@@ -118,38 +150,15 @@ function NewTickets() {
                                                     {user.name}
                                                 </button>
                                             </li>
-                                        ))}
-                                    {/* <li>
-                                        <hr className="dropdown-divider" />
-                                    </li>
+                                        ))
+                                ) : (
                                     <li className="dropdown-header text-center fw-bold">
-                                        Accept Request
+                                        No Subordinates
                                     </li>
-                                    {subordinates
-                                        .filter((user) => user.request_id)
-                                        .map((user) => (
-                                            <li key={user.id}>
-                                                <button
-                                                    className="dropdown-item"
-                                                    onClick={() =>
-                                                        assignTicket(row.original.id, user.id)
-                                                    }
-                                                >
-                                                    {user.name}
-                                                </button>
-                                            </li>
-                                        ))} */}
-                                </>
-                            ) : (
-                                <li className="dropdown-header text-center fw-bold">
-                                    No Subordinates
-                                </li>
-                            )}
-                        </ul>
-                    </div>
-                    {/* <button className="btn text-light btn-info btn-sm">
-                        <FaHandPaper /> Assign to me
-                    </button> */}
+                                )}
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             )
         }
@@ -184,9 +193,9 @@ function NewTickets() {
 
             <ConfirmationModal
                 id="confirmModal"
-                title={`${confirmType === 'assign' ? 'Assign' : 'Reject'} Ticket`}
+                title={`${confirmType} Ticket`}
                 message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number} to user ${selectedUser?.name}?`}
-                confirmLabel={confirmType === 'assign' ? 'Assign' : 'Reject'}
+                confirmLabel={confirmType}
                 confirmClass={
                     confirmType === 'assign' ? 'btn-success text-light' : 'btn-danger text-light'
                 }

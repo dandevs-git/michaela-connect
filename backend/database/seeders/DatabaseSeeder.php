@@ -108,6 +108,6 @@ class DatabaseSeeder extends Seeder
             $staff->assignRole($roles['staff']);
         }
 
-        // Ticket::factory()->count(5000)->create();
+        Ticket::factory()->count(5000)->create();
     }
 }

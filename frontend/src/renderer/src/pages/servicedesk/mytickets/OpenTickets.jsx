@@ -32,9 +32,14 @@ function OpenTickets() {
     const handleConfirm = () => {
         if (!selectedTickets) return
         const url = `/tickets/${selectedTickets.id}/start`
-        postData(url, null, null, setLoading, setError)
-        getData('/tickets?status=pending', setTickets, setLoading, setError)
-
+        postData(
+            url,
+            () => {},
+            () => {},
+            () => {},
+            setError
+        )
+        getData('/tickets?status=open', setTickets, setLoading, setError)
         showToast({
             message: error.message || `Ticket ${confirmType} successfully!`,
             title: error.message ? 'Failed' : 'Success',
@@ -58,21 +63,36 @@ function OpenTickets() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center text-nowrap">
+                <div className="dropdown">
                     <button
-                        className="btn text-light btn-info btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#ticketDetailsModal"
-                        onClick={() => setSelectedTickets(row.original)}
+                        className="btn btn-light text-dark border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
                     >
-                        <FaEye /> View
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-                    <button
-                        onClick={() => handleStartButton(row.original)}
-                        className="btn text-light btn-warning btn-sm"
-                    >
-                        <FaPlay /> Start Task
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ticketDetailsModal"
+                                onClick={() => setSelectedTickets(row.original)}
+                            >
+                                <FaEye /> View
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => handleStartButton(row.original)}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                            >
+                                <FaPlay /> Start Task
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }
@@ -107,7 +127,7 @@ function OpenTickets() {
 
             <ConfirmationModal
                 id="confirmModal"
-                title="Start Ticket"
+                title={`${confirmType} Ticket`}
                 message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
                 confirmLabel={
                     <>

@@ -7,26 +7,13 @@ import CustomRadarChart from '../../components/charts/CustomRadarChart'
 
 function TeamOverview() {
     const { getData } = useAPI()
-    const [dashboardStats, setDashboardStats] = useState({ current: {}, delta: {} })
+    const [dashboardStats, setDashboardStats] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
-    const fetchAllData = useCallback(async () => {
-        setLoading(true)
-        setError('')
-        try {
-            await Promise.all([getData('/dashboard', setDashboardStats)])
-        } catch (err) {
-            console.error('Error fetching dashboard data:', err)
-            setError('Failed to load dashboard data.')
-        } finally {
-            setLoading(false)
-        }
-    }, [getData])
-
     useEffect(() => {
-        fetchAllData()
-    }, [fetchAllData])
+        getData('/dashboard', setDashboardStats, setLoading, setError)
+    }, [])
 
     const renderPlaceholder = (height = '300px') => (
         <div className="placeholder-glow w-100">

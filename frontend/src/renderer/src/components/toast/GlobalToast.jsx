@@ -36,7 +36,7 @@ const GlobalToast = ({ message, show, onClose, isPositive, title, delay }) => {
     }, [onClose])
 
     return (
-        <div className="toast-container position-fixed top-0 end-0 p-3 mt-5 z-1055">
+        <div className="toast-container position-fixed bottom-0 end-0 p-3 mt-5 z-1055">
             <div
                 ref={toastRef}
                 className={`toast bg-${isPositive ? 'success' : 'danger'}-subtle border-0`}
