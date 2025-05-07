@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
 import { FaEye, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
-import StatusBadge from '../../../components/badge/StatusBadge'
+import StatusBadge from '../../../components/badges/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
@@ -43,8 +43,18 @@ function NewTickets() {
     //     modal.show()
     // }
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         if (!selectedTickets) return
+
+        if (confirmType === 'assign' && selectedTickets.requester_id === selectedUser.id) {
+            return showToast({
+                message: 'Requester cannot be assigned to their own ticket.',
+                title: 'Failed',
+                isPositive: false,
+                delay: 5000
+            })
+        }
+
         let url, payload
         if (confirmType === 'assign') {
             url = `/tickets/${selectedTickets.id}/assign`
@@ -53,15 +63,15 @@ function NewTickets() {
             url = `/tickets/${selectedTickets.id}/accept/${selectedUser.id}`
             payload = ''
         }
-        postData(
+
+        await postData(
             url,
             payload,
             () => {},
             () => {},
             setError
         )
-        getData('/tickets?status=new', setTickets, setLoading, setError)
-
+        await getData('/tickets?status=new', setTickets, setLoading, setError)
         showToast({
             message: error.message || `Ticket ${confirmType} successfully!`,
             title: error.message ? 'Failed' : 'Success',
@@ -100,7 +110,7 @@ function NewTickets() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn btn-light text-dark border-0"
+                        className="btn border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"
@@ -117,7 +127,10 @@ function NewTickets() {
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
                                 data-bs-target="#ticketDetailsModal"
-                                onClick={() => setSelectedTickets(row.original)}
+                                onClick={(e) => {
+                                    setSelectedTickets(row.original)
+                                    e.stopPropagation()
+                                }}
                             >
                                 <FaEye /> View
                             </button>

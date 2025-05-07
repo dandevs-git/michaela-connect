@@ -81,93 +81,102 @@ function TeamReports() {
 
     return (
         <>
-            <div className="col-12 p-4">
-                <div className="row">
-                    <h4 className="text-start fw-semibold">Weekly Performance Report</h4>
-                    <div className="col-xl-3 p-3">
-                        <div className="card h-100 rounded-4 shadow text-center mb-3">
-                            <div className="card-header text-uppercase fw-semibold">
-                                Total Tickets Closed
+            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="reports">
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+                    Team Performance Reports
+                </div>
+                <div className="row card-body">
+                    <div className="col-xl-12 m-0 p-4">
+                        <div className="row">
+                            <h4 className="text-start fw-semibold">Weekly Performance Report</h4>
+                            <div className="col-xl-3 p-3">
+                                <div className="card h-100 rounded-4 shadow text-center mb-3">
+                                    <div className="card-header text-uppercase fw-semibold">
+                                        Total Tickets Closed
+                                    </div>
+                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                        <p className="card-text display-3 m-0 fw-bold">3</p>
+                                        <span className="text-success fs-5 fw-bold">
+                                            <i className="bi bi-arrow-up-short"></i>5
+                                            <i className="bi bi-ticket-perforated ms-2"></i>
+                                        </span>
+                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                            vs previews 7 days
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                <p className="card-text display-3 m-0 fw-bold">3</p>
-                                <span className="text-success fs-5 fw-bold">
-                                    <i className="bi bi-arrow-up-short"></i>5
-                                    <i className="bi bi-ticket-perforated ms-2"></i>
-                                </span>
-                                <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                    vs previews 7 days
-                                </span>
+                            <div className="col-xl-3 p-3">
+                                <div className="card h-100 rounded-4 shadow text-center mb-3">
+                                    <div className="card-header text-uppercase fw-semibold">
+                                        Avg. Resolution Time
+                                    </div>
+                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                        <p className="card-text display-3 m-0 fw-bold">
+                                            10<span className="fs-5">mins</span>
+                                        </p>
+                                        <span className="text-danger fs-5 fw-bold">
+                                            <i className="bi bi-arrow-down-short"></i>2 mins
+                                            <i className="bi bi-lightning-fill ms-2"></i>
+                                        </span>
+                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                            vs previews 7 days
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xl-3 p-3">
+                                <div className="card h-100 rounded-4 shadow text-center mb-3">
+                                    <div className="card-header text-uppercase fw-semibold">
+                                        SLA Compliance
+                                    </div>
+                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                        <p className="card-text display-3 m-0 fw-bold">
+                                            98<span className="fs-5">%</span>
+                                        </p>
+                                        <span className="text-success fs-5 fw-bold">
+                                            <i className="bi bi-arrow-up-short"></i>8%
+                                            <i className="bi bi-shield-check ms-2"></i>
+                                        </span>
+                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                            vs previews 7 days
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xl-3 p-3">
+                                <div className="card h-100 rounded-4 shadow text-center mb-3">
+                                    <div className="card-header text-uppercase fw-semibold">
+                                        Employee Satisfaction
+                                    </div>
+                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
+                                        <p className="card-text display-3 m-0 fw-bold">
+                                            5.0
+                                            <span className="fs-5">
+                                                /5.0
+                                                <i className="bi bi-star-fill text-warning"></i>
+                                            </span>
+                                        </p>
+                                        <span className="text-success fs-5 fw-bold">
+                                            <i className="bi bi-arrow-up-short"></i>1%
+                                            <i className="bi bi-emoji-smile-fill ms-2"></i>
+                                        </span>
+                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
+                                            vs previews 7 days
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xl-12 p-3">
+                                <h4 className="text-start fw-semibold">
+                                    Weekly Employee’s Performance
+                                </h4>
+                                <CustomTable
+                                    columns={columnsEmployeesPerformance}
+                                    data={dataEmployeesPerformance}
+                                />
                             </div>
                         </div>
-                    </div>
-                    <div className="col-xl-3 p-3">
-                        <div className="card h-100 rounded-4 shadow text-center mb-3">
-                            <div className="card-header text-uppercase fw-semibold">
-                                Avg. Resolution Time
-                            </div>
-                            <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                <p className="card-text display-3 m-0 fw-bold">
-                                    10<span className="fs-5">mins</span>
-                                </p>
-                                <span className="text-danger fs-5 fw-bold">
-                                    <i className="bi bi-arrow-down-short"></i>2 mins
-                                    <i className="bi bi-lightning-fill ms-2"></i>
-                                </span>
-                                <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                    vs previews 7 days
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xl-3 p-3">
-                        <div className="card h-100 rounded-4 shadow text-center mb-3">
-                            <div className="card-header text-uppercase fw-semibold">
-                                SLA Compliance
-                            </div>
-                            <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                <p className="card-text display-3 m-0 fw-bold">
-                                    98<span className="fs-5">%</span>
-                                </p>
-                                <span className="text-success fs-5 fw-bold">
-                                    <i className="bi bi-arrow-up-short"></i>8%
-                                    <i className="bi bi-shield-check ms-2"></i>
-                                </span>
-                                <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                    vs previews 7 days
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xl-3 p-3">
-                        <div className="card h-100 rounded-4 shadow text-center mb-3">
-                            <div className="card-header text-uppercase fw-semibold">
-                                Employee Satisfaction
-                            </div>
-                            <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                <p className="card-text display-3 m-0 fw-bold">
-                                    5.0
-                                    <span className="fs-5">
-                                        /5.0
-                                        <i className="bi bi-star-fill text-warning"></i>
-                                    </span>
-                                </p>
-                                <span className="text-success fs-5 fw-bold">
-                                    <i className="bi bi-arrow-up-short"></i>1%
-                                    <i className="bi bi-emoji-smile-fill ms-2"></i>
-                                </span>
-                                <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                    vs previews 7 days
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xl-12 p-3">
-                        <h4 className="text-start fw-semibold">Weekly Employee’s Performance</h4>
-                        <CustomTable
-                            columns={columnsEmployeesPerformance}
-                            data={dataEmployeesPerformance}
-                        />
                     </div>
                 </div>
             </div>

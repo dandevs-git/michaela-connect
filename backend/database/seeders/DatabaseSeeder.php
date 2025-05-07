@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Database\Seeders;
 
 use App\Models\Anydesk;
@@ -36,7 +37,6 @@ class DatabaseSeeder extends Seeder
 
         Department::factory()->count(3)->create();
         Department::factory()->count(5)->withParent()->create();
-
 
         $roles = [
             'superadmin' => Role::firstOrCreate(['name' => 'superadmin']),
@@ -108,6 +108,16 @@ class DatabaseSeeder extends Seeder
             $staff->assignRole($roles['staff']);
         }
 
-        Ticket::factory()->count(5000)->create();
+        // ini_set('memory_limit', '1G');
+
+        // $batchSize = 10000;
+        // $total = 1000000;
+
+        // for ($i = 0; $i < ($total / $batchSize); $i++) {
+        //     Ticket::factory()->count($batchSize)->create();
+        //     echo "Batch $i inserted\n";
+        // }
+
+        // Ticket::factory()->count(10000)->create();
     }
 }

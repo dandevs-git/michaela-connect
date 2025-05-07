@@ -14,13 +14,23 @@ class ActivityLogController extends Controller
      */
     public function index()
     {
-        $logs = ActivityLog::with('user')->get();
+        $logs = ActivityLog::with('user')->orderBy('created_at', 'desc')->get();
         return response()->json($logs, 200);
     }
 
     public function getTicketLogs(Request $request)
     {
         $category = $request->query('category', 'Ticket Management');
+
+        $logs = ActivityLog::with('user')
+            ->where('category', $category)
+            ->get();
+
+        return response()->json($logs, 200);
+    }
+    public function getUserLogs(Request $request)
+    {
+        $category = $request->query('category', 'User Management');
 
         $logs = ActivityLog::with('user')
             ->where('category', $category)

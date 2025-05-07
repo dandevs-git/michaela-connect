@@ -12,7 +12,6 @@ function ActivityLog() {
     }, [])
 
     const columns = [
-        { header: 'No.', accessorKey: 'id' },
         { header: 'User', accessorKey: 'user.name' },
         { header: 'Category', accessorKey: 'category' },
         { header: 'Action', accessorKey: 'action' },

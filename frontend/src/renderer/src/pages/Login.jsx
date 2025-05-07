@@ -12,8 +12,16 @@ function Login() {
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
+    const [rememberMe, setRememberMe] = useState(false)
 
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username')
+        const storedPassword = localStorage.getItem('password')
+        if (storedUsername) setUsername(storedUsername)
+        if (storedPassword) setPassword(storedPassword)
+    }, [])
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -24,6 +32,13 @@ function Login() {
             const response = await login(username, password)
             if (!response.includes('Invalid') && !response.includes('Access denied')) {
                 await getAuthUser()
+                if (rememberMe) {
+                    localStorage.setItem('username', username)
+                    localStorage.setItem('password', password)
+                } else {
+                    localStorage.removeItem('username')
+                    localStorage.removeItem('password')
+                }
                 navigate('/dashboard')
             }
             setMessage(response)
@@ -85,7 +100,13 @@ function Login() {
                 </div>
 
                 <div className="mb-3 form-check">
-                    <input type="checkbox" className="form-check-input" id="rememberMe" />
+                    <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="rememberMe"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                    />
                     <label className="form-check-label" htmlFor="rememberMe">
                         Remember me
                     </label>

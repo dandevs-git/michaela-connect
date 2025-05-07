@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
 import { FaEye, FaPlay, FaPlus, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
-import StatusBadge from '../../../components/badge/StatusBadge'
+import StatusBadge from '../../../components/badges/StatusBadge'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
@@ -10,7 +10,7 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { useToast } from '../../../contexts/ToastContext'
 
 function OpenTickets() {
-    const { getData, postData } = useAPI()
+    const { getData, postData, authUser } = useAPI()
     const { showToast } = useToast()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
@@ -31,6 +31,16 @@ function OpenTickets() {
 
     const handleConfirm = () => {
         if (!selectedTickets) return
+
+        if (selectedTickets?.assigned_to?.id !== authUser?.id) {
+            return showToast({
+                message: 'Unauthorized. Only the assigned user can start working on this ticket.',
+                title: 'Failed',
+                isPositive: false,
+                delay: 5000
+            })
+        }
+
         const url = `/tickets/${selectedTickets.id}/start`
         postData(
             url,
@@ -65,7 +75,7 @@ function OpenTickets() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn btn-light text-dark border-0"
+                        className="btn border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
 import { FaCheck, FaEye, FaPlus, FaTimes } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
-import StatusBadge from '../../../components/badge/StatusBadge'
+import StatusBadge from '../../../components/badges/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
@@ -77,7 +77,7 @@ function PendingTickets() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn btn-light text-dark border-0"
+                        className="btn border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"

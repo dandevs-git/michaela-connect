@@ -6,7 +6,7 @@ use App\Models\Department;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
 
-class TicketQueryService
+class TeamTicketQueryService
 {
     public static function queryForCurrentUser()
     {
@@ -37,11 +37,6 @@ class TicketQueryService
                 $q->where('origin_department_id', $user->department_id)
                     ->orWhere('target_department_id', $user->department_id);
             });
-        } elseif ($user->can('view own tickets')) {
-            $query->where(function ($q) use ($user) {
-                $q->where('requester_id', $user->id)
-                    ->orWhere('assigned_to', $user->id);
-            });
         } else {
             abort(403, 'Unauthorized');
         }
@@ -49,3 +44,11 @@ class TicketQueryService
         return $query->orderBy('created_at', 'desc');
     }
 }
+
+
+// elseif ($user->can('view own tickets')) {
+//             $query->where(function ($q) use ($user) {
+//                 $q->where('requester_id', $user->id)
+//                     ->orWhere('assigned_to', $user->id);
+//             });
+//         }

@@ -74,6 +74,14 @@ class PermissionSeeder extends Seeder
 
                 // Action Buttons
                 'view ticket details',
+
+                // Side Navigation
+                'view dashboard',
+                'access service desk',
+                'manage employees',
+                'view infrastructure directory',
+                'view analytics reports',
+                'manage system settings',
             ],
 
             'manager' => [
@@ -93,6 +101,12 @@ class PermissionSeeder extends Seeder
                 'view closed tickets tab',
                 'view failed tickets tab',
                 'view rejected tickets tab',
+
+                // Side Navigation
+                'view dashboard',
+                'access service desk',
+                'view infrastructure directory',
+                'manage system settings',
             ],
 
             'head' => [
@@ -111,6 +125,12 @@ class PermissionSeeder extends Seeder
                 'view inprogress tickets tab',
                 'view resolved tickets tab',
                 'view closed tickets tab',
+
+                // Side Navigation
+                'view dashboard',
+                'access service desk',
+                'view infrastructure directory',
+                'manage system settings',
             ],
 
             'staff' => [
@@ -128,6 +148,12 @@ class PermissionSeeder extends Seeder
                 'view inprogress tickets tab',
                 'view resolved tickets tab',
                 'view closed tickets tab',
+
+                // Side Navigation
+                'view dashboard',
+                'access service desk',
+                'view infrastructure directory',
+                // 'manage system settings',
             ],
         ];
 

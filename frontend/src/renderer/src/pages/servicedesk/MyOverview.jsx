@@ -56,12 +56,12 @@ function MyOverview() {
 
     return (
         <>
-            <div className="card shadow w-100">
-                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
+            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="reports">
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
                     My Overview
                 </div>
-                <div className="card-body">
-                    <div className="col-xl-12 p-4">
+                <div className="row card-body">
+                    <div className="col-xl-12 m-0 p-4">
                         <div className="row bg-light-subtle border m-0 p-3 rounded-4 shadow">
                             <div className="col-xl-3 d-flex flex-column p-3 my-auto">
                                 <h2>
@@ -148,7 +148,7 @@ function MyOverview() {
                             <div className="col-xl-2 p-3">
                                 <div className="card h-100 rounded-4 shadow text-center mb-3">
                                     <div className="card-header text-uppercase fw-semibold">
-                                        Success Rate
+                                        SLA Compliance
                                     </div>
                                     <div className="d-flex flex-column card-body align-items-center justify-content-center">
                                         <p className="card-text display-3 m-0 fw-bold">
@@ -156,7 +156,7 @@ function MyOverview() {
                                         </p>
                                         <span className="text-danger fs-5 fw-bold">
                                             <i className="bi bi-arrow-down-short"></i>2%
-                                            <i className="bi bi-graph-up-arrow ms-2"></i>
+                                            <i className="bi bi-shield-check ms-2"></i>
                                         </span>
                                         <span style={{ fontSize: '0.8rem' }} className="text-muted">
                                             vs previews 30 days

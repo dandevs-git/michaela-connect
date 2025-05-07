@@ -8,7 +8,7 @@ use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use App\Models\User;
-use App\Services\TicketQueryService;
+use App\Services\TeamTicketQueryService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +20,7 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $query = TicketQueryService::queryForCurrentUser();
+        $query = TeamTicketQueryService::queryForCurrentUser();
 
         if ($request->filled('status')) {
             $status = $request->query('status');
@@ -37,12 +37,8 @@ class TicketController extends Controller
                     $query->where('target_department_id', auth()->user()->department_id);
                 } elseif ($status === 'resolved') {
                     $query->where('origin_department_id', auth()->user()->department_id);
-                } elseif ($status === 'closed') {
-                    $query->where('target_department_id', auth()->user()->department_id);
-                } elseif ($status === 'failed') {
-                    $query->where('target_department_id', auth()->user()->department_id);
                 } elseif ($status === 'rejected') {
-                    $query->where('target_department_id', auth()->user()->department_id);
+                    $query->where('origin_department_id', auth()->user()->department_id);
                 }
             }
         }
@@ -68,7 +64,7 @@ class TicketController extends Controller
 
     public function show($id)
     {
-        $ticket = TicketQueryService::queryForCurrentUser()->findOrFail($id);
+        $ticket = TeamTicketQueryService::queryForCurrentUser()->findOrFail($id);
         return response()->json($ticket, 200);
     }
 
@@ -161,10 +157,20 @@ class TicketController extends Controller
         return response()->json(['message' => 'Ticket approved']);
     }
 
-    public function reject($id)
+    // public function reject($id)
+    // {
+    //     $ticket = Ticket::findOrFail($id);
+    //     $ticket->update(['status' => 'rejected', 'rejected_at' => now()]);
+
+    //     $this->logActivity("Reject Ticket", "Head Department rejected Ticket #{$ticket->id}");
+
+    //     return response()->json(['message' => 'Ticket rejected']);
+    // }
+
+    public function reject(Request $request, $id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket->update(['status' => 'rejected', 'rejected_at' => now()]);
+        $ticket->update(['status' => 'rejected', 'rejected_at' => now(), 'remarks' => $request->remarks]);
 
         $this->logActivity("Reject Ticket", "Head Department rejected Ticket #{$ticket->id}");
 

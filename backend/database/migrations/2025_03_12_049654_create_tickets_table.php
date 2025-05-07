@@ -32,6 +32,7 @@ return new class extends Migration {
             $table->timestamp('resolution_deadline')->nullable();
 
             $table->boolean('sla_breached')->default(false);
+            $table->string('remarks')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

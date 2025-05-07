@@ -5,11 +5,7 @@ import { useEffect } from 'react'
 import MainLayout from './layouts/MainLayout'
 import AuthLayout from './layouts/AuthLayout'
 import ProfileLayout from './layouts/ProfileLayout'
-import DashboardLayout from './layouts/DashboardLayout'
-import ServiceDeskLayout from './layouts/ServiceDeskLayout'
 import ServiceDeskTicketLayout from './layouts/ServiceDeskTicketLayout'
-import EmployeeLayout from './layouts/EmployeeLayout'
-import DirectoryLayout from './layouts/DirectoryLayout'
 
 import Login from './pages/Login'
 import Profile from './pages/Profile'
@@ -37,6 +33,9 @@ import AnydeskDirectory from './pages/directory/AnydeskDirectory'
 import PrinterDirectory from './pages/directory/PrinterDirectory'
 import InternetDirectory from './pages/directory/InternetDirectory'
 import NewTickets from './pages/servicedesk/mytickets/NewTickets'
+import TeamOverview from './pages/dashboard/TeamOverview'
+import TeamActivities from './pages/dashboard/TeamActivities'
+import TeamReports from './pages/dashboard/TeamReports'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -65,10 +64,12 @@ function App() {
             >
                 <Route path="/dashboard">
                     <Route index element={<Navigate to="overview" replace />} />
-                    <Route path=":section" element={<DashboardLayout />} />
+                    <Route path="overview" element={<TeamOverview />} />
+                    <Route path="activities" element={<TeamActivities />} />
+                    <Route path="reports" element={<TeamReports />} />
                 </Route>
 
-                <Route path="/servicedesk" element={<ServiceDeskLayout />}>
+                <Route path="/servicedesk">
                     <Route index element={<Navigate to="overview" replace />} />
                     <Route path="overview" element={<MyOverview />} />
                     <Route path="reports" element={<MyReports />} />
@@ -87,7 +88,7 @@ function App() {
                     </Route>
                 </Route>
 
-                <Route path="/employees" element={<EmployeeLayout />}>
+                <Route path="/employees">
                     <Route index element={<Navigate to="all" replace />} />
                     <Route path="all" element={<AllEmployees />} />
                     <Route path="departments" element={<Department />} />
@@ -95,7 +96,7 @@ function App() {
                     <Route path="logs" element={<ActivityLog />} />
                 </Route>
 
-                <Route path="/directory" element={<DirectoryLayout />}>
+                <Route path="/directory">
                     <Route index element={<Navigate to="departments" replace />} />
                     <Route path="departments" element={<Department />} />
                     <Route path="telephones" element={<TelephoneDirectory />} />

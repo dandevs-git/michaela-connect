@@ -55,7 +55,7 @@ function TopNavigation() {
                             </span>
                         </button>
 
-                        <ul className="dropdown-menu dropdown-menu-end bg-light text-dark shadow-lg rounded-3 border-0">
+                        <ul className="dropdown-menu dropdown-menu-end shadow-lg rounded-3 border-0">
                             <li className="dropdown-header text-center fw-bold py-3">
                                 Notifications
                             </li>

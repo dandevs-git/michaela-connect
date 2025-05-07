@@ -6,7 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AnydeskController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\InternetController;
 use App\Http\Controllers\IpAddressController;
@@ -23,7 +23,7 @@ Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->na
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::get('/dashboard', [DashboardController::class, 'getDashboardData']);
+    Route::get('/statistics', [StatisticsController::class, 'getStatisticsData']);
 
     Route::prefix('tickets')->group(function () {
         Route::post('{ticket}/approve', [TicketController::class, 'approve'])->name('tickets.approve');
@@ -45,8 +45,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
 
+
     Route::get('/logs', [ActivityLogController::class, 'index'])->name('logs.index');
     Route::get('/logs/ticket', [ActivityLogController::class, 'getTicketLogs'])->name('logs.ticket');
+    Route::get('/logs/user', [ActivityLogController::class, 'getUserLogs'])->name('logs.user');
+
 
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/change-password', [PasswordController::class, 'changePassword'])->name('password.change');

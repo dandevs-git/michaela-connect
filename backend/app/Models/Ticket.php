@@ -29,6 +29,7 @@ class Ticket extends Model
         'response_deadline',
         'resolution_deadline',
         'sla_breached',
+        'remarks',
     ];
 
     protected $casts = [

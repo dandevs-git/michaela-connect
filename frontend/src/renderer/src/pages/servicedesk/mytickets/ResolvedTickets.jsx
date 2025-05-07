@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
 import { FaCheckCircle, FaEye, FaPlus, FaTimesCircle, FaUndo } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
-import StatusBadge from '../../../components/badge/StatusBadge'
+import StatusBadge from '../../../components/badges/StatusBadge'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
@@ -67,7 +67,7 @@ function ResolvedTickets() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn btn-light text-dark border-0"
+                        className="btn border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"
@@ -91,7 +91,7 @@ function ResolvedTickets() {
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 onClick={() => handleStatusChange(row.original, 'closed')}
                             >
-                                <FaCheckCircle className="me-1" /> Completed
+                                <FaCheckCircle className="me-1" /> Closed
                             </button>
                         </li>
                         <li>

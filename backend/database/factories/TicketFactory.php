@@ -52,16 +52,19 @@ class TicketFactory extends Factory
             ? (clone $resolvedAt)->modify('+' . rand(0, 3) . ' days')
             : null;
 
+        $requester = User::inRandomOrder()->first();
+        $assignedTo = User::inRandomOrder()->first();
+
         return [
             'ticket_number' => strtoupper('TKT-' . $this->faker->unique()->bothify('##??##')),
             'title' => $this->faker->sentence(6),
             'description' => $this->faker->paragraph(),
             'priority_id' => Priority::inRandomOrder()->first()->id ?? 1,
             'status' => $status,
-            'origin_department_id' => Department::inRandomOrder()->first()->id ?? 1,
-            'requester_id' => User::inRandomOrder()->first()->id ?? 1,
-            'target_department_id' => Department::inRandomOrder()->first()->id ?? 1,
-            'assigned_to' => User::inRandomOrder()->first()->id ?? 1,
+            'requester_id' => $requester->id ?? 1,
+            'origin_department_id' => $requester->department_id ?? 1,
+            'assigned_to' => $assignedTo->id ?? 1,
+            'target_department_id' => $assignedTo->department_id ?? 1,
             'start_at' => $startAt,
             'approved_at' => $approvedAt,
             'resolved_at' => $resolvedAt,
@@ -70,6 +73,7 @@ class TicketFactory extends Factory
             'response_deadline' => (clone $createdAt)->modify('+1 day'),
             'resolution_deadline' => (clone $createdAt)->modify('+3 days'),
             'sla_breached' => (bool) rand(0, 1),
+            'remarks' => $this->faker->sentence(6),
             'created_at' => $createdAt,
             'updated_at' => now(),
         ];

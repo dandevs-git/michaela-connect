@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
-use App\Services\TicketQueryService;
+use App\Services\TeamTicketQueryService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class DashboardController extends Controller
+class StatisticsController extends Controller
 {
-    public function getDashboardData()
+    public function getStatisticsData()
     {
         $now = Carbon::now();
         $currentPeriodStart = $now->copy()->subDays(30);
@@ -39,12 +39,16 @@ class DashboardController extends Controller
     private function calculateMetrics($startDate, $endDate)
     {
         return [
-            'totalTickets' => TicketQueryService::queryForCurrentUser()->whereBetween('created_at', [$startDate, $endDate])->count(),
-            'resolvedTickets' => TicketQueryService::queryForCurrentUser()->resolved()->whereBetween('resolved_at', [$startDate, $endDate])->count(),
+            // Team Overview
+            'totalTickets' => TeamTicketQueryService::queryForCurrentUser()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'resolvedTickets' => TeamTicketQueryService::queryForCurrentUser()->resolved()->whereBetween('resolved_at', [$startDate, $endDate])->count(),
             'slaCompliance' => $this->calculateSlaCompliance($startDate, $endDate),
             'avgResolutionTime' => $this->calculateAverageResolutionTime($startDate, $endDate),
             'avgResponseTime' => $this->calculateAverageResponseTime($startDate, $endDate),
-            'pendingApprovals' => TicketQueryService::queryForCurrentUser()->pending()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'pendingApprovals' => TeamTicketQueryService::queryForCurrentUser()->pending()->whereBetween('created_at', [$startDate, $endDate])->count(),
+
+            // Team Reports
+
         ];
     }
 
@@ -70,12 +74,12 @@ class DashboardController extends Controller
 
     private function calculateSlaCompliance($startDate, $endDate)
     {
-        $resolvedOnTime = TicketQueryService::queryForCurrentUser()->resolved()
+        $resolvedOnTime = TeamTicketQueryService::queryForCurrentUser()->resolved()
             ->whereBetween('resolved_at', [$startDate, $endDate])
             ->where('sla_breached', false)
             ->count();
 
-        $totalResolved = TicketQueryService::queryForCurrentUser()->resolved()
+        $totalResolved = TeamTicketQueryService::queryForCurrentUser()->resolved()
             ->whereBetween('resolved_at', [$startDate, $endDate])
             ->count();
 
@@ -84,7 +88,7 @@ class DashboardController extends Controller
 
     private function calculateAverageResolutionTime($startDate, $endDate)
     {
-        $resolvedTickets = TicketQueryService::queryForCurrentUser()->resolved()
+        $resolvedTickets = TeamTicketQueryService::queryForCurrentUser()->resolved()
             ->whereBetween('resolved_at', [$startDate, $endDate])
             ->get();
 
@@ -101,7 +105,7 @@ class DashboardController extends Controller
 
     private function calculateAverageResponseTime($startDate, $endDate)
     {
-        $tickets = TicketQueryService::queryForCurrentUser()->whereBetween('approved_at', [$startDate, $endDate])->get();
+        $tickets = TeamTicketQueryService::queryForCurrentUser()->whereBetween('approved_at', [$startDate, $endDate])->get();
 
         $totalResponseTime = $tickets->sum(function ($ticket) {
             return $ticket->created_at && $ticket->approved_at
@@ -125,7 +129,7 @@ class DashboardController extends Controller
         return collect($statusDateMap)->map(function ($dateField, $status) use ($startDate, $endDate) {
             return [
                 'name' => ucfirst(str_replace('_', ' ', $status)),
-                'value' => TicketQueryService::queryForCurrentUser()
+                'value' => TeamTicketQueryService::queryForCurrentUser()
                     ->where('status', $status)
                     ->whereBetween($dateField, [$startDate, $endDate])
                     ->count(),

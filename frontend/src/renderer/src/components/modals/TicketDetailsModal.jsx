@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { FaPlay, FaPaperPlane, FaEdit } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
-import StatusBadge from '../badge/StatusBadge'
+import StatusBadge from '../badges/StatusBadge'
 import { formatDateAndTimeVerbose } from '../../utils/formatDateAndTimeVerbose'
 
 function TicketDetailsModal({ id, data }) {
@@ -109,7 +109,7 @@ function TicketDetailsModal({ id, data }) {
                             <p className="text-muted m-0">{data?.description}</p>
                         </div>
                         <div className="d-flex">
-                            <div className="col-6 p-3">
+                            <div className="col-7 p-3">
                                 <div className="row g-3 mb-3">
                                     <div className="col-md-6">
                                         <div className="card shadow p-3 h-100 rounded-4">
@@ -199,23 +199,41 @@ function TicketDetailsModal({ id, data }) {
                                     </div>
                                 </div>
 
-                                <div className="mt-4">
-                                    <div className="card shadow p-3 h-100 rounded-4 text-center">
-                                        <h6 className="fw-bold">SLA Compliance:</h6>
-                                        {data?.sla_breached ? (
-                                            <span className="py-1 rounded-pill text-light bg-danger">
-                                                SLA Breached
+                                <div className="row g-3 mb-3">
+                                    <div className="col-md-6">
+                                        <div className="card shadow p-4 h-100 rounded-4 text-center">
+                                            <h6 className="fw-bold text-uppercase mb-3">
+                                                SLA Compliance:
+                                            </h6>
+                                            {data?.sla_breached ? (
+                                                <span className="py-2 px-4 rounded-pill text-light bg-danger">
+                                                    SLA Breached
+                                                </span>
+                                            ) : (
+                                                <span className="py-2 px-4 rounded-pill text-light bg-success">
+                                                    SLA Met
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-6">
+                                        <div className="card shadow p-4 h-100 rounded-4">
+                                            <h6 className="fw-bold text-uppercase mb-3">
+                                                Remarks:
+                                            </h6>
+                                            <span
+                                                className="text-muted"
+                                                style={{ wordWrap: 'break-word' }}
+                                            >
+                                                {data?.remarks || 'No remarks provided'}
                                             </span>
-                                        ) : (
-                                            <span className="py-1 rounded-pill text-light bg-success">
-                                                SLA Met
-                                            </span>
-                                        )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="col-6 p-3">
+                            <div className="col-5 p-3">
                                 <div className="card shadow p-3 h-100 rounded-4">
                                     <h4 className="fw-bold mb-2">Comments</h4>
                                     <div
@@ -321,7 +339,7 @@ function TicketDetailsModal({ id, data }) {
                                                 >
                                                     {loading ? (
                                                         <span
-                                                            className="grower-border spinner-border-sm"
+                                                            className="spinner-border spinner-border-sm"
                                                             role="status"
                                                             aria-hidden="true"
                                                         ></span>
@@ -341,11 +359,11 @@ function TicketDetailsModal({ id, data }) {
                         <button type="button" className="btn btn-danger" data-bs-dismiss="modal">
                             Close
                         </button>
-                        {data?.assigned_to && data?.status !== 'resolved' && (
+                        {/* {data?.assigned_to && data?.status !== 'resolved' && (
                             <button className="btn text-light btn-success">
                                 <FaPlay /> Start Task
                             </button>
-                        )}
+                        )} */}
                     </div>
                 </div>
             </div>

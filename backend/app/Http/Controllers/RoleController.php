@@ -32,7 +32,6 @@ class RoleController extends Controller
         if ($request->has('permissions')) {
             $role->syncPermissions($request->permissions);
         }
-
         return response()->json(['message' => 'Role created', 'role' => $role], 201);
     }
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
 import { FaEye, FaTrash, FaEdit, FaPlus } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
-import StatusBadge from '../../../components/badge/StatusBadge'
+import StatusBadge from '../../../components/badges/StatusBadge'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 
@@ -38,7 +38,7 @@ function FailedTickets() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn btn-light text-dark border-0"
+                        className="btn border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"
@@ -55,16 +55,6 @@ function FailedTickets() {
                                 onClick={() => setSelectedTickets(row.original)}
                             >
                                 <FaEye /> View
-                            </button>
-                        </li>
-                        <li>
-                            <button className="dropdown-item d-flex align-items-center gap-2 fw-semibold">
-                                <FaEdit /> Edit
-                            </button>
-                        </li>
-                        <li>
-                            <button className="dropdown-item d-flex align-items-center gap-2 fw-semibold">
-                                <FaTrash /> Delete
                             </button>
                         </li>
                     </ul>

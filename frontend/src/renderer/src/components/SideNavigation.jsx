@@ -4,14 +4,7 @@ import { useContext } from 'react'
 import logoBlack from '../assets/images/logos/logo-black.png'
 import logoWhite from '../assets/images/logos/logo-white.png'
 import ThemeContext from '../contexts/ThemeContext'
-import {
-    FaChartLine,
-    FaCog,
-    FaNetworkWired,
-    FaRegEyeSlash,
-    FaTicketAlt,
-    FaUser
-} from 'react-icons/fa'
+import { FaChartLine, FaCog, FaNetworkWired, FaTicketAlt, FaUser } from 'react-icons/fa'
 import '../assets/styles/css/sideNavigationStyle.css'
 import { useAPI } from '../contexts/APIContext'
 
@@ -24,7 +17,8 @@ const pages = [
             { name: 'Team Overview', link: '/dashboard/overview' },
             { name: 'Team Activities', link: '/dashboard/activities' },
             { name: 'Team Reports', link: '/dashboard/reports' }
-        ]
+        ],
+        permission: 'view dashboard'
     },
     {
         page: 'Service Desk',
@@ -34,7 +28,8 @@ const pages = [
             { name: 'My Overview', link: '/servicedesk/overview' },
             { name: 'My Tickets', link: '/servicedesk/tickets' },
             { name: 'My Reports', link: '/servicedesk/reports' }
-        ]
+        ],
+        permission: 'access service desk'
     },
     {
         page: 'Employees',
@@ -46,7 +41,8 @@ const pages = [
             { name: 'Roles & Permissions', link: '/employees/roles' },
             { name: 'Activity Logs', link: '/employees/logs' },
             { name: 'Performance Tracking', link: '/employees/performance' }
-        ]
+        ],
+        permission: 'manage employees'
     },
     {
         page: 'Directory',
@@ -58,18 +54,20 @@ const pages = [
             { name: 'IP Address', link: '/directory/ipaddress' },
             { name: 'Anydesk', link: '/directory/anydesks' },
             { name: 'Printers', link: '/directory/printers' }
-        ]
+        ],
+        permission: 'view infrastructure directory'
     },
     {
-        page: 'Reports & Analytics',
+        page: 'Reports',
         link: '/reports',
-        icon: <FaCog />,
+        icon: <i className="bi bi-bar-chart"></i>,
         subPages: [
             { name: 'Ticket Analytics', link: '/directory/employees' },
             { name: 'SLA Performance', link: '/directory/departments' },
-            { name: 'Employee Performance ', link: '/directory/telephones' },
-            { name: 'Customer Feedback ', link: '/directory/ipaddress' }
-        ]
+            { name: 'Performance ', link: '/directory/telephones' },
+            { name: 'Employee Feedback ', link: '/directory/ipaddress' }
+        ],
+        permission: 'view analytics reports'
     },
     {
         page: 'Settings',
@@ -81,11 +79,9 @@ const pages = [
             { name: 'Email & Notifications', link: '/directory/telephones' },
             { name: 'System Logs & Audits', link: '/directory/ipaddress' },
             { name: 'Department Settings', link: '/directory/ipaddress' }
-        ]
-    },
-    { page: 'Error Pages', link: '/404', icon: <FaRegEyeSlash /> },
-    { page: 'Forbidden', link: '/403', icon: <FaRegEyeSlash /> },
-    { page: 'Server Error', link: '/500', icon: <FaRegEyeSlash /> }
+        ],
+        permission: 'manage system settings'
+    }
 ]
 
 function SideNavigation() {
@@ -101,6 +97,10 @@ function SideNavigation() {
         }))
     }
 
+    const visiblePages = pages.filter(
+        (page) => !page.permission || authUser?.all_permissions?.includes(page.permission)
+    )
+
     return (
         <div
             className="d-flex flex-column bg-light-subtle border-end border-light-subtle shadow-lg pt-3 sticky-top vh-100"
@@ -115,7 +115,7 @@ function SideNavigation() {
             </Link>
             <div className="flex-grow-1 p-2 overflow-auto scroll">
                 <ul className="flex-column nav p-2">
-                    {pages.map((page, index) => {
+                    {visiblePages.map((page, index) => {
                         const isActive = location.pathname.startsWith(page.link)
                         const isOpen = openMenus[index]
 

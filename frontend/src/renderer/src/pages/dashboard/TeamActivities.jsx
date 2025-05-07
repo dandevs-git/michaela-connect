@@ -21,29 +21,32 @@ function TeamActivities() {
             accessorKey: 'action'
         },
         {
-            header: 'Affected Ticket/Module',
+            header: 'Affected Ticket',
             accessorKey: 'details'
+        },
+        {
+            header: 'Date',
+            accessorKey: 'formatted_date'
         },
         {
             header: 'Timestamp',
             accessorKey: 'formatted_time'
-        },
-        {
-            header: 'PC Name',
-            accessorKey: 'pc_name'
-        },
-        {
-            header: 'IP Address',
-            accessorKey: 'ip_address'
         }
     ]
     return (
         <>
-            <div className="col-12 p-4">
-                <h4 className="text-start fw-semibold">Recent Tasks & Assignments</h4>
-                <CustomTable isloading={loading} columns={columnsLogs} data={dataLogs} />
-                {/* <h4 className="text-start fw-semibold">Upcoming Deadlines</h4>
-                <CustomTable columns={columnsTask} data={dataTask} /> */}
+            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="activities">
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+                    Team Activities
+                </div>
+                <div className="row card-body">
+                    <div className="col-xl-12 m-0 p-4">
+                        <h4 className="text-start fw-semibold">Recent Tasks & Assignments</h4>
+                        <CustomTable isloading={loading} columns={columnsLogs} data={dataLogs} />
+                        {/* <h4 className="text-start fw-semibold">Upcoming Deadlines</h4>
+                        <CustomTable isloading={loading} columns={columnsLogs} data={dataLogs} /> */}
+                    </div>
+                </div>
             </div>
         </>
     )
