@@ -71,12 +71,6 @@ function Department() {
         }
     ]
 
-    const topContent = (
-        <button className="btn btn-primary me-4">
-            <FaPlus /> Add Department
-        </button>
-    )
-
     return (
         <div className="card shadow w-100">
             <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">

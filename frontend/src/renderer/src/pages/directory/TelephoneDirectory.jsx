@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
+import AddTelephoneModal from '../../components/modals/AddTelephoneModal'
 
 function TelephoneDirectory() {
     const { getData } = useAPI()
@@ -57,6 +58,7 @@ function TelephoneDirectory() {
                 <div className="card-body">
                     <div className="col-12 p-4">
                         <CustomTable
+                            topComponent={<AddTelephoneModal />}
                             isloading={loading}
                             topContent={topContent}
                             columns={columns}

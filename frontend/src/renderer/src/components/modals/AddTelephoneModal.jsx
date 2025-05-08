@@ -1,18 +1,18 @@
 import { FaPlus } from 'react-icons/fa'
 
-function AddDepartmentModal() {
+function AddTelephoneModal() {
     return (
         <>
             <button
                 className="btn btn-primary text-nowrap border me-4"
                 data-bs-toggle="modal"
-                data-bs-target="#AddDepartmentModal"
+                data-bs-target="#AddTelephoneModal"
             >
-                <FaPlus /> Add Department
+                <FaPlus /> Add Telephone
             </button>
             <div
                 className="modal fade"
-                id="AddDepartmentModal"
+                id="AddTelephoneModal"
                 tabIndex="-1"
                 role="dialog"
                 aria-labelledby="modalTitleId"
@@ -49,4 +49,4 @@ function AddDepartmentModal() {
         </>
     )
 }
-export default AddDepartmentModal
+export default AddTelephoneModal
