@@ -1,7 +1,20 @@
+import { useEffect, useState } from 'react'
+import StatisticsCard from '../../components/cards/StatisticsCard'
 import CustomBarChart from '../../components/charts/CustomBarChart'
 import CustomLineChart from '../../components/charts/CustomLineChart'
+import { useAPI } from '../../contexts/APIContext'
+import Placeholder from '../../components/placeholders/Placeholder'
 
 function MyOverview() {
+    const { getData } = useAPI()
+    const [statistics, setStatisticsStats] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        getData('/statistics', setStatisticsStats, setLoading, setError)
+    }, [])
+
     const ticketVolumeTrends = [
         {
             name: 'January',
@@ -54,9 +67,11 @@ function MyOverview() {
         }
     ]
 
+    console.log(statistics)
+
     return (
         <>
-            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="reports">
+            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
                     My Overview
                 </div>
@@ -70,57 +85,32 @@ function MyOverview() {
                                 </h2>
                                 <div>Stay updated on your ticket progress in real time.</div>
                             </div>
-                            <div className="col-xl-3 p-3">
-                                <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                    <div className="card-header text-uppercase fw-semibold">
-                                        Open Tickets
-                                    </div>
-                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                        <p className="card-text display-3 m-0 fw-bold">15</p>
-                                        <span className="text-success fs-5 fw-bold">
-                                            <i className="bi bi-arrow-up-short"></i>10
-                                            <i className="bi bi-ticket-perforated ms-2"></i>
-                                        </span>
-                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                            vs previews 30 days
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 p-3">
-                                <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                    <div className="card-header text-uppercase fw-semibold">
-                                        In Progress Tickets
-                                    </div>
-                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                        <p className="card-text display-3 m-0 fw-bold">10</p>
-                                        <span className="text-danger fs-5 fw-bold">
-                                            <i className="bi bi-arrow-down-short"></i>1
-                                            <i className="bi bi-hourglass-split ms-2"></i>
-                                        </span>
-                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                            vs previews 30 days
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 p-3">
-                                <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                    <div className="card-header text-uppercase fw-semibold">
-                                        Overdue Tickets
-                                    </div>
-                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                        <p className="card-text display-3 m-0 fw-bold">2</p>
-                                        <span className="text-success fs-5 fw-bold">
-                                            <i className="bi bi-arrow-down-short"></i>1
-                                            <i className="bi bi-exclamation-triangle-fill ms-2"></i>
-                                        </span>
-                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                            vs previews 30 days
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            <StatisticsCard
+                                title="Open Tickets"
+                                value={statistics.current?.myOpenTickets}
+                                delta={statistics.delta?.myOpenTicketsDelta}
+                                iconClass="bi-ticket-perforated"
+                                loading={loading}
+                                col={3}
+                            />
+                            <StatisticsCard
+                                title="In Progress Tickets"
+                                value={statistics.current?.myInProgressTickets}
+                                delta={statistics.delta?.myInProgressTicketsDelta}
+                                iconClass="bi-hourglass-split"
+                                loading={loading}
+                                col={3}
+                            />
+                            <StatisticsCard
+                                title="Overdue Tickets"
+                                value={statistics.current?.myOverdueTickets}
+                                delta={statistics.delta?.myOverdueTicketsDelta}
+                                iconClass="bi-exclamation-triangle-fill"
+                                loading={loading}
+                                reverseDelta={true}
+                                col={3}
+                            />
+
                             <hr className="mt-3" />
                             <div className="col-xl-3 d-flex flex-column p-3 my-auto">
                                 <h2>
@@ -128,100 +118,93 @@ function MyOverview() {
                                 </h2>
                                 <div>Monitor your achievements and improve continuously.</div>
                             </div>
-                            <div className="col-xl-3 p-3">
-                                <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                    <div className="card-header text-uppercase fw-semibold">
-                                        Closed Tickets
-                                    </div>
-                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                        <p className="card-text display-3 m-0 fw-bold">45</p>
-                                        <span className="text-success fs-5 fw-bold">
-                                            <i className="bi bi-arrow-up-short"></i>23
-                                            <i className="bi bi-check-circle-fill ms-2"></i>
-                                        </span>
-                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                            vs previews 30 days
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-2 p-3">
-                                <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                    <div className="card-header text-uppercase fw-semibold">
-                                        SLA Compliance
-                                    </div>
-                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                        <p className="card-text display-3 m-0 fw-bold">
-                                            90<span className="fs-5">%</span>
-                                        </p>
-                                        <span className="text-danger fs-5 fw-bold">
-                                            <i className="bi bi-arrow-down-short"></i>2%
-                                            <i className="bi bi-shield-check ms-2"></i>
-                                        </span>
-                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                            vs previews 30 days
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-2 p-3">
-                                <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                    <div className="card-header text-uppercase fw-semibold">
-                                        Resolution Time
-                                    </div>
-                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                        <p className="card-text display-3 m-0 fw-bold">
-                                            32<span className="fs-5">mins</span>
-                                        </p>
-                                        <span className="text-success fs-5 fw-bold">
-                                            <i className="bi bi-arrow-down-short"></i>10 mins
-                                            <i className="bi bi-lightning-fill ms-2"></i>
-                                        </span>
-                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                            vs previews 30 days
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-2 p-3">
-                                <div className="card h-100 rounded-4 shadow text-center mb-3">
-                                    <div className="card-header text-uppercase fw-semibold">
-                                        Failed Tickets
-                                    </div>
-                                    <div className="d-flex flex-column card-body align-items-center justify-content-center">
-                                        <p className="card-text display-3 m-0 fw-bold">5</p>
-                                        <span className="text-success fs-5 fw-bold">
-                                            <i className="bi bi-arrow-down-short"></i>10
-                                            <i className="bi bi-x-circle-fill ms-2"></i>
-                                        </span>
-                                        <span style={{ fontSize: '0.8rem' }} className="text-muted">
-                                            vs previews 30 days
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            <StatisticsCard
+                                title="Closed Tickets"
+                                value={statistics.current?.myClosedTickets}
+                                delta={statistics.delta?.myClosedTicketsDelta}
+                                iconClass="bi-check-circle-fill"
+                                loading={loading}
+                                col={3}
+                            />
+                            <StatisticsCard
+                                title="SLA Compliance"
+                                value={statistics.current?.mySlaCompliance}
+                                delta={statistics.delta?.mySlaComplianceDelta}
+                                iconClass="bi-shield-check"
+                                unit="%"
+                                loading={loading}
+                                col={2}
+                            />
+                            <StatisticsCard
+                                title="Resolution Time"
+                                value={statistics.current?.myResolutionTime}
+                                delta={statistics.delta?.myResolutionTimeDelta}
+                                iconClass="bi-lightning-fill"
+                                loading={loading}
+                                isTime={true}
+                                reverseDelta={true}
+                                col={2}
+                            />
+                            <StatisticsCard
+                                title="Failed Tickets"
+                                value={statistics.current?.myFailedTickets}
+                                delta={statistics.delta?.myFailedTicketsDelta}
+                                iconClass="bi-x-circle-fill"
+                                loading={loading}
+                                reverseDelta={true}
+                                col={2}
+                            />
+
                             <hr className="mt-3" />
                             <div className="col-xl-6 p-4">
                                 <div className="card h-100 rounded-4 shadow text-center mb-3">
                                     <div className="card-header text-uppercase fs-3 fw-semibold">
-                                        Ticket Volume Trends
+                                        Ticket Trends Over Time
                                     </div>
                                     <div className="d-flex card-body align-items-center justify-content-center">
-                                        <CustomLineChart data={ticketVolumeTrends} />
+                                        {loading ? (
+                                            <Placeholder height="300px" />
+                                        ) : !statistics?.teamVolumeTrends?.some(
+                                              (e) =>
+                                                  e.Created > 0 &&
+                                                  e.Failed &&
+                                                  e.Reopened &&
+                                                  e.Resolved
+                                          ) ? (
+                                            <div className="text-center text-muted py-4">
+                                                <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                                <div className="fs-6">No data available</div>
+                                            </div>
+                                        ) : (
+                                            <CustomLineChart data={statistics?.teamVolumeTrends} />
+                                        )}
                                     </div>
                                 </div>
                             </div>
                             <div className="col-xl-6 p-4">
                                 <div className="card h-100 rounded-4 shadow text-center mb-3">
                                     <div className="card-header text-uppercase fs-3 fw-semibold">
-                                        Tickets by Priority
+                                        Department-Wise Resolution Time
                                     </div>
                                     <div className="d-flex card-body align-items-center justify-content-center">
-                                        <CustomBarChart
-                                            data={ticketsByPriority}
-                                            datakey={'tickets'}
-                                            display={'Priority Levels'}
-                                        />
+                                        {loading ? (
+                                            <Placeholder height="300px" />
+                                        ) : !statistics?.teamDepartmentTimes?.some(
+                                              (e) =>
+                                                  e.current_resolution_time > 0 &&
+                                                  e.previous_resolution_time
+                                          ) ? (
+                                            <div className="text-center text-muted py-4">
+                                                <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                                <div className="fs-6">No data available</div>
+                                            </div>
+                                        ) : (
+                                            <CustomBarChart
+                                                data={statistics?.teamDepartmentTimes}
+                                                datakey="resolution_time"
+                                                display="Average Resolution Time"
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             </div>

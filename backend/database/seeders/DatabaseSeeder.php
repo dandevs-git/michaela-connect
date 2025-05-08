@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('110686'),
                 'role' => 'admin',
                 'status' => 'active',
-                'department_id' => Department::find($i)->id,
+                'department_id' => Department::inRandomOrder()->first()->id ?? 1,
                 'parent_id' => $superadmin->id,
             ]);
             $admin->assignRole($roles['admin']);
@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('110686'),
                 'role' => 'manager',
                 'status' => 'active',
-                'department_id' => Department::find($i)->id,
+                'department_id' => Department::inRandomOrder()->first()->id ?? 1,
                 'parent_id' => $admin->id,
             ]);
             $manager->assignRole($roles['manager']);
@@ -90,7 +90,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('110686'),
                 'role' => 'head',
                 'status' => 'active',
-                'department_id' => Department::find($i)->id,
+                'department_id' => Department::inRandomOrder()->first()->id ?? 1,
                 'parent_id' => $manager->id,
             ]);
             $head->assignRole($roles['head']);
@@ -102,7 +102,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('110686'),
                 'role' => 'staff',
                 'status' => 'active',
-                'department_id' => Department::find($i)->id,
+                'department_id' => Department::inRandomOrder()->first()->id ?? 1,
                 'parent_id' => $head->id,
             ]);
             $staff->assignRole($roles['staff']);
@@ -118,6 +118,6 @@ class DatabaseSeeder extends Seeder
         //     echo "Batch $i inserted\n";
         // }
 
-        // Ticket::factory()->count(10000)->create();
+        Ticket::factory()->count(1000)->create();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Services\MyTicketQueryService;
 use App\Services\TeamTicketQueryService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -19,20 +20,20 @@ class StatisticsController extends Controller
         $currentMetrics = $this->calculateMetrics($currentPeriodStart, $now);
         $previousMetrics = $this->calculateMetrics($previousPeriodStart, $previousPeriodEnd);
 
-        $statusData = $this->getTicketStatusData($currentPeriodStart, $now);
-        $ticketVolume = $this->getTicketVolumeByPriority($currentPeriodStart, $now);
-        $volumeTrends = $this->getTicketVolumeTrends();
+        $teamStatusData = $this->getTicketStatusData(TeamTicketQueryService::class, $currentPeriodStart, $now);
+        $teamTicketVolume = $this->getTicketVolumeByPriority($currentPeriodStart, $now);
+        $teamVolumeTrends = $this->getTicketVolumeTrends();
 
-        $departmentTimes = $this->getDepartmentResolutionTimes($currentPeriodStart, $now, $previousPeriodStart, $previousPeriodEnd);
+        $teamDepartmentTimes = $this->getDepartmentResolutionTimes($currentPeriodStart, $now, $previousPeriodStart, $previousPeriodEnd);
 
         return response()->json([
             'current' => $currentMetrics,
             'previous' => $previousMetrics,
             'delta' => $this->calculateDeltas($currentMetrics, $previousMetrics),
-            'statusData' => $statusData,
-            'ticketVolume' => $ticketVolume,
-            'volumeTrends' => $volumeTrends,
-            'departmentTimes' => $departmentTimes,
+            'teamStatusData' => $teamStatusData,
+            'teamTicketVolume' => $teamTicketVolume,
+            'teamVolumeTrends' => $teamVolumeTrends,
+            'teamDepartmentTimes' => $teamDepartmentTimes,
         ]);
     }
 
@@ -40,27 +41,43 @@ class StatisticsController extends Controller
     {
         return [
             // Team Overview
-            'totalTickets' => TeamTicketQueryService::queryForCurrentUser()->whereBetween('created_at', [$startDate, $endDate])->count(),
-            'resolvedTickets' => TeamTicketQueryService::queryForCurrentUser()->resolved()->whereBetween('resolved_at', [$startDate, $endDate])->count(),
-            'slaCompliance' => $this->calculateSlaCompliance($startDate, $endDate),
-            'avgResolutionTime' => $this->calculateAverageResolutionTime($startDate, $endDate),
-            'avgResponseTime' => $this->calculateAverageResponseTime($startDate, $endDate),
-            'pendingApprovals' => TeamTicketQueryService::queryForCurrentUser()->pending()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'teamTotalTickets' => TeamTicketQueryService::queryForCurrentUser()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'teamResolvedTickets' => TeamTicketQueryService::queryForCurrentUser()->resolved()->whereBetween('resolved_at', [$startDate, $endDate])->count(),
+            'teamSlaCompliance' => $this->calculateSlaCompliance(TeamTicketQueryService::class, $startDate, $endDate),
+            'teamAvgResolutionTime' => $this->calculateAverageResolutionTime(TeamTicketQueryService::class, $startDate, $endDate),
+            'teamAvgResponseTime' => $this->calculateAverageResponseTime(TeamTicketQueryService::class, $startDate, $endDate),
+            'teamPendingApprovals' => TeamTicketQueryService::queryForCurrentUser()->pending()->whereBetween('created_at', [$startDate, $endDate])->count(),
 
-            // Team Reports
-
+            // My Overview
+            'myOpenTickets' => MyTicketQueryService::queryForCurrentUser()->open()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'myInProgressTickets' => MyTicketQueryService::queryForCurrentUser()->inProgress()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'myOverdueTickets' => MyTicketQueryService::queryForCurrentUser()->overdue()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'myClosedTickets' => MyTicketQueryService::queryForCurrentUser()->closed()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'mySlaCompliance' => $this->calculateSlaCompliance(MyTicketQueryService::class, $startDate, $endDate),
+            'myResolutionTime' => $this->calculateAverageResolutionTime(MyTicketQueryService::class, $startDate, $endDate),
+            'myFailedTickets' => MyTicketQueryService::queryForCurrentUser()->failed()->whereBetween('created_at', [$startDate, $endDate])->count(),
         ];
     }
 
     private function calculateDeltas($current, $previous)
     {
         return [
-            'totalTicketsDelta' => $this->calculateDelta($current['totalTickets'], $previous['totalTickets']),
-            'resolvedTicketsDelta' => $this->calculateDelta($current['resolvedTickets'], $previous['resolvedTickets']),
-            'slaComplianceDelta' => $this->calculateDelta($current['slaCompliance'], $previous['slaCompliance']),
-            'avgResolutionTimeDelta' => $this->calculateDelta($current['avgResolutionTime'], $previous['avgResolutionTime']),
-            'avgResponseTimeDelta' => $this->calculateDelta($current['avgResponseTime'], $previous['avgResponseTime']),
-            'pendingApprovalsDelta' => $this->calculateDelta($current['pendingApprovals'], $previous['pendingApprovals']),
+            // Team Overview
+            'teamTotalTicketsDelta' => $this->calculateDelta($current['teamTotalTickets'], $previous['teamTotalTickets']),
+            'teamResolvedTicketsDelta' => $this->calculateDelta($current['teamResolvedTickets'], $previous['teamResolvedTickets']),
+            'teamSlaComplianceDelta' => $this->calculateDelta($current['teamSlaCompliance'], $previous['teamSlaCompliance']),
+            'teamAvgResolutionTimeDelta' => $this->calculateDelta($current['teamAvgResolutionTime'], $previous['teamAvgResolutionTime']),
+            'teamAvgResponseTimeDelta' => $this->calculateDelta($current['teamAvgResponseTime'], $previous['teamAvgResponseTime']),
+            'teamPendingApprovalsDelta' => $this->calculateDelta($current['teamPendingApprovals'], $previous['teamPendingApprovals']),
+
+            // My Overview
+            'myOpenTicketsDelta' => $this->calculateDelta($current['myOpenTickets'], $previous['myOpenTickets']),
+            'myInProgressTicketsDelta' => $this->calculateDelta($current['myInProgressTickets'], $previous['myInProgressTickets']),
+            'myOverdueTicketsDelta' => $this->calculateDelta($current['myOverdueTickets'], $previous['myOverdueTickets']),
+            'myClosedTicketsDelta' => $this->calculateDelta($current['myClosedTickets'], $previous['myClosedTickets']),
+            'mySlaComplianceDelta' => $this->calculateDelta($current['mySlaCompliance'], $previous['mySlaCompliance']),
+            'myResolutionTimeDelta' => $this->calculateDelta($current['myResolutionTime'], $previous['myResolutionTime']),
+            'myFailedTicketsDelta' => $this->calculateDelta($current['myFailedTickets'], $previous['myFailedTickets']),
         ];
     }
 
@@ -72,23 +89,24 @@ class StatisticsController extends Controller
         return round($currentValue - $previousValue, 2);
     }
 
-    private function calculateSlaCompliance($startDate, $endDate)
+    private function calculateSlaCompliance($queryService, $startDate, $endDate)
     {
-        $resolvedOnTime = TeamTicketQueryService::queryForCurrentUser()->resolved()
+        $resolvedOnTime = $queryService::queryForCurrentUser()->resolved()
             ->whereBetween('resolved_at', [$startDate, $endDate])
             ->where('sla_breached', false)
             ->count();
 
-        $totalResolved = TeamTicketQueryService::queryForCurrentUser()->resolved()
+        $totalResolved = $queryService::queryForCurrentUser()->resolved()
             ->whereBetween('resolved_at', [$startDate, $endDate])
             ->count();
 
         return $totalResolved > 0 ? round(($resolvedOnTime / $totalResolved) * 100, 2) : 0;
     }
 
-    private function calculateAverageResolutionTime($startDate, $endDate)
+
+    private function calculateAverageResolutionTime($queryService, $startDate, $endDate)
     {
-        $resolvedTickets = TeamTicketQueryService::queryForCurrentUser()->resolved()
+        $resolvedTickets = $queryService::queryForCurrentUser()->resolved()
             ->whereBetween('resolved_at', [$startDate, $endDate])
             ->get();
 
@@ -103,9 +121,9 @@ class StatisticsController extends Controller
         return $ticketCount > 0 ? round($totalResolutionTime / $ticketCount, 2) : 0;
     }
 
-    private function calculateAverageResponseTime($startDate, $endDate)
+    private function calculateAverageResponseTime($queryService, $startDate, $endDate)
     {
-        $tickets = TeamTicketQueryService::queryForCurrentUser()->whereBetween('approved_at', [$startDate, $endDate])->get();
+        $tickets = $queryService::queryForCurrentUser()->whereBetween('approved_at', [$startDate, $endDate])->get();
 
         $totalResponseTime = $tickets->sum(function ($ticket) {
             return $ticket->created_at && $ticket->approved_at
@@ -118,7 +136,7 @@ class StatisticsController extends Controller
         return $ticketCount > 0 ? round($totalResponseTime / $ticketCount, 2) : 0;
     }
 
-    private function getTicketStatusData($startDate, $endDate)
+    private function getTicketStatusData($queryService, $startDate, $endDate)
     {
         $statusDateMap = [
             'resolved' => 'resolved_at',
@@ -126,16 +144,18 @@ class StatisticsController extends Controller
             'in_progress' => 'start_at',
             'failed' => 'failed_at',
         ];
-        return collect($statusDateMap)->map(function ($dateField, $status) use ($startDate, $endDate) {
+
+        return collect($statusDateMap)->map(function ($dateField, $status) use ($queryService, $startDate, $endDate) {
             return [
                 'name' => ucfirst(str_replace('_', ' ', $status)),
-                'value' => TeamTicketQueryService::queryForCurrentUser()
+                'value' => $queryService::queryForCurrentUser()
                     ->where('status', $status)
                     ->whereBetween($dateField, [$startDate, $endDate])
                     ->count(),
             ];
         })->values();
     }
+
 
     public function getTicketVolumeByPriority($start, $end)
     {

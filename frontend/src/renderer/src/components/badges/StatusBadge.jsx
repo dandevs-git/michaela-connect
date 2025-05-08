@@ -20,7 +20,6 @@ const statusIcons = {
     resolved: { icon: <FaCheckCircle />, class: 'bg-success' },
     reopened: { icon: <FaRedo />, class: 'bg-info' },
     failed: { icon: <FaBan />, class: 'bg-danger' },
-    closed: { icon: <FaCheckCircle />, class: 'bg-success' },
     rejected: { icon: <FaTimesCircle />, class: 'bg-danger' },
     closed: { icon: <FaDoorClosed />, class: 'bg-secondary' }
 }

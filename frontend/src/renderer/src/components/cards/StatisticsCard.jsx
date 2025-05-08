@@ -8,7 +8,8 @@ function StatisticsCard({
     unit = '',
     isTime = false,
     reverseDelta = false,
-    loading = false
+    loading = false,
+    col = 4
 }) {
     const isZero = value === null || value === undefined || value === 0
     const trend = delta === 0 ? 'secondary' : delta > 0 ? 'success' : 'danger'
@@ -81,7 +82,7 @@ function StatisticsCard({
     }
 
     return (
-        <div className="col-xl-4 h-50 p-3">
+        <div className={`col-xl-${col} h-50 p-3`}>
             <div className="card h-100 rounded-4 shadow text-center mb-3">
                 <div className="card-header text-uppercase fw-semibold">{title}</div>
                 <div className="card-body d-flex flex-column align-items-center justify-content-center">
@@ -96,7 +97,7 @@ function StatisticsCard({
                 </div>
                 <div className="card-footer border mb-0">
                     {loading ? (
-                        <Placeholder height="20px" />
+                        <Placeholder height="30px" />
                     ) : (
                         <div className="d-flex flex-column">
                             <span

@@ -65,6 +65,7 @@ class Ticket extends Model
     {
         return $this->belongsTo(Department::class, 'origin_department_id');
     }
+
     public function targetDepartment()
     {
         return $this->belongsTo(Department::class, 'target_department_id');
@@ -85,6 +86,10 @@ class Ticket extends Model
         return $query->where('status', 'new');
     }
 
+    public function scopeOpen($query)
+    {
+        return $query->where('status', 'open');
+    }
     public function scopeInProgress($query)
     {
         return $query->where('status', 'in_progress');
@@ -95,9 +100,24 @@ class Ticket extends Model
         return $query->where('status', 'resolved');
     }
 
+    public function scopeClosed($query)
+    {
+        return $query->where('status', 'closed');
+    }
+
     public function scopeFailed($query)
     {
         return $query->where('status', 'failed');
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where('status', 'rejected');
+    }
+
+    public function scopeOverdue($query)
+    {
+        return $query->where('sla_breached', true);
     }
 
     // public function getFormattedDate($value)
