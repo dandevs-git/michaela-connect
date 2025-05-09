@@ -122,6 +122,9 @@ export const APIProvider = ({ children }) => {
 
     const deleteTicket = async (ticketId) => await deleteData(`/tickets/${ticketId}`)
 
+    const requestPasswordReset = async (userData, setLoading, setError) =>
+        await postData('/forgot-password', userData, () => {}, setLoading, setError)
+
     return (
         <APIContext.Provider
             value={{
@@ -145,7 +148,9 @@ export const APIProvider = ({ children }) => {
                 showComment,
                 addComment,
                 updateComment,
-                deleteComment
+                deleteComment,
+
+                requestPasswordReset
             }}
         >
             {authLoading ? (

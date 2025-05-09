@@ -1,8 +1,8 @@
 import { useContext, useState, useEffect } from 'react'
-import logoDark from '../assets/images/logos/logo-black.png'
-import logoLight from '../assets/images/logos/logo-black.png'
-import { useAPI } from '../contexts/APIContext'
-import ThemeContext from '../contexts/ThemeContext'
+import logoDark from '../../assets/images/logos/logo-black.png'
+import logoLight from '../../assets/images/logos/logo-black.png'
+import { useAPI } from '../../contexts/APIContext'
+import ThemeContext from '../../contexts/ThemeContext'
 import { useNavigate } from 'react-router-dom'
 
 function Login() {
@@ -132,9 +132,9 @@ function Login() {
             </form>
 
             <div className="d-flex align-items-center">
-                <a href="#" className="text-decoration-none">
+                <button className="btn border-0" onClick={() => navigate('/forgot-password')}>
                     Forgot password?
-                </a>
+                </button>
             </div>
         </div>
     )

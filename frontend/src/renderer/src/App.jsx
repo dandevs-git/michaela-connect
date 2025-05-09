@@ -7,7 +7,6 @@ import AuthLayout from './layouts/AuthLayout'
 import ProfileLayout from './layouts/ProfileLayout'
 import ServiceDeskTicketLayout from './layouts/ServiceDeskTicketLayout'
 
-import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
 import ErrorPage from './pages/ErrorPage'
@@ -36,6 +35,8 @@ import NewTickets from './pages/servicedesk/mytickets/NewTickets'
 import TeamOverview from './pages/dashboard/TeamOverview'
 import TeamActivities from './pages/dashboard/TeamActivities'
 import TeamReports from './pages/dashboard/TeamReports'
+import Login from './pages/auth/Login'
+import ForgotPassword from './pages/auth/ForgotPassword'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -51,10 +52,11 @@ function App() {
 
     return (
         <Routes>
-            <Route path="/" element={<Navigate to={isAuth ? '/dashboard' : '/login'} />} />
+            <Route path="/" element={<Navigate to={isAuth ? '/dashboard' : '/login'} replace />} />
 
             <Route element={<AuthLayout />}>
                 <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
             </Route>
 
             <Route
@@ -62,7 +64,7 @@ function App() {
                     <PrivateRoute element={<MainLayout />} isAuth={isAuth} authUser={authUser} />
                 }
             >
-                <Route path="/dashboard">
+                <Route path="/ ">
                     <Route index element={<Navigate to="overview" replace />} />
                     <Route path="overview" element={<TeamOverview />} />
                     <Route path="activities" element={<TeamActivities />} />

@@ -15,60 +15,6 @@ function MyOverview() {
         getData('/statistics', setStatisticsStats, setLoading, setError)
     }, [])
 
-    const ticketVolumeTrends = [
-        {
-            name: 'January',
-            Created: 5375,
-            Resolved: 5443,
-            Failed: 1234
-        },
-        {
-            name: 'February',
-            Created: 3577,
-            Resolved: 5643,
-            Failed: 2573
-        },
-        {
-            name: 'March',
-            Created: 4854,
-            Resolved: 2514,
-            Failed: 3625
-        },
-        {
-            name: 'April',
-            Created: 5274,
-            Resolved: 1885,
-            Failed: 1747
-        },
-        {
-            name: 'May',
-            Created: 2838,
-            Resolved: 2738,
-            Failed: 3747
-        }
-    ]
-
-    const ticketsByPriority = [
-        {
-            name: 'Low',
-            tickets: 4000
-        },
-        {
-            name: 'Medium',
-            tickets: 3000
-        },
-        {
-            name: 'High',
-            tickets: 2000
-        },
-        {
-            name: 'Urgent',
-            tickets: 2780
-        }
-    ]
-
-    console.log(statistics)
-
     return (
         <>
             <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
