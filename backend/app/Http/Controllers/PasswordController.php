@@ -55,7 +55,7 @@ class PasswordController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'token' => 'required',
+            'token' => 'required|exists:password_reset_tokens,token',
             'password' => 'required|min:8|confirmed',
         ]);
 
@@ -97,10 +97,6 @@ class PasswordController extends Controller
         }
     }
 
-
-    /**
-     * Admin resets password for a user
-     */
     public function adminResetPassword(Request $request, $id)
     {
         $request->validate([

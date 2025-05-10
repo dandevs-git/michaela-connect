@@ -78,7 +78,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/{id}/subordinates', [UserController::class, 'getUserSubordinates']);
     Route::get('/users/{id}/supervisor', [UserController::class, 'getUserSupervisor']);
     Route::patch('/users/{id}/lock', [UserController::class, 'lockUnlockUser'])->name('users.lock');
-    Route::post('/admin-reset-password/{id}', [PasswordController::class, 'adminResetPassword'])->name('password.adminReset');
+    Route::patch('/users/{id}/reset-password', [PasswordController::class, 'adminResetPassword'])->name('password.adminReset');
     // });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');

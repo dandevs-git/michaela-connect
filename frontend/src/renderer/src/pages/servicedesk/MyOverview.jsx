@@ -24,7 +24,7 @@ function MyOverview() {
                 <div className="row card-body">
                     <div className="col-xl-12 m-0 p-4">
                         <div className="row bg-light-subtle border m-0 p-3 rounded-4 shadow">
-                            <div className="col-xl-3 d-flex flex-column p-3 my-auto">
+                            <div className="col-xl-12 d-flex flex-column p-3 my-auto">
                                 <h2>
                                     My Tickets
                                     <i className="text-success bi bi-ticket-detailed-fill ms-2"></i>
@@ -37,7 +37,6 @@ function MyOverview() {
                                 delta={statistics.delta?.myOpenTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
-                                col={3}
                             />
                             <StatisticsCard
                                 title="In Progress Tickets"
@@ -45,7 +44,6 @@ function MyOverview() {
                                 delta={statistics.delta?.myInProgressTicketsDelta}
                                 iconClass="bi-hourglass-split"
                                 loading={loading}
-                                col={3}
                             />
                             <StatisticsCard
                                 title="Overdue Tickets"
@@ -54,11 +52,10 @@ function MyOverview() {
                                 iconClass="bi-exclamation-triangle-fill"
                                 loading={loading}
                                 reverseDelta={true}
-                                col={3}
                             />
 
                             <hr className="mt-3" />
-                            <div className="col-xl-3 d-flex flex-column p-3 my-auto">
+                            <div className="col-xl-12 d-flex flex-column p-3 my-auto">
                                 <h2>
                                     My Performance <i className="text-warning bi bi-stars ms-2"></i>
                                 </h2>
@@ -79,7 +76,7 @@ function MyOverview() {
                                 iconClass="bi-shield-check"
                                 unit="%"
                                 loading={loading}
-                                col={2}
+                                col={3}
                             />
                             <StatisticsCard
                                 title="Resolution Time"
@@ -89,7 +86,7 @@ function MyOverview() {
                                 loading={loading}
                                 isTime={true}
                                 reverseDelta={true}
-                                col={2}
+                                col={3}
                             />
                             <StatisticsCard
                                 title="Failed Tickets"
@@ -98,7 +95,7 @@ function MyOverview() {
                                 iconClass="bi-x-circle-fill"
                                 loading={loading}
                                 reverseDelta={true}
-                                col={2}
+                                col={3}
                             />
 
                             <hr className="mt-3" />

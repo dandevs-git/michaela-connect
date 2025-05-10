@@ -104,7 +104,7 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
             </button>
 
             <div
-                className="modal fade"
+                className="modal modal-lg fade"
                 id={id}
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"

@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAPI } from './contexts/APIContext'
-import { useEffect } from 'react'
+// import { useEffect } from 'react'
 
 import MainLayout from './layouts/MainLayout'
 import AuthLayout from './layouts/AuthLayout'
@@ -9,7 +9,7 @@ import ServiceDeskTicketLayout from './layouts/ServiceDeskTicketLayout'
 
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
-import ErrorPage from './pages/ErrorPage'
+// import ErrorPage from './pages/ErrorPage'
 
 import OpenTickets from './pages/servicedesk/mytickets/OpenTickets'
 import InProgressTickets from './pages/servicedesk/mytickets/InProgressTickets'
@@ -37,6 +37,7 @@ import TeamActivities from './pages/dashboard/TeamActivities'
 import TeamReports from './pages/dashboard/TeamReports'
 import Login from './pages/auth/Login'
 import ForgotPassword from './pages/auth/ForgotPassword'
+import ResetPassword from './pages/auth/ResetPassword'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -52,11 +53,12 @@ function App() {
 
     return (
         <Routes>
-            <Route path="/" element={<Navigate to={isAuth ? '/dashboard' : '/login'} replace />} />
+            <Route path="/" element={<Navigate to={isAuth ? '/dashboard' : '/login'} />} />
 
             <Route element={<AuthLayout />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
             </Route>
 
             <Route
@@ -64,7 +66,7 @@ function App() {
                     <PrivateRoute element={<MainLayout />} isAuth={isAuth} authUser={authUser} />
                 }
             >
-                <Route path="/ ">
+                <Route path="/dashboard">
                     <Route index element={<Navigate to="overview" replace />} />
                     <Route path="overview" element={<TeamOverview />} />
                     <Route path="activities" element={<TeamActivities />} />
@@ -114,10 +116,10 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
             </Route>
 
-            <Route path="/403" element={<ErrorPage errorCode={403} />} />
+            {/* <Route path="/403" element={<ErrorPage errorCode={403} />} />
             <Route path="/404" element={<ErrorPage errorCode={404} />} />
             <Route path="/500" element={<ErrorPage errorCode={500} />} />
-            <Route path="*" element={<Navigate to="/404" />} />
+            <Route path="*" element={<Navigate to="/404" />} /> */}
         </Routes>
     )
 }

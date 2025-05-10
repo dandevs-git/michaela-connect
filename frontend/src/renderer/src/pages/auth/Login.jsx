@@ -13,6 +13,7 @@ function Login() {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
     const [rememberMe, setRememberMe] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
     const navigate = useNavigate()
 
@@ -22,6 +23,10 @@ function Login() {
         if (storedUsername) setUsername(storedUsername)
         if (storedPassword) setPassword(storedPassword)
     }, [])
+
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev)
+    }
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -79,7 +84,6 @@ function Login() {
                         autoComplete="username"
                         aria-label="Enter your username"
                     />
-                    <div className="invalid-feedback">Enter username</div>
                 </div>
 
                 <div className="mb-3">
@@ -90,13 +94,10 @@ function Login() {
                         type="password"
                         className="form-control"
                         id="password"
+                        required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
-                        autoComplete="current-password"
-                        aria-label="Enter your password"
                     />
-                    <div className="invalid-feedback">Enter password</div>
                 </div>
 
                 <div className="mb-3 form-check">

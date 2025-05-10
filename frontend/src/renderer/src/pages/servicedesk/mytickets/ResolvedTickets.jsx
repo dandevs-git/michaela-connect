@@ -7,9 +7,11 @@ import AddTicketModal from '../../../components/modals/AddTicketModal'
 import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
+import { useToast } from '../../../contexts/ToastContext'
 
 function ResolvedTickets() {
     const { postData, getData } = useAPI()
+    const { showToast } = useToast()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)

@@ -15,8 +15,8 @@ const pages = [
         icon: <FaChartLine />,
         subPages: [
             { name: 'Team Overview', link: '/dashboard/overview' },
-            { name: 'Team Activities', link: '/dashboard/activities' },
-            { name: 'Team Reports', link: '/dashboard/reports' }
+            { name: 'Team Activities', link: '/dashboard/activities' }
+            // { name: 'Team Reports', link: '/dashboard/reports' }
         ],
         permission: 'view dashboard'
     },
@@ -26,8 +26,8 @@ const pages = [
         icon: <FaTicketAlt />,
         subPages: [
             { name: 'My Overview', link: '/servicedesk/overview' },
-            { name: 'My Tickets', link: '/servicedesk/tickets' },
-            { name: 'My Reports', link: '/servicedesk/reports' }
+            { name: 'My Tickets', link: '/servicedesk/tickets' }
+            // { name: 'My Reports', link: '/servicedesk/reports' }
         ],
         permission: 'access service desk'
     },

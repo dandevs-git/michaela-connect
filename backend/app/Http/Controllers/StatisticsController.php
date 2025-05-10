@@ -47,6 +47,7 @@ class StatisticsController extends Controller
             'teamAvgResolutionTime' => $this->calculateAverageResolutionTime(TeamTicketQueryService::class, $startDate, $endDate),
             'teamAvgResponseTime' => $this->calculateAverageResponseTime(TeamTicketQueryService::class, $startDate, $endDate),
             'teamPendingApprovals' => TeamTicketQueryService::queryForCurrentUser()->pending()->whereBetween('created_at', [$startDate, $endDate])->count(),
+            'teamTotalClosedTickets' => TeamTicketQueryService::queryForCurrentUser()->closed()->whereBetween('created_at', [$startDate, $endDate])->count(),
 
             // My Overview
             'myOpenTickets' => MyTicketQueryService::queryForCurrentUser()->open()->whereBetween('created_at', [$startDate, $endDate])->count(),

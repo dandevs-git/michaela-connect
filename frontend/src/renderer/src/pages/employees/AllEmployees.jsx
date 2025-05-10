@@ -1,24 +1,72 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
+import { FaEdit, FaEye, FaLock, FaSyncAlt, FaTrash, FaUnlock } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddEmployeeModal from '../../components/modals/AddEmployeeModal'
+import EmployeeDetailsModal from '../../components/modals/EmployeeDetailsModal'
+import { useToast } from '../../contexts/ToastContext'
+import ConfirmationModal from '../../components/modals/ConfirmationModal'
 
 function AllEmployees() {
-    const { getData } = useAPI()
+    const { patchData, getData } = useAPI()
+    const { showToast } = useToast()
     const [employees, setEmployees] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
+    const [selectedEmployee, setSelectedEmployee] = useState(null)
 
     useEffect(() => {
-        getData('/users', setEmployees, setLoading)
+        getData('/users', setEmployees, setLoading, setError)
     }, [])
+
+    const handleView = (employee) => {
+        setSelectedEmployee(employee)
+    }
+
+    const handleLockUnlockUser = (employee) => {
+        patchData(
+            `/users/${employee?.id}/lock`,
+            () => {},
+            () => {},
+            () => {},
+            setError
+        )
+
+        getData('/users', setEmployees, setLoading, setError)
+
+        showToast({
+            message:
+                error.message ||
+                `Employee ${employee.status === 'active' ? 'Locked' : 'Unlock'} successfully!`,
+            title: error.message ? 'Failed' : 'Success',
+            isPositive: error.message ? false : true,
+            delay: 5000
+        })
+    }
+
+    const handleResetPassword = (employee) => {
+        patchData(
+            `/users/${employee.id}/reset-password`,
+            () => {},
+            () => {},
+            () => {},
+            setError
+        )
+
+        getData('/users', setEmployees, setLoading, setError)
+
+        showToast({
+            message: error.message || `Employee Password Reset successfully!`,
+            title: error.message ? 'Failed' : 'Success',
+            isPositive: error.message ? false : true,
+            delay: 5000
+        })
+    }
 
     const columns = [
         { header: 'No.', accessorKey: 'id' },
-        // { header: 'RFID', accessorKey: 'rfid' },
         { header: 'Picture', accessorKey: 'profile_picture' },
         { header: 'Name', accessorKey: 'name' },
-        // { header: 'Email', accessorKey: 'email' },
         { header: 'Department', accessorKey: 'department.name' },
         { header: 'Role', accessorKey: 'role' },
         { header: 'Status', accessorKey: 'status' },
@@ -26,16 +74,58 @@ function AllEmployees() {
             header: 'Actions',
             accessorKey: 'action',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-info btn-sm">
-                        <FaEye /> View
+                <div className="dropdown">
+                    <button
+                        className="btn border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
+                    >
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#employeeDetailsModal"
+                                onClick={() => handleView(row.original)}
+                            >
+                                <FaEye /> View
+                            </button>
+                        </li>
+
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#lockUnlockUserConfirmModal"
+                                onClick={() => setSelectedEmployee(row.original)}
+                            >
+                                {row.original?.status === 'active' ? (
+                                    <>
+                                        <FaLock /> Lock
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaUnlock /> Unlock
+                                    </>
+                                )}
+                            </button>
+                        </li>
+
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#resetPasswordConfirmModal"
+                                onClick={() => setSelectedEmployee(row.original)}
+                            >
+                                <FaSyncAlt /> Reset Password
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }
@@ -56,6 +146,32 @@ function AllEmployees() {
                     />
                 </div>
             </div>
+
+            <EmployeeDetailsModal id="employeeDetailsModal" employee={selectedEmployee} />
+
+            <ConfirmationModal
+                id="lockUnlockUserConfirmModal"
+                title={`${selectedEmployee?.status === 'active' ? 'Lock' : 'Unlock'} Employee`}
+                message={`Are you sure you want to ${selectedEmployee?.status === 'active' ? 'Lock' : 'Unlock'} Employee ${selectedEmployee?.name} ?`}
+                confirmLabel={selectedEmployee?.status === 'active' ? 'Lock' : 'Unlock'}
+                confirmClass={
+                    selectedEmployee?.status === 'active'
+                        ? 'btn-danger text-light'
+                        : 'btn-success text-light'
+                }
+                cancelLabel="Cancel"
+                onConfirm={() => handleLockUnlockUser(selectedEmployee)}
+            />
+
+            <ConfirmationModal
+                id="resetPasswordConfirmModal"
+                title={`Force Reset Password`}
+                message={`Are you sure you want to Reset Password?`}
+                confirmLabel={'Reset Password'}
+                confirmClass={`btn-danger text-light`}
+                cancelLabel="Cancel"
+                onConfirm={() => handleResetPassword(selectedEmployee)}
+            />
         </div>
     )
 }

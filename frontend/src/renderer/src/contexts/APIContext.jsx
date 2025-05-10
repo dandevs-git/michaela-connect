@@ -58,6 +58,9 @@ export const APIProvider = ({ children }) => {
     const putData = (endpoint, data, setData, setLoading, setError) =>
         makeRequest('put', endpoint, data, setLoading, setData, setError)
 
+    const patchData = (endpoint, data, setData, setLoading, setError) =>
+        makeRequest('patch', endpoint, data, setLoading, setData, setError)
+
     const deleteData = (endpoint, setLoading, setError) =>
         makeRequest('delete', endpoint, null, setLoading, null, setError)
 
@@ -122,8 +125,11 @@ export const APIProvider = ({ children }) => {
 
     const deleteTicket = async (ticketId) => await deleteData(`/tickets/${ticketId}`)
 
-    const requestPasswordReset = async (userData, setLoading, setError) =>
-        await postData('/forgot-password', userData, () => {}, setLoading, setError)
+    const requestPasswordReset = async (data, setLoading, setError) =>
+        await postData('/forgot-password', data, () => {}, setLoading, setError)
+
+    const passwordReset = async (data, setLoading, setError) =>
+        await postData('/reset-password', data, () => {}, setLoading, setError)
 
     return (
         <APIContext.Provider
@@ -137,6 +143,7 @@ export const APIProvider = ({ children }) => {
                 getData,
                 postData,
                 putData,
+                patchData,
                 deleteData,
 
                 addTicket,
@@ -150,7 +157,8 @@ export const APIProvider = ({ children }) => {
                 updateComment,
                 deleteComment,
 
-                requestPasswordReset
+                requestPasswordReset,
+                passwordReset
             }}
         >
             {authLoading ? (
