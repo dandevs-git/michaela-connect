@@ -7,34 +7,12 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
     const { postData, getData } = useAPI()
-
+    const { showToast } = useToast()
     const navigate = useNavigate()
     const location = useLocation()
 
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState('')
-    const [message, setMessage] = useState('')
-    const [departments, setDepartments] = useState([])
-    const [priorities, setPriorities] = useState([])
-    const { showToast } = useToast()
-
-    const titleRef = useRef(null)
     const modalRef = useRef(null)
-
-    useEffect(() => {
-        const modalEl = modalRef.current
-        if (!modalEl) return
-
-        const handleShown = () => {
-            titleRef.current?.focus()
-        }
-
-        modalEl.addEventListener('shown.bs.modal', handleShown)
-
-        return () => {
-            modalEl.removeEventListener('shown.bs.modal', handleShown)
-        }
-    }, [])
+    const titleRef = useRef(null)
 
     const [ticketData, setTicketData] = useState({
         title: '',
@@ -42,6 +20,25 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
         priority_id: '',
         department_id: ''
     })
+
+    const [departments, setDepartments] = useState([])
+    const [priorities, setPriorities] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
+    const [message, setMessage] = useState('')
+
+    useEffect(() => {
+        getData('/departments', setDepartments, () => {}, setError)
+        getData('/priorities', setPriorities, () => {}, setError)
+    }, [])
+
+    useEffect(() => {
+        const modalEl = modalRef.current
+        if (!modalEl) return
+        const handleShown = () => titleRef.current?.focus()
+        modalEl.addEventListener('shown.bs.modal', handleShown)
+        return () => modalEl.removeEventListener('shown.bs.modal', handleShown)
+    }, [])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -60,55 +57,51 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
         document.querySelector('.needs-validation')?.classList.remove('was-validated')
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         const form = e.target
+        form.classList.remove('was-validated')
         setMessage('')
         setError('')
-        form.classList.remove('was-validated')
 
         if (!form.checkValidity()) {
             form.classList.add('was-validated')
             return
         }
 
-        try {
-            await postData('/tickets', ticketData, setTicketData, setLoading, setError)
-            Modal.getInstance(modalRef.current).hide()
-            resetForm()
-            showToast({
-                message: 'Ticket submitted successfully!',
-                title: 'Success',
-                isPositive: true,
-                delay: 5000
-            })
-            if (location.pathname == '/servicedesk/tickets/all')
-                getData('/tickets', resetTickets, resetLoading, resetError)
-            else navigate('/servicedesk/tickets/all')
-        } catch {}
+        postData('/tickets', ticketData, setTicketData, setLoading, setError)
+        Modal.getInstance(modalRef.current).hide()
+        resetForm()
+        showToast({
+            message: 'Ticket submitted successfully!',
+            title: 'Success',
+            isPositive: true,
+            delay: 5000
+        })
+        if (location.pathname === '/servicedesk/tickets/all') {
+            getData('/tickets', resetTickets, resetLoading, resetError)
+        } else {
+            navigate('/servicedesk/tickets/all')
+        }
     }
-
-    useEffect(() => {
-        getData('/departments', setDepartments, setLoading, setError)
-        getData('/priorities', setPriorities, setLoading, setError)
-    }, [])
 
     return (
         <>
             <button
                 className="btn btn-primary text-nowrap border me-4"
                 data-bs-toggle="modal"
-                data-bs-target="#AddTicketModal"
+                data-bs-target={`#${id}`}
             >
-                <FaPlus /> New Ticket
+                <FaPlus className="me-1" />
+                New Ticket
             </button>
 
             <div
                 className="modal modal-lg fade"
                 id={id}
+                tabIndex="-1"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
-                tabIndex="-1"
                 ref={modalRef}
             >
                 <div className="modal-dialog modal-dialog-centered">
@@ -133,9 +126,7 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
                             >
                                 {(message || error) && (
                                     <div
-                                        className={`alert text-center py-2 ${
-                                            error ? 'alert-danger' : 'alert-success'
-                                        }`}
+                                        className={`alert text-center py-2 ${error ? 'alert-danger' : 'alert-success'}`}
                                     >
                                         {error || message}
                                     </div>
@@ -155,9 +146,7 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
                                         ref={titleRef}
                                         required
                                     />
-                                    <div className="invalid-feedback">
-                                        PleaddTicketModalase enter a title.
-                                    </div>
+                                    <div className="invalid-feedback">Please enter a title.</div>
                                 </div>
 
                                 <div className="col-md-6">
@@ -220,7 +209,7 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
                                         className="form-control"
                                         id="ticketDescription"
                                         name="description"
-                                        rows="6"
+                                        rows="5"
                                         value={ticketData.description}
                                         onChange={handleInputChange}
                                         required

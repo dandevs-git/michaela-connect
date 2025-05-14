@@ -22,7 +22,7 @@ class TeamTicketQueryService
         ]);
 
         if ($user->can('view all tickets')) {
-        } elseif ($user->can('view department tickets')) {
+        } elseif ($user->can(abilities: 'view managed department tickets')) {
             $managedDeptIds = Department::where('id', $user->department_id)
                 ->orWhere('parent_id', $user->department_id)
                 ->pluck('id')
@@ -37,18 +37,8 @@ class TeamTicketQueryService
                 $q->where('origin_department_id', $user->department_id)
                     ->orWhere('target_department_id', $user->department_id);
             });
-        } else {
-            abort(403, 'Unauthorized');
         }
 
         return $query->orderBy('created_at', 'desc');
     }
 }
-
-
-// elseif ($user->can('view own tickets')) {
-//             $query->where(function ($q) use ($user) {
-//                 $q->where('requester_id', $user->id)
-//                     ->orWhere('assigned_to', $user->id);
-//             });
-//         }

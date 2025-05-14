@@ -42,7 +42,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'rfid' => 'required|string|unique:users,rfid|max:20',
             'name' => 'required|string|max:255',
-            'role' => ['required', Rule::in(['staff', 'head', 'manager', 'admin'])],
+            'role' => 'required|string|max:255',
             'department_id' => 'required|exists:departments,id',
         ]);
 

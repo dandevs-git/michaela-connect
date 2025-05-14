@@ -20,8 +20,7 @@ return new class extends Migration {
             $table->string('password');
             $table->string('role');
             $table->enum('status', ['active', 'inactive', 'suspended', 'locked'])->default('active');
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
-            $table->foreignId('parent_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('cascade');
             $table->integer('failed_attempts')->default(0);
             $table->rememberToken();
             $table->softDeletes();

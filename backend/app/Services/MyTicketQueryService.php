@@ -20,16 +20,11 @@ class MyTicketQueryService
             'comments.user:id,name',
         ]);
 
-        if ($user->can('view own tickets')) {
-            $query->where(function ($q) use ($user) {
-                $q->where('requester_id', $user->id)
-                    ->orWhere('assigned_to', $user->id);
-            });
-        }
+        $query->where(function ($q) use ($user) {
+            $q->where('requester_id', $user->id)
+                ->orWhere('assigned_to', $user->id);
+        });
 
         return $query->orderBy('created_at', 'desc');
     }
 }
-
-
-// else

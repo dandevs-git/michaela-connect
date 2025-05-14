@@ -170,7 +170,7 @@ function SideNavigation() {
             </div>
             <div className="bg-primary border text-center text-white mt-auto small flex-column d-flex">
                 <strong className="text-uppercase border-bottom p-1">
-                    {authUser?.department?.name || 'User'} {authUser?.role?.name || 'User'}
+                    {authUser?.department?.name || ''} {authUser?.role?.name || ''}
                 </strong>
                 <span className="p-2">&copy; 2025 Goldnines</span>
             </div>

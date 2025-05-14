@@ -23,7 +23,6 @@ class User extends Authenticatable
         'role',
         'status',
         'department_id',
-        'parent_id',
         'failed_attempts',
     ];
 
@@ -41,28 +40,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class);
     }
-
-    public function parent()
-    {
-        return $this->belongsTo(User::class, 'parent_id');
-    }
-
-    public function supervisor()
-    {
-        return $this->parent();
-    }
-
-    public function children()
-    {
-        return $this->hasMany(User::class, 'parent_id');
-    }
-
-    public function subordinates()
-    {
-        return $this->children()->with('subordinates');
-    }
-
-
 }
 
 

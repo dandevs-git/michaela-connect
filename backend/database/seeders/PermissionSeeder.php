@@ -13,6 +13,9 @@ class PermissionSeeder extends Seeder
         $rolePermissions = [
             'superadmin' => [],
             'admin' => [
+                // Role-based Viewing
+                'view all tickets', // Fix 
+
                 // User Management
                 'manage users',
                 'manage roles',
@@ -24,8 +27,6 @@ class PermissionSeeder extends Seeder
                 'update tickets',
                 'delete tickets',
 
-                // Role-based Viewing
-                'view all tickets',
 
                 // Ticket Actions
                 'assign tickets',
@@ -85,7 +86,8 @@ class PermissionSeeder extends Seeder
             ],
 
             'manager' => [
-                'view department tickets',
+                'view managed department tickets', // Fix
+
                 'assign tickets',
                 'comment on tickets',
                 'view SLA reports',
@@ -110,7 +112,7 @@ class PermissionSeeder extends Seeder
             ],
 
             'head' => [
-                'view own department tickets',
+                'view own department tickets', // Fix 
                 'approve tickets',
                 'comment on tickets',
                 'view ticket comments',
@@ -134,9 +136,9 @@ class PermissionSeeder extends Seeder
             ],
 
             'staff' => [
+                'view own department tickets', // Fix 
+
                 'create tickets',
-                'view own department tickets',
-                // 'view own tickets',
                 'comment on tickets',
                 'upload attachments',
                 'view attachments',

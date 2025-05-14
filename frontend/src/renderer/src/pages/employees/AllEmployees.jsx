@@ -67,7 +67,13 @@ function AllEmployees() {
         { header: 'No.', accessorKey: 'id' },
         { header: 'Picture', accessorKey: 'profile_picture' },
         { header: 'Name', accessorKey: 'name' },
-        { header: 'Department', accessorKey: 'department.name' },
+        {
+            header: 'Department',
+            accessorKey: 'department.name',
+            cell: ({ row }) => {
+                return row.original.department ? row.original.department.name : 'N/A'
+            }
+        },
         { header: 'Role', accessorKey: 'role' },
         { header: 'Status', accessorKey: 'status' },
         {

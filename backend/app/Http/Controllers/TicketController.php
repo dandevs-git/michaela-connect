@@ -3,61 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
-use App\Models\Department;
 use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use App\Models\User;
+use App\Services\MyTicketQueryService;
 use App\Services\TeamTicketQueryService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use function Laravel\Prompts\alert;
 
 class TicketController extends Controller
 {
     public function index(Request $request)
     {
         $user = Auth::user();
-        $query = TeamTicketQueryService::queryForCurrentUser();
+        $query = MyTicketQueryService::queryForCurrentUser();
 
-        if ($request->filled('status')) {
-            $status = $request->query('status');
-            $query->where('status', $status);
+        // if ($request->filled('status')) {
+        //     $status = $request->query('status');
+        //     $query->where('status', $status);
 
-            if (!$user->hasRole(['admin', 'superadmin'])) {
-                if ($status === 'pending') {
-                    $query->where('origin_department_id', auth()->user()->department_id);
-                } elseif ($status === 'new') {
-                    $query->where('target_department_id', auth()->user()->department_id);
-                } elseif ($status === 'open') {
-                    $query->where('target_department_id', auth()->user()->department_id);
-                } elseif ($status === 'in_progress') {
-                    $query->where('target_department_id', auth()->user()->department_id);
-                } elseif ($status === 'resolved') {
-                    $query->where('origin_department_id', auth()->user()->department_id);
-                } elseif ($status === 'rejected') {
-                    $query->where('origin_department_id', auth()->user()->department_id);
-                }
-            }
-        }
+        //     if (!$user->hasRole(['admin', 'superadmin'])) {
+        //         if ($status === 'pending') {
+        //             $query->where('origin_department_id', $user->department_id);
+        //         } elseif ($status === 'new') {
+        //             $query->where('target_department_id', $user->department_id);
+        //         } elseif ($status === 'open') {
+        //             $query->where('target_department_id', $user->department_id);
+        //         } elseif ($status === 'in_progress') {
+        //             $query->where('target_department_id', $user->department_id);
+        //         } elseif ($status === 'resolved') {
+        //             $query->where('origin_department_id', $user->department_id);
+        //         } elseif ($status === 'rejected') {
+        //             $query->where('origin_department_id', $user->department_id);
+        //         }
+        //     }
+        // }
 
-        if ($request->filled('priority')) {
-            $query->where('priority_id', $request->query('priority'));
-        }
+        // if ($request->filled('priority')) {
+        //     $query->where('priority_id', $request->query('priority'));
+        // }
 
-        if ($request->filled('search')) {
-            $term = '%' . $request->query('search') . '%';
-            $query->where(function ($subQuery) use ($term) {
-                $subQuery->where('title', 'like', $term)
-                    ->orWhere('description', 'like', $term);
-            });
-        }
+        // if ($request->filled('search')) {
+        //     $term = '%' . $request->query('search') . '%';
+        //     $query->where(function ($subQuery) use ($term) {
+        //         $subQuery->where('title', 'like', $term)
+        //             ->orWhere('description', 'like', $term);
+        //     });
+        // }
 
-        $tickets = $query->get();
+        // $tickets = $query->get();
 
-        return response()->json($tickets, 200);
+        // return response()->json($tickets, 200);
+        return response()->json($query->get(), 200);
     }
 
 
@@ -119,7 +118,7 @@ class TicketController extends Controller
             'status' => 'sometimes|in:pending,in_progress,resolved,failed,reopened,closed',
         ]);
 
-        $ticket->update($request->only(['title', 'description', 'priority', 'assigned_to', 'status']));
+        $ticket->update($request->only(['title', 'description', 'priority_id', 'assigned_to', 'status']));
 
         $this->logActivity("Update Ticket", "Ticket #{$ticket->id} updated");
 

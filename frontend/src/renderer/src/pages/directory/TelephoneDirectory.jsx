@@ -3,6 +3,7 @@ import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddTelephoneModal from '../../components/modals/AddTelephoneModal'
+import TelephoneDetailsModal from '../../components/modals/TelephoneDetailsModal'
 
 function TelephoneDirectory() {
     const { getData } = useAPI()
@@ -14,7 +15,7 @@ function TelephoneDirectory() {
         getData('/telephones', setTelephones, setLoading)
     }, [])
 
-    const handleShowModal = (telephone) => {
+    const handleView = (telephone) => {
         setSelectedTelephone(telephone)
     }
 
@@ -28,16 +29,28 @@ function TelephoneDirectory() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-info btn-sm">
-                        <FaEye /> View
+                <div className="dropdown">
+                    <button
+                        className="btn border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
+                    >
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#telephoneDetailsModal"
+                                onClick={() => handleView(row.original)}
+                            >
+                                <FaEye /> View
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }
@@ -68,45 +81,7 @@ function TelephoneDirectory() {
                 </div>
             </div>
 
-            <div className="modal fade" id="employeesModal" tabIndex="-1">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">
-                                Employees for {selectedTelephone?.telephone_number}
-                            </h5>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            ></button>
-                        </div>
-                        <div className="modal-body text-center p-3">
-                            {selectedTelephone?.users?.length > 0 ? (
-                                <ul className="list-group">
-                                    {selectedTelephone.users.map((perm) => (
-                                        <li key={perm.id} className="list-group-item">
-                                            {perm.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-muted">No employees assigned.</p>
-                            )}
-                        </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-danger"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <TelephoneDetailsModal id="telephoneDetailsModal" telephone={selectedTelephone} />
         </>
     )
 }

@@ -23,13 +23,7 @@ function Department() {
         {
             header: 'Parent Department',
             accessorKey: 'parent.name',
-            cell: ({ row }) => {
-                return row.original.parent?.name ? (
-                    row.original.parent?.name
-                ) : (
-                    <span className="text-danger">Main Department</span>
-                )
-            }
+            cell: ({ row }) => row.original?.parent?.name || 'N/A'
         },
         {
             header: 'Actions',
@@ -51,7 +45,11 @@ function Department() {
     ]
     const mainDepartmentColumns = [
         { header: 'No.', accessorKey: 'id' },
-        { header: 'Departments', accessorKey: 'name' },
+        {
+            header: 'Departments',
+            accessorKey: 'name',
+            cell: ({ row }) => row.original?.name || 'N/A'
+        },
         {
             header: 'Actions',
             accessorKey: 'actions',
