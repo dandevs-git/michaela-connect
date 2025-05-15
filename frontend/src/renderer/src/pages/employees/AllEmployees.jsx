@@ -65,7 +65,34 @@ function AllEmployees() {
 
     const columns = [
         { header: 'No.', accessorKey: 'id' },
-        { header: 'Picture', accessorKey: 'profile_picture' },
+        {
+            header: 'Picture',
+            accessorKey: 'profile_picture',
+            cell: ({ row }) => {
+                const profilePicture = row.original.profile_picture
+
+                if (profilePicture) {
+                    return (
+                        <img
+                            src={profilePicture}
+                            alt="Profile"
+                            width={50}
+                            className="rounded-circle object-cover"
+                        />
+                    )
+                } else {
+                    return (
+                        <div
+                            className="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                            style={{ width: '50px', height: '50px', fontSize: '1rem' }}
+                        >
+                            <span>{row.original.name?.[0] || '?'}</span>
+                        </div>
+                    )
+                }
+            }
+        },
+
         { header: 'Name', accessorKey: 'name' },
         {
             header: 'Department',

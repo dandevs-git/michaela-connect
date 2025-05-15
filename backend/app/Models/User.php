@@ -40,6 +40,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function role()
+    {
+        return $this->roles()->first(); // Kapag isa lang ang role per user
+    }
 }
 
 

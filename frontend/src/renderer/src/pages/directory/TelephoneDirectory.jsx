@@ -21,6 +21,7 @@ function TelephoneDirectory() {
 
     const columns = [
         { header: 'No.', accessorKey: 'id' },
+        { header: 'User', accessorKey: 'user' },
         { header: 'Telephone Number', accessorKey: 'number' },
         { header: 'Cable Code', accessorKey: 'cable_code' },
         { header: 'Location', accessorKey: 'location' },
@@ -56,12 +57,6 @@ function TelephoneDirectory() {
         }
     ]
 
-    const topContent = (
-        <button className="btn btn-primary me-4">
-            <FaPlus /> Add Telephone
-        </button>
-    )
-
     return (
         <>
             <div className="card shadow w-100">
@@ -73,7 +68,6 @@ function TelephoneDirectory() {
                         <CustomTable
                             topComponent={<AddTelephoneModal />}
                             isloading={loading}
-                            topContent={topContent}
                             columns={columns}
                             data={telephones}
                         />

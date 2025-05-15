@@ -25,4 +25,9 @@ class Department extends Model
     {
         return $this->hasMany(Department::class, 'parent_id');
     }
+
+    public function hasChildren(): bool
+    {
+        return $this->children()->exists();
+    }
 }

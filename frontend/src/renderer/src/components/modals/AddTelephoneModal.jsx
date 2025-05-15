@@ -3,24 +3,37 @@ import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
 import { useToast } from '../../contexts/ToastContext'
+import Select from 'react-select'
+import { COLORS, selectStyles } from '../../constants/config'
 
 function AddTelephoneModal() {
-    const { postData } = useAPI()
+    const { postData, getData } = useAPI()
     const { showToast } = useToast()
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [formErrors, setFormErrors] = useState({})
     const [message, setMessage] = useState('')
 
-    const rfidRef = useRef(null)
     const modalRef = useRef(null)
 
+    const [users, setUsers] = useState([])
     const [telephoneData, setTelephoneData] = useState({
+        user: '',
         number: '',
         cable_code: '',
         location: '',
         description: ''
     })
+
+    const userOptions = users.map((user) => ({
+        value: user.name,
+        label: user.name
+    }))
+
+    useEffect(() => {
+        getData('/users', setUsers, setLoading, setError)
+    }, [getData])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -29,6 +42,7 @@ function AddTelephoneModal() {
 
     const resetForm = () => {
         setTelephoneData({
+            user: '',
             number: '',
             cable_code: '',
             location: '',
@@ -36,44 +50,46 @@ function AddTelephoneModal() {
         })
         setMessage('')
         setError('')
+        setFormErrors({})
         document.querySelector('.needs-validation')?.classList.remove('was-validated')
     }
 
     useEffect(() => {
         const modalEl = modalRef.current
         if (!modalEl) return
-
-        const handleShown = () => {
-            rfidRef.current?.focus()
-        }
-
-        modalEl.addEventListener('shown.bs.modal', handleShown)
-        return () => {
-            modalEl.removeEventListener('shown.bs.modal', handleShown)
-        }
     }, [])
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const form = e.target
         form.classList.remove('was-validated')
         setMessage('')
         setError('')
+        setFormErrors({})
 
         if (!form.checkValidity()) {
             form.classList.add('was-validated')
             return
         }
 
-        postData('/telephones', telephoneData, setTelephoneData, setLoading, setError)
-        Modal.getInstance(modalRef.current).hide()
-        resetForm()
-        showToast({
-            message: 'Telephone added successfully!',
-            title: 'Success',
-            isPositive: true,
-            delay: 5000
-        })
+        if (!telephoneData.user) {
+            setFormErrors({ user: true })
+            return
+        }
+
+        try {
+            await postData('/telephones', telephoneData, setTelephoneData, setLoading, setError)
+            Modal.getInstance(modalRef.current).hide()
+            resetForm()
+            showToast({
+                message: 'Telephone added successfully!',
+                title: 'Success',
+                isPositive: true,
+                delay: 5000
+            })
+        } catch (err) {
+            setError('Failed to add telephone.')
+        }
     }
 
     return (
@@ -121,6 +137,33 @@ function AddTelephoneModal() {
                                         {error || message}
                                     </div>
                                 )}
+
+                                <div className="col-md-12">
+                                    <label htmlFor="user" className="form-label">
+                                        User
+                                    </label>
+                                    <Select
+                                        inputId="user"
+                                        name="user"
+                                        options={userOptions}
+                                        value={userOptions.find(
+                                            (option) => option.value === telephoneData.user
+                                        )}
+                                        onChange={(selected) =>
+                                            handleInputChange({
+                                                target: {
+                                                    name: 'user',
+                                                    value: selected?.value || ''
+                                                }
+                                            })
+                                        }
+                                        styles={selectStyles}
+                                        className={`react-select-container ${formErrors.user ? 'is-invalid' : ''}`}
+                                        classNamePrefix="react-select"
+                                        required
+                                    />
+                                    <div className="invalid-feedback">Please enter a user.</div>
+                                </div>
 
                                 <div className="col-md-12">
                                     <label htmlFor="telephoneNumber" className="form-label">

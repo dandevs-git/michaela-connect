@@ -13,7 +13,6 @@ function Login() {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
     const [rememberMe, setRememberMe] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
 
     const navigate = useNavigate()
 
@@ -23,10 +22,6 @@ function Login() {
         if (storedUsername) setUsername(storedUsername)
         if (storedPassword) setPassword(storedPassword)
     }, [])
-
-    const togglePasswordVisibility = () => {
-        setShowPassword((prev) => !prev)
-    }
 
     const handleLogin = async (e) => {
         e.preventDefault()
