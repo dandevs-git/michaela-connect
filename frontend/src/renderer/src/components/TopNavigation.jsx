@@ -10,7 +10,7 @@ const pages = [
 ]
 
 function TopNavigation() {
-    const { logout } = useAPI()
+    const { logout, authUser } = useAPI()
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -19,6 +19,8 @@ function TopNavigation() {
         logout()
         navigate('/login')
     }
+
+    console.log(authUser)
 
     const pathnames = location.pathname.split('/').filter((x) => x)
     const breadcrumbItems = [
@@ -114,15 +116,26 @@ function TopNavigation() {
                         <Link
                             className="dropdown-toggle text-decoration-none link-body-emphasis mx-4"
                             data-bs-toggle="dropdown"
+                            to="#"
                         >
-                            <img
-                                src={id}
-                                alt=""
-                                width="32"
-                                height="32"
-                                className="rounded-circle me-2"
-                            />
-                            <strong>Dan</strong>
+                            {authUser?.profile_picture ? (
+                                <img
+                                    src={authUser?.profile_picture}
+                                    alt="Profile"
+                                    width={32}
+                                    height={32}
+                                    className="rounded-circle object-cover me-2"
+                                />
+                            ) : (
+                                <div
+                                    className="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+                                    style={{ width: '32px', height: '32px', fontSize: '1rem' }}
+                                >
+                                    <span>{authUser?.name?.[0] || '?'}</span>
+                                </div>
+                            )}
+
+                            <strong>{authUser?.name}</strong>
                         </Link>
 
                         <ul className="dropdown-menu dropdown-menu-end bg-body shadow text-body text-small">

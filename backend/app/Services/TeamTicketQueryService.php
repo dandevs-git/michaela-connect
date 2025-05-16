@@ -37,8 +37,9 @@ class TeamTicketQueryService
                 $q->where('origin_department_id', $user->department_id)
                     ->orWhere('target_department_id', $user->department_id);
             });
+        } else {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
-
         return $query->orderBy('created_at', 'desc');
     }
 }

@@ -44,9 +44,10 @@ function EmployeeDetailsModal({ id, employee }) {
                                     <p>
                                         <strong className="me-2">Role:</strong>
                                         <span className="text-uppercase">
-                                            {employee.role || 'N/A'}
+                                            {employee.roles?.[0]?.name || 'N/A'}
                                         </span>
                                     </p>
+
                                     <p>
                                         <strong>Status:</strong>{' '}
                                         <span

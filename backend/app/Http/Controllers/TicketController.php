@@ -7,7 +7,6 @@ use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use App\Models\User;
-use App\Services\MyTicketQueryService;
 use App\Services\TeamTicketQueryService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,45 +17,44 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $query = MyTicketQueryService::queryForCurrentUser();
+        $query = TeamTicketQueryService::queryForCurrentUser();
 
-        // if ($request->filled('status')) {
-        //     $status = $request->query('status');
-        //     $query->where('status', $status);
+        if ($request->filled('status')) {
+            $status = $request->query('status');
+            $query->where('status', $status);
 
-        //     if (!$user->hasRole(['admin', 'superadmin'])) {
-        //         if ($status === 'pending') {
-        //             $query->where('origin_department_id', $user->department_id);
-        //         } elseif ($status === 'new') {
-        //             $query->where('target_department_id', $user->department_id);
-        //         } elseif ($status === 'open') {
-        //             $query->where('target_department_id', $user->department_id);
-        //         } elseif ($status === 'in_progress') {
-        //             $query->where('target_department_id', $user->department_id);
-        //         } elseif ($status === 'resolved') {
-        //             $query->where('origin_department_id', $user->department_id);
-        //         } elseif ($status === 'rejected') {
-        //             $query->where('origin_department_id', $user->department_id);
-        //         }
-        //     }
-        // }
+            if (!$user->hasRole(['admin', 'superadmin'])) {
+                if ($status === 'pending') {
+                    $query->where('origin_department_id', $user->department_id);
+                } elseif ($status === 'new') {
+                    $query->where('target_department_id', $user->department_id);
+                } elseif ($status === 'open') {
+                    $query->where('target_department_id', $user->department_id);
+                } elseif ($status === 'in_progress') {
+                    $query->where('target_department_id', $user->department_id);
+                } elseif ($status === 'resolved') {
+                    $query->where('origin_department_id', $user->department_id);
+                } elseif ($status === 'rejected') {
+                    $query->where('origin_department_id', $user->department_id);
+                }
+            }
+        }
 
-        // if ($request->filled('priority')) {
-        //     $query->where('priority_id', $request->query('priority'));
-        // }
+        if ($request->filled('priority')) {
+            $query->where('priority_id', $request->query('priority'));
+        }
 
-        // if ($request->filled('search')) {
-        //     $term = '%' . $request->query('search') . '%';
-        //     $query->where(function ($subQuery) use ($term) {
-        //         $subQuery->where('title', 'like', $term)
-        //             ->orWhere('description', 'like', $term);
-        //     });
-        // }
+        if ($request->filled('search')) {
+            $term = '%' . $request->query('search') . '%';
+            $query->where(function ($subQuery) use ($term) {
+                $subQuery->where('title', 'like', $term)
+                    ->orWhere('description', 'like', $term);
+            });
+        }
 
-        // $tickets = $query->get();
+        $tickets = $query->get();
 
-        // return response()->json($tickets, 200);
-        return response()->json($query->get(), 200);
+        return response()->json($tickets, 200);
     }
 
 

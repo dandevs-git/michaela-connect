@@ -36,6 +36,13 @@ function NewTickets() {
         modal.show()
     }
 
+    const handleRejectButton = (ticket) => {
+        setSelectedTickets(ticket)
+        setConfirmType('reject')
+        const modal = new Modal(document.getElementById('confirmModal'))
+        modal.show()
+    }
+
     // const handleAcceptButton = (ticket) => {
     //     setSelectedTickets(ticket)
     //     setConfirmType('reject')
@@ -83,12 +90,12 @@ function NewTickets() {
     const flattenSubordinates = (users) => {
         let flat = []
 
-        users.forEach((user) => {
-            flat.push(user)
-            if (user.subordinates && user.subordinates.length > 0) {
-                flat = flat.concat(flattenSubordinates(user.subordinates))
-            }
-        })
+        // users.forEach((user) => {
+        //     flat.push(user)
+        //     if (user.subordinates && user.subordinates.length > 0) {
+        //         flat = flat.concat(flattenSubordinates(user.subordinates))
+        //     }
+        // })
 
         return flat
     }
@@ -170,6 +177,14 @@ function NewTickets() {
                                     </li>
                                 )}
                             </ul>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => handleRejectButton(row.original)}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                            >
+                                <FaTimes /> Reject
+                            </button>
                         </li>
                     </ul>
                 </div>

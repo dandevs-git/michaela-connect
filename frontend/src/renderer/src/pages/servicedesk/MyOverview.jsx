@@ -15,6 +15,8 @@ function MyOverview() {
         getData('/statistics', setStatisticsStats, setLoading, setError)
     }, [])
 
+    console.log(statistics)
+
     return (
         <>
             <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">

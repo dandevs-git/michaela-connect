@@ -131,6 +131,8 @@ export const APIProvider = ({ children }) => {
     const passwordReset = async (data, setLoading, setError) =>
         await postData('/reset-password', data, () => {}, setLoading, setError)
 
+    console.log(authUser)
+
     return (
         <APIContext.Provider
             value={{

@@ -20,7 +20,6 @@ class User extends Authenticatable
         'email',
         'password',
         'profile_picture',
-        'role',
         'status',
         'department_id',
         'failed_attempts',
@@ -43,7 +42,7 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->roles()->first(); // Kapag isa lang ang role per user
+        return $this->roles()->first();
     }
 }
 

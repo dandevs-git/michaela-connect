@@ -135,13 +135,13 @@ function TicketDetailsModal({ id, data }) {
                                             <h5 className="fw-bold">Requester:</h5>
                                             <div>
                                                 <span className="me-2">Name:</span>
-                                                <span className="text-primary fw-bold">
+                                                <span className="fw-bold">
                                                     {data?.requester?.name}
                                                 </span>
                                             </div>
                                             <div>
                                                 <span className="me-2">Department:</span>
-                                                <span className="text-primary fw-bold">
+                                                <span className="fw-bold">
                                                     {data?.origin_department.name}
                                                 </span>
                                             </div>
@@ -154,20 +154,20 @@ function TicketDetailsModal({ id, data }) {
                                                 <div>
                                                     <div>
                                                         <span className="me-2">Name:</span>
-                                                        <span className="text-primary fw-bold">
+                                                        <span className="fw-bold">
                                                             {data?.assigned_to?.name}
                                                         </span>
                                                     </div>
                                                     <div>
                                                         <span className="me-2">Department:</span>
-                                                        <span className="text-primary fw-bold">
+                                                        <span className="fw-bold">
                                                             {data?.target_department.name}
                                                         </span>
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <span className="d-flex h-100 justify-content-center align-items-center">
-                                                    <span className="text-primary fw-bold">
+                                                    <span className="fw-bold">
                                                         {data?.target_department.name}
                                                     </span>
                                                 </span>
@@ -252,7 +252,7 @@ function TicketDetailsModal({ id, data }) {
                                                 >
                                                     <div className="d-flex justify-content-between align-items-center">
                                                         <div>
-                                                            <span className="fw-bold text-primary fs-5">
+                                                            <span className="fw-bold fs-5">
                                                                 {comment?.user?.name}
                                                             </span>
                                                             <span className="text-muted ms-2">
@@ -261,7 +261,7 @@ function TicketDetailsModal({ id, data }) {
                                                                 )}
                                                             </span>
                                                             {comment?.edited_at && (
-                                                                <span className="badge bg-secondary text-light text-primary ms-2">
+                                                                <span className="badge bg-secondary text-light ms-2">
                                                                     Edited
                                                                 </span>
                                                             )}

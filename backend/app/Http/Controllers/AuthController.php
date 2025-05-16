@@ -33,9 +33,32 @@ class AuthController extends Controller
             );
 
             return response()->json([
-                'message' => 'Access denied: Your account is temporarily locked due to multiple failed login attempts.'
+                'message' => 'Access denied: Your account is temporarily locked'
+            ], 403);
+        } elseif ($user->status === 'inactive') {
+            logActivity(
+                $user->id,
+                'Authentication',
+                'Account Inactive',
+                "User {$user->username} account is inactive."
+            );
+
+            return response()->json([
+                'message' => 'Access denied: Your account is inactive.'
+            ], 403);
+        } elseif ($user->status === 'suspended') {
+            logActivity(
+                $user->id,
+                'Authentication',
+                'Account Suspended',
+                "User {$user->username} account is suspended."
+            );
+
+            return response()->json([
+                'message' => 'Access denied: Your account is suspended.'
             ], 403);
         }
+
 
         if (!Hash::check($request->password, $user->password)) {
             $user->increment('failed_attempts');

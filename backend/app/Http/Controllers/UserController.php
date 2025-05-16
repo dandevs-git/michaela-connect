@@ -42,7 +42,6 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'rfid' => 'required|string|unique:users,rfid|max:20',
             'name' => 'required|string|max:255',
-            'role' => 'required|string|max:255',
             'department_id' => 'required|exists:departments,id',
         ]);
 
@@ -65,10 +64,10 @@ class UserController extends Controller
             'username' => $username,
             'rfid' => $request->rfid,
             'password' => Hash::make($password),
-            'role' => $request->role,
             'department_id' => $request->department_id,
             'status' => 'active',
         ]);
+
 
         $user->assignRole($request->role);
 
@@ -115,6 +114,24 @@ class UserController extends Controller
         return response()->json(['message' => "User {$user->username} is now {$user->status}"]);
     }
 
+    public function suspendUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->update(['status' => 'suspended']);
+
+        $admin = Auth::user();
+
+        logActivity(
+            $admin->id,
+            "User Management",
+            "User Suspended",
+            "Admin {$admin->username} Suspended user {$user->username}.",
+        );
+
+        return response()->json(['message' => "User {$user->username} is now {$user->status}"]);
+    }
+
+
     // Admin: Delete a user
     public function destroy($id)
     {
@@ -142,7 +159,7 @@ class UserController extends Controller
 
         $user->load('department', 'roles.permissions');
 
-        $role = $user->roles->first();
+        $role = $user->role();
 
         return response()->json([
             'id' => $user->id,

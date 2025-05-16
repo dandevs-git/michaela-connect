@@ -6,7 +6,7 @@ import ResetTokenModal from '../../components/modals/ResetTokenModal'
 function ForgotPassword() {
     const { requestPasswordReset } = useAPI()
     const [username, setUsername] = useState('')
-    const [message, setMessage] = useState('')
+    const [rfid, setRfid] = useState('')
     const [resetToken, setResetToken] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -14,11 +14,12 @@ function ForgotPassword() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const response = await requestPasswordReset({ username }, setLoading, setError)
+        const response = await requestPasswordReset({ username, rfid }, setLoading, setError)
 
         if (response.token) {
+            console.log('inside')
+            setError('')
             setResetToken(response.token)
-            setMessage(response.message)
         }
     }
 
@@ -30,12 +31,21 @@ function ForgotPassword() {
                     {error.message}
                 </div>
             )}
-            {message && (
-                <div className="alert small alert-success text-center py-1" role="alert">
-                    {message}
-                </div>
-            )}
             <form noValidate onSubmit={handleSubmit}>
+                {/* Kapag gustong may RFID */}
+                <div className="mb-3">
+                    <label htmlFor="email" className="form-label">
+                        RFID
+                    </label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        id="rfid"
+                        required
+                        value={rfid}
+                        onChange={(e) => setRfid(e.target.value)}
+                    />
+                </div>
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">
                         Username
@@ -49,20 +59,6 @@ function ForgotPassword() {
                         onChange={(e) => setUsername(e.target.value)}
                     />
                 </div>
-                {/* Kapag gustong may RFID */}
-                {/* <div className="mb-3">
-                    <label htmlFor="email" className="form-label">
-                        RFID
-                    </label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        id="rfid"
-                        required
-                        value={rfid}
-                        onChange={(e) => setRfid(e.target.value)}
-                    />
-                </div> */}
                 <button type="submit" className="btn btn-primary w-100 mb-2" disabled={loading}>
                     {loading ? 'Generating...' : 'Generate Password Reset Token'}
                 </button>

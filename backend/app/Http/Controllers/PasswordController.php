@@ -16,8 +16,17 @@ class PasswordController extends Controller
     public function requestReset(Request $request)
     {
         $request->validate([
+            'rfid' => 'required|exists:users,rfid',
             'username' => 'required|exists:users,username',
         ]);
+
+        $user = User::where('rfid', $request->rfid)
+            ->where('username', $request->username)
+            ->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'The provided RFID does not match the username.'], 422);
+        }
 
         try {
             $token = Str::random(60);

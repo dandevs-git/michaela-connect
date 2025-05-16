@@ -51,7 +51,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'Super Admin',
             'username' => 'superadmin',
             'password' => Hash::make('110686'),
-            'role' => 'superadmin',
             'status' => 'active',
         ]);
 
@@ -63,7 +62,6 @@ class DatabaseSeeder extends Seeder
                 'name' => "Admin $i",
                 'username' => "admin$i",
                 'password' => Hash::make('110686'),
-                'role' => 'admin',
                 'status' => 'active',
                 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
             ]);
@@ -74,7 +72,6 @@ class DatabaseSeeder extends Seeder
                 'name' => "Manager $i",
                 'username' => "manager$i",
                 'password' => Hash::make('110686'),
-                'role' => 'manager',
                 'status' => 'active',
                 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
             ]);
@@ -85,7 +82,6 @@ class DatabaseSeeder extends Seeder
                 'name' => "Head $i",
                 'username' => "head$i",
                 'password' => Hash::make('110686'),
-                'role' => 'head',
                 'status' => 'active',
                 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
             ]);
@@ -96,7 +92,6 @@ class DatabaseSeeder extends Seeder
                 'name' => "Staff $i",
                 'username' => "staff$i",
                 'password' => Hash::make('110686'),
-                'role' => 'staff',
                 'status' => 'active',
                 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
             ]);
@@ -113,6 +108,6 @@ class DatabaseSeeder extends Seeder
         //     echo "Batch $i inserted\n";
         // }
 
-        // Ticket::factory()->count(1000)->create();
+        Ticket::factory()->count(10000)->create();
     }
 }

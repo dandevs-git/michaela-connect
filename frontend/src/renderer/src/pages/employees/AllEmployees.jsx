@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaLock, FaSyncAlt, FaTrash, FaUnlock } from 'react-icons/fa'
+import {
+    FaEdit,
+    FaEye,
+    FaLock,
+    FaRedoAlt,
+    FaSyncAlt,
+    FaTrash,
+    FaUnlock,
+    FaUserCheck,
+    FaUserLock,
+    FaUserSlash
+} from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddEmployeeModal from '../../components/modals/AddEmployeeModal'
 import EmployeeDetailsModal from '../../components/modals/EmployeeDetailsModal'
@@ -38,6 +49,25 @@ function AllEmployees() {
             message:
                 error.message ||
                 `Employee ${employee.status === 'active' ? 'Locked' : 'Unlock'} successfully!`,
+            title: error.message ? 'Failed' : 'Success',
+            isPositive: error.message ? false : true,
+            delay: 5000
+        })
+    }
+
+    const handleSuspendUser = (employee) => {
+        patchData(
+            `/users/${employee?.id}/suspend`,
+            () => {},
+            () => {},
+            () => {},
+            setError
+        )
+
+        getData('/users', setEmployees, setLoading, setError)
+
+        showToast({
+            message: error.message || 'Employee Suspended successfully!',
             title: error.message ? 'Failed' : 'Success',
             isPositive: error.message ? false : true,
             delay: 5000
@@ -135,14 +165,18 @@ function AllEmployees() {
                                 data-bs-toggle="modal"
                                 data-bs-target="#lockUnlockUserConfirmModal"
                                 onClick={() => setSelectedEmployee(row.original)}
+                                disabled={
+                                    row.original?.status !== 'active' &&
+                                    row.original?.status !== 'locked'
+                                }
                             >
-                                {row.original?.status === 'active' ? (
+                                {row.original?.status === 'locked' ? (
                                     <>
-                                        <FaLock /> Lock
+                                        <FaUnlock /> Unlock
                                     </>
                                 ) : (
                                     <>
-                                        <FaUnlock /> Unlock
+                                        <FaLock /> Lock
                                     </>
                                 )}
                             </button>
@@ -152,10 +186,46 @@ function AllEmployees() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
+                                data-bs-target="#suspendUserConfirmModal"
+                                onClick={() => setSelectedEmployee(row.original)}
+                                disabled={row.original?.status !== 'active'}
+                            >
+                                <FaUserSlash /> Suspend
+                            </button>
+                        </li>
+
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
                                 data-bs-target="#resetPasswordConfirmModal"
                                 onClick={() => setSelectedEmployee(row.original)}
+                                disabled={row.original?.status !== 'active'}
                             >
-                                <FaSyncAlt /> Reset Password
+                                <FaRedoAlt /> Reset Password
+                            </button>
+                        </li>
+
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#activateDeactivateUserConfirmModal"
+                                onClick={() => setSelectedEmployee(row.original)}
+                                disabled={
+                                    row.original?.status !== 'active' &&
+                                    row.original?.status !== 'inactive'
+                                }
+                            >
+                                {row.original?.status === 'active' ? (
+                                    <>
+                                        <FaUserLock /> Deactivate
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaUserCheck /> Activate
+                                    </>
+                                )}
                             </button>
                         </li>
                     </ul>
@@ -172,7 +242,14 @@ function AllEmployees() {
             <div className="card-body">
                 <div className="col-12 p-4">
                     <CustomTable
-                        topComponent={<AddEmployeeModal />}
+                        topComponent={
+                            <AddEmployeeModal
+                                id={'AddEmployeeModal'}
+                                resetEmployee={setEmployees}
+                                resetLoading={setLoading}
+                                resetError={setError}
+                            />
+                        }
                         isloading={loading}
                         columns={columns}
                         data={employees}
@@ -197,11 +274,21 @@ function AllEmployees() {
             />
 
             <ConfirmationModal
+                id="suspendUserConfirmModal"
+                title="Suspend Employee"
+                message={`Are you sure you want to Suspend Employee ${selectedEmployee?.name} ?`}
+                confirmLabel="Suspend"
+                confirmClass="btn-danger text-light"
+                cancelLabel="Cancel"
+                onConfirm={() => handleSuspendUser(selectedEmployee)}
+            />
+
+            <ConfirmationModal
                 id="resetPasswordConfirmModal"
-                title={`Force Reset Password`}
-                message={`Are you sure you want to Reset Password?`}
-                confirmLabel={'Reset Password'}
-                confirmClass={`btn-danger text-light`}
+                title="Force Reset Password"
+                message="Are you sure you want to Reset Password?"
+                confirmLabel="Reset Password"
+                confirmClass="btn-danger text-light"
                 cancelLabel="Cancel"
                 onConfirm={() => handleResetPassword(selectedEmployee)}
             />

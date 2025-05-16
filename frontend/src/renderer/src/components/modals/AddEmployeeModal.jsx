@@ -4,7 +4,7 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
 import { useToast } from '../../contexts/ToastContext'
 
-function AddEmployeeModal() {
+function AddEmployeeModal({ id, resetEmployee, resetLoading, resetError }) {
     const { postData, getData } = useAPI()
     const { showToast } = useToast()
 
@@ -81,6 +81,8 @@ function AddEmployeeModal() {
             isPositive: true,
             delay: 5000
         })
+
+        getData('/users', resetEmployee, resetLoading, resetError)
     }
 
     return (
@@ -88,14 +90,14 @@ function AddEmployeeModal() {
             <button
                 className="btn btn-primary text-nowrap border me-4"
                 data-bs-toggle="modal"
-                data-bs-target="#addEmployeeModal"
+                data-bs-target={`#${id}`}
             >
                 <FaPlus /> New Employee
             </button>
 
             <div
                 className="modal fade"
-                id="addEmployeeModal"
+                id={id}
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 tabIndex="-1"

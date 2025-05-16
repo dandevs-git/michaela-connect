@@ -49,10 +49,10 @@ const pages = [
         link: '/directory',
         icon: <FaNetworkWired />,
         subPages: [
-            { name: 'Telephone', link: '/directory/telephones' },
-            { name: 'Internet', link: '/directory/internet' },
-            { name: 'IP Address', link: '/directory/ipaddress' },
-            { name: 'Anydesk', link: '/directory/anydesks' },
+            { name: 'Telephone lines', link: '/directory/telephones' },
+            { name: 'Internet lines', link: '/directory/internet' },
+            { name: 'IP Addresses', link: '/directory/ipaddress' },
+            { name: 'Anydesk IDs', link: '/directory/anydesks' },
             { name: 'Printers', link: '/directory/printers' }
         ],
         permission: 'view infrastructure directory'
