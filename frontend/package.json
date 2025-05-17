@@ -1,21 +1,69 @@
 {
-    "name": "frontend",
+    "name": "michaela-connect",
     "version": "1.0.0",
-    "description": "An Electron application with React",
-    "main": "./out/main/index.js",
-    "author": "example.com",
-    "homepage": "https://electron-vite.org",
+    "description": "Michaela Connect - Integrated Service Management System (Electron + React)",
+    "author": "My Shop Printing Services",
+    "main": "src/main/index.js",
+    "homepage": "./",
     "scripts": {
-        "format": "prettier --write .",
-        "lint": "eslint --cache .",
-        "start": "electron-vite preview",
         "dev": "electron-vite dev",
-        "build": "electron-vite build",
+        "start": "electron-vite preview",
+        "clean": "rimraf release",
+        "build": "npm run clean && electron-vite build && electron-builder",
         "postinstall": "electron-builder install-app-deps",
         "build:unpack": "npm run build && electron-builder --dir",
         "build:win": "npm run build && electron-builder --win",
         "build:mac": "npm run build && electron-builder --mac",
-        "build:linux": "npm run build && electron-builder --linux"
+        "build:linux": "npm run build && electron-builder --linux",
+        "lint": "eslint --cache .",
+        "format": "prettier --write ."
+    },
+    "build": {
+        "appId": "com.michaelaconnect.desktop",
+        "productName": "Michaela Connect",
+        "files": [
+            "dist/",
+            "electron/",
+            "!**/*.map",
+            "!**/.*",
+            "!node_modules/*/{README.md,readme.md,README,readme,CHANGELOG.md}"
+        ],
+        "directories": {
+            "output": "release"
+        },
+        "extraResources": [
+            {
+                "from": "resources/",
+                "to": "resources/",
+                "filter": [
+                    "**/*"
+                ]
+            }
+        ],
+        "mac": {
+            "target": "dmg",
+            "icon": "resources/icon.icns"
+        },
+        "win": {
+            "target": "nsis",
+            "icon": "resources/icon.ico"
+        },
+        "linux": {
+            "target": "AppImage",
+            "icon": "resources"
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": true,
+            "allowToChangeInstallationDirectory": true,
+            "deleteAppDataOnUninstall": true
+        },
+        "publish": {
+            "provider": "github",
+            "owner": "your-github-username",
+            "repo": "michaela-connect",
+            "releaseType": "release"
+        }
     },
     "dependencies": {
         "@electron-toolkit/preload": "^3.0.1",
@@ -26,7 +74,7 @@
         "antd": "^5.24.3",
         "axios": "^1.8.3",
         "bootstrap": "^5.3.3",
-        "bootstrap-icons": "^1.11.3",
+        "bootstrap-icons": "^1.13.1",
         "crypto-js": "^4.2.0",
         "date-fns": "^4.1.0",
         "electron-store": "^10.0.1",

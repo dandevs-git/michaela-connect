@@ -56,14 +56,15 @@ class DatabaseSeeder extends Seeder
 
         $superadmin->assignRole($roles['superadmin']);
 
-        for ($i = 1; $i <= 2; $i++) {
+        for ($i = 1; $i <= 5; $i++) {
             $admin = User::create([
                 'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
                 'name' => "Admin $i",
                 'username' => "admin$i",
                 'password' => Hash::make('110686'),
                 'status' => 'active',
-                'department_id' => Department::inRandomOrder()->first()->id ?? 1,
+                'department_id' => $i,
+                // 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
             ]);
             $admin->assignRole($roles['admin']);
 
@@ -73,7 +74,8 @@ class DatabaseSeeder extends Seeder
                 'username' => "manager$i",
                 'password' => Hash::make('110686'),
                 'status' => 'active',
-                'department_id' => Department::inRandomOrder()->first()->id ?? 1,
+                'department_id' => $i,
+                // 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
             ]);
             $manager->assignRole($roles['manager']);
 
@@ -83,7 +85,8 @@ class DatabaseSeeder extends Seeder
                 'username' => "head$i",
                 'password' => Hash::make('110686'),
                 'status' => 'active',
-                'department_id' => Department::inRandomOrder()->first()->id ?? 1,
+                'department_id' => $i,
+                // 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
             ]);
             $head->assignRole($roles['head']);
 
@@ -93,7 +96,8 @@ class DatabaseSeeder extends Seeder
                 'username' => "staff$i",
                 'password' => Hash::make('110686'),
                 'status' => 'active',
-                'department_id' => Department::inRandomOrder()->first()->id ?? 1,
+                'department_id' => $i,
+                // 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
             ]);
             $staff->assignRole($roles['staff']);
         }

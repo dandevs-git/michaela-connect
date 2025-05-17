@@ -159,7 +159,7 @@ class UserController extends Controller
 
         $user->load('department', 'roles.permissions');
 
-        $role = $user->role();
+        $role = $user->roles->first();
 
         return response()->json([
             'id' => $user->id,
@@ -172,7 +172,7 @@ class UserController extends Controller
                 'id' => $user->department->id,
                 'name' => $user->department->name,
             ] : null,
-            'role' => $role ? [
+            'role' => $user->roles ? [
                 'id' => $role->id,
                 'name' => $role->name,
             ] : null,

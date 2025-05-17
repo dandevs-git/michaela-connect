@@ -10,6 +10,7 @@ function Department() {
     const [mainDepartments, setMainDepartments] = useState([])
     const [loadingDepartments, setLoadingDepartments] = useState(true)
     const [loadingMainDepartments, setLoadingMainDepartments] = useState(true)
+    const [selectedDepartment, setSelectedDepartment] = useState(true)
     const [error, setError] = useState('')
 
     useEffect(() => {
@@ -19,7 +20,7 @@ function Department() {
 
     const departmentColumns = [
         { header: 'No.', accessorKey: 'id' },
-        { header: 'Departments', accessorKey: 'name' },
+        { header: 'Department', accessorKey: 'name' },
         {
             header: 'Parent Department',
             accessorKey: 'parent.name',
@@ -29,16 +30,28 @@ function Department() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-info btn-sm">
-                        <FaEye /> View
+                <div className="dropdown">
+                    <button
+                        className="btn border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
+                    >
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#"
+                                onClick={() => setSelectedDepartment(row.original)}
+                            >
+                                <FaEye /> View
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }
@@ -46,7 +59,7 @@ function Department() {
     const mainDepartmentColumns = [
         { header: 'No.', accessorKey: 'id' },
         {
-            header: 'Departments',
+            header: 'Department',
             accessorKey: 'name',
             cell: ({ row }) => row.original?.name || 'N/A'
         },
@@ -54,16 +67,28 @@ function Department() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center">
-                    <button className="btn text-light btn-info btn-sm">
-                        <FaEye /> View
+                <div className="dropdown">
+                    <button
+                        className="btn border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
+                    >
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#"
+                                onClick={() => setSelectedDepartment(row.original)}
+                            >
+                                <FaEye /> View
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }

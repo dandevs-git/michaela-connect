@@ -8,6 +8,7 @@ import {
     FaSyncAlt,
     FaTrash,
     FaUnlock,
+    FaUser,
     FaUserCheck,
     FaUserLock,
     FaUserSlash
@@ -131,7 +132,11 @@ function AllEmployees() {
                 return row.original.department ? row.original.department.name : 'N/A'
             }
         },
-        { header: 'Role', accessorKey: 'role' },
+        {
+            header: 'Role',
+            accessorKey: 'role',
+            cell: ({ row }) => row.original.roles[0]?.name || 'N/A'
+        },
         { header: 'Status', accessorKey: 'status' },
         {
             header: 'Actions',
@@ -188,9 +193,20 @@ function AllEmployees() {
                                 data-bs-toggle="modal"
                                 data-bs-target="#suspendUserConfirmModal"
                                 onClick={() => setSelectedEmployee(row.original)}
-                                disabled={row.original?.status !== 'active'}
+                                disabled={
+                                    row.original?.status !== 'active' &&
+                                    row.original?.status !== 'suspended'
+                                }
                             >
-                                <FaUserSlash /> Suspend
+                                {row.original?.status === 'suspended' ? (
+                                    <>
+                                        <FaUser /> Reinstate
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaUserSlash /> Suspend
+                                    </>
+                                )}
                             </button>
                         </li>
 

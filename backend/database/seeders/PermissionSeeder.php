@@ -13,8 +13,6 @@ class PermissionSeeder extends Seeder
         $rolePermissions = [
             'superadmin' => [],
             'admin' => [
-                // Role-based Viewing
-                'view all tickets', // Fix 
 
                 // User Management
                 'manage users',
@@ -76,6 +74,9 @@ class PermissionSeeder extends Seeder
                 // Action Buttons
                 'view ticket details',
 
+
+                //FIX PERMISSIONS
+
                 // Side Navigation
                 'view dashboard',
                 'access service desk',
@@ -83,10 +84,12 @@ class PermissionSeeder extends Seeder
                 'view infrastructure directory',
                 'view analytics reports',
                 'manage system settings',
+
+                // Role-based Insights
+                'view all tickets',
             ],
 
             'manager' => [
-                'view managed department tickets', // Fix
 
                 'assign tickets',
                 'comment on tickets',
@@ -104,15 +107,19 @@ class PermissionSeeder extends Seeder
                 'view failed tickets tab',
                 'view rejected tickets tab',
 
+
+                //FIX PERMISSIONS
+
                 // Side Navigation
                 'view dashboard',
                 'access service desk',
                 'view infrastructure directory',
-                'manage system settings',
+
+                // Role-based Insights
+                'view managed department tickets',
             ],
 
             'head' => [
-                'view own department tickets', // Fix 
                 'approve tickets',
                 'comment on tickets',
                 'view ticket comments',
@@ -128,16 +135,19 @@ class PermissionSeeder extends Seeder
                 'view resolved tickets tab',
                 'view closed tickets tab',
 
+
+                //FIX PERMISSIONS
+
                 // Side Navigation
                 'view dashboard',
                 'access service desk',
                 'view infrastructure directory',
-                'manage system settings',
+
+                // Role-based Insights
+                'view own department tickets',
             ],
 
             'staff' => [
-                'view own department tickets', // Fix 
-
                 'create tickets',
                 'comment on tickets',
                 'upload attachments',
@@ -151,11 +161,16 @@ class PermissionSeeder extends Seeder
                 'view resolved tickets tab',
                 'view closed tickets tab',
 
+
+                //FIX PERMISSIONS
+
                 // Side Navigation
                 'view dashboard',
                 'access service desk',
                 'view infrastructure directory',
-                // 'manage system settings',
+
+                // Role-based Insights
+                'view own department tickets',
             ],
         ];
 

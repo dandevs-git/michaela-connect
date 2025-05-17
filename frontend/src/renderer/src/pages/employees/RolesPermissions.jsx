@@ -15,10 +15,6 @@ function RolesPermissions() {
         getData('/roles', setRoles, setLoading, setError)
     }, [])
 
-    const handleShowModal = (role) => {
-        setSelectedRole(role)
-    }
-
     const columns = [
         { header: 'No.', accessorKey: 'id' },
         { header: 'Role Name', accessorKey: 'name' },
@@ -31,21 +27,38 @@ function RolesPermissions() {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
-                <div className="d-flex gap-2 justify-content-center align-items-center">
+                <div className="dropdown">
                     <button
-                        className="btn text-light btn-info btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#permissionsModal"
-                        onClick={() => handleShowModal(row.original)}
+                        className="btn border-0"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="More actions"
+                        title="More actions"
                     >
-                        <FaEye /> View
+                        <i className="bi bi-list fs-5"></i>
                     </button>
-                    <button className="btn text-light btn-warning btn-sm">
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn text-light btn-danger btn-sm">
-                        <FaTrash /> Delete
-                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#permissionsModal"
+                                onClick={() => setSelectedRole(row.original)}
+                            >
+                                <FaEye /> View
+                            </button>
+                        </li>
+                        <li>
+                            <button className="dropdown-item d-flex align-items-center gap-2 fw-semibold">
+                                <FaEdit /> Edit
+                            </button>
+                        </li>
+                        <li>
+                            <button className="dropdown-item d-flex align-items-center gap-2 fw-semibold">
+                                <FaTrash /> Delete
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             )
         }

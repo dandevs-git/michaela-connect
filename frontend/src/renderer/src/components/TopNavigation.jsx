@@ -20,8 +20,6 @@ function TopNavigation() {
         navigate('/login')
     }
 
-    console.log(authUser)
-
     const pathnames = location.pathname.split('/').filter((x) => x)
     const breadcrumbItems = [
         ...pathnames.map((name, index) => {
@@ -53,7 +51,7 @@ function TopNavigation() {
                         >
                             <i className="bi bi-bell-fill fs-4 mx-1"></i>
                             <span className="badge bg-danger border border-light position-absolute mt-2 start-100 top-0 translate-middle">
-                                <span>99+</span>
+                                <span>3</span>
                             </span>
                         </button>
 

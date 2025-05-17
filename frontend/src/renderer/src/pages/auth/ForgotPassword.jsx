@@ -17,7 +17,6 @@ function ForgotPassword() {
         const response = await requestPasswordReset({ username, rfid }, setLoading, setError)
 
         if (response.token) {
-            console.log('inside')
             setError('')
             setResetToken(response.token)
         }
