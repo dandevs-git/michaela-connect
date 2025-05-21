@@ -6,7 +6,7 @@ import { useToast } from '../../contexts/ToastContext'
 import Select from 'react-select'
 import { COLORS, selectStyles } from '../../constants/config'
 
-function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
+function AddInternetModal({ id, resetInternet, resetLoading, resetError }) {
     const { postData, getData } = useAPI()
     const { showToast } = useToast()
 
@@ -19,7 +19,7 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
     const formRef = useRef(null)
 
     const [users, setUsers] = useState([])
-    const [telephoneData, setTelephoneData] = useState({
+    const [internetData, setInternetData] = useState({
         user_id: '',
         number: '',
         cable_code: '',
@@ -38,11 +38,11 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setTelephoneData((prev) => ({ ...prev, [name]: value }))
+        setInternetData((prev) => ({ ...prev, [name]: value }))
     }
 
     const resetForm = () => {
-        setTelephoneData({
+        setInternetData({
             user_id: '',
             number: '',
             cable_code: '',
@@ -67,17 +67,17 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
             return
         }
 
-        postData('/telephones', telephoneData, setTelephoneData, setLoading, setError)
+        postData('/internet', internetData, setInternetData, setLoading, setError)
         Modal.getInstance(modalRef.current).hide()
         resetForm()
         showToast({
-            message: 'Telephone added successfully!',
+            message: 'Internet Line added successfully!',
             title: 'Success',
             isPositive: true,
             delay: 5000
         })
 
-        getData('/telephones', resetTelephone, resetLoading, resetError)
+        getData('/internet', resetInternet, resetLoading, resetError)
     }
 
     return (
@@ -87,7 +87,7 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                 data-bs-toggle="modal"
                 data-bs-target={`#${id}`}
             >
-                <FaPlus /> New Telephone
+                <FaPlus /> New Internet Line
             </button>
 
             <div
@@ -102,7 +102,7 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title fw-semibold text-uppercase">
-                                Add New Telephone
+                                Add New Internet Line
                             </h5>
                             <button
                                 type="button"
@@ -136,39 +136,21 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         name="user_id"
                                         options={userOptions}
                                         value={userOptions.find(
-                                            (option) => option.value === telephoneData.user_id
+                                            (option) => option.value === internetData.user_id
                                         )}
                                         onChange={(selected) =>
-                                            setTelephoneData((prev) => ({
+                                            setInternetData((prev) => ({
                                                 ...prev,
                                                 user_id: selected?.value || ''
                                             }))
                                         }
                                         styles={selectStyles(
-                                            !!telephoneData.user_id || !isSubmitted
+                                            !!internetData.user_id || !isSubmitted
                                         )}
                                         classNamePrefix="react-select"
-                                        className={`form-control p-0 border-0 ${!telephoneData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                        className={`form-control p-0 border-0 ${!internetData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
-                                </div>
-
-                                <div className="col-md-12">
-                                    <label htmlFor="telephoneNumber" className="form-label">
-                                        Telephone Number
-                                    </label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        id="telephoneNumber"
-                                        name="number"
-                                        value={telephoneData.number}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                    <div className="invalid-feedback">
-                                        Please enter a unique telephone number.
-                                    </div>
                                 </div>
 
                                 <div className="col-md-12">
@@ -180,7 +162,7 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         className="form-control"
                                         id="cableCode"
                                         name="cable_code"
-                                        value={telephoneData.cable_code}
+                                        value={internetData.cable_code}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -198,7 +180,7 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         className="form-control"
                                         id="location"
                                         name="location"
-                                        value={telephoneData.location}
+                                        value={internetData.location}
                                         onChange={handleInputChange}
                                     />
                                 </div>
@@ -212,7 +194,7 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         id="description"
                                         name="description"
                                         rows="2"
-                                        value={telephoneData.description}
+                                        value={internetData.description}
                                         onChange={handleInputChange}
                                     />
                                 </div>
@@ -233,7 +215,7 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                                 Submitting...
                                             </>
                                         ) : (
-                                            'Add Telephone'
+                                            'Add Internet Line'
                                         )}
                                     </button>
                                 </div>
@@ -246,4 +228,4 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
     )
 }
 
-export default AddTelephoneModal
+export default AddInternetModal

@@ -1,53 +1,59 @@
-function TelephoneDetailsModal({ id, telephone }) {
+function InternetDetailsModal({ id, internet }) {
     return (
         <div className="modal fade" id={id} tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title">View telephone</h5>
+                        <h5 className="modal-title">View internet</h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" />
                     </div>
 
-                    {console.log(telephone)}
+                    {console.log(internet)}
 
                     <div className="modal-body p-4">
-                        {telephone ? (
+                        {internet ? (
                             <div className="text-center">
                                 <div className="text-start p-3">
                                     <p>
-                                        <strong className="me-2">Number:</strong>{' '}
+                                        <strong className="me-2">Provider:</strong>{' '}
                                         <span className="text-uppercase">
-                                            {telephone.number || 'N/A'}
+                                            {internet.provider || 'N/A'}
                                         </span>
                                     </p>
                                     <p>
                                         <strong className="me-2">User:</strong>{' '}
                                         <span className="text-uppercase">
-                                            {telephone?.user?.name || 'N/A'}
+                                            {internet?.user?.name || 'N/A'}
                                         </span>
                                     </p>
                                     <p>
                                         <strong className="me-2">Department:</strong>{' '}
                                         <span className="text-uppercase">
-                                            {telephone?.user?.department?.name || 'N/A'}
+                                            {internet?.user?.department?.name || 'N/A'}
                                         </span>
                                     </p>
                                     <p>
                                         <strong className="me-2">Cable Code:</strong>
                                         <span className="text-uppercase">
-                                            {telephone.cable_code || 'N/A'}
+                                            {internet.cable_code || 'N/A'}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <strong className="me-2">Gateway:</strong>
+                                        <span className="text-uppercase">
+                                            {internet.gateway || 'N/A'}
                                         </span>
                                     </p>
                                     <p>
                                         <strong className="me-2">Location:</strong>
                                         <span className="text-uppercase">
-                                            {telephone.location || 'N/A'}
+                                            {internet.location || 'N/A'}
                                         </span>
                                     </p>
                                     <p>
                                         <strong className="me-2">Description:</strong>
                                         <span className="text-uppercase">
-                                            {telephone.description || 'N/A'}
+                                            {internet.description || 'N/A'}
                                         </span>
                                     </p>
                                 </div>
@@ -68,4 +74,4 @@ function TelephoneDetailsModal({ id, telephone }) {
     )
 }
 
-export default TelephoneDetailsModal
+export default InternetDetailsModal
