@@ -10,6 +10,7 @@ class Internet extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'provider',
         'gateway',
@@ -17,4 +18,9 @@ class Internet extends Model
         'location',
         'description',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

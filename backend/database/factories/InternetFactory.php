@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,6 +18,7 @@ class InternetFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::inRandomOrder()->value('id') ?? User::factory(),
             'name' => $this->faker->unique()->company() . ' Network',
             'provider' => $this->faker->company(),
             'gateway' => $this->faker->ipv4(),

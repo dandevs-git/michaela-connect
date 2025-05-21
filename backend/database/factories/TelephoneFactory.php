@@ -19,6 +19,7 @@ class TelephoneFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::inRandomOrder()->value('id') ?? User::factory(),
             'number' => $this->faker->unique()->phoneNumber(),
             'cable_code' => $this->faker->unique()->bothify('CABLE-####'),
             'location' => $this->faker->optional()->address(),

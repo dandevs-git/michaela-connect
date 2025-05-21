@@ -12,7 +12,7 @@ class InternetController extends Controller
      */
     public function index()
     {
-        $internet = Internet::all();
+        $internet = Internet::with('user.department')->get();
         return response()->json($internet, 200);
     }
 

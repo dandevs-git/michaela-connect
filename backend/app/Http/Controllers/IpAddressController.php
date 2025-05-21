@@ -12,7 +12,7 @@ class IpAddressController extends Controller
      */
     public function index()
     {
-        $ipaddress = IpAddress::all();
+        $ipaddress = IpAddress::with('user.department')->get();
         return response()->json($ipaddress, 200);
     }
 

@@ -29,12 +29,6 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Urgent', 'response_time' => 15, 'resolution_time' => 240],
         ]);
 
-        Telephone::factory()->count(10)->create();
-        Internet::factory()->count(10)->create();
-        IpAddress::factory()->count(10)->create();
-        Anydesk::factory()->count(10)->create();
-        Printer::factory()->count(10)->create();
-
         Department::factory()->count(3)->create();
         Department::factory()->count(5)->withParent()->create();
 
@@ -102,6 +96,15 @@ class DatabaseSeeder extends Seeder
             $staff->assignRole($roles['staff']);
         }
 
+
+
+        Telephone::factory()->count(10)->create();
+        Internet::factory()->count(10)->create();
+        IpAddress::factory()->count(10)->create();
+        Anydesk::factory()->count(10)->create();
+        Printer::factory()->count(10)->create();
+
+
         // ini_set('memory_limit', '1G');
 
         // $batchSize = 10000;
@@ -112,6 +115,6 @@ class DatabaseSeeder extends Seeder
         //     echo "Batch $i inserted\n";
         // }
 
-        Ticket::factory()->count(10000)->create();
+        // Ticket::factory()->count(10000)->create();
     }
 }

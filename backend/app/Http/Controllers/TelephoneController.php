@@ -12,7 +12,7 @@ class TelephoneController extends Controller
      */
     public function index()
     {
-        $telephones = Telephone::all();
+        $telephones = Telephone::with('user.department')->get();
         return response()->json($telephones, 200);
     }
 

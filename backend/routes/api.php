@@ -17,6 +17,12 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TelephoneController;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/status', function () {
+    return response()->json(['status' => 'OK']);
+});
+
+
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/forgot-password', [PasswordController::class, 'requestReset'])->name('password.forgot');
 Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->name('password.reset');

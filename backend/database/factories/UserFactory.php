@@ -34,7 +34,6 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'profile_picture' => null,
             'password' => Hash::make('password123'),
-            'role' => $this->faker->randomElement(['staff', 'head', 'manager', 'admin']),
             'status' => $this->faker->randomElement(['active', 'inactive', 'suspended', 'locked']),
             'department_id' => Department::inRandomOrder()->value('id') ?? Department::factory(),
             'failed_attempts' => $this->faker->numberBetween(0, 5),

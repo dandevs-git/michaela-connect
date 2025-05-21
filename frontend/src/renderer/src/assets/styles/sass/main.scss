@@ -1,0 +1,19 @@
+// Font face declaration
+@font-face {
+    font-family: 'Poppins';
+    src: url('../../../assets/fonts/Poppins-Regular.ttf') format('truetype');
+}
+
+// Theme colors
+$primary: #000000;
+$success: #00c853;
+$info: #00b8d4;
+$warning: #ffab00;
+$danger: #d50000;
+
+// Base font styles
+$font-size-base: 0.9rem;
+$font-family-base: 'Poppins', sans-serif;
+
+// Import Bootstrap SCSS
+@import '../../../../../../node_modules/bootstrap/scss/bootstrap.scss';

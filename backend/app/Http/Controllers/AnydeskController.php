@@ -12,7 +12,7 @@ class AnydeskController extends Controller
      */
     public function index()
     {
-        $anydesk = Anydesk::all();
+        $anydesk = Anydesk::with('user.department')->get();
         return response()->json($anydesk, 200);
     }
 

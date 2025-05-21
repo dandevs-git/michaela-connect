@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,6 +18,7 @@ class AnydeskFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::inRandomOrder()->value('id') ?? User::factory(),
             'number' => $this->faker->unique()->regexify('[0-9]{9}'),
             'location' => $this->faker->optional()->address(),
             'description' => $this->faker->optional()->sentence(),
