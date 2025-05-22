@@ -8,8 +8,6 @@ function InternetDetailsModal({ id, internet }) {
                         <button type="button" className="btn-close" data-bs-dismiss="modal" />
                     </div>
 
-                    {console.log(internet)}
-
                     <div className="modal-body p-4">
                         {internet ? (
                             <div className="text-center">
