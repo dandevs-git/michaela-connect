@@ -10,13 +10,16 @@ class Internet extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'name',
         'provider',
         'gateway',
         'cable_code',
         'location',
         'description',
+    ];
+
+    protected $hidden = [
+        'user_id',
     ];
 
     public function user()

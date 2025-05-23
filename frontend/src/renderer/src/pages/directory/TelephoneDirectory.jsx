@@ -16,6 +16,8 @@ function TelephoneDirectory() {
         getData('/telephones', setTelephones, setLoading)
     }, [])
 
+    console.log(telephones)
+
     const columns = [
         { header: 'No.', accessorKey: 'id' },
         {

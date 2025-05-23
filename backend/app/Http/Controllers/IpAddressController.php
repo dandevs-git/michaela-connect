@@ -21,8 +21,18 @@ class IpAddressController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'ip' => 'required|ip|unique:ip_addresses,ip',
+            'assigned_date' => 'nullable|date',
+            'location' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $ip = IpAddress::create($validated);
+
+        return response()->json(['message' => 'IP address created', 'ip' => $ip], 201);
     }
+
 
     /**
      * Display the specified resource.

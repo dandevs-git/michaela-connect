@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import { FaEye, FaExternalLinkAlt } from 'react-icons/fa'
+import { FaEye, FaExternalLinkAlt, FaEyeSlash, FaClipboard } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function AnydeskDirectory() {
@@ -25,7 +25,55 @@ function AnydeskDirectory() {
             accessorKey: 'user?.department',
             cell: ({ row }) => row.original.user?.department?.name || 'N/A'
         },
-        { header: 'Anydesk Number', accessorKey: 'number' },
+        {
+            header: 'Anydesk Number',
+            accessorKey: 'number',
+            cell: ({ row }) => row.original?.number || 'N/A'
+        },
+        {
+            header: 'Anydesk Password',
+            accessorKey: 'password',
+            cell: ({ row }) => {
+                const [visible, setVisible] = useState(false)
+                const password = row.original?.password
+
+                const copyToClipboard = () => {
+                    navigator.clipboard.writeText(password || '')
+                    alert('Password copied to clipboard!')
+                }
+
+                if (!password) return <span className="text-muted">N/A</span>
+
+                return (
+                    <div className="input-group">
+                        <input
+                            type={visible ? 'text' : 'password'}
+                            className="form-control border-primary-subtle border-end-0"
+                            value={password || ''}
+                            readOnly
+                        />
+                        <button
+                            className="btn border-primary-subtle  "
+                            type="button"
+                            onClick={() => setVisible(!visible)}
+                            aria-label={visible ? 'Hide password' : 'Show password'}
+                            title={visible ? 'Hide password' : 'Show password'}
+                        >
+                            {visible ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                        <button
+                            className="btn border-primary-subtle "
+                            type="button"
+                            onClick={copyToClipboard}
+                            aria-label="Copy password"
+                            title="Copy password"
+                        >
+                            <FaClipboard />
+                        </button>
+                    </div>
+                )
+            }
+        },
         // { header: 'Location', accessorKey: 'location' },
         // { header: 'Description', accessorKey: 'description' },
         {

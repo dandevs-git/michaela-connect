@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('department', 'roles.permissions')->get();
+        $users = User::with('department', 'telephone', 'ipAddress', 'roles.permissions')->get();
         return response()->json($users, 200);
     }
 
@@ -43,6 +43,7 @@ class UserController extends Controller
             'rfid' => 'required|string|unique:users,rfid|max:20',
             'name' => 'required|string|max:255',
             'department_id' => 'required|exists:departments,id',
+            'role' => 'required|string|exists:roles,name',
         ]);
 
         if ($validator->fails()) {

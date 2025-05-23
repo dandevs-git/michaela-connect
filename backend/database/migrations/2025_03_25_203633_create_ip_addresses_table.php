@@ -14,8 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('ip_address', 45)->unique();
-            $table->enum('device_type', ['PC', 'Printer', 'Server', 'Other']);
-            $table->string('device_name')->nullable();
+            $table->enum('type', ['PC', 'Printer', 'Server', 'Other']);
             $table->date('assigned_date')->nullable();
             $table->string('location')->nullable();
             $table->text('description')->nullable();

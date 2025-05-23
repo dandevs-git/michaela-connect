@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('internets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('provider');
             $table->string('gateway');
             $table->string('cable_code')->unique();

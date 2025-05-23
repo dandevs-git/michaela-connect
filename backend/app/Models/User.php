@@ -21,7 +21,6 @@ class User extends Authenticatable
         'password',
         'profile_picture',
         'status',
-        'department_id',
         'failed_attempts',
     ];
 
@@ -40,6 +39,31 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function telephone()
+    {
+        return $this->belongsTo(Telephone::class);
+    }
+
+    public function ipAddress()
+    {
+        return $this->belongsTo(IpAddress::class);
+    }
+
+    public function anydesk()
+    {
+        return $this->belongsTo(Anydesk::class);
+    }
+
+    public function internetLine()
+    {
+        return $this->belongsTo(Internet::class);
+    }
+    public function printer()
+    {
+        return $this->belongsTo(Printer::class);
+    }
+
 }
 
 

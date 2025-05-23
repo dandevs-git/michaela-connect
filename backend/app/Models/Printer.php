@@ -10,9 +10,12 @@ class Printer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'name',
         'inkcode',
+    ];
+
+    protected $hidden = [
+        'user_id',
     ];
 
     public function user()
