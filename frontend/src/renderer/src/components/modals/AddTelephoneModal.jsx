@@ -67,6 +67,8 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
             return
         }
 
+        console.log(telephoneData)
+
         postData('/telephones', telephoneData, setTelephoneData, setLoading, setError)
         Modal.getInstance(modalRef.current).hide()
         resetForm()
@@ -126,13 +128,12 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         {error || message}
                                     </div>
                                 )}
-
                                 <div className="col-md-12">
                                     <label htmlFor="user" className="form-label">
                                         User
                                     </label>
                                     <Select
-                                        inputId="user"
+                                        inputId="user_id"
                                         name="user_id"
                                         options={userOptions}
                                         value={userOptions.find(
@@ -152,7 +153,6 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="telephoneNumber" className="form-label">
                                         Telephone Number
@@ -170,7 +170,6 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         Please enter a unique telephone number.
                                     </div>
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="cableCode" className="form-label">
                                         Cable Code
@@ -188,7 +187,6 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         Please enter a unique cable code.
                                     </div>
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="location" className="form-label">
                                         Location (optional)
@@ -202,7 +200,6 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="description" className="form-label">
                                         Description (optional)
@@ -216,7 +213,6 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-
                                 <div className="modal-footer">
                                     <button
                                         type="submit"

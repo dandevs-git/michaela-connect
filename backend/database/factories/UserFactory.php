@@ -26,7 +26,6 @@ class UserFactory extends Factory
 
     public function definition(): array
     {
-
         return [
             'rfid' => $this->faker->unique()->regexify('[A-Z0-9]{10}'),
             'name' => $this->faker->name(),

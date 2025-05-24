@@ -42,28 +42,28 @@ class User extends Authenticatable
 
     public function telephone()
     {
-        return $this->belongsTo(Telephone::class);
+        return $this->hasOne(Telephone::class);
     }
 
     public function ipAddress()
     {
-        return $this->belongsTo(IpAddress::class);
+        return $this->hasOne(IpAddress::class);
     }
 
     public function anydesk()
     {
-        return $this->belongsTo(Anydesk::class);
+        return $this->hasOne(Anydesk::class);
     }
 
     public function internetLine()
     {
-        return $this->belongsTo(Internet::class);
-    }
-    public function printer()
-    {
-        return $this->belongsTo(Printer::class);
+        return $this->hasOne(Internet::class);
     }
 
+    public function printer()
+    {
+        return $this->hasOne(Printer::class);
+    }
 }
 
 

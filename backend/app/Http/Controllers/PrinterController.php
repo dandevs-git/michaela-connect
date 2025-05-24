@@ -12,7 +12,7 @@ class PrinterController extends Controller
      */
     public function index()
     {
-        $printer = Printer::with('user.department')->get();
+        $printer = Printer::with('user.department', 'user.anydesk', 'user.telephone', 'user.printer', 'user.ipAddress')->get();
         return response()->json($printer, 200);
     }
 

@@ -10,16 +10,14 @@ class Printer extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'inkcode',
     ];
 
-    protected $hidden = [
-        'user_id',
-    ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

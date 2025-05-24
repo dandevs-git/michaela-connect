@@ -10,6 +10,7 @@ class Internet extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'provider',
         'gateway',
@@ -18,12 +19,9 @@ class Internet extends Model
         'description',
     ];
 
-    protected $hidden = [
-        'user_id',
-    ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

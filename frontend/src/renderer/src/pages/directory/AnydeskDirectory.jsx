@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import { FaEye, FaExternalLinkAlt, FaEyeSlash, FaClipboard } from 'react-icons/fa'
+import {
+    FaEye,
+    FaExternalLinkAlt,
+    FaEyeSlash,
+    FaClipboard,
+    FaCheckCircle,
+    FaClipboardCheck
+} from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 
 function AnydeskDirectory() {
@@ -35,11 +42,14 @@ function AnydeskDirectory() {
             accessorKey: 'password',
             cell: ({ row }) => {
                 const [visible, setVisible] = useState(false)
+                const [copied, setCopied] = useState(false)
                 const password = row.original?.password
 
                 const copyToClipboard = () => {
-                    navigator.clipboard.writeText(password || '')
-                    alert('Password copied to clipboard!')
+                    navigator.clipboard.writeText(password).then(() => {
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                    })
                 }
 
                 if (!password) return <span className="text-muted">N/A</span>
@@ -68,7 +78,15 @@ function AnydeskDirectory() {
                             aria-label="Copy password"
                             title="Copy password"
                         >
-                            <FaClipboard />
+                            {copied ? (
+                                <>
+                                    <FaClipboardCheck />
+                                </>
+                            ) : (
+                                <>
+                                    <FaClipboard />
+                                </>
+                            )}
                         </button>
                     </div>
                 )

@@ -22,6 +22,7 @@ class TelephoneController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
             'number' => 'required|string|unique:telephones,number',
             'cable_code' => 'required|string|unique:telephones,cable_code',
             'location' => 'nullable|string',
@@ -50,6 +51,7 @@ class TelephoneController extends Controller
     public function update(Request $request, Telephone $telephone)
     {
         $validated = $request->validate([
+            'user_id' => 'nullable|exists:users,id' . $telephone->user_id,
             'number' => 'required|string|unique:telephones,number,' . $telephone->id,
             'cable_code' => 'required|string|unique:telephones,cable_code,' . $telephone->id,
             'location' => 'nullable|string',

@@ -3,6 +3,10 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+ipcMain.on('open-network-path', (event, ip) => {
+    shell.openPath(`\\\\${ip}`)
+})
+
 function createWindow() {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
@@ -13,7 +17,9 @@ function createWindow() {
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
-            sandbox: false
+            sandbox: false,
+            contextIsolation: true,
+            nodeIntegration: false
         }
     })
 

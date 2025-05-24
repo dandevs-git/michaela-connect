@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('department', 'telephone', 'ipAddress', 'roles.permissions')->get();
+        $users = User::with('department', 'telephone', 'printer', 'anydesk', 'ipAddress', 'roles.permissions')->get();
         return response()->json($users, 200);
     }
 

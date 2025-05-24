@@ -25,7 +25,7 @@ function IpAddressDirectory() {
             accessorKey: 'user?.department',
             cell: ({ row }) => row.original.user?.department?.name || 'N/A'
         },
-        { header: 'IP Address', accessorKey: 'ip_address' },
+        { header: 'IP Address', accessorKey: 'ip' },
         { header: 'Device Type', accessorKey: 'type' },
         // { header: 'Assigned Date', accessorKey: 'assigned_date' },
         // { header: 'Location', accessorKey: 'location' },

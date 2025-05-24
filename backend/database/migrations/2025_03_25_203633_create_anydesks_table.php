@@ -14,11 +14,12 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('number')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('location')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
         });
+
     }
 
     /**

@@ -8,8 +8,6 @@ function TelephoneDetailsModal({ id, telephone }) {
                         <button type="button" className="btn-close" data-bs-dismiss="modal" />
                     </div>
 
-                    {console.log(telephone)}
-
                     <div className="modal-body p-4">
                         {telephone ? (
                             <div className="text-center">
