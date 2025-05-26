@@ -61,12 +61,12 @@ function PrinterDirectory() {
                         <li>
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
-                                onClick={() => {
-                                    const ip = row.original?.user?.ip_address?.ip
-                                    if (ip) {
-                                        window.api.send('open-network-path', ip)
-                                    }
-                                }}
+                                // onClick={() => {
+                                //     const ip = row.original?.user?.ip_address?.ip
+                                //     if (ip) {
+                                //         window.api.send('open-network-path', ip)
+                                //     }
+                                // }}
                             >
                                 Open \\{row.original?.user?.ip_address?.ip}
                             </button>
