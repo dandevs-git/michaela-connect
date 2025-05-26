@@ -10,9 +10,10 @@ class InternetController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        $internet = Internet::with('user.department')->get();
+        $internet = Internet::with('user.department')->orderBy('created_at', 'desc')->get();
         return response()->json($internet, 200);
     }
 
@@ -21,7 +22,22 @@ class InternetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string',
+            'provider' => 'required|string',
+            'gateway' => 'required|string',
+            'cable_code' => 'required|string|unique:internets,cable_code',
+            'location' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        $internet = Internet::create($validated);
+
+        return response()->json([
+            'message' => 'Internet created successfully.',
+            'data' => $internet,
+        ], 201);
     }
 
     /**
@@ -29,7 +45,7 @@ class InternetController extends Controller
      */
     public function show(Internet $internet)
     {
-        //
+        return response()->json($internet->load('user.department'), 200);
     }
 
     /**
@@ -37,7 +53,23 @@ class InternetController extends Controller
      */
     public function update(Request $request, Internet $internet)
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string',
+            'provider' => 'required|string',
+            'gateway' => 'required|string',
+            'cable_code' => 'required|string|unique:internets,cable_code,' . $internet->id . ',id',
+            'location' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+
+        $internet->update($validated);
+
+        return response()->json([
+            'message' => 'Internet updated successfully.',
+            'data' => $internet,
+        ], 200);
     }
 
     /**
@@ -45,6 +77,10 @@ class InternetController extends Controller
      */
     public function destroy(Internet $internet)
     {
-        //
+        $internet->delete();
+
+        return response()->json([
+            'message' => 'Internet deleted successfully.',
+        ], 200);
     }
 }

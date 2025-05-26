@@ -19,7 +19,7 @@ function OpenTickets() {
     const [confirmType, setConfirmType] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=open', setTickets, setLoading)
+        getData('/tickets?status=open', setTickets, setLoading, setError)
     }, [])
 
     const handleStartButton = (ticket) => {
@@ -120,9 +120,14 @@ function OpenTickets() {
                             topComponent={
                                 <AddTicketModal
                                     id={'AddTicketModal'}
-                                    resetTickets={setTickets}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={() =>
+                                        getData(
+                                            '/tickets?status=open',
+                                            setTickets,
+                                            setLoading,
+                                            setError
+                                        )
+                                    }
                                 />
                             }
                             isloading={loading}

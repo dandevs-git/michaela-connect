@@ -4,20 +4,48 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddTelephoneModal from '../../components/modals/AddTelephoneModal'
 import TelephoneDetailsModal from '../../components/modals/TelephoneDetailsModal'
+import EditTelephoneModal from '../../components/modals/EditTelephoneModal'
+import ConfirmationModal from '../../components/modals/ConfirmationModal'
 
 function TelephoneDirectory() {
-    const { getData } = useAPI()
+    const { getData, deleteData } = useAPI()
     const [telephones, setTelephones] = useState([])
     const [selectedTelephone, setSelectedTelephone] = useState(null)
     const [loading, setLoading] = useState(true)
-    const [error, serError] = useState('')
+    const [error, setError] = useState('')
+
+    const refreshList = () => {
+        getData('/telephones', setTelephones, setLoading, setError)
+    }
 
     useEffect(() => {
-        getData('/telephones', setTelephones, setLoading)
+        refreshList()
     }, [])
 
+    const handleDeleteTelephone = async () => {
+        const response = await deleteData(
+            `/telephones/${selectedTelephone.id}`,
+            setLoading,
+            setError,
+            {
+                onSuccess: {
+                    message: 'Telephone deleted successfully!',
+                    title: 'Success',
+                    delay: 5000
+                },
+                onError: {
+                    message: 'Failed to delete telephone.',
+                    title: 'Error',
+                    delay: 5000
+                }
+            }
+        )
+        if (response) {
+            refreshList()
+        }
+    }
+
     const columns = [
-        { header: 'No.', accessorKey: 'id' },
         {
             header: 'User',
             accessorKey: 'user',
@@ -57,6 +85,26 @@ function TelephoneDirectory() {
                                 <FaEye /> View
                             </button>
                         </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editTelephoneModal"
+                                onClick={() => setSelectedTelephone(row.original)}
+                            >
+                                <FaEdit /> Edit
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteTelephoneConfirmModal"
+                                onClick={() => setSelectedTelephone(row.original)}
+                            >
+                                <FaTrash /> Delete
+                            </button>
+                        </li>
                     </ul>
                 </div>
             )
@@ -75,9 +123,7 @@ function TelephoneDirectory() {
                             topComponent={
                                 <AddTelephoneModal
                                     id={'AddTelephoneModal'}
-                                    resetEmployee={setTelephones}
-                                    resetLoading={setLoading}
-                                    resetError={serError}
+                                    refreshList={refreshList}
                                 />
                             }
                             isloading={loading}
@@ -89,6 +135,22 @@ function TelephoneDirectory() {
             </div>
 
             <TelephoneDetailsModal id="telephoneDetailsModal" telephone={selectedTelephone} />
+
+            <EditTelephoneModal
+                id="editTelephoneModal"
+                telephone={selectedTelephone}
+                refreshList={refreshList}
+            />
+
+            <ConfirmationModal
+                id="deleteTelephoneConfirmModal"
+                title="Delete Telephone"
+                message={`Are you sure you want to Delete Telephone Number ${selectedTelephone?.number}?`}
+                confirmLabel="Delete"
+                confirmClass="btn-danger text-light"
+                cancelLabel="Cancel"
+                onConfirm={() => handleDeleteTelephone(selectedTelephone)}
+            />
         </>
     )
 }

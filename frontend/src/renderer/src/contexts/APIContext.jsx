@@ -1,10 +1,12 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 import api from '../api'
 import { useNavigate } from 'react-router-dom'
+import { useToast } from './ToastContext'
 
 export const APIContext = createContext()
 
 export const APIProvider = ({ children }) => {
+    const { showToast } = useToast()
     const [authUser, setAuthUser] = useState(null)
     const [authLoading, setAuthLoading] = useState(false)
 
@@ -32,37 +34,67 @@ export const APIProvider = ({ children }) => {
         fetchUserDetails()
     }, [])
 
-    const makeRequest = async (method, endpoint, data = null, setLoading, setData, setError) => {
+    const makeRequest = async (
+        method,
+        endpoint,
+        data = null,
+        setLoading,
+        setData,
+        setError,
+        toastOptions = null // <-- New parameter
+    ) => {
         try {
             if (setLoading) setLoading(true)
             const config = data ? { data } : {}
             const response = await api[method](endpoint, data, config)
+
             if (setData) setData(response.data)
+
+            if (toastOptions?.onSuccess) {
+                showToast({
+                    message: toastOptions.onSuccess.message || 'Operation successful.',
+                    title: toastOptions.onSuccess.title || 'Success',
+                    isPositive: true,
+                    delay: toastOptions.onSuccess.delay || 5000
+                })
+            }
+
             return response.data
         } catch (error) {
             const errMsg = error?.response?.data || error.message
             console.error(`Error with ${method.toUpperCase()} ${endpoint}:`, errMsg)
+
             if (setError) setError(errMsg)
+
+            if (toastOptions?.onError) {
+                showToast({
+                    message: toastOptions.onError.message || 'An error occurred.',
+                    title: toastOptions.onError.title || 'Error',
+                    isPositive: false,
+                    delay: toastOptions.onError.delay || 5000
+                })
+            }
+
             return null
         } finally {
             if (setLoading) setLoading(false)
         }
     }
 
-    const getData = (endpoint, setData, setLoading, setError) =>
-        makeRequest('get', endpoint, null, setLoading, setData, setError)
+    const getData = (endpoint, setData, setLoading, setError, toastOptions) =>
+        makeRequest('get', endpoint, null, setLoading, setData, setError, toastOptions)
 
-    const postData = (endpoint, data, setData, setLoading, setError) =>
-        makeRequest('post', endpoint, data, setLoading, setData, setError)
+    const postData = (endpoint, data, setData, setLoading, setError, toastOptions) =>
+        makeRequest('post', endpoint, data, setLoading, setData, setError, toastOptions)
 
-    const putData = (endpoint, data, setData, setLoading, setError) =>
-        makeRequest('put', endpoint, data, setLoading, setData, setError)
+    const putData = (endpoint, data, setData, setLoading, setError, toastOptions) =>
+        makeRequest('put', endpoint, data, setLoading, setData, setError, toastOptions)
 
-    const patchData = (endpoint, data, setData, setLoading, setError) =>
-        makeRequest('patch', endpoint, data, setLoading, setData, setError)
+    const patchData = (endpoint, data, setData, setLoading, setError, toastOptions) =>
+        makeRequest('patch', endpoint, data, setLoading, setData, setError, toastOptions)
 
-    const deleteData = (endpoint, setLoading, setError) =>
-        makeRequest('delete', endpoint, null, setLoading, null, setError)
+    const deleteData = (endpoint, setLoading, setError, toastOptions) =>
+        makeRequest('delete', endpoint, null, setLoading, null, setError, toastOptions)
 
     const login = async (username, password) => {
         try {

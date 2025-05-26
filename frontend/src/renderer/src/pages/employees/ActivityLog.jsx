@@ -6,9 +6,10 @@ function ActivityLog() {
     const { getData } = useAPI()
     const [logs, setLogs] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/logs', setLogs, setLoading)
+        getData('/logs', setLogs, setLoading, setError)
     }, [])
 
     const columns = [

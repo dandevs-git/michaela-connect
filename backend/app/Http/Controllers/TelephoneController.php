@@ -12,7 +12,7 @@ class TelephoneController extends Controller
      */
     public function index()
     {
-        $telephones = Telephone::with('user.department')->get();
+        $telephones = Telephone::with('user.department')->orderBy('created_at', 'desc')->get();
         return response()->json($telephones, 200);
     }
 
@@ -42,7 +42,7 @@ class TelephoneController extends Controller
      */
     public function show(Telephone $telephone)
     {
-        return response()->json($telephone, 200);
+        return response()->json($telephone->load('user.department'), 200);
     }
 
     /**
@@ -51,9 +51,9 @@ class TelephoneController extends Controller
     public function update(Request $request, Telephone $telephone)
     {
         $validated = $request->validate([
-            'user_id' => 'nullable|exists:users,id' . $telephone->user_id,
-            'number' => 'required|string|unique:telephones,number,' . $telephone->id,
-            'cable_code' => 'required|string|unique:telephones,cable_code,' . $telephone->id,
+            'user_id' => 'nullable|exists:users,id',
+            'number' => 'required|string|unique:telephones,number,' . $telephone->id . ',id',
+            'cable_code' => 'required|string|unique:telephones,cable_code,' . $telephone->id . ',id',
             'location' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
@@ -65,6 +65,9 @@ class TelephoneController extends Controller
             'data' => $telephone,
         ], 200);
     }
+
+
+
 
     /**
      * Remove the specified telephone from storage.

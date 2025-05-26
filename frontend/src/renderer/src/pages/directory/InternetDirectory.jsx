@@ -4,20 +4,48 @@ import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddInternetModal from '../../components/modals/AddInternetModal'
 import InternetDetailsModal from '../../components/modals/InternetDetailsModal'
+import ConfirmationModal from '../../components/modals/ConfirmationModal'
+import EditInternetModal from '../../components/modals/EditInternetModal'
 
 function InternetDirectory() {
-    const { getData } = useAPI()
+    const { getData, deleteData } = useAPI()
     const [internet, setInternet] = useState([])
     const [selectedInternet, setSelectedInternet] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
+    const refreshList = () => {
+        getData('/internet', setInternet, setLoading, setError)
+    }
+
     useEffect(() => {
-        getData('/internet', setInternet, setLoading)
+        refreshList()
     }, [])
 
+    const handleDeleteInternet = async () => {
+        const response = await deleteData(
+            `/internet/${selectedInternet.id}`,
+            setLoading,
+            setError,
+            {
+                onSuccess: {
+                    message: 'Telephone deleted successfully!',
+                    title: 'Success',
+                    delay: 5000
+                },
+                onError: {
+                    message: 'Failed to delete telephone.',
+                    title: 'Error',
+                    delay: 5000
+                }
+            }
+        )
+        if (response) {
+            refreshList()
+        }
+    }
+
     const columns = [
-        { header: 'No.', accessorKey: 'id' },
         {
             header: 'User',
             accessorKey: 'user',
@@ -58,17 +86,31 @@ function InternetDirectory() {
                                 <FaEye /> View
                             </button>
                         </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editInternetModal"
+                                onClick={() => setSelectedInternet(row.original)}
+                            >
+                                <FaEdit /> Edit
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteInternetConfirmModal"
+                                onClick={() => setSelectedInternet(row.original)}
+                            >
+                                <FaTrash /> Delete
+                            </button>
+                        </li>
                     </ul>
                 </div>
             )
         }
     ]
-
-    const topContent = (
-        <button className="btn btn-primary me-4">
-            <FaPlus /> Add Internet
-        </button>
-    )
 
     return (
         <>
@@ -82,9 +124,7 @@ function InternetDirectory() {
                             topComponent={
                                 <AddInternetModal
                                     id={'AddInternetModal'}
-                                    resetEmployee={setInternet}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={refreshList}
                                 />
                             }
                             isloading={loading}
@@ -96,6 +136,22 @@ function InternetDirectory() {
             </div>
 
             <InternetDetailsModal id="internetDetailsModal" internet={selectedInternet} />
+
+            <EditInternetModal
+                id="editInternetModal"
+                internet={selectedInternet}
+                refreshList={refreshList}
+            />
+
+            <ConfirmationModal
+                id="deleteInternetConfirmModal"
+                title="Delete Internet Line"
+                message={`Are you sure you want to Delete Internet Line with Code ${selectedInternet?.cable_code}?`}
+                confirmLabel="Delete"
+                confirmClass="btn-danger text-light"
+                cancelLabel="Cancel"
+                onConfirm={() => handleDeleteInternet(selectedInternet)}
+            />
         </>
     )
 }

@@ -14,7 +14,7 @@ function FailedTickets() {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=failed', setTickets, setLoading)
+        getData('/tickets?status=failed', setTickets, setLoading, setError)
     }, [])
 
     const getSelectedTicket = (tickets) => {
@@ -75,9 +75,14 @@ function FailedTickets() {
                             topComponent={
                                 <AddTicketModal
                                     id={'AddTicketModal'}
-                                    resetTickets={setTickets}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={() =>
+                                        getData(
+                                            '/tickets?status=failed',
+                                            setTickets,
+                                            setLoading,
+                                            setError
+                                        )
+                                    }
                                 />
                             }
                             isloading={loading}

@@ -15,9 +15,10 @@ function AnydeskDirectory() {
     const [anydesk, setAnydesk] = useState([])
     const [selectedAnydesk, setSelectedAnydesk] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/anydesks', setAnydesk, setLoading)
+        getData('/anydesks', setAnydesk, setLoading, setError)
     }, [])
 
     const columns = [

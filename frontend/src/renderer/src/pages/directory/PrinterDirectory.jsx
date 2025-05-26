@@ -8,9 +8,10 @@ function PrinterDirectory() {
     const [printers, setPrinters] = useState([])
     const [selectedprinter, setSelectedprinter] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/printers', setPrinters, setLoading)
+        getData('/printers', setPrinters, setLoading, setError)
     }, [])
 
     const columns = [

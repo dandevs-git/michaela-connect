@@ -14,7 +14,7 @@ function RejectedTickets() {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=rejected', setTickets, setLoading)
+        getData('/tickets?status=rejected', setTickets, setLoading, setError)
     }, [])
 
     const columns = [
@@ -76,9 +76,14 @@ function RejectedTickets() {
                             topComponent={
                                 <AddTicketModal
                                     id={'AddTicketModal'}
-                                    resetTickets={setTickets}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={() =>
+                                        getData(
+                                            '/tickets?status=rejected',
+                                            setTickets,
+                                            setLoading,
+                                            setError
+                                        )
+                                    }
                                 />
                             }
                             isloading={loading}

@@ -2,11 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
-import { useToast } from '../../contexts/ToastContext'
 
-function AddEmployeeModal({ id, resetEmployee, resetLoading, resetError }) {
+function AddEmployeeModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
-    const { showToast } = useToast()
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -16,6 +14,7 @@ function AddEmployeeModal({ id, resetEmployee, resetLoading, resetError }) {
 
     const rfidRef = useRef(null)
     const modalRef = useRef(null)
+    const formRef = useRef(null)
 
     const [employeeData, setEmployeeData] = useState({
         rfid: '',
@@ -38,7 +37,7 @@ function AddEmployeeModal({ id, resetEmployee, resetLoading, resetError }) {
         })
         setMessage('')
         setError('')
-        document.querySelector('.needs-validation')?.classList.remove('was-validated')
+        formRef.current?.classList.remove('was-validated')
     }
 
     useEffect(() => {
@@ -60,7 +59,7 @@ function AddEmployeeModal({ id, resetEmployee, resetLoading, resetError }) {
         getData('/roles', setRoles, () => {}, setError)
     }, [])
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const form = e.target
         form.classList.remove('was-validated')
@@ -72,17 +71,30 @@ function AddEmployeeModal({ id, resetEmployee, resetLoading, resetError }) {
             return
         }
 
-        postData('/users', employeeData, setEmployeeData, setLoading, setError)
-        Modal.getInstance(modalRef.current).hide()
-        resetForm()
-        showToast({
-            message: 'Employee added successfully!',
-            title: 'Success',
-            isPositive: true,
-            delay: 5000
-        })
-
-        getData('/users', resetEmployee, resetLoading, resetError)
+        const response = await postData(
+            '/users',
+            employeeData,
+            setEmployeeData,
+            setLoading,
+            setError,
+            {
+                onSuccess: {
+                    message: 'Employee added successfully!',
+                    title: 'Success',
+                    delay: 5000
+                },
+                onError: {
+                    message: 'Failed to add employee.',
+                    title: 'Error',
+                    delay: 5000
+                }
+            }
+        )
+        if (response) {
+            Modal.getInstance(modalRef.current).hide()
+            resetForm()
+            refreshList?.()
+        }
     }
 
     return (
@@ -122,6 +134,7 @@ function AddEmployeeModal({ id, resetEmployee, resetLoading, resetError }) {
                                 className="row g-3 needs-validation p-3"
                                 noValidate
                                 onSubmit={handleSubmit}
+                                ref={formRef}
                             >
                                 {(message || error) && (
                                     <div

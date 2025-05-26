@@ -19,7 +19,7 @@ function ResolvedTickets() {
     const [confirmType, setConfirmType] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=resolved', setTickets, setLoading)
+        getData('/tickets?status=resolved', setTickets, setLoading, setError)
     }, [])
 
     const handleStatusChange = (ticket, status) => {
@@ -130,9 +130,14 @@ function ResolvedTickets() {
                             topComponent={
                                 <AddTicketModal
                                     id={'AddTicketModal'}
-                                    resetTickets={setTickets}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={() =>
+                                        getData(
+                                            '/tickets?status=resolved',
+                                            setTickets,
+                                            setLoading,
+                                            setError
+                                        )
+                                    }
                                 />
                             }
                             isloading={loading}

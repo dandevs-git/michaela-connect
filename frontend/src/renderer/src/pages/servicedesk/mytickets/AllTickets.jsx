@@ -15,19 +15,36 @@ function AllTickets() {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData(`/tickets`, setTickets, setLoading)
+        getData(`/tickets`, setTickets, setLoading, setError)
     }, [])
+
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority.name' },
-        { header: 'From Department', accessorKey: 'origin_department.name' },
-        { header: 'To Department', accessorKey: 'target_department.name' },
+        {
+            header: 'Priority Level',
+            accessorKey: 'priority.name',
+            cell: ({ row }) => row.original.priority?.name || 'N/A'
+        },
+        {
+            header: 'From Department',
+            accessorKey: 'origin_department.name',
+            cell: ({ row }) => row.original.origin_department?.name || 'N/A'
+        },
+        {
+            header: 'To Department',
+            accessorKey: 'target_department.name',
+            cell: ({ row }) => row.original.target_department?.name || 'N/A'
+        },
         {
             header: 'Status',
             accessorKey: 'status',
             cell: ({ row }) => <StatusBadge status={row.original.status} />
         },
-        { header: 'Title', accessorKey: 'title' },
+        {
+            header: 'Title',
+            accessorKey: 'title',
+            cell: ({ row }) => row.original.title || 'N/A'
+        },
         {
             header: 'Updated At',
             accessorKey: 'updated_at',
@@ -75,9 +92,9 @@ function AllTickets() {
                             topComponent={
                                 <AddTicketModal
                                     id={'AddTicketModal'}
-                                    resetTickets={setTickets}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={() =>
+                                        getData(`/tickets`, setTickets, setLoading, setError)
+                                    }
                                 />
                             }
                             isloading={loading}

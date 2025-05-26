@@ -120,9 +120,14 @@ function PendingTickets() {
                             topComponent={
                                 <AddTicketModal
                                     id={'AddTicketModal'}
-                                    resetTickets={setTickets}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={() =>
+                                        getData(
+                                            '/tickets?status=pending',
+                                            setTickets,
+                                            setLoading,
+                                            setError
+                                        )
+                                    }
                                 />
                             }
                             isloading={loading}

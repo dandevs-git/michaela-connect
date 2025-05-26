@@ -79,10 +79,10 @@ function RolesPermissions() {
                         <CustomTable
                             topComponent={
                                 <AddRoleModal
-                                // id={'AddTicketModal'}
-                                // resetTickets={setTickets}
-                                // resetLoading={setLoading}
-                                // resetError={setError}
+                                // id={'AddRoleModal'}
+                                // refreshList={() =>
+                                //     getData('/roles', setRoles, setLoading, setError)
+                                // }
                                 />
                             }
                             isloading={loading}

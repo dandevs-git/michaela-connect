@@ -31,10 +31,6 @@ function AllEmployees() {
         getData('/users', setEmployees, setLoading, setError)
     }, [])
 
-    const handleView = (employee) => {
-        setSelectedEmployee(employee)
-    }
-
     const handleLockUnlockUser = (employee) => {
         patchData(
             `/users/${employee?.id}/lock`,
@@ -158,7 +154,7 @@ function AllEmployees() {
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
                                 data-bs-target="#employeeDetailsModal"
-                                onClick={() => handleView(row.original)}
+                                onClick={() => setSelectedEmployee(row.original)}
                             >
                                 <FaEye /> View
                             </button>
@@ -261,9 +257,9 @@ function AllEmployees() {
                         topComponent={
                             <AddEmployeeModal
                                 id={'AddEmployeeModal'}
-                                resetEmployee={setEmployees}
-                                resetLoading={setLoading}
-                                resetError={setError}
+                                refreshList={() =>
+                                    getData('/users', setEmployees, setLoading, setError)
+                                }
                             />
                         }
                         isloading={loading}

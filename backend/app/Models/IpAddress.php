@@ -11,6 +11,7 @@ class IpAddress extends Model
     protected $fillable = [
         'user_id',
         'ip',
+        'type',
         'assigned_date',
         'location',
         'description',

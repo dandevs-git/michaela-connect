@@ -1,0 +1,77 @@
+function IpAddressDetailsModal({ id, ipAddress }) {
+    return (
+        <div className="modal fade" id={id} tabIndex="-1" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title">IP Address Details</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" />
+                    </div>
+
+                    <div className="modal-body p-4">
+                        {ipAddress ? (
+                            <div className="text-start p-3">
+                                <p>
+                                    <strong className="me-2">IP Address:</strong>
+                                    <span className="text-uppercase">{ipAddress.ip || 'N/A'}</span>
+                                </p>
+                                <p>
+                                    <strong className="me-2">User:</strong>
+                                    <span className="text-uppercase">
+                                        {ipAddress?.user?.name || 'N/A'}
+                                    </span>
+                                </p>
+                                <p>
+                                    <strong className="me-2">Department:</strong>
+                                    <span className="text-uppercase">
+                                        {ipAddress?.user?.department?.name || 'N/A'}
+                                    </span>
+                                </p>
+                                <p>
+                                    <strong className="me-2">Type:</strong>
+                                    <span className="text-uppercase">
+                                        {ipAddress.type || 'N/A'}
+                                    </span>
+                                </p>
+                                <p>
+                                    <strong className="me-2">Cable Code:</strong>
+                                    <span className="text-uppercase">
+                                        {ipAddress.cable_code || 'N/A'}
+                                    </span>
+                                </p>
+                                <p>
+                                    <strong className="me-2">Assigned Date:</strong>
+                                    <span className="text-uppercase">
+                                        {ipAddress.assigned_date || 'N/A'}
+                                    </span>
+                                </p>
+                                <p>
+                                    <strong className="me-2">Location:</strong>
+                                    <span className="text-uppercase">
+                                        {ipAddress.location || 'N/A'}
+                                    </span>
+                                </p>
+                                <p>
+                                    <strong className="me-2">Description:</strong>
+                                    <span className="text-uppercase">
+                                        {ipAddress.description || 'N/A'}
+                                    </span>
+                                </p>
+                            </div>
+                        ) : (
+                            <p className="text-muted text-center">No IP address data available.</p>
+                        )}
+                    </div>
+
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default IpAddressDetailsModal

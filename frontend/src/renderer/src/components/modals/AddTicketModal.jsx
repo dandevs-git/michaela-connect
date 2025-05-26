@@ -5,7 +5,7 @@ import { FaPlus } from 'react-icons/fa'
 import { useToast } from '../../contexts/ToastContext'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
+function AddTicketModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
     const { showToast } = useToast()
     const navigate = useNavigate()
@@ -57,7 +57,7 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
         document.querySelector('.needs-validation')?.classList.remove('was-validated')
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const form = e.target
         form.classList.remove('was-validated')
@@ -69,19 +69,19 @@ function AddTicketModal({ id, resetTickets, resetLoading, resetError }) {
             return
         }
 
-        postData('/tickets', ticketData, setTicketData, setLoading, setError)
-        Modal.getInstance(modalRef.current).hide()
-        resetForm()
-        showToast({
-            message: 'Ticket submitted successfully!',
-            title: 'Success',
-            isPositive: true,
-            delay: 5000
-        })
-        if (location.pathname === '/servicedesk/tickets/all') {
-            getData('/tickets', resetTickets, resetLoading, resetError)
-        } else {
-            navigate('/servicedesk/tickets/all')
+        const response = await postData('/tickets', ticketData, setTicketData, setLoading, setError)
+
+        if (response) {
+            Modal.getInstance(modalRef.current).hide()
+            resetForm()
+            showToast({
+                message: 'Ticket submitted successfully!',
+                title: 'Success',
+                isPositive: true,
+                delay: 5000
+            })
+            refreshList?.()
+            navigate('/servicedesk/tickets/all', { replace: true })
         }
     }
 

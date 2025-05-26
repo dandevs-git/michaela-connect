@@ -6,9 +6,10 @@ function TeamActivities() {
     const { getData } = useAPI()
     const [dataLogs, setDataLogs] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/logs/ticket', setDataLogs, setLoading)
+        getData('/logs/ticket', setDataLogs, setLoading, setError)
     }, [])
 
     const columnsLogs = [

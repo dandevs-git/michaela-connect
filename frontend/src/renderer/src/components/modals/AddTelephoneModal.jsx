@@ -2,17 +2,14 @@ import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
-import { useToast } from '../../contexts/ToastContext'
 import Select from 'react-select'
 import { COLORS, selectStyles } from '../../constants/config'
 
-function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
+function AddTelephoneModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
-    const { showToast } = useToast()
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [message, setMessage] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
 
     const modalRef = useRef(null)
@@ -28,8 +25,8 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
     })
 
     useEffect(() => {
-        getData('/users', setUsers, setLoading, setError)
-    }, [getData])
+        getData('/users', setUsers, () => {}, setError)
+    }, [])
 
     const userOptions = users.map((user) => ({
         value: user.id,
@@ -49,17 +46,15 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
             location: '',
             description: ''
         })
-        setMessage('')
         setError('')
         formRef.current?.classList.remove('was-validated')
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const form = e.target
         form.classList.remove('was-validated')
         setIsSubmitted(true)
-        setMessage('')
         setError('')
 
         if (!form.checkValidity()) {
@@ -67,19 +62,32 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
             return
         }
 
-        console.log(telephoneData)
+        const response = await postData(
+            '/telephones',
+            telephoneData,
+            setTelephoneData,
+            setLoading,
+            setError,
+            {
+                onSuccess: {
+                    message: 'Telephone added successfully!',
+                    title: 'Success',
+                    delay: 5000
+                },
+                onError: {
+                    message: 'Failed to add telephone.',
+                    title: 'Error',
+                    delay: 5000
+                }
+            }
+        )
 
-        postData('/telephones', telephoneData, setTelephoneData, setLoading, setError)
-        Modal.getInstance(modalRef.current).hide()
-        resetForm()
-        showToast({
-            message: 'Telephone added successfully!',
-            title: 'Success',
-            isPositive: true,
-            delay: 5000
-        })
-
-        getData('/telephones', resetTelephone, resetLoading, resetError)
+        if (response) {
+            setIsSubmitted(false)
+            resetForm()
+            Modal.getInstance(modalRef.current)?.hide()
+            refreshList()
+        }
     }
 
     return (
@@ -113,7 +121,6 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                 aria-label="Close"
                             />
                         </div>
-
                         <div className="modal-body p-3">
                             <form
                                 ref={formRef}
@@ -121,13 +128,12 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {(message || error) && (
-                                    <div
-                                        className={`alert text-center py-2 ${error ? 'alert-danger' : 'alert-success'}`}
-                                    >
-                                        {error || message}
+                                {error?.message && (
+                                    <div className="alert alert-danger text-center py-2">
+                                        {error.message}
                                     </div>
                                 )}
+
                                 <div className="col-md-12">
                                     <label htmlFor="user" className="form-label">
                                         User
@@ -146,10 +152,10 @@ function AddTelephoneModal({ id, resetTelephone, resetLoading, resetError }) {
                                             }))
                                         }
                                         styles={selectStyles(
-                                            !!telephoneData.user_id || !isSubmitted
+                                            !!telephoneData?.user_id || !isSubmitted || ''
                                         )}
                                         classNamePrefix="react-select"
-                                        className={`form-control p-0 border-0 ${!telephoneData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                        className={`form-control p-0 border-0 ${!telephoneData?.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
                                 </div>

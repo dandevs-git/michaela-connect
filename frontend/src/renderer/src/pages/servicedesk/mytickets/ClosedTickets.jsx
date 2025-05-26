@@ -14,7 +14,7 @@ function ClosedTickets() {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=closed', setTickets, setLoading)
+        getData('/tickets?status=closed', setTickets, setLoading, setError)
     }, [])
 
     const columns = [
@@ -71,9 +71,14 @@ function ClosedTickets() {
                             topComponent={
                                 <AddTicketModal
                                     id={'AddTicketModal'}
-                                    resetTickets={setTickets}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={() =>
+                                        getData(
+                                            '/tickets?status=closed',
+                                            setTickets,
+                                            setLoading,
+                                            setError
+                                        )
+                                    }
                                 />
                             }
                             isloading={loading}

@@ -12,8 +12,8 @@ class IpAddressController extends Controller
      */
     public function index()
     {
-        $ipaddress = IpAddress::with('user.department')->get();
-        return response()->json($ipaddress, 200);
+        $ipAddresses = IpAddress::with('user.department')->orderBy('created_at', 'desc')->get();
+        return response()->json($ipAddresses, 200);
     }
 
     /**
@@ -22,7 +22,9 @@ class IpAddressController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
             'ip' => 'required|ip|unique:ip_addresses,ip',
+            'type' => 'nullable|string|in:Computer,Printer,Server,Other',
             'assigned_date' => 'nullable|date',
             'location' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -33,13 +35,13 @@ class IpAddressController extends Controller
         return response()->json(['message' => 'IP address created', 'ip' => $ip], 201);
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show(IpAddress $ipAddress)
     {
-        //
+        $ipAddress->load('user.department');
+        return response()->json($ipAddress, 200);
     }
 
     /**
@@ -47,7 +49,19 @@ class IpAddressController extends Controller
      */
     public function update(Request $request, IpAddress $ipAddress)
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'ip' => 'required|ip|unique:ip_addresses,ip,' . $ipAddress->id . ',id',
+            'type' => 'nullable|string|in:Computer,Printer,Server,Other',
+            'assigned_date' => 'nullable|date',
+            'location' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+
+        $ipAddress->update($validated);
+
+        return response()->json(['message' => 'IP address updated', 'ip' => $ipAddress], 200);
     }
 
     /**
@@ -55,6 +69,7 @@ class IpAddressController extends Controller
      */
     public function destroy(IpAddress $ipAddress)
     {
-        //
+        $ipAddress->delete();
+        return response()->json(['message' => 'IP address deleted'], 200);
     }
 }

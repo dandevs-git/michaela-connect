@@ -19,7 +19,7 @@ function InProgressTickets() {
     const [confirmType, setConfirmType] = useState('')
 
     useEffect(() => {
-        getData('/tickets?status=in_progress', setTickets, setLoading)
+        getData('/tickets?status=in_progress', setTickets, setLoading, setError)
     }, [])
 
     const handleStatusChange = (ticket, status) => {
@@ -130,9 +130,14 @@ function InProgressTickets() {
                             topComponent={
                                 <AddTicketModal
                                     id={'AddTicketModal'}
-                                    resetTickets={setTickets}
-                                    resetLoading={setLoading}
-                                    resetError={setError}
+                                    refreshList={() =>
+                                        getData(
+                                            '/tickets?status=in_progress',
+                                            setTickets,
+                                            setLoading,
+                                            setError
+                                        )
+                                    }
                                 />
                             }
                             isloading={loading}

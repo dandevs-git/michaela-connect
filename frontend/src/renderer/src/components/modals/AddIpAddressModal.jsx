@@ -1,33 +1,40 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
-import { FaPlus } from 'react-icons/fa'
-import { useToast } from '../../contexts/ToastContext'
+import { FaCalendarDay, FaCross, FaPlus, FaTimes } from 'react-icons/fa'
 import Select from 'react-select'
 import { COLORS, selectStyles } from '../../constants/config'
 
-function AddInternetModal({ id, refreshList }) {
+const TYPE_OPTIONS = [
+    { value: 'PC', label: 'PC' },
+    { value: 'Printer', label: 'Printer' },
+    { value: 'Server', label: 'Server' },
+    { value: 'Other', label: 'Other' }
+]
+
+function AddIpAddressModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
+
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [message, setMessage] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
 
     const modalRef = useRef(null)
     const formRef = useRef(null)
 
     const [users, setUsers] = useState([])
-    const [internetData, setInternetData] = useState({
+    const [ipData, setIpData] = useState({
         user_id: '',
-        number: '',
-        cable_code: '',
+        ip: '',
+        type: '',
+        assigned_date: '',
         location: '',
         description: ''
     })
 
     useEffect(() => {
-        getData('/users', setUsers, setLoading, setError)
-    }, [getData])
+        getData('/users', setUsers, () => {}, setError)
+    }, [])
 
     const userOptions = users.map((user) => ({
         value: user.id,
@@ -36,18 +43,18 @@ function AddInternetModal({ id, refreshList }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setInternetData((prev) => ({ ...prev, [name]: value }))
+        setIpData((prev) => ({ ...prev, [name]: value }))
     }
 
     const resetForm = () => {
-        setInternetData({
+        setIpData({
             user_id: '',
-            number: '',
-            cable_code: '',
+            ip: '',
+            type: '',
+            assigned_date: '',
             location: '',
             description: ''
         })
-        setMessage('')
         setError('')
         formRef.current?.classList.remove('was-validated')
     }
@@ -57,7 +64,6 @@ function AddInternetModal({ id, refreshList }) {
         const form = e.target
         form.classList.remove('was-validated')
         setIsSubmitted(true)
-        setMessage('')
         setError('')
 
         if (!form.checkValidity()) {
@@ -65,30 +71,24 @@ function AddInternetModal({ id, refreshList }) {
             return
         }
 
-        const response = await postData(
-            '/internet',
-            internetData,
-            setInternetData,
-            setLoading,
-            setError,
-            {
-                onSuccess: {
-                    message: 'Internet Line added successfully!',
-                    title: 'Success',
-                    delay: 5000
-                },
-                onError: {
-                    message: 'Failed to add Internet Line.',
-                    title: 'Error',
-                    delay: 5000
-                }
+        const response = await postData('/ipaddress', ipData, setIpData, setLoading, setError, {
+            onSuccess: {
+                message: 'IP address added successfully!',
+                title: 'Success',
+                delay: 5000
+            },
+            onError: {
+                message: 'Failed to add IP address.',
+                title: 'Error',
+                delay: 5000
             }
-        )
+        })
 
         if (response) {
-            Modal.getInstance(modalRef.current).hide()
+            setIsSubmitted(false)
             resetForm()
-            refreshList?.()
+            Modal.getInstance(modalRef.current)?.hide()
+            refreshList()
         }
     }
 
@@ -99,7 +99,7 @@ function AddInternetModal({ id, refreshList }) {
                 data-bs-toggle="modal"
                 data-bs-target={`#${id}`}
             >
-                <FaPlus /> New Internet Line
+                <FaPlus /> New IP Address
             </button>
 
             <div
@@ -114,7 +114,7 @@ function AddInternetModal({ id, refreshList }) {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title fw-semibold text-uppercase">
-                                Add New Internet Line
+                                Add New IP Address
                             </h5>
                             <button
                                 type="button"
@@ -123,7 +123,6 @@ function AddInternetModal({ id, refreshList }) {
                                 aria-label="Close"
                             />
                         </div>
-
                         <div className="modal-body p-3">
                             <form
                                 ref={formRef}
@@ -131,55 +130,124 @@ function AddInternetModal({ id, refreshList }) {
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {(message || error) && (
-                                    <div
-                                        className={`alert text-center py-2 ${error ? 'alert-danger' : 'alert-success'}`}
-                                    >
-                                        {error || message}
+                                {error?.message && (
+                                    <div className="alert alert-danger text-center py-2">
+                                        {error.message}
                                     </div>
                                 )}
-
                                 <div className="col-md-12">
                                     <label htmlFor="user" className="form-label">
                                         User
                                     </label>
                                     <Select
-                                        inputId="user"
+                                        inputId="user_id"
                                         name="user_id"
                                         options={userOptions}
                                         value={userOptions.find(
-                                            (option) => option.value === internetData.user_id
+                                            (option) => option.value === ipData.user_id
                                         )}
                                         onChange={(selected) =>
-                                            setInternetData((prev) => ({
+                                            setIpData((prev) => ({
                                                 ...prev,
                                                 user_id: selected?.value || ''
                                             }))
                                         }
                                         styles={selectStyles(
-                                            !!internetData.user_id || !isSubmitted
+                                            !!ipData?.user_id || !isSubmitted || ''
                                         )}
                                         classNamePrefix="react-select"
-                                        className={`form-control p-0 border-0 ${!internetData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                        className={`form-control p-0 border-0 ${
+                                            !ipData?.user_id && isSubmitted
+                                                ? 'is-invalid border border-danger'
+                                                : ''
+                                        }`}
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
                                 </div>
 
                                 <div className="col-md-12">
-                                    <label htmlFor="cableCode" className="form-label">
-                                        Cable Code
+                                    <label htmlFor="ipAddress" className="form-label">
+                                        IP Address
                                     </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="cableCode"
-                                        name="cable_code"
-                                        value={internetData.cable_code}
+                                        id="ipAddress"
+                                        name="ip"
+                                        value={ipData.ip}
                                         onChange={handleInputChange}
                                         required
                                     />
                                     <div className="invalid-feedback">
-                                        Please enter a unique cable code.
+                                        Please enter a valid IP address.
+                                    </div>
+                                </div>
+
+                                <div className="col-md-12">
+                                    <label htmlFor="type" className="form-label">
+                                        Type
+                                    </label>
+                                    <select
+                                        id="type"
+                                        name="type"
+                                        className="form-select"
+                                        value={ipData.type}
+                                        onChange={handleInputChange}
+                                        required
+                                    >
+                                        <option value="">Select type</option>
+                                        <option value="Computer">PC</option>
+                                        <option value="Printer">Printer</option>
+                                        <option value="Server">Server</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div className="invalid-feedback">Please select a type.</div>
+                                </div>
+
+                                <div className="col-md-12">
+                                    <label htmlFor="assignedDate" className="form-label">
+                                        Assigned Date (optional)
+                                    </label>
+                                    <div className="input-group">
+                                        <span className="input-group-text">
+                                            <FaCalendarDay />
+                                        </span>
+                                        <input
+                                            type="date"
+                                            className="form-control"
+                                            id="assignedDate"
+                                            name="assigned_date"
+                                            value={ipData.assigned_date}
+                                            onChange={handleInputChange}
+                                            max={new Date().toISOString().split('T')[0]}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn border"
+                                            onClick={() =>
+                                                setIpData((prev) => ({
+                                                    ...prev,
+                                                    assigned_date: new Date()
+                                                        .toISOString()
+                                                        .split('T')[0]
+                                                }))
+                                            }
+                                            title="Set Today"
+                                        >
+                                            Today
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn border"
+                                            onClick={() =>
+                                                setIpData((prev) => ({
+                                                    ...prev,
+                                                    assigned_date: ''
+                                                }))
+                                            }
+                                        >
+                                            <FaTimes />
+                                        </button>
                                     </div>
                                 </div>
 
@@ -192,7 +260,7 @@ function AddInternetModal({ id, refreshList }) {
                                         className="form-control"
                                         id="location"
                                         name="location"
-                                        value={internetData.location}
+                                        value={ipData.location}
                                         onChange={handleInputChange}
                                     />
                                 </div>
@@ -206,7 +274,7 @@ function AddInternetModal({ id, refreshList }) {
                                         id="description"
                                         name="description"
                                         rows="2"
-                                        value={internetData.description}
+                                        value={ipData.description}
                                         onChange={handleInputChange}
                                     />
                                 </div>
@@ -227,7 +295,7 @@ function AddInternetModal({ id, refreshList }) {
                                                 Submitting...
                                             </>
                                         ) : (
-                                            'Add Internet Line'
+                                            'Add IP Address'
                                         )}
                                     </button>
                                 </div>
@@ -240,4 +308,4 @@ function AddInternetModal({ id, refreshList }) {
     )
 }
 
-export default AddInternetModal
+export default AddIpAddressModal
