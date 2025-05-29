@@ -3,7 +3,7 @@ import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddInternetModal from '../../components/modals/AddInternetModal'
-import InternetDetailsModal from '../../components/modals/InternetDetailsModal'
+import ViewInternetDetailsModal from '../../components/modals/ViewInternetDetailsModal'
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
 import EditInternetModal from '../../components/modals/EditInternetModal'
 
@@ -23,23 +23,7 @@ function InternetDirectory() {
     }, [])
 
     const handleDeleteInternet = async () => {
-        const response = await deleteData(
-            `/internet/${selectedInternet.id}`,
-            setLoading,
-            setError,
-            {
-                onSuccess: {
-                    message: 'Telephone deleted successfully!',
-                    title: 'Success',
-                    delay: 5000
-                },
-                onError: {
-                    message: 'Failed to delete telephone.',
-                    title: 'Error',
-                    delay: 5000
-                }
-            }
-        )
+        const response = await deleteData(`/internet/${selectedInternet.id}`, setLoading, setError)
         if (response) {
             refreshList()
         }
@@ -106,6 +90,19 @@ function InternetDirectory() {
                                 <FaTrash /> Delete
                             </button>
                         </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                onClick={() => {
+                                    const gateway = row.original?.gateway
+                                    if (gateway) {
+                                        window.open(`https://${gateway}`, '_blank')
+                                    }
+                                }}
+                            >
+                                Redirect to {row.original?.gateway}
+                            </button>
+                        </li>
                     </ul>
                 </div>
             )
@@ -135,7 +132,7 @@ function InternetDirectory() {
                 </div>
             </div>
 
-            <InternetDetailsModal id="internetDetailsModal" internet={selectedInternet} />
+            <ViewInternetDetailsModal id="internetDetailsModal" internet={selectedInternet} />
 
             <EditInternetModal
                 id="editInternetModal"

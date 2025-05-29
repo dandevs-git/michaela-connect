@@ -12,7 +12,7 @@ class AnydeskController extends Controller
      */
     public function index()
     {
-        $anydesk = Anydesk::with('user.department')->get();
+        $anydesk = Anydesk::with('user.department')->orderBy('created_at', 'desc')->get();
         return response()->json($anydesk, 200);
     }
 
@@ -21,7 +21,20 @@ class AnydeskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'sometimes|exists:users,id',
+            'number' => 'required|number|unique:anydesks,number',
+            'password' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $anydesk = Anydesk::create($validated);
+
+        return response()->json([
+            'message' => 'Anydesk created successfully.',
+            'data' => $anydesk
+        ], 201);
     }
 
     /**
@@ -29,7 +42,8 @@ class AnydeskController extends Controller
      */
     public function show(Anydesk $anydesk)
     {
-        //
+        $anydesk->load('user.department');
+        return response()->json($anydesk, 200);
     }
 
     /**
@@ -37,7 +51,20 @@ class AnydeskController extends Controller
      */
     public function update(Request $request, Anydesk $anydesk)
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'sometimes|exists:users,id',
+            'number' => 'sometimes|string|unique:anydesks,number,' . $anydesk->id,
+            'password' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $anydesk->update($validated);
+
+        return response()->json([
+            'message' => 'Anydesk updated successfully.',
+            'data' => $anydesk
+        ], 200);
     }
 
     /**
@@ -45,6 +72,10 @@ class AnydeskController extends Controller
      */
     public function destroy(Anydesk $anydesk)
     {
-        //
+        $anydesk->delete();
+
+        return response()->json([
+            'message' => 'Anydesk entry deleted successfully.'
+        ], 200);
     }
 }

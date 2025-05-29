@@ -5,10 +5,11 @@ import { FaCalendarDay, FaCross, FaPlus, FaTimes } from 'react-icons/fa'
 import Select from 'react-select'
 import { COLORS, selectStyles } from '../../constants/config'
 
-const TYPE_OPTIONS = [
-    { value: 'PC', label: 'PC' },
+const typeOptions = [
+    { value: 'Computer', label: 'Computer' },
     { value: 'Printer', label: 'Printer' },
     { value: 'Server', label: 'Server' },
+    { value: 'Router', label: 'Router' },
     { value: 'Other', label: 'Other' }
 ]
 
@@ -71,18 +72,7 @@ function AddIpAddressModal({ id, refreshList }) {
             return
         }
 
-        const response = await postData('/ipaddress', ipData, setIpData, setLoading, setError, {
-            onSuccess: {
-                message: 'IP address added successfully!',
-                title: 'Success',
-                delay: 5000
-            },
-            onError: {
-                message: 'Failed to add IP address.',
-                title: 'Error',
-                delay: 5000
-            }
-        })
+        const response = await postData('/ipAddress', ipData, () => {}, setLoading, setError)
 
         if (response) {
             setIsSubmitted(false)
@@ -130,9 +120,9 @@ function AddIpAddressModal({ id, refreshList }) {
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {error?.message && (
+                                {error && (
                                     <div className="alert alert-danger text-center py-2">
-                                        {error.message}
+                                        {error}
                                     </div>
                                 )}
                                 <div className="col-md-12">
@@ -156,7 +146,7 @@ function AddIpAddressModal({ id, refreshList }) {
                                             !!ipData?.user_id || !isSubmitted || ''
                                         )}
                                         classNamePrefix="react-select"
-                                        className={`form-control p-0 border-0 ${
+                                        className={`form-control p-0 border-0 z-3 ${
                                             !ipData?.user_id && isSubmitted
                                                 ? 'is-invalid border border-danger'
                                                 : ''
@@ -164,7 +154,6 @@ function AddIpAddressModal({ id, refreshList }) {
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="ipAddress" className="form-label">
                                         IP Address
@@ -182,28 +171,29 @@ function AddIpAddressModal({ id, refreshList }) {
                                         Please enter a valid IP address.
                                     </div>
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="type" className="form-label">
                                         Type
                                     </label>
-                                    <select
-                                        id="type"
+                                    <Select
+                                        inputId="type"
                                         name="type"
-                                        className="form-select"
-                                        value={ipData.type}
-                                        onChange={handleInputChange}
-                                        required
-                                    >
-                                        <option value="">Select type</option>
-                                        <option value="Computer">PC</option>
-                                        <option value="Printer">Printer</option>
-                                        <option value="Server">Server</option>
-                                        <option value="Other">Other</option>
-                                    </select>
+                                        options={typeOptions}
+                                        value={typeOptions.find(
+                                            (option) => option.value === ipData.type
+                                        )}
+                                        onChange={(selected) =>
+                                            setIpData((prev) => ({
+                                                ...prev,
+                                                type: selected?.value || ''
+                                            }))
+                                        }
+                                        styles={selectStyles(!!ipData.type || !isSubmitted)}
+                                        classNamePrefix="react-select"
+                                        className={`form-control p-0 border-0 z-2 ${!ipData.type && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                    />
                                     <div className="invalid-feedback">Please select a type.</div>
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="assignedDate" className="form-label">
                                         Assigned Date (optional)
@@ -214,7 +204,7 @@ function AddIpAddressModal({ id, refreshList }) {
                                         </span>
                                         <input
                                             type="date"
-                                            className="form-control"
+                                            className="form-control z-1"
                                             id="assignedDate"
                                             name="assigned_date"
                                             value={ipData.assigned_date}
@@ -223,7 +213,7 @@ function AddIpAddressModal({ id, refreshList }) {
                                         />
                                         <button
                                             type="button"
-                                            className="btn border"
+                                            className="btn border z-1"
                                             onClick={() =>
                                                 setIpData((prev) => ({
                                                     ...prev,
@@ -238,7 +228,7 @@ function AddIpAddressModal({ id, refreshList }) {
                                         </button>
                                         <button
                                             type="button"
-                                            className="btn border"
+                                            className="btn border z-1"
                                             onClick={() =>
                                                 setIpData((prev) => ({
                                                     ...prev,
@@ -250,7 +240,6 @@ function AddIpAddressModal({ id, refreshList }) {
                                         </button>
                                     </div>
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="location" className="form-label">
                                         Location (optional)
@@ -264,7 +253,6 @@ function AddIpAddressModal({ id, refreshList }) {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-
                                 <div className="col-md-12">
                                     <label htmlFor="description" className="form-label">
                                         Description (optional)
@@ -278,7 +266,6 @@ function AddIpAddressModal({ id, refreshList }) {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-
                                 <div className="modal-footer">
                                     <button
                                         type="submit"

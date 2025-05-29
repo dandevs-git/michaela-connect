@@ -3,7 +3,7 @@ import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddTelephoneModal from '../../components/modals/AddTelephoneModal'
-import TelephoneDetailsModal from '../../components/modals/TelephoneDetailsModal'
+import ViewTelephoneDetailsModal from '../../components/modals/ViewTelephoneDetailsModal'
 import EditTelephoneModal from '../../components/modals/EditTelephoneModal'
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
 
@@ -26,19 +26,7 @@ function TelephoneDirectory() {
         const response = await deleteData(
             `/telephones/${selectedTelephone.id}`,
             setLoading,
-            setError,
-            {
-                onSuccess: {
-                    message: 'Telephone deleted successfully!',
-                    title: 'Success',
-                    delay: 5000
-                },
-                onError: {
-                    message: 'Failed to delete telephone.',
-                    title: 'Error',
-                    delay: 5000
-                }
-            }
+            setError
         )
         if (response) {
             refreshList()
@@ -134,7 +122,7 @@ function TelephoneDirectory() {
                 </div>
             </div>
 
-            <TelephoneDetailsModal id="telephoneDetailsModal" telephone={selectedTelephone} />
+            <ViewTelephoneDetailsModal id="telephoneDetailsModal" telephone={selectedTelephone} />
 
             <EditTelephoneModal
                 id="editTelephoneModal"

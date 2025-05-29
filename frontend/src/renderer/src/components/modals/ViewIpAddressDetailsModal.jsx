@@ -1,4 +1,4 @@
-function IpAddressDetailsModal({ id, ipAddress }) {
+function ViewIpAddressDetailsModal({ id, ipAddress }) {
     return (
         <div className="modal fade" id={id} tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
@@ -74,4 +74,4 @@ function IpAddressDetailsModal({ id, ipAddress }) {
     )
 }
 
-export default IpAddressDetailsModal
+export default ViewIpAddressDetailsModal

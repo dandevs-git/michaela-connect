@@ -53,15 +53,6 @@ function NewTickets() {
     const handleConfirm = async () => {
         if (!selectedTickets) return
 
-        if (confirmType === 'assign' && selectedTickets.requester_id === selectedUser.id) {
-            return showToast({
-                message: 'Requester cannot be assigned to their own ticket.',
-                title: 'Failed',
-                isPositive: false,
-                delay: 5000
-            })
-        }
-
         let url, payload
         if (confirmType === 'assign') {
             url = `/tickets/${selectedTickets.id}/assign`
@@ -79,12 +70,6 @@ function NewTickets() {
             setError
         )
         await getData('/tickets?status=new', setTickets, setLoading, setError)
-        showToast({
-            message: error.message || `Ticket ${confirmType} successfully!`,
-            title: error.message ? 'Failed' : 'Success',
-            isPositive: error.message ? false : true,
-            delay: 5000
-        })
     }
 
     const flattenSubordinates = (users) => {

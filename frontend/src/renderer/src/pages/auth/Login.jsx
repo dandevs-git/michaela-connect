@@ -11,8 +11,8 @@ function Login() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const [message, setMessage] = useState('')
-    const [rememberMe, setRememberMe] = useState(false)
+    const [error, setError] = useState('')
+    const [rememberMe, setRememberMe] = useState(true)
 
     const navigate = useNavigate()
 
@@ -25,27 +25,19 @@ function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        setMessage('')
-        setLoading(true)
+        const response = await login(username, password, setLoading, setError)
 
-        try {
-            const response = await login(username, password)
-            if (!response.includes('Invalid') && !response.includes('Access denied')) {
-                await getAuthUser()
-                if (rememberMe) {
-                    localStorage.setItem('username', username)
-                    localStorage.setItem('password', password)
-                } else {
-                    localStorage.removeItem('username')
-                    localStorage.removeItem('password')
-                }
-                navigate('/dashboard')
+        if (response) {
+            getAuthUser()
+            if (rememberMe) {
+                localStorage.setItem('username', username)
+                localStorage.setItem('password', password)
+            } else {
+                localStorage.removeItem('username')
+                localStorage.removeItem('password')
             }
-            setMessage(response)
-        } catch (error) {
-            setMessage(error.response)
+            navigate('/dashboard')
         }
-        setLoading(false)
     }
 
     return (
@@ -58,11 +50,7 @@ function Login() {
             />
             <h2 className="text-center mb-3">LOGIN</h2>
 
-            {message && (
-                <div className="alert small alert-danger text-center py-1" role="alert">
-                    {message}
-                </div>
-            )}
+            {error && <div className="alert alert-danger text-center py-2">{error}</div>}
 
             <form className="needs-validation" noValidate onSubmit={handleLogin}>
                 <div className="mb-3">

@@ -20,6 +20,7 @@ import ViewEmployeeDetailsModal from '../../components/modals/ViewEmployeeDetail
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import NewPasswordModal from '../../components/modals/NewPasswordModal'
 import FullScreenLoader from '../../components/FullScreenLoader'
+import SuspendEmployeeModal from '../../components/modals/SuspendDurationModal'
 
 function AllEmployees() {
     const { patchData, getData } = useAPI()
@@ -49,15 +50,34 @@ function AllEmployees() {
         refreshList()
     }
 
-    const handleSuspendReinstateUser = (employee) => {
-        patchData(
-            `/users/${employee?.id}/suspend`,
-            () => {},
-            () => {},
-            () => {},
-            setError
-        )
-        refreshList()
+    // const handleSuspendReinstateUser = (employee, duration = null) => {
+    //     const isSuspended = employee?.status === 'suspended'
+    //     const endpoint = isSuspended
+    //         ? `/users/${employee?.id}/reinstate`
+    //         : `/users/${employee?.id}/suspend`
+
+    //     const payload = !isSuspended && duration ? { duration_days: duration } : {}
+
+    //     patchData(
+    //         endpoint,
+    //         () => {},
+    //         () => {},
+    //         () => {},
+    //         setError,
+    //         payload
+    //     )
+
+    //     refreshList()
+    // }
+
+    const onSuspendReinstate = (employee) => {
+        // if (employee.status === 'suspended') {
+        //     handleSuspendReinstateUser(employee)
+        // } else {
+        //     const input = prompt('Enter suspension duration in days (leave blank for indefinite):')
+        //     const duration = input ? parseInt(input, 10) : null
+        //     handleSuspendReinstateUser(employee, duration)
+        // }
     }
 
     const handleResetPassword = async (employee) => {
@@ -83,7 +103,7 @@ function AllEmployees() {
 
     const handleDeactivateActivateUser = (employee) => {
         patchData(
-            `/users/${employee?.id}/suspend`,
+            `/users/${employee?.id}/deactivate`,
             () => {},
             () => {},
             () => {},
@@ -292,7 +312,7 @@ function AllEmployees() {
                     onConfirm={() => handleLockUnlockUser(selectedEmployee)}
                 />
 
-                <ConfirmationModal
+                {/* <ConfirmationModal
                     id="suspendReinstateUserConfirmModal"
                     title={`${selectedEmployee?.status === 'active' ? 'Suspend' : 'Reinstate'} Employee`}
                     message={`Are you sure you want to ${selectedEmployee?.status === 'active' ? 'Suspend' : 'Reinstate'} Employee ${selectedEmployee?.name} ?`}
@@ -303,8 +323,14 @@ function AllEmployees() {
                             : 'btn-success text-light'
                     }
                     cancelLabel="Cancel"
-                    onConfirm={() => handleSuspendReinstateUser(selectedEmployee)}
-                />
+                    onConfirm={() => onSuspendReinstate(selectedEmployee)}
+                /> */}
+
+                {/* <SuspendEmployeeModal
+                    id="suspendReinstateUserConfirmModal"
+                    employee={selectedEmployee}
+                    onConfirm={(duration) => handleSuspendReinstateUser(selectedEmployee, duration)}
+                /> */}
 
                 <ConfirmationModal
                     id="resetPasswordConfirmModal"

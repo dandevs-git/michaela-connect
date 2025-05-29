@@ -10,7 +10,6 @@ function AddInternetModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [message, setMessage] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
 
     const modalRef = useRef(null)
@@ -19,7 +18,9 @@ function AddInternetModal({ id, refreshList }) {
     const [users, setUsers] = useState([])
     const [internetData, setInternetData] = useState({
         user_id: '',
-        number: '',
+        name: '',
+        provider: '',
+        gateway: '',
         cable_code: '',
         location: '',
         description: ''
@@ -42,12 +43,13 @@ function AddInternetModal({ id, refreshList }) {
     const resetForm = () => {
         setInternetData({
             user_id: '',
-            number: '',
+            name: '',
+            provider: '',
+            gateway: '',
             cable_code: '',
             location: '',
             description: ''
         })
-        setMessage('')
         setError('')
         formRef.current?.classList.remove('was-validated')
     }
@@ -57,7 +59,6 @@ function AddInternetModal({ id, refreshList }) {
         const form = e.target
         form.classList.remove('was-validated')
         setIsSubmitted(true)
-        setMessage('')
         setError('')
 
         if (!form.checkValidity()) {
@@ -65,25 +66,7 @@ function AddInternetModal({ id, refreshList }) {
             return
         }
 
-        const response = await postData(
-            '/internet',
-            internetData,
-            setInternetData,
-            setLoading,
-            setError,
-            {
-                onSuccess: {
-                    message: 'Internet Line added successfully!',
-                    title: 'Success',
-                    delay: 5000
-                },
-                onError: {
-                    message: 'Failed to add Internet Line.',
-                    title: 'Error',
-                    delay: 5000
-                }
-            }
-        )
+        const response = await postData('/internet', internetData, () => {}, setLoading, setError)
 
         if (response) {
             Modal.getInstance(modalRef.current).hide()
@@ -131,11 +114,9 @@ function AddInternetModal({ id, refreshList }) {
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {(message || error) && (
-                                    <div
-                                        className={`alert text-center py-2 ${error ? 'alert-danger' : 'alert-success'}`}
-                                    >
-                                        {error || message}
+                                {error && (
+                                    <div className="alert alert-danger text-center py-2">
+                                        {error}
                                     </div>
                                 )}
 
@@ -160,9 +141,63 @@ function AddInternetModal({ id, refreshList }) {
                                             !!internetData.user_id || !isSubmitted
                                         )}
                                         classNamePrefix="react-select"
-                                        className={`form-control p-0 border-0 ${!internetData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                        className={`form-control p-0 border-0 z-3 ${!internetData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
+                                </div>
+
+                                <div className="col-md-12">
+                                    <label htmlFor="name" className="form-label">
+                                        Line Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="name"
+                                        name="name"
+                                        value={internetData.name}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                    <div className="invalid-feedback">
+                                        Please enter the internet line name.
+                                    </div>
+                                </div>
+
+                                <div className="col-md-12">
+                                    <label htmlFor="provider" className="form-label">
+                                        Provider
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="provider"
+                                        name="provider"
+                                        value={internetData.provider}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                    <div className="invalid-feedback">
+                                        Please enter the provider name.
+                                    </div>
+                                </div>
+
+                                <div className="col-md-12">
+                                    <label htmlFor="gateway" className="form-label">
+                                        Gateway
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="gateway"
+                                        name="gateway"
+                                        value={internetData.gateway}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                    <div className="invalid-feedback">
+                                        Please enter the gateway address.
+                                    </div>
                                 </div>
 
                                 <div className="col-md-12">

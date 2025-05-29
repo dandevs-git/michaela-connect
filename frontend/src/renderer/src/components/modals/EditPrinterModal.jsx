@@ -4,19 +4,17 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import Select from 'react-select'
 import { COLORS, selectStyles } from '../../constants/config'
 
-function EditTelephoneModal({ id, telephone, refreshList }) {
+function EditPrinterModal({ id, printer, refreshList }) {
     const { putData, getData } = useAPI()
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [users, setUsers] = useState([])
-    const [telephoneData, setTelephoneData] = useState({
+    const [printerData, setPrinterData] = useState({
         user_id: '',
-        number: '',
-        cable_code: '',
-        location: '',
-        description: ''
+        name: '',
+        inkcode: ''
     })
 
     const modalRef = useRef(null)
@@ -27,16 +25,14 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
     }, [])
 
     useEffect(() => {
-        if (telephone) {
-            setTelephoneData({
-                user_id: telephone?.user?.id || '',
-                number: telephone.number || '',
-                cable_code: telephone.cable_code || '',
-                location: telephone.location || '',
-                description: telephone.description || ''
+        if (printer) {
+            setPrinterData({
+                user_id: printer?.user?.id || '',
+                name: printer.name || '',
+                inkcode: printer.inkcode || ''
             })
         }
-    }, [telephone])
+    }, [printer])
 
     const userOptions = users.map((user) => ({
         value: user.id,
@@ -45,16 +41,14 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setTelephoneData((prev) => ({ ...prev, [name]: value }))
+        setPrinterData((prev) => ({ ...prev, [name]: value }))
     }
 
     const resetForm = () => {
-        setTelephoneData({
+        setPrinterData({
             user_id: '',
-            number: '',
-            cable_code: '',
-            location: '',
-            description: ''
+            name: '',
+            inkcode: ''
         })
         setError('')
         formRef.current?.classList.remove('was-validated')
@@ -67,14 +61,14 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
         setIsSubmitted(true)
         setError('')
 
-        if (!form.checkValidity()) {
+        if (!form.checkValidity() || !printerData.user_id) {
             form.classList.add('was-validated')
             return
         }
 
         const response = await putData(
-            `/telephones/${telephone.id}`,
-            telephoneData,
+            `/printers/${printer.id}`,
+            printerData,
             () => {},
             setLoading,
             setError
@@ -100,7 +94,7 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title fw-semibold text-uppercase">Edit Telephone</h5>
+                        <h5 className="modal-title fw-semibold text-uppercase">Edit Printer</h5>
                         <button
                             type="button"
                             className="btn-close"
@@ -129,85 +123,55 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
                                     name="user_id"
                                     options={userOptions}
                                     value={userOptions.find(
-                                        (option) => option.value === telephoneData?.user_id || ''
+                                        (option) => option.value === printerData?.user_id
                                     )}
                                     onChange={(selected) =>
-                                        setTelephoneData((prev) => ({
+                                        setPrinterData((prev) => ({
                                             ...prev,
                                             user_id: selected?.value || ''
                                         }))
                                     }
                                     styles={selectStyles(
-                                        !!telephoneData?.user_id || !isSubmitted || ''
+                                        !!printerData?.user_id || !isSubmitted || ''
                                     )}
                                     classNamePrefix="react-select"
-                                    className={`form-control p-0 border-0 z-3 ${!telephoneData?.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                    className={`form-control p-0 border-0 z-3 ${!printerData?.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                                 <div className="invalid-feedback">Please select a user.</div>
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="telephoneNumber" className="form-label">
-                                    Telephone Number
-                                </label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    id="telephoneNumber"
-                                    name="number"
-                                    value={telephoneData?.number || ''}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                                <div className="invalid-feedback">
-                                    Please enter a unique telephone number.
-                                </div>
-                            </div>
-
-                            <div className="col-md-12">
-                                <label htmlFor="cableCode" className="form-label">
-                                    Cable Code
+                                <label htmlFor="name" className="form-label">
+                                    Printer Name
                                 </label>
                                 <input
                                     type="text"
                                     className="form-control"
-                                    id="cableCode"
-                                    name="cable_code"
-                                    value={telephoneData?.cable_code || ''}
+                                    id="name"
+                                    name="name"
+                                    value={printerData?.name}
                                     onChange={handleInputChange}
                                     required
                                 />
                                 <div className="invalid-feedback">
-                                    Please enter a unique cable code.
+                                    Please enter a unique printer name.
                                 </div>
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="location" className="form-label">
-                                    Location (optional)
+                                <label htmlFor="inkcode" className="form-label">
+                                    Ink Code
                                 </label>
                                 <input
                                     type="text"
                                     className="form-control"
-                                    id="location"
-                                    name="location"
-                                    value={telephoneData?.location || ''}
+                                    id="inkcode"
+                                    name="inkcode"
+                                    value={printerData?.inkcode}
                                     onChange={handleInputChange}
+                                    required
                                 />
-                            </div>
-
-                            <div className="col-md-12">
-                                <label htmlFor="description" className="form-label">
-                                    Description (optional)
-                                </label>
-                                <textarea
-                                    className="form-control"
-                                    id="description"
-                                    name="description"
-                                    rows="2"
-                                    value={telephoneData?.description || ''}
-                                    onChange={handleInputChange}
-                                />
+                                <div className="invalid-feedback">Please enter an ink code.</div>
                             </div>
 
                             <div className="modal-footer">
@@ -225,7 +189,7 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
                                             Saving...
                                         </>
                                     ) : (
-                                        'Update Telephone'
+                                        'Update Printer'
                                     )}
                                 </button>
                             </div>
@@ -237,4 +201,4 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
     )
 }
 
-export default EditTelephoneModal
+export default EditPrinterModal

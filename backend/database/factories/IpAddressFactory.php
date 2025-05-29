@@ -20,7 +20,7 @@ class IpAddressFactory extends Factory
         return [
             'user_id' => User::inRandomOrder()->value('id') ?? User::factory(),
             'ip' => $this->faker->unique()->ipv4(),
-            'type' => $this->faker->randomElement(['PC', 'Printer', 'Server', 'Other']),
+            'type' => $this->faker->randomElement(['Computer', 'Printer', 'Server', 'Router', 'Other']),
             'assigned_date' => $this->faker->optional()->date(),
             'location' => $this->faker->optional()->address(),
             'description' => $this->faker->optional()->sentence(),

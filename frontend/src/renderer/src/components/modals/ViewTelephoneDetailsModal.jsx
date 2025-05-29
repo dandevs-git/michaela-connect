@@ -1,4 +1,4 @@
-function TelephoneDetailsModal({ id, telephone }) {
+function ViewTelephoneDetailsModal({ id, telephone }) {
     return (
         <div className="modal fade" id={id} tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
@@ -66,4 +66,4 @@ function TelephoneDetailsModal({ id, telephone }) {
     )
 }
 
-export default TelephoneDetailsModal
+export default ViewTelephoneDetailsModal

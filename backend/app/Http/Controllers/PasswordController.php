@@ -106,24 +106,28 @@ class PasswordController extends Controller
         }
     }
 
-    public function adminResetPassword(Request $request, $id)
+    public function adminResetPassword($id)
     {
-        $request->validate([
-            'password' => 'required|min:8|confirmed',
-        ]);
-
         $user = User::findOrFail($id);
         $admin = Auth::user();
-        $user->update(['password' => Hash::make($request->password)]);
+
+        $password = Str::random(12);
+
+        $user->update([
+            'password' => Hash::make($password)
+        ]);
 
         logActivity(
             $admin->id,
             'Authentication',
             'Admin Password Reset',
-            "Admin {$admin->username} reset password for user {$user->username}."
+            "Admin {$admin->name} reset password for user {$user->name}."
         );
 
-        return response()->json(['message' => "User {$user->username}'s password has been reset."]);
+        return response()->json([
+            'message' => "User {$user->name}'s password has been reset successfully.",
+            'new_password' => $password // NOTE: For Developement only
+        ]);
     }
 
     /**

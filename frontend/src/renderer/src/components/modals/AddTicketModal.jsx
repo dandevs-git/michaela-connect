@@ -74,12 +74,6 @@ function AddTicketModal({ id, refreshList }) {
         if (response) {
             Modal.getInstance(modalRef.current).hide()
             resetForm()
-            showToast({
-                message: 'Ticket submitted successfully!',
-                title: 'Success',
-                isPositive: true,
-                delay: 5000
-            })
             refreshList?.()
             navigate('/servicedesk/tickets/all', { replace: true })
         }

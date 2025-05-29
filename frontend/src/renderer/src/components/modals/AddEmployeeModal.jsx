@@ -76,19 +76,7 @@ function AddEmployeeModal({ id, refreshList }) {
             employeeData,
             setEmployeeData,
             setLoading,
-            setError,
-            {
-                onSuccess: {
-                    message: 'Employee added successfully!',
-                    title: 'Success',
-                    delay: 5000
-                },
-                onError: {
-                    message: 'Failed to add employee.',
-                    title: 'Error',
-                    delay: 5000
-                }
-            }
+            setError
         )
         if (response) {
             Modal.getInstance(modalRef.current).hide()
@@ -136,11 +124,9 @@ function AddEmployeeModal({ id, refreshList }) {
                                 onSubmit={handleSubmit}
                                 ref={formRef}
                             >
-                                {(message || error) && (
-                                    <div
-                                        className={`alert text-center py-2 ${error ? 'alert-danger' : 'alert-success'}`}
-                                    >
-                                        {error || message}
+                                {error && (
+                                    <div className="alert alert-danger text-center py-2">
+                                        {error}
                                     </div>
                                 )}
 

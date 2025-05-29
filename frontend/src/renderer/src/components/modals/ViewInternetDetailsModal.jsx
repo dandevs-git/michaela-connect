@@ -1,4 +1,4 @@
-function InternetDetailsModal({ id, internet }) {
+function ViewInternetDetailsModal({ id, internet }) {
     return (
         <div className="modal fade" id={id} tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
@@ -72,4 +72,4 @@ function InternetDetailsModal({ id, internet }) {
     )
 }
 
-export default InternetDetailsModal
+export default ViewInternetDetailsModal

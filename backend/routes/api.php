@@ -68,7 +68,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'priorities' => PriorityController::class,
         'telephones' => TelephoneController::class,
         'internet' => InternetController::class,
-        'ipaddress' => IpAddressController::class,
+        'ipAddress' => IpAddressController::class,
         'anydesks' => AnydeskController::class,
         'printers' => PrinterController::class,
     ]);
@@ -84,7 +84,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/{id}/subordinates', [UserController::class, 'getUserSubordinates']);
     Route::get('/users/{id}/supervisor', [UserController::class, 'getUserSupervisor']);
     Route::patch('/users/{id}/lock', [UserController::class, 'lockUnlockUser'])->name('users.lock');
-    Route::patch('/users/{id}/suspend', [UserController::class, 'suspendUser'])->name('users.suspend');
+    Route::patch('/users/{id}/suspend', [UserController::class, 'suspendReinstateUser'])->name('users.suspend');
+
+    // Route::patch('/users/{id}/suspend', [UserController::class, 'suspend'])->name('users.suspend');
+    // Route::patch('/users/{id}/reinstate', [UserController::class, 'reinstate'])->name('users.reinstate');
+
+    Route::patch('/users/{id}/deactivate', [UserController::class, 'deactivateActivateUser'])->name('users.deactivate');
     Route::patch('/users/{id}/reset-password', [PasswordController::class, 'adminResetPassword'])->name('password.adminReset');
     // });
 

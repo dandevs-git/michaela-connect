@@ -24,7 +24,7 @@ class IpAddressController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'ip' => 'required|ip|unique:ip_addresses,ip',
-            'type' => 'nullable|string|in:Computer,Printer,Server,Other',
+            'type' => 'nullable|string|in:Computer,Printer,Server,Router,Other',
             'assigned_date' => 'nullable|date',
             'location' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -52,7 +52,7 @@ class IpAddressController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'ip' => 'required|ip|unique:ip_addresses,ip,' . $ipAddress->id . ',id',
-            'type' => 'nullable|string|in:Computer,Printer,Server,Other',
+            'type' => 'nullable|string|in:Computer,Printer,Server,Router,Other',
             'assigned_date' => 'nullable|date',
             'location' => 'nullable|string|max:255',
             'description' => 'nullable|string',

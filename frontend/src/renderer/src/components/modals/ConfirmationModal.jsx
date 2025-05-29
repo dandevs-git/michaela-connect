@@ -1,5 +1,3 @@
-import React from 'react'
-
 function ConfirmationModal({
     id,
     title,
@@ -11,7 +9,14 @@ function ConfirmationModal({
     cancelClass = 'btn-secondary'
 }) {
     return (
-        <div className="modal fade" id={id} tabIndex="-1" aria-hidden="true">
+        <div
+            className="modal fade"
+            id={id}
+            tabIndex="-1"
+            aria-hidden="true"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+        >
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">

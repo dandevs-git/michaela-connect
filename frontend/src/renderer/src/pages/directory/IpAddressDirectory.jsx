@@ -3,19 +3,19 @@ import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddIpAddressModal from '../../components/modals/AddIpAddressModal'
-import IpAddressDetailsModal from '../../components/modals/IpAddressDetailsModal'
+import ViewIpAddressDetailsModal from '../../components/modals/ViewIpAddressDetailsModal'
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
 import EditIpAddressModal from '../../components/modals/EditIpAddressModal'
 
 function IpAddressDirectory() {
     const { getData, deleteData } = useAPI()
-    const [ipaddress, setIpaddress] = useState([])
+    const [ipAddress, setIpaddress] = useState([])
     const [selectedIpaddress, setSelectedIpaddress] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     const refreshList = () => {
-        getData('/ipaddress', setIpaddress, setLoading, setError)
+        getData('/ipAddress', setIpaddress, setLoading, setError)
     }
 
     useEffect(() => {
@@ -24,21 +24,9 @@ function IpAddressDirectory() {
 
     const handleDeleteIpaddress = async () => {
         const response = await deleteData(
-            `/ipaddress/${selectedIpaddress.id}`,
+            `/ipAddress/${selectedIpaddress.id}`,
             setLoading,
-            setError,
-            {
-                onSuccess: {
-                    message: 'Ip Address record deleted successfully!',
-                    title: 'Success',
-                    delay: 5000
-                },
-                onError: {
-                    message: 'Failed to delete Ip Address record.',
-                    title: 'Error',
-                    delay: 5000
-                }
-            }
+            setError
         )
         if (response) {
             refreshList()
@@ -46,7 +34,6 @@ function IpAddressDirectory() {
     }
 
     const columns = [
-        { header: 'No.', accessorKey: 'id' },
         {
             header: 'User',
             accessorKey: 'user',
@@ -143,13 +130,13 @@ function IpAddressDirectory() {
                             }
                             isloading={loading}
                             columns={columns}
-                            data={ipaddress}
+                            data={ipAddress}
                         />
                     </div>
                 </div>
             </div>
 
-            <IpAddressDetailsModal id="ipAddressDetailsModal" ipAddress={selectedIpaddress} />
+            <ViewIpAddressDetailsModal id="ipAddressDetailsModal" ipAddress={selectedIpaddress} />
 
             <EditIpAddressModal
                 id="editIpaddressModal"

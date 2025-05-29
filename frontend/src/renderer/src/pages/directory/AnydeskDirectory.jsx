@@ -6,23 +6,39 @@ import {
     FaEyeSlash,
     FaClipboard,
     FaCheckCircle,
-    FaClipboardCheck
+    FaClipboardCheck,
+    FaEdit,
+    FaTrash
 } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
+import AddAnydeskModal from '../../components/modals/AddAnydeskModal'
+import ViewAnydeskDetailsModal from '../../components/modals/ViewAnydeskDetailsModal'
+import ConfirmationModal from '../../components/modals/ConfirmationModal'
+import EditAnydeskModal from '../../components/modals/EditAnydeskModal'
 
 function AnydeskDirectory() {
-    const { getData } = useAPI()
+    const { getData, deleteData } = useAPI()
     const [anydesk, setAnydesk] = useState([])
     const [selectedAnydesk, setSelectedAnydesk] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
-    useEffect(() => {
+    const refreshList = () => {
         getData('/anydesks', setAnydesk, setLoading, setError)
+    }
+
+    useEffect(() => {
+        refreshList()
     }, [])
 
+    const handleDeleteAnydesk = async () => {
+        const response = await deleteData(`/anydesks/${selectedAnydesk.id}`, setLoading, setError)
+        if (response) {
+            refreshList()
+        }
+    }
+
     const columns = [
-        { header: 'No.', accessorKey: 'id' },
         {
             header: 'User',
             accessorKey: 'user',
@@ -101,9 +117,7 @@ function AnydeskDirectory() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        type="button"
                         className="btn border-0"
-                        id={`dropdownMenuButton-${row.id}`}
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"
@@ -111,21 +125,35 @@ function AnydeskDirectory() {
                     >
                         <i className="bi bi-list fs-5"></i>
                     </button>
-
-                    <ul
-                        className="dropdown-menu dropdown-menu-end shadow-sm rounded-3"
-                        aria-labelledby={`dropdownMenuButton-${row.id}`}
-                    >
+                    <ul className="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
                         <li>
                             <button
-                                type="button"
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
                                 data-bs-target="#anydeskDetailsModal"
                                 onClick={() => setSelectedAnydesk(row.original)}
                             >
-                                <FaEye className="text-primary" />
-                                View Details
+                                <FaEye /> View
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editAnydeskModal"
+                                onClick={() => setSelectedAnydesk(row.original)}
+                            >
+                                <FaEdit /> Edit
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteAnydeskConfirmModal"
+                                onClick={() => setSelectedAnydesk(row.original)}
+                            >
+                                <FaTrash /> Delete
                             </button>
                         </li>
                         <li>
@@ -156,7 +184,9 @@ function AnydeskDirectory() {
                 <div className="card-body">
                     <div className="col-12 p-4">
                         <CustomTable
-                            //   topComponent={<AddTelephoneModal />}
+                            topComponent={
+                                <AddAnydeskModal id={'AddAnydeskModal'} refreshList={refreshList} />
+                            }
                             isloading={loading}
                             columns={columns}
                             data={anydesk}
@@ -165,7 +195,23 @@ function AnydeskDirectory() {
                 </div>
             </div>
 
-            {/* <TelephoneDetailsModal id="telephoneDetailsModal" telephone={selectedTelephone} /> */}
+            <ViewAnydeskDetailsModal id="anydeskDetailsModal" anydesk={selectedAnydesk} />
+
+            <EditAnydeskModal
+                id="editAnydeskModal"
+                anydesk={selectedAnydesk}
+                refreshList={refreshList}
+            />
+
+            <ConfirmationModal
+                id="deleteAnydeskConfirmModal"
+                title="Delete Anydesk"
+                message={`Are you sure you want to Delete Anydesk ${selectedAnydesk?.number}?`}
+                confirmLabel="Delete"
+                confirmClass="btn-danger text-light"
+                cancelLabel="Cancel"
+                onConfirm={() => handleDeleteAnydesk(selectedAnydesk)}
+            />
         </>
     )
 }

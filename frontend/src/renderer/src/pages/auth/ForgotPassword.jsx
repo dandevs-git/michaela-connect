@@ -16,7 +16,7 @@ function ForgotPassword() {
         e.preventDefault()
         const response = await requestPasswordReset({ username, rfid }, setLoading, setError)
 
-        if (response.token) {
+        if (response) {
             setError('')
             setResetToken(response.token)
         }
@@ -25,13 +25,8 @@ function ForgotPassword() {
     return (
         <div className="shadow-lg p-4 rounded-4 border" style={{ width: '20rem' }}>
             <h2 className="text-center mb-3">Forgot Password</h2>
-            {error.message && (
-                <div className="alert small alert-danger text-center py-1" role="alert">
-                    {error.message}
-                </div>
-            )}
+            {error && <div className="alert alert-danger text-center py-2">{error}</div>}
             <form noValidate onSubmit={handleSubmit}>
-                {/* Kapag gustong may RFID */}
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">
                         RFID

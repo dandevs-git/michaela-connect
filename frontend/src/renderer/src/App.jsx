@@ -105,7 +105,7 @@ function App() {
                     <Route path="departments" element={<Department />} />
                     <Route path="telephones" element={<TelephoneDirectory />} />
                     <Route path="internet" element={<InternetDirectory />} />
-                    <Route path="ipaddress" element={<IpAddressDirectory />} />
+                    <Route path="ipAddress" element={<IpAddressDirectory />} />
                     <Route path="anydesks" element={<AnydeskDirectory />} />
                     <Route path="printers" element={<PrinterDirectory />} />
                 </Route>

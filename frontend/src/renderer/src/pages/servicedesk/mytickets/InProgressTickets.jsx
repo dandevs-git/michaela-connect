@@ -43,13 +43,6 @@ function InProgressTickets() {
             setError
         )
         getData('/tickets?status=in_progress', setTickets, setLoading, setError)
-
-        showToast({
-            message: error.message || `Ticket ${confirmType} successfully!`,
-            title: error.message ? 'Failed' : 'Success',
-            isPositive: error.message ? false : true,
-            delay: 5000
-        })
     }
 
     const columns = [

@@ -83,21 +83,9 @@ function EditInternetModal({ id, internet, refreshList }) {
         const response = await putData(
             `/internet/${internet.id}`,
             internetData,
-            setInternetData,
+            () => {},
             setLoading,
-            setError,
-            {
-                onSuccess: {
-                    message: 'Internet record updated successfully!',
-                    title: 'Success',
-                    delay: 5000
-                },
-                onError: {
-                    message: 'Failed to update internet record.',
-                    title: 'Error',
-                    delay: 5000
-                }
-            }
+            setError
         )
 
         if (response) {
@@ -136,10 +124,8 @@ function EditInternetModal({ id, internet, refreshList }) {
                             noValidate
                             onSubmit={handleSubmit}
                         >
-                            {error?.message && (
-                                <div className="alert alert-danger text-center py-2">
-                                    {error.message}
-                                </div>
+                            {error && (
+                                <div className="alert alert-danger text-center py-2">{error}</div>
                             )}
 
                             <div className="col-md-12">
@@ -161,14 +147,14 @@ function EditInternetModal({ id, internet, refreshList }) {
                                     }
                                     styles={selectStyles(!!internetData.user_id || !isSubmitted)}
                                     classNamePrefix="react-select"
-                                    className={`form-control p-0 border-0 ${!internetData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                    className={`form-control p-0 border-0 z-3 ${!internetData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                                 <div className="invalid-feedback">Please select a user.</div>
                             </div>
 
                             <div className="col-md-12">
                                 <label htmlFor="name" className="form-label">
-                                    Name
+                                    Line Name
                                 </label>
                                 <input
                                     type="text"

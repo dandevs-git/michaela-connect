@@ -2,29 +2,22 @@ import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import Select from 'react-select'
+import { FaClipboard, FaClipboardCheck, FaEye, FaEyeSlash } from 'react-icons/fa'
 import { COLORS, selectStyles } from '../../constants/config'
-import { FaCalendarDay, FaTimes } from 'react-icons/fa'
 
-const typeOptions = [
-    { value: 'Computer', label: 'Computer' },
-    { value: 'Printer', label: 'Printer' },
-    { value: 'Server', label: 'Server' },
-    { value: 'Router', label: 'Router' },
-    { value: 'Other', label: 'Other' }
-]
-
-function EditIpAddressModal({ id, ipAddress, refreshList }) {
+function EditAnydeskModal({ id, anydesk, refreshList }) {
     const { putData, getData } = useAPI()
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [users, setUsers] = useState([])
-    const [ipData, setIpData] = useState({
+    const [visible, setVisible] = useState(false)
+    const [copied, setCopied] = useState(false)
+    const [formData, setFormData] = useState({
         user_id: '',
-        ip: '',
-        type: '',
-        assigned_date: '',
+        number: '',
+        password: '',
         location: '',
         description: ''
     })
@@ -37,17 +30,16 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
     }, [])
 
     useEffect(() => {
-        if (ipAddress) {
-            setIpData({
-                user_id: ipAddress?.user?.id || '',
-                ip: ipAddress.ip || '',
-                type: ipAddress.type || '',
-                assigned_date: ipAddress.assigned_date || '',
-                location: ipAddress.location || '',
-                description: ipAddress.description || ''
+        if (anydesk) {
+            setFormData({
+                user_id: anydesk?.user?.id || '',
+                number: anydesk.number || '',
+                password: anydesk.password || '',
+                location: anydesk.location || '',
+                description: anydesk.description || ''
             })
         }
-    }, [ipAddress])
+    }, [anydesk])
 
     const userOptions = users.map((user) => ({
         value: user.id,
@@ -56,20 +48,25 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setIpData((prev) => ({ ...prev, [name]: value }))
+        setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
     const resetForm = () => {
-        setIpData({
+        setFormData({
             user_id: '',
-            ip: '',
-            type: '',
-            assigned_date: '',
+            number: '',
+            password: '',
             location: '',
             description: ''
         })
         setError('')
         formRef.current?.classList.remove('was-validated')
+    }
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(formData.password || '')
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
     }
 
     const handleSubmit = async (e) => {
@@ -84,12 +81,9 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
             return
         }
 
-        console.log(ipAddress.id)
-        console.log(ipData)
-
         const response = await putData(
-            `/ipAddress/${ipAddress.id}`,
-            ipData,
+            `/anydesks/${anydesk.id}`,
+            formData,
             () => {},
             setLoading,
             setError
@@ -107,15 +101,15 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
         <div
             className="modal fade"
             id={id}
+            tabIndex="-1"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
-            tabIndex="-1"
             ref={modalRef}
         >
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title fw-semibold text-uppercase">Edit IP Address</h5>
+                        <h5 className="modal-title fw-semibold text-uppercase">Edit Anydesk</h5>
                         <button
                             type="button"
                             className="btn-close"
@@ -136,7 +130,7 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                             )}
 
                             <div className="col-md-12">
-                                <label htmlFor="user" className="form-label">
+                                <label htmlFor="user_id" className="form-label">
                                     User
                                 </label>
                                 <Select
@@ -144,106 +138,68 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                                     name="user_id"
                                     options={userOptions}
                                     value={userOptions.find(
-                                        (option) => option.value === ipData.user_id
+                                        (option) => option.value === formData.user_id
                                     )}
                                     onChange={(selected) =>
-                                        setIpData((prev) => ({
+                                        setFormData((prev) => ({
                                             ...prev,
                                             user_id: selected?.value || ''
                                         }))
                                     }
-                                    styles={selectStyles(!!ipData.user_id || !isSubmitted)}
+                                    styles={selectStyles(!!formData.user_id || !isSubmitted)}
                                     classNamePrefix="react-select"
-                                    className={`form-control p-0 border-0 z-3 ${!ipData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                    className={`form-control p-0 border-0 z-3 ${!formData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                                 <div className="invalid-feedback">Please select a user.</div>
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="ip" className="form-label">
-                                    IP Address
+                                <label htmlFor="number" className="form-label">
+                                    Anydesk Number
                                 </label>
                                 <input
                                     type="text"
                                     className="form-control"
-                                    id="ip"
-                                    name="ip"
-                                    value={ipData.ip}
+                                    id="number"
+                                    name="number"
+                                    value={formData.number}
                                     onChange={handleInputChange}
                                     required
                                 />
                                 <div className="invalid-feedback">
-                                    Please enter a valid and unique IP address.
+                                    Please enter a unique anydesk number.
                                 </div>
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="type" className="form-label">
-                                    Type
-                                </label>
-                                <Select
-                                    inputId="type"
-                                    name="type"
-                                    options={typeOptions}
-                                    value={typeOptions.find(
-                                        (option) => option.value === ipData.type
-                                    )}
-                                    onChange={(selected) =>
-                                        setIpData((prev) => ({
-                                            ...prev,
-                                            type: selected?.value || ''
-                                        }))
-                                    }
-                                    styles={selectStyles(!!ipData.type || !isSubmitted)}
-                                    classNamePrefix="react-select"
-                                    className={`form-control p-0 border-0 z-2 ${!ipData.type && isSubmitted ? 'is-invalid border border-danger' : ''}`}
-                                />
-                                <div className="invalid-feedback">Please select a type.</div>
-                            </div>
-
-                            <div className="col-md-12">
-                                <label htmlFor="assignedDate" className="form-label">
-                                    Assigned Date (optional)
+                                <label htmlFor="password" className="form-label">
+                                    Password
                                 </label>
                                 <div className="input-group">
-                                    <span className="input-group-text">
-                                        <FaCalendarDay />
-                                    </span>
                                     <input
-                                        type="date"
-                                        className="form-control z-1"
-                                        id="assignedDate"
-                                        name="assigned_date"
-                                        value={ipData.assigned_date}
+                                        type={visible ? 'text' : 'password'}
+                                        className="form-control border-primary-subtle border-end-0"
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
                                         onChange={handleInputChange}
-                                        max={new Date().toISOString().split('T')[0]}
+                                        autoComplete="off"
                                     />
                                     <button
+                                        className="btn border-primary-subtle"
                                         type="button"
-                                        className="btn border z-1"
-                                        onClick={() =>
-                                            setIpData((prev) => ({
-                                                ...prev,
-                                                assigned_date: new Date()
-                                                    .toISOString()
-                                                    .split('T')[0]
-                                            }))
-                                        }
-                                        title="Set Today"
+                                        onClick={() => setVisible(!visible)}
+                                        title={visible ? 'Hide password' : 'Show password'}
                                     >
-                                        Today
+                                        {visible ? <FaEyeSlash /> : <FaEye />}
                                     </button>
                                     <button
+                                        className="btn border-primary-subtle"
                                         type="button"
-                                        className="btn border z-1"
-                                        onClick={() =>
-                                            setIpData((prev) => ({
-                                                ...prev,
-                                                assigned_date: ''
-                                            }))
-                                        }
+                                        onClick={copyToClipboard}
+                                        title="Copy password"
                                     >
-                                        <FaTimes />
+                                        {copied ? <FaClipboardCheck /> : <FaClipboard />}
                                     </button>
                                 </div>
                             </div>
@@ -257,7 +213,7 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                                     className="form-control"
                                     id="location"
                                     name="location"
-                                    value={ipData.location}
+                                    value={formData.location}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -271,7 +227,7 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                                     id="description"
                                     name="description"
                                     rows="2"
-                                    value={ipData.description}
+                                    value={formData.description}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -291,7 +247,7 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                                             Saving...
                                         </>
                                     ) : (
-                                        'Update IP Address'
+                                        'Update Internet'
                                     )}
                                 </button>
                             </div>
@@ -303,4 +259,4 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
     )
 }
 
-export default EditIpAddressModal
+export default EditAnydeskModal

@@ -51,7 +51,7 @@ const pages = [
         subPages: [
             { name: 'Telephone lines', link: '/directory/telephones' },
             { name: 'Internet lines', link: '/directory/internet' },
-            { name: 'IP Addresses', link: '/directory/ipaddress' },
+            { name: 'IP Addresses', link: '/directory/ipAddress' },
             { name: 'Anydesk IDs', link: '/directory/anydesks' },
             { name: 'Printers', link: '/directory/printers' }
         ],
@@ -65,7 +65,7 @@ const pages = [
             { name: 'Ticket Analytics', link: '/directory/employees' },
             { name: 'SLA Performance', link: '/directory/departments' },
             { name: 'Performance ', link: '/directory/telephones' },
-            { name: 'Employee Feedback ', link: '/directory/ipaddress' }
+            { name: 'Employee Feedback ', link: '/directory/ipAddress' }
         ],
         permission: 'view analytics reports'
     },
@@ -77,8 +77,8 @@ const pages = [
             { name: 'General Settings', link: '/directory/employees' },
             { name: 'Security & Authentication', link: '/directory/departments' },
             { name: 'Email & Notifications', link: '/directory/telephones' },
-            { name: 'System Logs & Audits', link: '/directory/ipaddress' },
-            { name: 'Department Settings', link: '/directory/ipaddress' }
+            { name: 'System Logs & Audits', link: '/directory/ipAddress' },
+            { name: 'Department Settings', link: '/directory/ipAddress' }
         ],
         permission: 'manage system settings'
     }

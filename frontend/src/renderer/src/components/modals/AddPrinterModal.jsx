@@ -5,7 +5,7 @@ import { FaPlus } from 'react-icons/fa'
 import Select from 'react-select'
 import { COLORS, selectStyles } from '../../constants/config'
 
-function AddTelephoneModal({ id, refreshList }) {
+function AddPrinterModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
 
     const [loading, setLoading] = useState(false)
@@ -16,12 +16,10 @@ function AddTelephoneModal({ id, refreshList }) {
     const formRef = useRef(null)
 
     const [users, setUsers] = useState([])
-    const [telephoneData, setTelephoneData] = useState({
+    const [printerData, setPrinterData] = useState({
         user_id: '',
-        number: '',
-        cable_code: '',
-        location: '',
-        description: ''
+        name: '',
+        inkcode: ''
     })
 
     useEffect(() => {
@@ -35,16 +33,14 @@ function AddTelephoneModal({ id, refreshList }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setTelephoneData((prev) => ({ ...prev, [name]: value }))
+        setPrinterData((prev) => ({ ...prev, [name]: value }))
     }
 
     const resetForm = () => {
-        setTelephoneData({
+        setPrinterData({
             user_id: '',
-            number: '',
-            cable_code: '',
-            location: '',
-            description: ''
+            name: '',
+            inkcode: ''
         })
         setError('')
         formRef.current?.classList.remove('was-validated')
@@ -62,19 +58,13 @@ function AddTelephoneModal({ id, refreshList }) {
             return
         }
 
-        const response = await postData(
-            '/telephones',
-            telephoneData,
-            () => {},
-            setLoading,
-            setError
-        )
+        const response = await postData('/printers', printerData, () => {}, setLoading, setError)
 
         if (response) {
             setIsSubmitted(false)
             resetForm()
             Modal.getInstance(modalRef.current)?.hide()
-            refreshList()
+            refreshList?.()
         }
     }
 
@@ -85,7 +75,7 @@ function AddTelephoneModal({ id, refreshList }) {
                 data-bs-toggle="modal"
                 data-bs-target={`#${id}`}
             >
-                <FaPlus /> New Telephone
+                <FaPlus /> New Printer
             </button>
 
             <div
@@ -100,7 +90,7 @@ function AddTelephoneModal({ id, refreshList }) {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title fw-semibold text-uppercase">
-                                Add New Telephone
+                                Add New Printer
                             </h5>
                             <button
                                 type="button"
@@ -109,6 +99,7 @@ function AddTelephoneModal({ id, refreshList }) {
                                 aria-label="Close"
                             />
                         </div>
+
                         <div className="modal-body p-3">
                             <form
                                 ref={formRef}
@@ -121,8 +112,9 @@ function AddTelephoneModal({ id, refreshList }) {
                                         {error}
                                     </div>
                                 )}
+
                                 <div className="col-md-12">
-                                    <label htmlFor="user" className="form-label">
+                                    <label htmlFor="user_id" className="form-label">
                                         User
                                     </label>
                                     <Select
@@ -130,82 +122,63 @@ function AddTelephoneModal({ id, refreshList }) {
                                         name="user_id"
                                         options={userOptions}
                                         value={userOptions.find(
-                                            (option) => option.value === telephoneData.user_id
+                                            (option) => option.value === printerData.user_id
                                         )}
                                         onChange={(selected) =>
-                                            setTelephoneData((prev) => ({
+                                            setPrinterData((prev) => ({
                                                 ...prev,
                                                 user_id: selected?.value || ''
                                             }))
                                         }
                                         styles={selectStyles(
-                                            !!telephoneData?.user_id || !isSubmitted || ''
+                                            !!printerData?.user_id || !isSubmitted || ''
                                         )}
                                         classNamePrefix="react-select"
-                                        className={`form-control p-0 border-0 z-3 ${!telephoneData?.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                        className={`form-control p-0 border-0 z-3 ${
+                                            !printerData?.user_id && isSubmitted
+                                                ? 'is-invalid border border-danger'
+                                                : ''
+                                        }`}
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
                                 </div>
+
                                 <div className="col-md-12">
-                                    <label htmlFor="telephoneNumber" className="form-label">
-                                        Telephone Number
-                                    </label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        id="telephoneNumber"
-                                        name="number"
-                                        value={telephoneData.number}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                    <div className="invalid-feedback">
-                                        Please enter a unique telephone number.
-                                    </div>
-                                </div>
-                                <div className="col-md-12">
-                                    <label htmlFor="cableCode" className="form-label">
-                                        Cable Code
+                                    <label htmlFor="name" className="form-label">
+                                        Printer Name
                                     </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="cableCode"
-                                        name="cable_code"
-                                        value={telephoneData.cable_code}
+                                        id="name"
+                                        name="name"
+                                        value={printerData.name}
                                         onChange={handleInputChange}
                                         required
                                     />
                                     <div className="invalid-feedback">
-                                        Please enter a unique cable code.
+                                        Please enter a unique printer name.
                                     </div>
                                 </div>
+
                                 <div className="col-md-12">
-                                    <label htmlFor="location" className="form-label">
-                                        Location (optional)
+                                    <label htmlFor="inkcode" className="form-label">
+                                        Ink Code
                                     </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="location"
-                                        name="location"
-                                        value={telephoneData.location}
+                                        id="inkcode"
+                                        name="inkcode"
+                                        value={printerData.inkcode}
                                         onChange={handleInputChange}
+                                        required
                                     />
+                                    <div className="invalid-feedback">
+                                        Please enter an ink code.
+                                    </div>
                                 </div>
-                                <div className="col-md-12">
-                                    <label htmlFor="description" className="form-label">
-                                        Description (optional)
-                                    </label>
-                                    <textarea
-                                        className="form-control"
-                                        id="description"
-                                        name="description"
-                                        rows="2"
-                                        value={telephoneData.description}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
+
                                 <div className="modal-footer">
                                     <button
                                         type="submit"
@@ -217,12 +190,11 @@ function AddTelephoneModal({ id, refreshList }) {
                                                 <span
                                                     className="spinner-grow spinner-grow-sm me-2"
                                                     role="status"
-                                                    aria-hidden="true"
-                                                ></span>
+                                                />
                                                 Submitting...
                                             </>
                                         ) : (
-                                            'Add Telephone'
+                                            'Add Printer'
                                         )}
                                     </button>
                                 </div>
@@ -235,4 +207,4 @@ function AddTelephoneModal({ id, refreshList }) {
     )
 }
 
-export default AddTelephoneModal
+export default AddPrinterModal

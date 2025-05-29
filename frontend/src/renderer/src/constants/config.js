@@ -16,9 +16,8 @@ const hexToRgba = (hex, alpha) => {
 export const selectStyles = (isValid) => ({
     control: (provided, state) => ({
         ...provided,
-        // backgroundColor: 'transparent',
         borderColor: !isValid
-            ? hexToRgba(COLORS[3], 0.5) // Red (danger)
+            ? hexToRgba(COLORS[3], 1) // Red (danger)
             : state.isFocused
               ? hexToRgba(COLORS[4], 0.5) // Primary on focus
               : '#ced4da',
@@ -28,7 +27,7 @@ export const selectStyles = (isValid) => ({
                 : `0 0 0 0.25rem ${hexToRgba(COLORS[4], 0.25)}`
             : null,
         '&:hover': {
-            borderColor: !isValid ? hexToRgba(COLORS[3], 0.5) : hexToRgba(COLORS[4], 0.5)
+            backgroundColor: '#f7f8f9'
         },
         borderRadius: '0.375rem',
         minHeight: '38px'
@@ -52,6 +51,6 @@ export const selectStyles = (isValid) => ({
     }),
     menuPortal: (base) => ({
         ...base,
-        zIndex: 9999 // Ensure it's on top
+        zIndex: 9999
     })
 })

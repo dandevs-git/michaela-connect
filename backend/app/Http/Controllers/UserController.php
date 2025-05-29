@@ -19,20 +19,25 @@ class UserController extends Controller
 
         $suffix = mt_rand(100, 999);
 
-        $username = "{$baseUsername}_{$suffix}";
+        $name = "{$baseUsername}_{$suffix}";
 
-        while (User::where('username', $username)->exists()) {
+        while (User::where('name', $name)->exists()) {
             $suffix = mt_rand(100, 999);
-            $username = "{$baseUsername}_{$suffix}";
+            $name = "{$baseUsername}_{$suffix}";
         }
 
-        return $username;
+        return $name;
     }
 
     public function index()
     {
-        $users = User::with('department', 'telephone', 'printer', 'anydesk', 'ipAddress', 'roles.permissions')->get();
-        return response()->json($users, 200);
+        $users = User::with('department', 'telephone', 'printer', 'anydesk', 'ipAddress', 'roles.permissions')->orderBy('created_at', 'desc')->get();
+
+        $filteredUsers = $users->filter(function ($user) {
+            return !$user->getRoleNames()->contains('superadmin');
+        });
+
+        return response()->json($filteredUsers->values(), 200);
     }
 
     public function store(Request $request)
@@ -51,7 +56,7 @@ class UserController extends Controller
                 $admin->id,
                 "User Management",
                 'User Registration Failed',
-                "User registration failed for {$request->name} by Admin {$admin->username}. Reason: " . json_encode($validator->errors()->all())
+                "User registration failed for {$request->name} by Admin {$admin->name}. Reason: " . json_encode($validator->errors()->all())
             );
             return response()->json(['errors' => $validator->errors()], 422);
         }
@@ -76,13 +81,13 @@ class UserController extends Controller
             $admin->id,
             "User Management",
             'User Created',
-            "Admin {$admin->username} created account for {$user->username} with RFID: {$request->rfid}."
+            "Admin {$admin->name} created account for {$user->name} with RFID: {$request->rfid}."
         );
 
         return response()->json([
             'message' => 'User created successfully',
             'user' => [
-                'username' => $user->username,
+                'name' => $user->name,
                 'rfid' => $user->rfid,
                 'password' => $password,
             ],
@@ -91,7 +96,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $user->load('department', 'roles.permissions');
+        $user->load('department', 'telephone', 'printer', 'anydesk', 'ipAddress', 'roles.permissions');
         return response()->json($user, 200);
     }
 
@@ -102,34 +107,85 @@ class UserController extends Controller
         $user->status = $user->status === 'locked' ? 'active' : 'locked';
         $user->save();
 
-        $action = $user->status === 'locked' ? 'locked' : 'unlocked';
+        $action = $user->status === 'locked' ? 'lock' : 'unlock';
         $admin = Auth::user();
 
         logActivity(
             $admin->id,
             "User Management",
             "User {$action}",
-            "Admin {$admin->username} {$action} user {$user->username}.",
+            "Admin {$admin->name} {$action} user {$user->name}.",
         );
 
-        return response()->json(['message' => "User {$user->username} is now {$user->status}"]);
+        return response()->json(['message' => "Employee {$user->name} is now {$user->status}"]);
     }
 
-    public function suspendUser($id)
+    public function suspendReinstateUser($id)
     {
         $user = User::findOrFail($id);
-        $user->update(['status' => 'suspended']);
+        $user->status = $user->status === 'suspended' ? 'active' : 'suspended';
+        $user->save();
 
+        $action = $user->status === 'suspended' ? 'suspend' : 'reinstate';
         $admin = Auth::user();
 
         logActivity(
             $admin->id,
             "User Management",
-            "User Suspended",
-            "Admin {$admin->username} Suspended user {$user->username}.",
+            "User {$action}",
+            "Admin {$admin->name} {$action} user {$user->name}.",
         );
 
-        return response()->json(['message' => "User {$user->username} is now {$user->status}"]);
+        return response()->json(['message' => "User {$user->name} is now {$user->status}"]);
+    }
+
+
+    // public function suspend(User $user, Request $request)
+    // {
+    //     $durationDays = $request->input('duration_days', null);
+
+    //     $user->status = 'suspended';
+
+    //     if ($durationDays) {
+    //         $user->suspended_until = now()->addDays($durationDays);
+    //     }
+
+    //     $user->save();
+
+    //     return response()->json(['message' => 'User suspended successfully']);
+    // }
+
+    // public function reinstate(User $user)
+    // {
+    //     if ($user->status !== 'suspended') {
+    //         return response()->json(['message' => 'User is not suspended'], 400);
+    //     }
+
+    //     $user->status = 'active';
+    //     $user->suspended_until = null;
+    //     $user->save();
+
+    //     return response()->json(['message' => 'User reinstated successfully']);
+    // }
+
+
+    public function deactivateActivateUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = $user->status === 'inactive' ? 'active' : 'inactive';
+        $user->save();
+
+        $action = $user->status === 'inactive' ? 'deactivate' : 'activate';
+        $admin = Auth::user();
+
+        logActivity(
+            $admin->id,
+            "User Management",
+            "User {$action}",
+            "Admin {$admin->name} {$action} user {$user->name}.",
+        );
+
+        return response()->json(['message' => "User {$user->name} is now {$user->status}"]);
     }
 
 
@@ -144,7 +200,7 @@ class UserController extends Controller
             $admin->id,
             "User Management",
             "User Deleted",
-            "Admin {$admin->username} permanently deleted user {$user->username}.",
+            "Admin {$admin->name} permanently deleted user {$user->name}.",
         );
 
         return response()->json(['message' => 'User deleted successfully']);

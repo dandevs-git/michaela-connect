@@ -32,15 +32,6 @@ function OpenTickets() {
     const handleConfirm = () => {
         if (!selectedTickets) return
 
-        if (selectedTickets?.assigned_to?.id !== authUser?.id) {
-            return showToast({
-                message: 'Unauthorized. Only the assigned user can start working on this ticket.',
-                title: 'Failed',
-                isPositive: false,
-                delay: 5000
-            })
-        }
-
         const url = `/tickets/${selectedTickets.id}/start`
         postData(
             url,
@@ -50,12 +41,6 @@ function OpenTickets() {
             setError
         )
         getData('/tickets?status=open', setTickets, setLoading, setError)
-        showToast({
-            message: error.message || `Ticket ${confirmType} successfully!`,
-            title: error.message ? 'Failed' : 'Success',
-            isPositive: error.message ? false : true,
-            delay: 5000
-        })
     }
 
     const columns = [

@@ -52,12 +52,6 @@ function PendingTickets() {
             setError
         )
         getData('/tickets?status=pending', setTickets, setLoading, setError)
-        showToast({
-            message: error.message || `Ticket ${confirmType} successfully!`,
-            title: error.message ? 'Failed' : 'Success',
-            isPositive: error.message ? false : true,
-            delay: 5000
-        })
     }
 
     const columns = [

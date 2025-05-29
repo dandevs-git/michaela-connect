@@ -34,15 +34,7 @@ export const APIProvider = ({ children }) => {
         fetchUserDetails()
     }, [])
 
-    const makeRequest = async (
-        method,
-        endpoint,
-        data = null,
-        setLoading,
-        setData,
-        setError,
-        toastOptions = null // <-- New parameter
-    ) => {
+    const makeRequest = async (method, endpoint, data = null, setLoading, setData, setError) => {
         try {
             if (setLoading) setLoading(true)
             const config = data ? { data } : {}
@@ -50,30 +42,28 @@ export const APIProvider = ({ children }) => {
 
             if (setData) setData(response.data)
 
-            if (toastOptions?.onSuccess) {
+            if (response.data?.message) {
                 showToast({
-                    message: toastOptions.onSuccess.message || 'Operation successful.',
-                    title: toastOptions.onSuccess.title || 'Success',
+                    message: response.data.message,
+                    title: 'Success',
                     isPositive: true,
-                    delay: toastOptions.onSuccess.delay || 5000
+                    delay: 5000
                 })
             }
 
             return response.data
         } catch (error) {
-            const errMsg = error?.response?.data || error.message
+            const errMsg = error?.response?.data?.message || error.message || 'An error occurred.'
             console.error(`Error with ${method.toUpperCase()} ${endpoint}:`, errMsg)
 
             if (setError) setError(errMsg)
 
-            if (toastOptions?.onError) {
-                showToast({
-                    message: toastOptions.onError.message || 'An error occurred.',
-                    title: toastOptions.onError.title || 'Error',
-                    isPositive: false,
-                    delay: toastOptions.onError.delay || 5000
-                })
-            }
+            showToast({
+                message: errMsg,
+                title: 'Error',
+                isPositive: false,
+                delay: 5000
+            })
 
             return null
         } finally {
@@ -81,46 +71,45 @@ export const APIProvider = ({ children }) => {
         }
     }
 
-    const getData = (endpoint, setData, setLoading, setError, toastOptions) =>
-        makeRequest('get', endpoint, null, setLoading, setData, setError, toastOptions)
+    const getData = (endpoint, setData, setLoading, setError) =>
+        makeRequest('get', endpoint, null, setLoading, setData, setError)
 
-    const postData = (endpoint, data, setData, setLoading, setError, toastOptions) =>
-        makeRequest('post', endpoint, data, setLoading, setData, setError, toastOptions)
+    const postData = (endpoint, data, setData, setLoading, setError) =>
+        makeRequest('post', endpoint, data, setLoading, setData, setError)
 
-    const putData = (endpoint, data, setData, setLoading, setError, toastOptions) =>
-        makeRequest('put', endpoint, data, setLoading, setData, setError, toastOptions)
+    const putData = (endpoint, data, setData, setLoading, setError) =>
+        makeRequest('put', endpoint, data, setLoading, setData, setError)
 
-    const patchData = (endpoint, data, setData, setLoading, setError, toastOptions) =>
-        makeRequest('patch', endpoint, data, setLoading, setData, setError, toastOptions)
+    const patchData = (endpoint, data, setData, setLoading, setError) =>
+        makeRequest('patch', endpoint, data, setLoading, setData, setError)
 
-    const deleteData = (endpoint, setLoading, setError, toastOptions) =>
-        makeRequest('delete', endpoint, null, setLoading, null, setError, toastOptions)
+    const deleteData = (endpoint, setLoading, setError) =>
+        makeRequest('delete', endpoint, null, setLoading, null, setError)
 
-    const login = async (username, password) => {
-        try {
-            const { data } = await api.post('/login', { username, password })
-            if (data.token) {
-                // localStorage.setItem('token', data.token)
-                sessionStorage.setItem('token', data.token)
-                api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
-            }
-            return data.message
-        } catch (error) {
-            const message = error?.response?.data?.message || 'Something went wrong'
-            return message
+    const login = async (username, password, setLoading, setError) => {
+        const response = await makeRequest(
+            'post',
+            '/login',
+            { username, password },
+            setLoading,
+            null,
+            setError
+        )
+
+        if (response?.token) {
+            sessionStorage.setItem('token', response.token)
+            api.defaults.headers.common['Authorization'] = `Bearer ${response.token}`
+            return response.message
         }
+
+        return null
     }
 
-    const logout = async () => {
-        try {
-            await api.post('/logout')
-        } catch (error) {
-            console.warn('Logout failed:', error?.response?.data?.message || error.message)
-        } finally {
-            // localStorage.removeItem('token')
-            sessionStorage.removeItem('token')
-            delete api.defaults.headers.common['Authorization']
-        }
+    const logout = async (setLoading, setError) => {
+        await makeRequest('post', '/logout', {}, setLoading, null, setError)
+
+        sessionStorage.removeItem('token')
+        delete api.defaults.headers.common['Authorization']
     }
 
     const getAuthUser = async () => {

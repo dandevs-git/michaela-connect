@@ -37,16 +37,8 @@ function ResetPassword() {
             setError
         )
 
-        if (response?.message) {
+        if (response) {
             setMessage(response.message)
-
-            showToast({
-                message: response?.message,
-                title: 'Success',
-                isPositive: true,
-                delay: 5000
-            })
-
             navigate('/login')
         }
     }
@@ -55,17 +47,7 @@ function ResetPassword() {
         <div className="shadow-lg p-4 rounded-4 border" style={{ width: '20rem' }}>
             <h2 className="text-center mb-3">Reset Password</h2>
 
-            {error.message && (
-                <div className="alert alert-danger small text-center py-2" role="alert">
-                    {error.message}
-                </div>
-            )}
-
-            {message && (
-                <div className="alert alert-success small text-center py-2" role="alert">
-                    {message}
-                </div>
-            )}
+            {error && <div className="alert alert-danger text-center py-2">{error}</div>}
 
             <form onSubmit={handleSubmit} noValidate>
                 <div className="mb-3">
