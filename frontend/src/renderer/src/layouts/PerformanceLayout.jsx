@@ -4,7 +4,7 @@ import TeamOverview from '../pages/dashboard/TeamOverview'
 import TeamActivities from '../pages/dashboard/TeamActivities'
 import TeamReports from '../pages/dashboard/TeamReports'
 
-function DashboardLayout() {
+function PerformanceLayout() {
     const { section } = useParams()
 
     useEffect(() => {
@@ -48,4 +48,4 @@ function DashboardLayout() {
     )
 }
 
-export default DashboardLayout
+export default PerformanceLayout

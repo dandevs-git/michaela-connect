@@ -15,7 +15,9 @@ function TeamActivities() {
     const columnsLogs = [
         {
             header: 'User',
-            accessorKey: 'user.name'
+            accessorFn: (row) => row.user?.name || '',
+            id: 'user',
+            filterFn: 'includesString'
         },
         {
             header: 'Action',

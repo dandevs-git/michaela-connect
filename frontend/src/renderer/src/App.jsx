@@ -9,7 +9,7 @@ import ServiceDeskTicketLayout from './layouts/ServiceDeskTicketLayout'
 
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
-// import ErrorPage from './pages/ErrorPage'
+import ErrorPage from './pages/ErrorPage'
 
 import OpenTickets from './pages/servicedesk/mytickets/OpenTickets'
 import InProgressTickets from './pages/servicedesk/mytickets/InProgressTickets'
@@ -38,6 +38,8 @@ import TeamReports from './pages/dashboard/TeamReports'
 import Login from './pages/auth/Login'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
+import TelephoneList from './pages/directory/TelephoneList'
+import PerformanceTracking from './pages/reports/PerformanceTracking'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -101,13 +103,27 @@ function App() {
                 </Route>
 
                 <Route path="/directory">
-                    <Route index element={<Navigate to="departments" replace />} />
-                    <Route path="departments" element={<Department />} />
+                    <Route index element={<Navigate to="telephones" replace />} />
+                    <Route path="telephoneList" element={<TelephoneList />} />
+                </Route>
+
+                <Route path="/itdirectory">
+                    <Route index element={<Navigate to="internet" replace />} />
                     <Route path="telephones" element={<TelephoneDirectory />} />
                     <Route path="internet" element={<InternetDirectory />} />
                     <Route path="ipAddress" element={<IpAddressDirectory />} />
                     <Route path="anydesks" element={<AnydeskDirectory />} />
                     <Route path="printers" element={<PrinterDirectory />} />
+                </Route>
+
+                <Route path="/reports">
+                    <Route index element={<Navigate to="performance" replace />} />
+                    <Route path="performance" element={<PerformanceTracking />} />
+                </Route>
+
+                <Route path="/settings">
+                    <Route index element={<Navigate to="telephones" replace />} />
+                    <Route path="telephoneList" element={<TelephoneList />} />
                 </Route>
             </Route>
 
@@ -116,10 +132,10 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
             </Route>
 
-            {/* <Route path="/403" element={<ErrorPage errorCode={403} />} />
+            <Route path="/403" element={<ErrorPage errorCode={403} />} />
             <Route path="/404" element={<ErrorPage errorCode={404} />} />
             <Route path="/500" element={<ErrorPage errorCode={500} />} />
-            <Route path="*" element={<Navigate to="/404" />} /> */}
+            <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
     )
 }

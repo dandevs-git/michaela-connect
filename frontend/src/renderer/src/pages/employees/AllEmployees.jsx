@@ -124,7 +124,9 @@ function AllEmployees() {
         { header: 'Name', accessorKey: 'name' },
         {
             header: 'Department',
-            accessorKey: 'department.name',
+            accessorFn: (row) => row.department?.name || '',
+            id: 'userDepartment',
+            filterFn: 'includesString',
             cell: ({ row }) => {
                 return row.original.department ? row.original.department.name : 'N/A'
             }

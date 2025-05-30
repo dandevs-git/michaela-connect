@@ -3,7 +3,7 @@ import TopNavigation from '../components/TopNavigation'
 import SideNavigation from '../components/SideNavigation'
 import Chat from '../components/Chat'
 
-function DashboardLayout() {
+function MainLayout() {
     return (
         <>
             <div className="d-flex bg-dark-subtle">
@@ -15,9 +15,9 @@ function DashboardLayout() {
                     </div>
                 </div>
             </div>
-            {/* <Chat /> */}
+            <Chat />
         </>
     )
 }
 
-export default DashboardLayout
+export default MainLayout

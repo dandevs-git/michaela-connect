@@ -11,7 +11,12 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $rolePermissions = [
-            'superadmin' => [],
+            'superadmin' => [
+                //FIX PERMISSIONS
+
+                // Directories
+                'view it directory'
+            ],
             'admin' => [
 
                 // User Management
@@ -81,7 +86,7 @@ class PermissionSeeder extends Seeder
                 'view dashboard',
                 'access service desk',
                 'manage employees',
-                'view infrastructure directory',
+                'view general directory',
                 'view analytics reports',
                 'manage system settings',
 
@@ -113,7 +118,7 @@ class PermissionSeeder extends Seeder
                 // Side Navigation
                 'view dashboard',
                 'access service desk',
-                'view infrastructure directory',
+                'view general directory',
 
                 // Role-based Insights
                 'view managed department tickets',
@@ -141,7 +146,7 @@ class PermissionSeeder extends Seeder
                 // Side Navigation
                 'view dashboard',
                 'access service desk',
-                'view infrastructure directory',
+                'view general directory',
 
                 // Role-based Insights
                 'view own department tickets',
@@ -167,7 +172,7 @@ class PermissionSeeder extends Seeder
                 // Side Navigation
                 'view dashboard',
                 'access service desk',
-                'view infrastructure directory',
+                'view general directory',
 
                 // Role-based Insights
                 'view own department tickets',

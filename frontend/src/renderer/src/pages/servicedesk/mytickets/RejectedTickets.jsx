@@ -4,7 +4,7 @@ import { FaEdit, FaEye, FaPlus, FaRegStickyNote, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badges/StatusBadge'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
-import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
+import ViewTicketDetailsModal from '../../../components/modals/ViewTicketDetailsModal'
 
 function RejectedTickets() {
     const { getData } = useAPI()
@@ -19,9 +19,27 @@ function RejectedTickets() {
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority.name' },
-        { header: 'From Department', accessorKey: 'origin_department.name' },
-        { header: 'To Department', accessorKey: 'target_department.name' },
+        {
+            header: 'Priority Level',
+            accessorFn: (row) => row.priority?.name || '',
+            id: 'priorityName',
+            filterFn: 'includesString',
+            cell: ({ row }) => row.original.priority?.name || 'N/A'
+        },
+        {
+            header: 'From Department',
+            accessorFn: (row) => row.origin_department?.name || '',
+            id: 'origin_departmentName',
+            filterFn: 'includesString',
+            cell: ({ row }) => row.original.origin_department?.name || 'N/A'
+        },
+        {
+            header: 'To Department',
+            accessorFn: (row) => row.target_department?.name || '',
+            id: 'target_departmentName',
+            filterFn: 'includesString',
+            cell: ({ row }) => row.original.target_department?.name || 'N/A'
+        },
         {
             header: 'Status',
             accessorKey: 'status',
@@ -94,7 +112,7 @@ function RejectedTickets() {
                 </div>
             </div>
 
-            <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+            <ViewTicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
         </>
     )
 }

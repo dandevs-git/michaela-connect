@@ -23,7 +23,9 @@ function Department() {
         { header: 'Department', accessorKey: 'name' },
         {
             header: 'Parent Department',
-            accessorKey: 'parent.name',
+            accessorFn: (row) => row.parent?.name || '',
+            id: 'parentDepartment',
+            filterFn: 'includesString',
             cell: ({ row }) => row.original?.parent?.name || 'N/A'
         },
         {

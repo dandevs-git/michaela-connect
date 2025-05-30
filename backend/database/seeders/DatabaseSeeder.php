@@ -29,8 +29,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Urgent', 'response_time' => 15, 'resolution_time' => 240],
         ]);
 
-        Department::factory()->count(3)->create();
-        Department::factory()->count(5)->withParent()->create();
+        Department::factory()->count(8)->create();
 
         $roles = [
             'superadmin' => Role::firstOrCreate(['name' => 'superadmin']),
@@ -39,6 +38,15 @@ class DatabaseSeeder extends Seeder
             'head' => Role::firstOrCreate(['name' => 'head']),
             'staff' => Role::firstOrCreate(['name' => 'staff']),
         ];
+
+        $roles['manager']->parent_id = $roles['admin']->id;
+        $roles['manager']->save();
+
+        $roles['head']->parent_id = $roles['manager']->id;
+        $roles['head']->save();
+
+        $roles['staff']->parent_id = $roles['head']->id;
+        $roles['staff']->save();
 
         $superadmin = User::create([
             'rfid' => '1111111111',
@@ -115,6 +123,6 @@ class DatabaseSeeder extends Seeder
         //     echo "Batch $i inserted\n";
         // }
 
-        // Ticket::factory()->count(10000)->create();
+        Ticket::factory()->count(1000)->create();
     }
 }

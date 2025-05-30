@@ -4,7 +4,7 @@ import { useAPI } from '../../contexts/APIContext'
 import StatusBadge from '../badges/StatusBadge'
 import { formatDateAndTimeVerbose } from '../../utils/formatDateAndTimeVerbose'
 
-function TicketDetailsModal({ id, data }) {
+function ViewTicketDetailsModal({ id, data }) {
     const { addComment, updateComment, authUser } = useAPI()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -142,7 +142,7 @@ function TicketDetailsModal({ id, data }) {
                                             <div>
                                                 <span className="me-2">Department:</span>
                                                 <span className="fw-bold">
-                                                    {data?.origin_department.name}
+                                                    {data?.origin_department?.name}
                                                 </span>
                                             </div>
                                         </div>
@@ -161,14 +161,14 @@ function TicketDetailsModal({ id, data }) {
                                                     <div>
                                                         <span className="me-2">Department:</span>
                                                         <span className="fw-bold">
-                                                            {data?.target_department.name}
+                                                            {data?.target_department?.name}
                                                         </span>
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <span className="d-flex h-100 justify-content-center align-items-center">
                                                     <span className="fw-bold">
-                                                        {data?.target_department.name}
+                                                        {data?.target_department?.name}
                                                     </span>
                                                 </span>
                                             )}
@@ -371,4 +371,4 @@ function TicketDetailsModal({ id, data }) {
     )
 }
 
-export default TicketDetailsModal
+export default ViewTicketDetailsModal

@@ -25,7 +25,7 @@ function MyOverview() {
                     <div className="col-xl-12 m-0 p-4">
                         <div className="row bg-light-subtle border m-0 p-3 rounded-4 shadow">
                             <div className="col-xl-12 d-flex flex-column p-3 my-auto">
-                                <h2>
+                                <h2 className="fw-bold mb-0">
                                     My Tickets
                                     <i className="text-success bi bi-ticket-detailed-fill ms-2"></i>
                                 </h2>
@@ -56,7 +56,7 @@ function MyOverview() {
 
                             <hr className="mt-3" />
                             <div className="col-xl-12 d-flex flex-column p-3 my-auto">
-                                <h2>
+                                <h2 className="fw-bold mb-0">
                                     My Performance <i className="text-warning bi bi-stars ms-2"></i>
                                 </h2>
                                 <div>Monitor your achievements and improve continuously.</div>

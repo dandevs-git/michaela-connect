@@ -29,7 +29,8 @@ Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->na
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::get('/statistics', [StatisticsController::class, 'getStatisticsData']);
+    Route::get('/statistics', [StatisticsController::class, 'getTicketStatisticsSummary']);
+    Route::get('/performance', [StatisticsController::class, 'getUserPerformanceSummary']);
 
     Route::prefix('tickets')->group(function () {
         Route::post('{ticket}/approve', [TicketController::class, 'approve'])->name('tickets.approve');
@@ -88,6 +89,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Route::patch('/users/{id}/suspend', [UserController::class, 'suspend'])->name('users.suspend');
     // Route::patch('/users/{id}/reinstate', [UserController::class, 'reinstate'])->name('users.reinstate');
+
 
     Route::patch('/users/{id}/deactivate', [UserController::class, 'deactivateActivateUser'])->name('users.deactivate');
     Route::patch('/users/{id}/reset-password', [PasswordController::class, 'adminResetPassword'])->name('password.adminReset');

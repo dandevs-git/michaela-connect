@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Models\User;
 use App\Services\MyTicketQueryService;
 use App\Services\TeamTicketQueryService;
 use Carbon\Carbon;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class StatisticsController extends Controller
 {
-    public function getStatisticsData()
+    public function getTicketStatisticsSummary()
     {
         $now = Carbon::now();
         $currentPeriodStart = $now->copy()->subDays(30);
@@ -239,6 +240,65 @@ class StatisticsController extends Controller
                 ];
             })
             ->values();
+    }
+
+    public function getUserPerformanceSummary()
+    {
+        $users = User::with('department')->where('status', 'active')->get();
+
+        $summary = $users->map(function ($user) {
+            $resolved = Ticket::where('assigned_to', $user->id)->whereNotNull('resolved_at')->count();
+            $failed = Ticket::where('assigned_to', $user->id)->whereNotNull('failed_at')->count();
+            $reopened = Ticket::where('assigned_to', $user->id)->where('status', 'reopened')->count();
+            $slaCompliant = Ticket::where('assigned_to', $user->id)->where('sla_breached', false)->count();
+
+            $total = $resolved + $failed;
+
+            $avgResolutionTime = Ticket::where('assigned_to', $user->id)
+                ->whereNotNull('resolved_at')
+                ->whereNotNull('start_at')
+                ->select(DB::raw('AVG(TIMESTAMPDIFF(MINUTE, start_at, resolved_at)) as avg'))
+                ->value('avg');
+
+            $resolutionRate = $total > 0 ? round(($resolved / $total) * 100, 2) : 0;
+            $slaRate = $total > 0 ? round(($slaCompliant / $total) * 100, 2) : 0;
+
+            return [
+                'employee' => $user->name,
+                'department' => optional($user->department)->name,
+                'ticketsResolved' => $resolved,
+                'reopenedTickets' => $reopened,
+                'avgResponseTime' => $avgResolutionTime ? round($avgResolutionTime, 2) . ' mins' : 'N/A',
+                'slaCompliance' => $slaRate . '%',
+                'performanceScore' => $this->computePerformanceScore($resolved, $slaCompliant, $avgResolutionTime, $reopened),
+                'status' => $this->scoreToStatus($resolved, $slaCompliant, $reopened),
+            ];
+        });
+
+        return response()->json($summary);
+    }
+
+    private function computePerformanceScore($resolved, $sla, $avgTime, $reopened)
+    {
+        $score = 0;
+        $score += $resolved * 0.5;
+        $score += $sla * 0.3;
+        $score += $avgTime ? max(0, 100 - ($avgTime / 2)) * 0.1 : 0;
+        $score -= $reopened * 0.2;
+
+        return round(min(max($score, 0), 100), 2);
+    }
+
+    private function scoreToStatus($resolved, $sla, $reopened)
+    {
+        $score = $this->computePerformanceScore($resolved, $sla, 30, $reopened); // using 30min as base
+        if ($score >= 85)
+            return 'Excellent';
+        if ($score >= 70)
+            return 'Satisfactory';
+        if ($score >= 50)
+            return 'Needs Improvement';
+        return 'Poor';
     }
 
 }

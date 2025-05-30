@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import logoBlack from '../assets/images/logos/logo-black.png'
 import logoWhite from '../assets/images/logos/logo-white.png'
 import ThemeContext from '../contexts/ThemeContext'
-import { FaChartLine, FaCog, FaNetworkWired, FaTicketAlt, FaUser } from 'react-icons/fa'
+import { FaChartLine, FaCog, FaNetworkWired, FaServer, FaTicketAlt, FaUser } from 'react-icons/fa'
 import '../assets/styles/css/sideNavigationStyle.css'
 import { useAPI } from '../contexts/APIContext'
 
@@ -39,8 +39,7 @@ const pages = [
             { name: 'All Employees', link: '/employees/all' },
             { name: 'Departments', link: '/employees/departments' },
             { name: 'Roles & Permissions', link: '/employees/roles' },
-            { name: 'Activity Logs', link: '/employees/logs' },
-            { name: 'Performance Tracking', link: '/employees/performance' }
+            { name: 'Activity Logs', link: '/employees/logs' }
         ],
         permission: 'manage employees'
     },
@@ -48,37 +47,45 @@ const pages = [
         page: 'Directory',
         link: '/directory',
         icon: <FaNetworkWired />,
+        subPages: [{ name: 'Telephone lines', link: '/directory/telephoneList' }],
+        permission: 'view general directory'
+    },
+    {
+        page: 'IT Directory',
+        link: '/itdirectory',
+        icon: <FaServer />,
         subPages: [
-            { name: 'Telephone lines', link: '/directory/telephones' },
-            { name: 'Internet lines', link: '/directory/internet' },
-            { name: 'IP Addresses', link: '/directory/ipAddress' },
-            { name: 'Anydesk IDs', link: '/directory/anydesks' },
-            { name: 'Printers', link: '/directory/printers' }
+            { name: 'Telephone lines', link: '/itdirectory/telephones' },
+            { name: 'Internet lines', link: '/itdirectory/internet' },
+            { name: 'IP Addresses', link: '/itdirectory/ipAddress' },
+            { name: 'Anydesk IDs', link: '/itdirectory/anydesks' },
+            { name: 'Printers', link: '/itdirectory/printers' },
+            { name: 'Accounts', link: '/itdirectory/accounts' }
         ],
-        permission: 'view infrastructure directory'
+        permission: 'view it directory'
     },
     {
         page: 'Reports',
         link: '/reports',
         icon: <i className="bi bi-bar-chart"></i>,
         subPages: [
-            { name: 'Ticket Analytics', link: '/directory/employees' },
-            { name: 'SLA Performance', link: '/directory/departments' },
-            { name: 'Performance ', link: '/directory/telephones' },
-            { name: 'Employee Feedback ', link: '/directory/ipAddress' }
+            { name: 'Ticket Analytics', link: '/reports/employees' },
+            { name: 'SLA Performance', link: '/reports/departments' },
+            { name: 'Performance Tracking', link: '/reports/performance' },
+            { name: 'Employee Feedback ', link: '/reports/ipAddress' }
         ],
         permission: 'view analytics reports'
     },
     {
         page: 'Settings',
-        link: '/reports',
+        link: '/settings',
         icon: <FaCog />,
         subPages: [
-            { name: 'General Settings', link: '/directory/employees' },
-            { name: 'Security & Authentication', link: '/directory/departments' },
-            { name: 'Email & Notifications', link: '/directory/telephones' },
-            { name: 'System Logs & Audits', link: '/directory/ipAddress' },
-            { name: 'Department Settings', link: '/directory/ipAddress' }
+            { name: 'General Settings', link: '/settings/generalSettings' },
+            { name: 'Security & Authentication', link: '/settings/authentication' },
+            { name: 'Email & Notifications', link: '/settings/notification' },
+            { name: 'System Logs & Audits', link: '/settings/logs' },
+            { name: 'Department Settings', link: '/settings/department' }
         ],
         permission: 'manage system settings'
     }
@@ -98,7 +105,7 @@ function SideNavigation() {
     }
 
     const visiblePages = pages.filter(
-        (page) => !page.permission || authUser?.all_permissions?.includes(page.permission)
+        (page) => !page.permission || authUser?.all_permissions.includes(page.permission)
     )
 
     return (

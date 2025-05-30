@@ -32,13 +32,17 @@ function PrinterDirectory() {
     const columns = [
         {
             header: 'User',
-            accessorKey: 'user',
+            accessorFn: (row) => row.user?.name || '',
+            id: 'userName',
+            filterFn: 'includesString',
             cell: ({ row }) => row.original.user?.name || 'N/A'
         },
         {
             header: 'Department',
-            accessorKey: 'user?.department',
-            cell: ({ row }) => row.original.user.department?.name || 'N/A'
+            accessorFn: (row) => row.user?.department?.name || '',
+            id: 'userDepartment',
+            filterFn: 'includesString',
+            cell: ({ row }) => row.original.user?.department?.name || 'N/A'
         },
         { header: 'Printer', accessorKey: 'name' },
         {

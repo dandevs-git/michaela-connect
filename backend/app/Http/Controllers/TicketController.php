@@ -23,7 +23,8 @@ class TicketController extends Controller
             $status = $request->query('status');
             $query->where('status', $status);
 
-            if (!$user->hasRole(['admin', 'superadmin'])) {
+            // if (!$user->hasRole(['admin', 'superadmin'])) {
+            if (!$user->hasRole(['superadmin'])) {
                 if ($status === 'pending') {
                     $query->where('origin_department_id', $user->department_id);
                 } elseif ($status === 'new') {

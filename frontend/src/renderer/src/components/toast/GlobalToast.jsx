@@ -36,29 +36,31 @@ const GlobalToast = ({ message, show, onClose, isPositive, title, delay }) => {
     }, [onClose])
 
     return (
-        <div className="toast-container position-fixed bottom-0 end-0 p-3 mt-5 z-1055">
-            <div
-                ref={toastRef}
-                className={`toast bg-${isPositive ? 'success' : 'danger'}-subtle shadow-lg`}
-                role="alert"
-                aria-live="assertive"
-                aria-atomic="true"
-            >
-                <div className="toast-header">
-                    <i
-                        className={`bi ${isPositive ? 'bi-check-circle-fill text-success' : 'bi-exclamation-triangle-fill text-danger'} me-2`}
-                    ></i>
-                    <strong className="me-auto">{title}</strong>
-                    <small className="text-muted">Just now</small>
-                    <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="toast"
-                        aria-label="Close"
-                    ></button>
-                </div>
-                <div className="toast-body">{message}</div>
+        <div
+            ref={toastRef}
+            className={`toast border-0 bg-${isPositive ? 'success' : 'danger'}-subtle shadow-lg mb-3`}
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+        >
+            <div className="toast-header">
+                <i
+                    className={`bi ${
+                        isPositive
+                            ? 'bi-check-circle-fill text-success'
+                            : 'bi-exclamation-triangle-fill text-danger'
+                    } me-2`}
+                ></i>
+                <strong className="me-auto">{title}</strong>
+                <small className="text-muted">Just now</small>
+                <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"
+                ></button>
             </div>
+            <div className="toast-body">{message}</div>
         </div>
     )
 }

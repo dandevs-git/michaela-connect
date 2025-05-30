@@ -2,17 +2,22 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { useAPI } from '../../contexts/APIContext'
 
-function ActivityLog() {
+function TelephoneList() {
     const { getData } = useAPI()
-    const [logs, setLogs] = useState([])
+    const [telephones, setTelephones] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
+    const refreshList = () => {
+        getData('/telephones', setTelephones, setLoading, setError)
+    }
+
     useEffect(() => {
-        getData('/logs', setLogs, setLoading, setError)
+        refreshList()
     }, [])
 
     const columns = [
+        { header: 'Telephone Number', accessorKey: 'number' },
         {
             header: 'User',
             accessorFn: (row) => row.user?.name || '',
@@ -20,24 +25,24 @@ function ActivityLog() {
             filterFn: 'includesString',
             cell: ({ row }) => row.original.user?.name || 'N/A'
         },
-        { header: 'Category', accessorKey: 'category' },
-        { header: 'Action', accessorKey: 'action' },
-        { header: 'Details', accessorKey: 'details' },
-        { header: 'IP Address', accessorKey: 'ip_address' },
-        { header: 'PC Name', accessorKey: 'pc_name' },
-        { header: 'Date', accessorKey: 'formatted_date' },
-        { header: 'Time', accessorKey: 'formatted_time' }
+        {
+            header: 'Department',
+            accessorFn: (row) => row.user?.department?.name || '',
+            id: 'userDepartment',
+            filterFn: 'includesString',
+            cell: ({ row }) => row.original.user?.department?.name || 'N/A'
+        }
     ]
 
     return (
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-                    Activity Log
+                    Telephone List
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <CustomTable isloading={loading} columns={columns} data={logs} />
+                        <CustomTable isloading={loading} columns={columns} data={telephones} />
                     </div>
                 </div>
             </div>
@@ -45,4 +50,4 @@ function ActivityLog() {
     )
 }
 
-export default ActivityLog
+export default TelephoneList

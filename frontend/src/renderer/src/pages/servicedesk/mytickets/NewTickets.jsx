@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEye, FaUserCheck } from 'react-icons/fa'
+import { FaEye, FaTimes, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import StatusBadge from '../../../components/badges/StatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
-import TicketDetailsModal from '../../../components/modals/TicketDetailsModal'
+import ViewTicketDetailsModal from '../../../components/modals/ViewTicketDetailsModal'
 import { useToast } from '../../../contexts/ToastContext'
 
 function NewTickets() {
@@ -27,6 +27,8 @@ function NewTickets() {
     useEffect(() => {
         getData(`/users/subordinates`, setSubordinates, setLoading, setError)
     }, [])
+
+    console.log(subordinates)
 
     const handleAssignButton = (ticket, user) => {
         setSelectedTickets(ticket)
@@ -75,21 +77,39 @@ function NewTickets() {
     const flattenSubordinates = (users) => {
         let flat = []
 
-        // users.forEach((user) => {
-        //     flat.push(user)
-        //     if (user.subordinates && user.subordinates.length > 0) {
-        //         flat = flat.concat(flattenSubordinates(user.subordinates))
-        //     }
-        // })
+        users.forEach((user) => {
+            flat.push(user)
+            if (user.subordinates && user.subordinates.length > 0) {
+                flat = flat.concat(flattenSubordinates(user.subordinates))
+            }
+        })
 
         return flat
     }
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
-        { header: 'Priority Level', accessorKey: 'priority.name' },
-        { header: 'From Department', accessorKey: 'origin_department.name' },
-        { header: 'To Department', accessorKey: 'target_department.name' },
+        {
+            header: 'Priority Level',
+            accessorFn: (row) => row.priority?.name || '',
+            id: 'priorityName',
+            filterFn: 'includesString',
+            cell: ({ row }) => row.original.priority?.name || 'N/A'
+        },
+        {
+            header: 'From Department',
+            accessorFn: (row) => row.origin_department?.name || '',
+            id: 'origin_departmentName',
+            filterFn: 'includesString',
+            cell: ({ row }) => row.original.origin_department?.name || 'N/A'
+        },
+        {
+            header: 'To Department',
+            accessorFn: (row) => row.target_department?.name || '',
+            id: 'target_departmentName',
+            filterFn: 'includesString',
+            cell: ({ row }) => row.original.target_department?.name || 'N/A'
+        },
         {
             header: 'Status',
             accessorKey: 'status',
@@ -207,7 +227,7 @@ function NewTickets() {
                 </div>
             </div>
 
-            <TicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+            <ViewTicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
 
             <ConfirmationModal
                 id="confirmModal"

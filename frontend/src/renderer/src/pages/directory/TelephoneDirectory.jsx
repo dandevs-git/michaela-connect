@@ -36,18 +36,20 @@ function TelephoneDirectory() {
     const columns = [
         {
             header: 'User',
-            accessorKey: 'user',
+            accessorFn: (row) => row.user?.name || '',
+            id: 'userName',
+            filterFn: 'includesString',
             cell: ({ row }) => row.original.user?.name || 'N/A'
         },
         {
             header: 'Department',
-            accessorKey: 'user?.department',
+            accessorFn: (row) => row.user?.department?.name || '',
+            id: 'userDepartment',
+            filterFn: 'includesString',
             cell: ({ row }) => row.original.user?.department?.name || 'N/A'
         },
         { header: 'Telephone Number', accessorKey: 'number' },
         { header: 'Cable Code', accessorKey: 'cable_code' },
-        // { header: 'Location', accessorKey: 'location' },
-        // { header: 'Description', accessorKey: 'description' },
         {
             header: 'Actions',
             accessorKey: 'actions',

@@ -240,21 +240,49 @@ class UserController extends Controller
     }
 
 
+    // public function getSupervisor()
+    // {
+    //     $user = Auth::user();
+
+    //     if (!$user) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+
+    //     $supervisor = $user->supervisor()->with('department')->first();
+
+    //     if (!$supervisor) {
+    //         return response()->json(['message' => 'No supervisor found'], 200);
+    //     }
+
+    //     return response()->json($supervisor, 200);
+    // }
+
+    // public function getSubordinates()
+    // {
+    //     $user = Auth::user();
+
+    //     if (!$user) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+
+    //     $subordinates = $user->subordinates()->with('department')->get();
+
+    //     if ($subordinates->isEmpty()) {
+    //         return response()->json(['message' => 'No subordinates found'], 200);
+    //     }
+
+    //     return response()->json($subordinates, 200);
+    // }
+
     public function getSupervisor()
     {
         $user = Auth::user();
 
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        $supervisor = $user->supervisor();
 
-        $supervisor = $user->supervisor()->with('department')->first();
-
-        if (!$supervisor) {
-            return response()->json(['message' => 'No supervisor found'], 200);
-        }
-
-        return response()->json($supervisor, 200);
+        return $supervisor
+            ? response()->json($supervisor->load('department'), 200)
+            : response()->json(['message' => 'No supervisor found'], 200);
     }
 
     public function getSubordinates()
@@ -265,14 +293,12 @@ class UserController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $subordinates = $user->subordinates()->with('department')->get();
+        $subordinates = $user->allSubordinates();
 
         if ($subordinates->isEmpty()) {
             return response()->json(['message' => 'No subordinates found'], 200);
         }
 
-        return response()->json($subordinates, 200);
+        return response()->json($subordinates->load('department'), 200);
     }
-
-
 }
