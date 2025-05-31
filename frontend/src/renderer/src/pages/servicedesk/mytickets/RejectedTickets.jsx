@@ -52,7 +52,7 @@ function RejectedTickets() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn border-0"
+                        className="action-btn btn border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"

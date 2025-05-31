@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react'
 import logoDark from '../../assets/images/logos/logo-black.png'
-import logoLight from '../../assets/images/logos/logo-black.png'
+import logoLight from '../../assets/images/logos/logo-white.png'
 import { useAPI } from '../../contexts/APIContext'
 import ThemeContext from '../../contexts/ThemeContext'
 import { useNavigate } from 'react-router-dom'

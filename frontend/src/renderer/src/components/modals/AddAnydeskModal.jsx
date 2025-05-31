@@ -62,8 +62,6 @@ function AddAnydeskModal({ id, refreshList }) {
             return
         }
 
-        console.log(anydeskData)
-
         const response = await postData('/anydesks', anydeskData, () => {}, setLoading, setError)
 
         if (response) {

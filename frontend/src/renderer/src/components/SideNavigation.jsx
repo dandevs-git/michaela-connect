@@ -7,6 +7,7 @@ import ThemeContext from '../contexts/ThemeContext'
 import { FaChartLine, FaCog, FaNetworkWired, FaServer, FaTicketAlt, FaUser } from 'react-icons/fa'
 import '../assets/styles/css/sideNavigationStyle.css'
 import { useAPI } from '../contexts/APIContext'
+import Placeholder from './placeholders/Placeholder'
 
 const pages = [
     {
@@ -15,8 +16,8 @@ const pages = [
         icon: <FaChartLine />,
         subPages: [
             { name: 'Team Overview', link: '/dashboard/overview' },
-            { name: 'Team Activities', link: '/dashboard/activities' }
-            // { name: 'Team Reports', link: '/dashboard/reports' }
+            { name: 'Team Activities', link: '/dashboard/activities' },
+            { name: 'Team Reports', link: '/dashboard/reports' }
         ],
         permission: 'view dashboard'
     },
@@ -26,8 +27,8 @@ const pages = [
         icon: <FaTicketAlt />,
         subPages: [
             { name: 'My Overview', link: '/servicedesk/overview' },
-            { name: 'My Tickets', link: '/servicedesk/tickets' }
-            // { name: 'My Reports', link: '/servicedesk/reports' }
+            { name: 'My Tickets', link: '/servicedesk/tickets' },
+            { name: 'My Reports', link: '/servicedesk/reports' }
         ],
         permission: 'access service desk'
     },
@@ -47,7 +48,7 @@ const pages = [
         page: 'Directory',
         link: '/directory',
         icon: <FaNetworkWired />,
-        subPages: [{ name: 'Telephone lines', link: '/directory/telephoneList' }],
+        subPages: [{ name: 'Telephone list', link: '/directory/telephoneList' }],
         permission: 'view general directory'
     },
     {
@@ -71,7 +72,7 @@ const pages = [
         subPages: [
             { name: 'Ticket Analytics', link: '/reports/employees' },
             { name: 'SLA Performance', link: '/reports/departments' },
-            { name: 'Performance Tracking', link: '/reports/performance' },
+            { name: 'Employee Performance', link: '/reports/performance' },
             { name: 'Employee Feedback ', link: '/reports/ipAddress' }
         ],
         permission: 'view analytics reports'
@@ -132,8 +133,8 @@ function SideNavigation() {
                                     <>
                                         <button
                                             className={`nav-link d-flex align-items-center px-3 py-2 rounded w-100 text-start 
-                                                ${isActive ? 'text-light bg-primary' : 'text-light-emphasis'} 
-                                                ${isOpen ? 'active-menu' : ''}`}
+                                        ${isActive ? 'text-light bg-primary' : 'text-light-emphasis'} 
+                                        ${isOpen ? 'active-menu' : ''}`}
                                             onClick={() => toggleMenu(index)}
                                         >
                                             {page.icon}
@@ -151,7 +152,7 @@ function SideNavigation() {
                                                             to={subPage.link}
                                                             className={({ isActive }) =>
                                                                 `nav-link text-light-emphasis ps-3 border-start ms-4 my-1 p-1 
-                                                                ${isActive ? 'text-decoration-underline underline-offset-8 fw-bold' : ''}`
+                                                        ${isActive ? 'text-decoration-underline underline-offset-8 fw-bold' : ''}`
                                                             }
                                                         >
                                                             {subPage.name}
@@ -165,7 +166,7 @@ function SideNavigation() {
                                     <NavLink
                                         to={page.link}
                                         className={`nav-link d-flex align-items-center px-3 py-2 rounded 
-                                            ${isActive ? 'bg-primary text-white' : 'text-light-emphasis'}`}
+                                    ${isActive ? 'bg-primary text-white' : 'text-light-emphasis'}`}
                                     >
                                         {page.icon} <span className="ms-2">{page.page}</span>
                                     </NavLink>
@@ -175,10 +176,23 @@ function SideNavigation() {
                     })}
                 </ul>
             </div>
+
             <div className="bg-primary border text-center text-white mt-auto small flex-column d-flex">
-                <strong className="text-uppercase border-bottom p-1">
-                    {authUser?.department?.name || ''} {authUser?.role?.name || ''}
-                </strong>
+                {authUser?.role?.name && (
+                    <strong className="text-uppercase border-bottom p-1 fs-4 flex-column">
+                        <span>{authUser.role.name}</span>
+                    </strong>
+                )}
+
+                {authUser?.department?.name && (
+                    <strong
+                        style={{ fontSize: '0.7rem' }}
+                        className="text-uppercase border-bottom p-1 flex-column"
+                    >
+                        <span>{authUser.department.name}</span>{' '}
+                    </strong>
+                )}
+
                 <span className="p-2">&copy; 2025 Goldnines</span>
             </div>
         </div>

@@ -28,7 +28,6 @@ function TeamOverview() {
                         <div className="card-header">
                             <h2>Welcome to the Dashboard</h2>
                             <div>Here’s an Overview of the latest activity.</div>
-
                             {/* <div
                                 className="input-group input-group-sm w-auto"
                                 style={{ maxWidth: '300px' }}
@@ -54,6 +53,7 @@ function TeamOverview() {
                                 delta={statistics.delta?.teamTotalTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
+                                redirectTo="/servicedesk/tickets/all"
                             />
                             <StatisticsCard
                                 title="Resolved Tickets"
@@ -61,6 +61,7 @@ function TeamOverview() {
                                 delta={statistics.delta?.teamResolvedTicketsDelta}
                                 iconClass="bi-clipboard-check"
                                 loading={loading}
+                                redirectTo="/servicedesk/tickets/resolved"
                             />
                             <StatisticsCard
                                 title="SLA Compliance"
@@ -95,6 +96,7 @@ function TeamOverview() {
                                 iconClass="bi-hourglass-top"
                                 reverseDelta={true}
                                 loading={loading}
+                                redirectTo="/servicedesk/tickets/pending"
                             />
                         </div>
                     </div>
@@ -158,7 +160,10 @@ function TeamOverview() {
                                     <div className="fs-6">No data available</div>
                                 </div>
                             ) : (
-                                <CustomLineChart data={statistics?.teamVolumeTrends} />
+                                <CustomLineChart
+                                    data={statistics?.teamVolumeTrends}
+                                    hasFilter={true}
+                                />
                             )}
                         </div>
                     </div>

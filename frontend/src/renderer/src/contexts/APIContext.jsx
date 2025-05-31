@@ -15,22 +15,33 @@ export const APIProvider = ({ children }) => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             setAuthLoading(true)
-            // const token = localStorage.getItem('token')
-            const token = sessionStorage.getItem('token')
-            if (token) {
-                api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-                const data = await getAuthUser()
-                if (data) {
-                    setAuthUser(data)
+
+            try {
+                const token = sessionStorage.getItem('token')
+                if (token) {
+                    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+                    const data = await getAuthUser()
+
+                    if (data) {
+                        setAuthUser(data)
+                    } else {
+                        sessionStorage.removeItem('token')
+                        delete api.defaults.headers.common['Authorization']
+                        navigate('/login')
+                    }
                 } else {
-                    // localStorage.removeItem('token')
-                    sessionStorage.removeItem('token')
-                    delete api.defaults.headers.common['Authorization']
                     navigate('/login')
                 }
+            } catch (error) {
+                console.error('Error fetching auth user:', error)
+                sessionStorage.removeItem('token')
+                delete api.defaults.headers.common['Authorization']
+                navigate('/login')
+            } finally {
+                setAuthLoading(false)
             }
-            setAuthLoading(false)
         }
+
         fetchUserDetails()
     }, [])
 
@@ -42,7 +53,7 @@ export const APIProvider = ({ children }) => {
 
             if (setData) setData(response.data)
 
-            if (response.data?.message) {
+            if (response.data?.message && method != 'get') {
                 showToast({
                     message: response.data.message,
                     title: 'Success',
@@ -107,7 +118,7 @@ export const APIProvider = ({ children }) => {
 
     const logout = async (setLoading, setError) => {
         await makeRequest('post', '/logout', {}, setLoading, null, setError)
-
+        setAuthUser(null)
         sessionStorage.removeItem('token')
         delete api.defaults.headers.common['Authorization']
     }

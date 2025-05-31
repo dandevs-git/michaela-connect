@@ -179,18 +179,17 @@ class StatisticsController extends Controller
         return $result;
     }
 
-
-
     private function getTicketVolumeTrends()
     {
         $tickets = Ticket::get();
 
         return $tickets->groupBy(function ($ticket) {
-            return $ticket->created_at->format('Y-m');
+            return $ticket->created_at->format('Y-m-d');
         })->sortKeys()->map(function ($group, $key) {
-            $date = Carbon::createFromFormat('Y-m', $key)->format('F Y');
+            $date = Carbon::createFromFormat('Y-m-d', $key);
             return [
-                'name' => $date,
+                'date' => $date->format('Y-m-d'),
+                'name' => $date->format('F j, Y'),
                 'Created' => $group->count(),
                 'Resolved' => $group->where('status', 'resolved')->count(),
                 'Reopened' => $group->where('status', 'reopened')->count(),
@@ -198,8 +197,6 @@ class StatisticsController extends Controller
             ];
         })->values();
     }
-
-
 
 
     private function getDepartmentResolutionTimes($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate)

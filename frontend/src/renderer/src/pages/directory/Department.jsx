@@ -28,13 +28,20 @@ function Department() {
             filterFn: 'includesString',
             cell: ({ row }) => row.original?.parent?.name || 'N/A'
         },
+        // {
+        //     header: 'Supervisor',
+        //     accessorFn: (row) => row.user?.name || '',
+        //     id: 'supervisor',
+        //     filterFn: 'includesString',
+        //     cell: ({ row }) => row.original?.user?.name || 'N/A'
+        // },
         {
             header: 'Actions',
             accessorKey: 'actions',
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn border-0"
+                        className="action-btn btn border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"
@@ -70,7 +77,7 @@ function Department() {
             cell: ({ row }) => (
                 <div className="dropdown">
                     <button
-                        className="btn border-0"
+                        className="action-btn btn border-0"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="More actions"
@@ -104,7 +111,6 @@ function Department() {
                 <div className="col-xl-12 p-3">
                     <h4 className="text-start fw-semibold">Main Departments</h4>
                     <CustomTable
-                        topComponent={<AddDepartmentModal />}
                         isloading={loadingMainDepartments}
                         columns={mainDepartmentColumns}
                         data={mainDepartments}

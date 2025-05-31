@@ -102,7 +102,7 @@ function CustomTable({
                         >
                             <table className="table table-hover text-wrap mb-3 text-center">
                                 {caption && <caption className="text-center">{caption}</caption>}
-                                <thead className="rounded-3">
+                                <thead>
                                     {table.getHeaderGroups().map((headerGroup) => (
                                         <tr key={headerGroup.id}>
                                             {headerGroup.headers.map((header) => (
@@ -110,7 +110,10 @@ function CustomTable({
                                                     className="fw-semibold"
                                                     key={header.id}
                                                     onClick={header.column.getToggleSortingHandler()}
-                                                    style={{ cursor: 'pointer' }}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        borderRadius: '30px'
+                                                    }}
                                                 >
                                                     {flexRender(
                                                         header.column.columnDef.header,

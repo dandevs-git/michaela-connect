@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import Placeholder from '../placeholders/Placeholder'
 
 function StatisticsCard({
@@ -9,8 +10,10 @@ function StatisticsCard({
     isTime = false,
     reverseDelta = false,
     loading = false,
-    col = 4
+    col = 4,
+    redirectTo = ''
 }) {
+    const navigate = useNavigate()
     const isZero = value === null || value === undefined || value === 0
     const trend = delta === 0 ? 'secondary' : delta > 0 ? 'success' : 'danger'
     const trendReverse = delta === 0 ? 'secondary' : delta > 0 ? 'danger' : 'success'
@@ -82,7 +85,12 @@ function StatisticsCard({
     }
 
     return (
-        <div className={`col-xl-${col} h-50 p-3`}>
+        <div
+            className={`col-xl-${col} h-50 p-3`}
+            onClick={() => redirectTo && navigate(redirectTo)}
+            role="button"
+            style={{ cursor: redirectTo ? 'pointer' : 'default' }}
+        >
             <div className="card h-100 rounded-4 shadow text-center mb-3">
                 <div className="card-header text-uppercase fw-semibold">{title}</div>
                 <div className="card-body d-flex flex-column align-items-center justify-content-center">

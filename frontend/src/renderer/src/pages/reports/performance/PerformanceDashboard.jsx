@@ -4,6 +4,8 @@ import Placeholder from '../../../components/placeholders/Placeholder'
 import CustomBarChart from '../../../components/charts/CustomBarChart'
 import CustomTable from '../../../components/tables/CustomTable'
 import { useAPI } from '../../../contexts/APIContext'
+import CustomLineChart from '../../../components/charts/CustomLineChart'
+import { FaBolt, FaEye, FaStackpath, FaTachometerAlt } from 'react-icons/fa'
 
 function PerformanceDashboard() {
     const { getData } = useAPI()
@@ -17,14 +19,45 @@ function PerformanceDashboard() {
     }, [])
 
     const columnsEmployeesPerformance = [
-        { header: 'Employee Name', accessorKey: 'employeeName' },
-        { header: 'Department', accessorKey: 'department' },
-        { header: 'Role', accessorKey: 'role' },
-        { header: 'Supervisor', accessorKey: 'supervisor' },
-        { header: 'Last Evaluation', accessorKey: 'lastEvaluation' },
-        { header: 'Score', accessorKey: 'score' },
-        { header: 'Status', accessorKey: 'status' },
-        { header: 'Actions', accessorKey: 'actions' }
+        {
+            header: 'Employee',
+            accessorKey: 'employee'
+        },
+        {
+            header: 'Tickets Resolved',
+            accessorKey: 'ticketsResolved'
+        },
+        {
+            header: 'Avg. Response Time',
+            accessorKey: 'avgResponseTime'
+        },
+        {
+            header: 'SLA Compliance',
+            accessorKey: 'slaCompliance'
+        },
+        {
+            header: 'Escalations',
+            accessorKey: 'escalations'
+        },
+        {
+            header: 'Performance Score',
+            accessorKey: 'performanceScore'
+        },
+        {
+            header: 'Actions',
+            accessorKey: 'actions',
+            cell: ({ row }) => (
+                <button
+                    className="btn btn-sm btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#"
+                    // onClick={() => setSelectedDepartment(row.original)}
+                >
+                    {/* <FaEye /> */}
+                    View Report
+                </button>
+            )
+        }
     ]
 
     const dataEmployeesPerformance = [
@@ -43,43 +76,48 @@ function PerformanceDashboard() {
             slaCompliance: '90%',
             escalations: 2,
             performanceScore: '⭐⭐⭐⭐☆ (4.3/5)'
+        },
+        {
+            employee: 'Mark Lee',
+            ticketsResolved: 45,
+            avgResponseTime: '2h 05m',
+            slaCompliance: '85%',
+            escalations: 4,
+            performanceScore: '⭐⭐⭐☆ (3.8/5)'
+        },
+        {
+            employee: 'Sarah Kim',
+            ticketsResolved: 50,
+            avgResponseTime: '1h 20m',
+            slaCompliance: '98%',
+            escalations: 0,
+            performanceScore: '⭐⭐⭐⭐⭐ (5/5)'
+        },
+        {
+            employee: 'David Brown',
+            ticketsResolved: 30,
+            avgResponseTime: '2h 45m',
+            slaCompliance: '80%',
+            escalations: 3,
+            performanceScore: '⭐⭐⭐☆ (3.6/5)'
+        },
+        {
+            employee: 'Emily White',
+            ticketsResolved: 55,
+            avgResponseTime: '50m',
+            slaCompliance: '99%',
+            escalations: 0,
+            performanceScore: '⭐⭐⭐⭐⭐ (5/5)'
         }
-        // ...
     ]
-
-    const renderChartCard = (title) => (
-        <div className="col-xl-6 mb-4">
-            <div className="card h-100 rounded-4 shadow">
-                <div className="card-header text-uppercase fw-semibold fs-5 bg-primary-subtle rounded-top-4">
-                    {title}
-                </div>
-                <div className="card-body d-flex align-items-center justify-content-center">
-                    {loading ? (
-                        <Placeholder height="300px" />
-                    ) : !statistics?.teamDepartmentTimes?.some(
-                          (e) => e.current_resolution_time > 0 && e.previous_resolution_time
-                      ) ? (
-                        <div className="text-center text-muted">
-                            <i className="bi bi-info-circle fs-1 mb-2" />
-                            <div>No data available</div>
-                        </div>
-                    ) : (
-                        <CustomBarChart
-                            data={statistics?.teamDepartmentTimes}
-                            datakey="resolution_time"
-                            display="Average Resolution Time"
-                        />
-                    )}
-                </div>
-            </div>
-        </div>
-    )
 
     return (
         <div className="col-xl-12 m-0 p-4">
             <div className="row bg-light-subtle border m-0 p-3 rounded-4 shadow">
                 <div className="d-flex justify-content-between align-items-center p-3">
-                    <h2 className="fw-bold mb-0">Performance Dashboard</h2>
+                    <h2 className="fw-bold mb-0">
+                        Performance Dashboard <FaBolt className="text-warning" />
+                    </h2>
                     <div className="btn-group gap-2" role="group" aria-label="Export options">
                         <button type="button" className="btn btn-primary rounded-3">
                             <i className="bi bi-file-earmark-pdf-fill me-1"></i> Export PDF
@@ -93,35 +131,68 @@ function PerformanceDashboard() {
                     </div>
                 </div>
 
-                <div className="mb-3">
-                    <div
-                        className="input-group input-group-sm w-auto"
-                        style={{ maxWidth: '300px' }}
+                <div className="mb-2 d-flex">
+                    <label htmlFor="chartFilter" className="form-label me-2 mb-0 align-self-center">
+                        Filter:
+                    </label>
+                    <select
+                        id="chartFilter"
+                        className="form-select form-select-sm w-auto"
+                        value={period}
+                        onChange={(e) => setPeriod(e.target.value)}
                     >
-                        <span className="input-group-text">Filter by Time Period</span>
-                        <select
-                            id="periodSelect"
-                            className="form-select"
-                            value={period}
-                            onChange={(e) => setPeriod(e.target.value)}
-                        >
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="quarterly">Quarterly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
+                        <option value="weekly">Last 7 Days</option>
+                        <option value="monthly">Last 30 Days</option>
+                        <option value="quarterly">Last 90 Days</option>
+                        <option value="yearly">Last Year</option>
+                        <option value="all">All</option>
+                    </select>
                 </div>
 
                 <StatisticsCard
-                    title="Average Performance Score"
+                    title="Total Tickets Resolved"
                     iconClass="bi-ticket-perforated"
                     loading={loading}
+                    col={3}
+                />
+
+                <StatisticsCard
+                    title="Avg Performance Score"
+                    iconClass="bi-ticket-perforated"
+                    loading={loading}
+                    col={3}
+                />
+
+                <StatisticsCard
+                    title="SLA Compliance"
+                    iconClass="bi-ticket-perforated"
+                    loading={loading}
+                    col={3}
                 />
                 <StatisticsCard
                     title="Employee Satisfaction"
                     iconClass="bi-emoji-smile"
                     unit="%"
+                    loading={loading}
+                    col={3}
+                />
+
+                <StatisticsCard
+                    title="Avg Resolution Time"
+                    // value={statistics.current?.teamAvgResolutionTime}
+                    // delta={statistics.delta?.teamAvgResolutionTimeDelta}
+                    iconClass="bi-lightning-fill"
+                    isTime={true}
+                    reverseDelta={true}
+                    loading={loading}
+                />
+                <StatisticsCard
+                    title="Avg Response Time"
+                    // value={statistics.current?.teamAvgResponseTime}
+                    // delta={statistics.delta?.teamAvgResponseTimeDelta}
+                    iconClass="bi-clock-history"
+                    isTime={true}
+                    reverseDelta={true}
                     loading={loading}
                 />
                 <StatisticsCard
@@ -130,97 +201,108 @@ function PerformanceDashboard() {
                     loading={loading}
                 />
 
-                <div className="row">
-                    {renderChartCard('Top Performers')}
-                    {renderChartCard('Low Performers Needing Attention')}
-                    {renderChartCard('Department-Wise Performance')}
-                    {renderChartCard('Goal Achievement Rate')}
-                </div>
-
-                <section className="mt-5">
-                    <h3 className="mb-2 fw-semibold">👨‍💻 Employee Performance Records</h3>
-                    <CustomTable
-                        columns={columnsEmployeesPerformance}
-                        data={dataEmployeesPerformance}
-                    />
-                </section>
-
-                <section className="mt-5">
-                    <h3 className="mb-2 fw-semibold">📈 Performance Metrics</h3>
-                    <div className="row g-4">
-                        <div className="col-md-6">
-                            <ul className="list-group shadow-sm">
-                                <li className="list-group-item">✅ Punctuality: 96%</li>
-                                <li className="list-group-item">✅ Task Completion Rate: 91%</li>
-                                <li className="list-group-item">✅ Quality of Work: 93%</li>
-                            </ul>
+                <div className="col-xl-6 p-4">
+                    <div className="card h-100 rounded-4 shadow text-center mb-3">
+                        <div className="card-header text-uppercase fs-3 fw-semibold">
+                            Top Performers
                         </div>
-                        <div className="col-md-6">
-                            <ul className="list-group shadow-sm">
-                                <li className="list-group-item">✅ Collaboration: 88%</li>
-                                <li className="list-group-item">✅ Customer Feedback: 90%</li>
-                                <li className="list-group-item">✅ Training Completion: 85%</li>
-                            </ul>
+                        <div className="d-flex card-body align-items-center justify-content-center">
+                            {loading ? (
+                                <Placeholder height="300px" />
+                            ) : !statistics?.teamVolumeTrends?.some(
+                                  (e) => e.Created > 0 && e.Failed && e.Reopened && e.Resolved
+                              ) ? (
+                                <div className="text-center text-muted py-4">
+                                    <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                    <div className="fs-6">No data available</div>
+                                </div>
+                            ) : (
+                                <CustomBarChart data={statistics?.teamDepartmentTimes} />
+                            )}
                         </div>
                     </div>
-                </section>
+                </div>
+                <div className="col-xl-6 p-4">
+                    <div className="card h-100 rounded-4 shadow text-center mb-3">
+                        <div className="card-header text-uppercase fs-3 fw-semibold">
+                            Low Performers Needing Attention
+                        </div>
+                        <div className="d-flex card-body align-items-center justify-content-center">
+                            {loading ? (
+                                <Placeholder height="300px" />
+                            ) : !statistics?.teamVolumeTrends?.some(
+                                  (e) => e.Created > 0 && e.Failed && e.Reopened && e.Resolved
+                              ) ? (
+                                <div className="text-center text-muted py-4">
+                                    <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                    <div className="fs-6">No data available</div>
+                                </div>
+                            ) : (
+                                <CustomBarChart data={statistics?.teamDepartmentTimes} />
+                            )}
+                        </div>
+                    </div>
+                </div>
 
-                <section className="mt-5">
-                    <h3 className="mb-2 fw-semibold">🎯 Goals and KPIs</h3>
-                    <ul className="list-group shadow-sm">
-                        <li className="list-group-item">
-                            Tickets Resolved: <strong>120 / 150</strong>
-                            <div className="progress mt-1">
-                                <div className="progress-bar bg-success" style={{ width: '80%' }} />
-                            </div>
-                        </li>
-                        <li className="list-group-item">
-                            Projects Delivered: <strong>8 / 10</strong>
-                            <div className="progress mt-1">
-                                <div className="progress-bar bg-warning" style={{ width: '75%' }} />
-                            </div>
-                        </li>
-                        <li className="list-group-item">
-                            Sales Targets: <strong>₱500k / ₱700k</strong>
-                            <div className="progress mt-1">
-                                <div className="progress-bar bg-info" style={{ width: '71%' }} />
-                            </div>
-                        </li>
-                    </ul>
-                </section>
+                <div className="col-xl-6 p-4">
+                    <div className="card h-100 rounded-4 shadow text-center mb-3">
+                        <div className="card-header text-uppercase fs-3 fw-semibold">
+                            Department-Wise Performance
+                        </div>
+                        <div className="d-flex card-body align-items-center justify-content-center">
+                            {loading ? (
+                                <Placeholder height="300px" />
+                            ) : !statistics?.teamVolumeTrends?.some(
+                                  (e) => e.Created > 0 && e.Failed && e.Reopened && e.Resolved
+                              ) ? (
+                                <div className="text-center text-muted py-4">
+                                    <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                    <div className="fs-6">No data available</div>
+                                </div>
+                            ) : (
+                                <CustomLineChart data={statistics?.teamVolumeTrends} />
+                            )}
+                        </div>
+                    </div>
+                </div>
 
-                <section className="mt-5">
-                    <h3 className="mb-2 fw-semibold">🕑 Evaluation History</h3>
-                    <ul className="list-group shadow-sm">
-                        <li className="list-group-item">
-                            Q1 2025: 88% - Strong performance with excellent teamwork
-                        </li>
-                        <li className="list-group-item">
-                            Q4 2024: 85% - Met most goals, needs better time management
-                        </li>
-                        <li className="list-group-item">
-                            Q3 2024: 82% - Consistent but needs to upskill
-                        </li>
-                    </ul>
-                </section>
+                <div className="col-xl-6 p-4">
+                    <div className="card h-100 rounded-4 shadow text-center mb-3">
+                        <div className="card-header text-uppercase fs-3 fw-semibold">
+                            Goal Achievement Rate
+                        </div>
+                        <div className="d-flex card-body align-items-center justify-content-center">
+                            {loading ? (
+                                <Placeholder height="300px" />
+                            ) : !statistics?.teamVolumeTrends?.some(
+                                  (e) => e.Created > 0 && e.Failed && e.Reopened && e.Resolved
+                              ) ? (
+                                <div className="text-center text-muted py-4">
+                                    <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                    <div className="fs-6">No data available</div>
+                                </div>
+                            ) : (
+                                <CustomLineChart data={statistics?.teamVolumeTrends} />
+                            )}
+                        </div>
+                    </div>
+                </div>
 
-                <section className="mt-5">
-                    <h3 className="mb-2 fw-semibold">📝 Feedback & Notes</h3>
-                    <ul className="list-group shadow-sm">
-                        <li className="list-group-item">
-                            <strong>Manager:</strong> “Consistently exceeds expectations.”
-                        </li>
-                        <li className="list-group-item">
-                            <strong>Peer:</strong> “Very helpful during high-pressure sprints.”
-                        </li>
-                        <li className="list-group-item">
-                            <strong>Self:</strong> “Want to grow leadership skills this year.”
-                        </li>
-                        <li className="list-group-item">
-                            <strong>Recognition:</strong> 🏅 "Employee of the Month – Feb 2025"
-                        </li>
-                    </ul>
-                </section>
+                <div className="col-xl-12 p-3">
+                    <div className="card shadow w-100">
+                        <div className="card-header bg-light text-uppercase fs-4 fw-semibold text-center">
+                            Employee’s Performance Records
+                        </div>
+                        <div className="card-body">
+                            <div className="col-12 p-4">
+                                <CustomTable
+                                    columns={columnsEmployeesPerformance}
+                                    data={dataEmployeesPerformance}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )

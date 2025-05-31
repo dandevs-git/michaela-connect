@@ -19,15 +19,15 @@ import { ToastProvider } from './contexts/ToastContext'
 // sessionStorage.removeItem('token')
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <HashRouter>
-      <ThemeProvider>
-        <ToastProvider>
-          <APIProvider>
-            <App />
-          </APIProvider>
-        </ToastProvider>
-      </ThemeProvider>
-    </HashRouter>
-  </React.StrictMode>
+    <React.StrictMode>
+        <HashRouter>
+            <ToastProvider>
+                <ThemeProvider>
+                    <APIProvider>
+                        <App />
+                    </APIProvider>
+                </ThemeProvider>
+            </ToastProvider>
+        </HashRouter>
+    </React.StrictMode>
 )

@@ -37,6 +37,7 @@ function MyOverview() {
                                 delta={statistics.delta?.myOpenTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
+                                redirectTo="/servicedesk/tickets/open"
                             />
                             <StatisticsCard
                                 title="In Progress Tickets"
@@ -44,6 +45,7 @@ function MyOverview() {
                                 delta={statistics.delta?.myInProgressTicketsDelta}
                                 iconClass="bi-hourglass-split"
                                 loading={loading}
+                                redirectTo="/servicedesk/tickets/inprogress"
                             />
                             <StatisticsCard
                                 title="Overdue Tickets"

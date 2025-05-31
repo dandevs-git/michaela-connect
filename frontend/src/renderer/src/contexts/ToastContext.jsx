@@ -28,7 +28,7 @@ export const ToastProvider = ({ children }) => {
         <ToastContext.Provider value={{ showToast }}>
             {children}
             <div
-                className="toast-container position-fixed bottom-0 end-0 p-3 mt-5 z-1055"
+                className="toast-container position-fixed top-0 end-0 p-3 mt-5 z-1055"
                 style={{ zIndex: 1055 }}
             >
                 {toasts.map((toast) => (
