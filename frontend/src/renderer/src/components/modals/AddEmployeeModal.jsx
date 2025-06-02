@@ -8,7 +8,6 @@ function AddEmployeeModal({ id, refreshList }) {
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [message, setMessage] = useState('')
     const [departments, setDepartments] = useState([])
     const [roles, setRoles] = useState([])
 
@@ -25,17 +24,19 @@ function AddEmployeeModal({ id, refreshList }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setEmployeeData((prev) => ({ ...prev, [name]: value }))
+        setEmployeeData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }))
     }
 
     const resetForm = () => {
         setEmployeeData({
             rfid: '',
             name: '',
-            role: 'staff',
+            role: '',
             department_id: ''
         })
-        setMessage('')
         setError('')
         formRef.current?.classList.remove('was-validated')
     }
@@ -63,7 +64,6 @@ function AddEmployeeModal({ id, refreshList }) {
         e.preventDefault()
         const form = e.target
         form.classList.remove('was-validated')
-        setMessage('')
         setError('')
 
         if (!form.checkValidity()) {
@@ -78,6 +78,7 @@ function AddEmployeeModal({ id, refreshList }) {
             setLoading,
             setError
         )
+
         if (response) {
             Modal.getInstance(modalRef.current).hide()
             resetForm()
@@ -224,7 +225,6 @@ function AddEmployeeModal({ id, refreshList }) {
                                                 <span
                                                     className="spinner-grow spinner-grow-sm me-2"
                                                     role="status"
-                                                    aria-hidden="true"
                                                 ></span>
                                                 Submitting...
                                             </>

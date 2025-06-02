@@ -38,7 +38,7 @@ const GlobalToast = ({ message, show, onClose, isPositive, title, delay }) => {
     return (
         <div
             ref={toastRef}
-            className={`toast border-0 bg-${isPositive ? 'success' : 'danger'}-subtle shadow-lg mb-3`}
+            className={`toast bg-${isPositive ? 'success' : 'danger'}-subtle shadow-lg mb-3`}
             role="alert"
             aria-live="assertive"
             aria-atomic="true"

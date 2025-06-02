@@ -28,23 +28,6 @@ function TeamOverview() {
                         <div className="card-header">
                             <h2>Welcome to the Dashboard</h2>
                             <div>Here’s an Overview of the latest activity.</div>
-                            {/* <div
-                                className="input-group input-group-sm w-auto"
-                                style={{ maxWidth: '300px' }}
-                            >
-                                <span className="input-group-text">Filter by Time Period</span>
-                                <select
-                                    id="periodSelect"
-                                    className="form-select"
-                                    // value={period}
-                                    // onChange={(e) => setPeriod(e.target.value)}
-                                >
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="quarterly">Quarterly</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
-                            </div> */}
                         </div>
                         <div className="d-flex row card-body align-items-center justify-content-center m-0 px-3">
                             <StatisticsCard
@@ -152,9 +135,7 @@ function TeamOverview() {
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
                                 <Placeholder height="300px" />
-                            ) : !statistics?.teamVolumeTrends?.some(
-                                  (e) => e.Created > 0 && e.Failed && e.Reopened && e.Resolved
-                              ) ? (
+                            ) : !statistics?.teamVolumeTrends?.some((e) => e.Created > 0) ? (
                                 <div className="text-center text-muted py-4">
                                     <i className="bi bi-info-circle fs-1 mb-2"></i>
                                     <div className="fs-6">No data available</div>

@@ -17,6 +17,7 @@ function PendingTickets() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [confirmType, setConfirmType] = useState('')
+    const [remarks, setRemarks] = useState('')
 
     useEffect(() => {
         getData('/tickets?status=pending', setTickets, setLoading, setError)
@@ -44,14 +45,19 @@ function PendingTickets() {
                 ? `/tickets/${selectedTickets.id}/approve`
                 : `/tickets/${selectedTickets.id}/reject`
 
+        const payload = confirmType === 'approve' ? () => {} : { remarks }
+
         postData(
             url,
-            () => {},
-            () => {},
+            payload,
+            () => {
+                setRemarks('')
+                setSelectedTickets(null)
+                getData('/tickets?status=pending', setTickets, setLoading, setError)
+            },
             () => {},
             setError
         )
-        getData('/tickets?status=pending', setTickets, setLoading, setError)
     }
 
     const columns = [
@@ -155,13 +161,37 @@ function PendingTickets() {
             <ConfirmationModal
                 id="confirmModal"
                 title={`${confirmType} Ticket`}
-                message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
+                message={
+                    <>
+                        <div className="mb-4">
+                            {`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
+                        </div>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="remarks" className="form-label">
+                                Remarks
+                            </label>
+                            <textarea
+                                className="form-control mb-1"
+                                id="remarks"
+                                rows="5"
+                                value={remarks}
+                                onChange={(e) => setRemarks(e.target.value)}
+                            />
+                            {!remarks.trim() && (
+                                <div className="small text-center text-danger">
+                                    Remarks are required.
+                                </div>
+                            )}
+                        </div>
+                    </>
+                }
                 confirmLabel={confirmType}
                 confirmClass={
                     confirmType === 'approve' ? 'btn-success text-light' : 'btn-danger text-light'
                 }
                 cancelLabel="Cancel"
                 onConfirm={handleConfirm}
+                disableConfirm={!remarks.trim()}
             />
         </>
     )

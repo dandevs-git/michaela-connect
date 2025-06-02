@@ -86,7 +86,6 @@ function ViewTicketDetailsModal({ id, data }) {
             data-bs-keyboard="false"
             tabIndex="-1"
             aria-labelledby="ticketDetailsLabel"
-            aria-hidden="true"
         >
             <div className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
                 <div className="modal-content border">
@@ -341,7 +340,6 @@ function ViewTicketDetailsModal({ id, data }) {
                                                         <span
                                                             className="spinner-border spinner-border-sm"
                                                             role="status"
-                                                            aria-hidden="true"
                                                         ></span>
                                                     ) : (
                                                         <FaPaperPlane />

@@ -51,6 +51,7 @@ class UserController extends Controller
             'role' => 'required|string|exists:roles,name',
         ]);
 
+
         if ($validator->fails()) {
             logActivity(
                 $admin->id,
@@ -140,35 +141,6 @@ class UserController extends Controller
     }
 
 
-    // public function suspend(User $user, Request $request)
-    // {
-    //     $durationDays = $request->input('duration_days', null);
-
-    //     $user->status = 'suspended';
-
-    //     if ($durationDays) {
-    //         $user->suspended_until = now()->addDays($durationDays);
-    //     }
-
-    //     $user->save();
-
-    //     return response()->json(['message' => 'User suspended successfully']);
-    // }
-
-    // public function reinstate(User $user)
-    // {
-    //     if ($user->status !== 'suspended') {
-    //         return response()->json(['message' => 'User is not suspended'], 400);
-    //     }
-
-    //     $user->status = 'active';
-    //     $user->suspended_until = null;
-    //     $user->save();
-
-    //     return response()->json(['message' => 'User reinstated successfully']);
-    // }
-
-
     public function deactivateActivateUser($id)
     {
         $user = User::findOrFail($id);
@@ -238,41 +210,6 @@ class UserController extends Controller
             'updated_at' => $user->updated_at->toDateTimeString(),
         ]);
     }
-
-
-    // public function getSupervisor()
-    // {
-    //     $user = Auth::user();
-
-    //     if (!$user) {
-    //         return response()->json(['error' => 'Unauthorized'], 401);
-    //     }
-
-    //     $supervisor = $user->supervisor()->with('department')->first();
-
-    //     if (!$supervisor) {
-    //         return response()->json(['message' => 'No supervisor found'], 200);
-    //     }
-
-    //     return response()->json($supervisor, 200);
-    // }
-
-    // public function getSubordinates()
-    // {
-    //     $user = Auth::user();
-
-    //     if (!$user) {
-    //         return response()->json(['error' => 'Unauthorized'], 401);
-    //     }
-
-    //     $subordinates = $user->subordinates()->with('department')->get();
-
-    //     if ($subordinates->isEmpty()) {
-    //         return response()->json(['message' => 'No subordinates found'], 200);
-    //     }
-
-    //     return response()->json($subordinates, 200);
-    // }
 
     public function getSupervisor()
     {

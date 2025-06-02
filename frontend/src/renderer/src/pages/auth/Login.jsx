@@ -103,10 +103,7 @@ function Login() {
                 >
                     {loading ? (
                         <>
-                            <span
-                                className="spinner-grow spinner-grow-sm"
-                                aria-hidden="true"
-                            ></span>
+                            <span className="spinner-grow spinner-grow-sm"></span>
                             <span className="ms-2">Logging in...</span>
                         </>
                     ) : (

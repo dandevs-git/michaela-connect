@@ -146,6 +146,7 @@ function AddIpAddressModal({ id, refreshList }) {
                                             !!ipData?.user_id || !isSubmitted || ''
                                         )}
                                         classNamePrefix="react-select"
+                                        isClearable
                                         className={`form-control p-0 border-0 z-3 ${
                                             !ipData?.user_id && isSubmitted
                                                 ? 'is-invalid border border-danger'
@@ -190,6 +191,7 @@ function AddIpAddressModal({ id, refreshList }) {
                                         }
                                         styles={selectStyles(!!ipData.type || !isSubmitted)}
                                         classNamePrefix="react-select"
+                                        isClearable
                                         className={`form-control p-0 border-0 z-2 ${!ipData.type && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
                                     <div className="invalid-feedback">Please select a type.</div>
@@ -277,7 +279,6 @@ function AddIpAddressModal({ id, refreshList }) {
                                                 <span
                                                     className="spinner-grow spinner-grow-sm me-2"
                                                     role="status"
-                                                    aria-hidden="true"
                                                 ></span>
                                                 Submitting...
                                             </>

@@ -40,6 +40,6 @@ class TeamTicketQueryService
         } else {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-        return $query->orderBy('created_at', 'desc');
+        return $query->orderBy('updated_at', 'desc');
     }
 }

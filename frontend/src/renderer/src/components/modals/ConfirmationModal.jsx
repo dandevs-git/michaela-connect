@@ -3,6 +3,7 @@ function ConfirmationModal({
     title,
     message,
     onConfirm,
+    disableConfirm = false,
     confirmLabel = 'Confirm',
     confirmClass = 'btn-primary',
     cancelLabel = 'Cancel',
@@ -13,14 +14,13 @@ function ConfirmationModal({
             className="modal fade"
             id={id}
             tabIndex="-1"
-            aria-hidden="true"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
         >
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title">{title}</h5>
+                        <h5 className="modal-title text-capitalize">{title}</h5>
                         <button
                             type="button"
                             className="btn-close"
@@ -29,21 +29,22 @@ function ConfirmationModal({
                         ></button>
                     </div>
                     <div className="modal-body text-center">
-                        <p className="p-4">{message}</p>
+                        <div className="p-4">{message}</div>
                     </div>
                     <div className="modal-footer">
                         <button
                             type="button"
-                            className={`btn ${cancelClass}`}
+                            className={`btn text-capitalize ${cancelClass}`}
                             data-bs-dismiss="modal"
                         >
                             {cancelLabel}
                         </button>
                         <button
                             type="button"
-                            className={`btn ${confirmClass}`}
+                            className={`btn text-capitalize ${confirmClass}`}
                             onClick={onConfirm}
                             data-bs-dismiss="modal"
+                            disabled={disableConfirm}
                         >
                             {confirmLabel}
                         </button>

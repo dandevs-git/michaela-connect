@@ -7,7 +7,6 @@ import ThemeContext from '../contexts/ThemeContext'
 import { FaChartLine, FaCog, FaNetworkWired, FaServer, FaTicketAlt, FaUser } from 'react-icons/fa'
 import '../assets/styles/css/sideNavigationStyle.css'
 import { useAPI } from '../contexts/APIContext'
-import Placeholder from './placeholders/Placeholder'
 
 const pages = [
     {
@@ -16,8 +15,8 @@ const pages = [
         icon: <FaChartLine />,
         subPages: [
             { name: 'Team Overview', link: '/dashboard/overview' },
-            { name: 'Team Activities', link: '/dashboard/activities' },
-            { name: 'Team Reports', link: '/dashboard/reports' }
+            { name: 'Team Activities', link: '/dashboard/activities' }
+            // { name: 'Team Reports', link: '/dashboard/reports' }
         ],
         permission: 'view dashboard'
     },
@@ -27,8 +26,8 @@ const pages = [
         icon: <FaTicketAlt />,
         subPages: [
             { name: 'My Overview', link: '/servicedesk/overview' },
-            { name: 'My Tickets', link: '/servicedesk/tickets' },
-            { name: 'My Reports', link: '/servicedesk/reports' }
+            { name: 'My Tickets', link: '/servicedesk/tickets' }
+            // { name: 'My Reports', link: '/servicedesk/reports' }
         ],
         permission: 'access service desk'
     },
@@ -60,8 +59,8 @@ const pages = [
             { name: 'Internet lines', link: '/itdirectory/internet' },
             { name: 'IP Addresses', link: '/itdirectory/ipAddress' },
             { name: 'Anydesk IDs', link: '/itdirectory/anydesks' },
-            { name: 'Printers', link: '/itdirectory/printers' },
-            { name: 'Accounts', link: '/itdirectory/accounts' }
+            { name: 'Printers', link: '/itdirectory/printers' }
+            // { name: 'Accounts', link: '/itdirectory/accounts' }
         ],
         permission: 'view it directory'
     },
@@ -70,26 +69,26 @@ const pages = [
         link: '/reports',
         icon: <i className="bi bi-bar-chart"></i>,
         subPages: [
-            { name: 'Ticket Analytics', link: '/reports/employees' },
-            { name: 'SLA Performance', link: '/reports/departments' },
-            { name: 'Employee Performance', link: '/reports/performance' },
-            { name: 'Employee Feedback ', link: '/reports/ipAddress' }
+            { name: 'Ticket Analytics', link: '/reports/analytics' },
+            // { name: 'SLA Performance', link: '/reports/slaPerformance' },
+            { name: 'Performance Tracking', link: '/reports/performance' }
+            // { name: 'Employee Feedback ', link: '/reports/feedback' }
         ],
         permission: 'view analytics reports'
-    },
-    {
-        page: 'Settings',
-        link: '/settings',
-        icon: <FaCog />,
-        subPages: [
-            { name: 'General Settings', link: '/settings/generalSettings' },
-            { name: 'Security & Authentication', link: '/settings/authentication' },
-            { name: 'Email & Notifications', link: '/settings/notification' },
-            { name: 'System Logs & Audits', link: '/settings/logs' },
-            { name: 'Department Settings', link: '/settings/department' }
-        ],
-        permission: 'manage system settings'
     }
+    // {
+    //     page: 'Settings',
+    //     link: '/settings',
+    //     icon: <FaCog />,
+    //     subPages: [
+    //         { name: 'General Settings', link: '/settings/generalSettings' },
+    //         { name: 'Security & Authentication', link: '/settings/authentication' },
+    //         { name: 'Email & Notifications', link: '/settings/notification' },
+    //         { name: 'System Logs & Audits', link: '/settings/logs' },
+    //         { name: 'Department Settings', link: '/settings/department' }
+    //     ],
+    //     permission: 'manage system settings'
+    // }
 ]
 
 function SideNavigation() {

@@ -32,12 +32,22 @@ function MyOverview() {
                                 <div>Stay updated on your ticket progress in real time.</div>
                             </div>
                             <StatisticsCard
+                                title="Total Tickets Assigned"
+                                value={statistics.current?.myAllTickets}
+                                delta={statistics.delta?.myAllTicketsDelta}
+                                iconClass="bi-ticket-perforated"
+                                loading={loading}
+                                redirectTo="/servicedesk/tickets/all"
+                                col={3}
+                            />
+                            <StatisticsCard
                                 title="Open Tickets"
                                 value={statistics.current?.myOpenTickets}
                                 delta={statistics.delta?.myOpenTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
                                 redirectTo="/servicedesk/tickets/open"
+                                col={3}
                             />
                             <StatisticsCard
                                 title="In Progress Tickets"
@@ -46,6 +56,7 @@ function MyOverview() {
                                 iconClass="bi-hourglass-split"
                                 loading={loading}
                                 redirectTo="/servicedesk/tickets/inprogress"
+                                col={3}
                             />
                             <StatisticsCard
                                 title="Overdue Tickets"
@@ -54,6 +65,7 @@ function MyOverview() {
                                 iconClass="bi-exclamation-triangle-fill"
                                 loading={loading}
                                 reverseDelta={true}
+                                col={3}
                             />
 
                             <hr className="mt-3" />
@@ -109,19 +121,18 @@ function MyOverview() {
                                     <div className="d-flex card-body align-items-center justify-content-center">
                                         {loading ? (
                                             <Placeholder height="300px" />
-                                        ) : !statistics?.teamVolumeTrends?.some(
-                                              (e) =>
-                                                  e.Created > 0 &&
-                                                  e.Failed &&
-                                                  e.Reopened &&
-                                                  e.Resolved
+                                        ) : !statistics?.myVolumeTrends?.some(
+                                              (e) => e.Created > 0
                                           ) ? (
                                             <div className="text-center text-muted py-4">
                                                 <i className="bi bi-info-circle fs-1 mb-2"></i>
                                                 <div className="fs-6">No data available</div>
                                             </div>
                                         ) : (
-                                            <CustomLineChart data={statistics?.teamVolumeTrends} />
+                                            <CustomLineChart
+                                                data={statistics?.myVolumeTrends}
+                                                hasFilter={true}
+                                            />
                                         )}
                                     </div>
                                 </div>

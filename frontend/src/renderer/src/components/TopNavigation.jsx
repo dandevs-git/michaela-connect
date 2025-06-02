@@ -5,9 +5,9 @@ import { useState } from 'react'
 import FullScreenLoader from './FullScreenLoader'
 
 const pages = [
-    { page: 'Dashboard', link: '/dashboard' },
-    { page: 'Profile', link: '/profile' },
-    { page: 'Settings', link: '/settings' }
+    { page: 'Dashboard', link: '/dashboard' }
+    // { page: 'Profile', link: '/profile' },
+    // { page: 'Settings', link: '/settings' }
 ]
 
 function TopNavigation() {
@@ -166,23 +166,8 @@ function TopNavigation() {
                                     <hr className="dropdown-divider" />
                                 </li>
                                 <li>
-                                    {/* <button className="dropdown-item" onClick={handleLogout}>
-                                    Sign out
-                                </button> */}
-                                    <button
-                                        className="dropdown-item"
-                                        onClick={handleLogout}
-                                        disabled={loading}
-                                    >
-                                        {loading ? (
-                                            <span
-                                                className="spinner-border spinner-border-sm"
-                                                role="status"
-                                                aria-hidden="true"
-                                            />
-                                        ) : (
-                                            'Sign out'
-                                        )}
+                                    <button className="dropdown-item" onClick={handleLogout}>
+                                        Sign out
                                     </button>
                                 </li>
                             </ul>

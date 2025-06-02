@@ -10,9 +10,11 @@ import {
 
 function CustomTable({
     filter,
-    hasPagination,
-    hasSearch,
-    hasEntriesNumber,
+    hasPagination = true,
+    hasSearch = true,
+    hasExportOptions = false,
+    hasEntriesNumber = true,
+    hasFilterByHeader = false,
     data,
     columns,
     caption,
@@ -20,6 +22,7 @@ function CustomTable({
     isloading
 }) {
     const [globalFilter, setGlobalFilter] = useState('')
+    const [columnFilters, setColumnFilters] = useState([])
 
     useEffect(() => {
         setGlobalFilter(filter || '')
@@ -32,9 +35,18 @@ function CustomTable({
         getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-        state: { globalFilter },
-        onGlobalFilterChange: setGlobalFilter
+        getColumnFilteredRowModel: getFilteredRowModel(),
+        state: {
+            globalFilter,
+            columnFilters
+        },
+        onGlobalFilterChange: setGlobalFilter,
+        onColumnFiltersChange: setColumnFilters
     })
+
+    const handleExport = (type) => {
+        console.log(type)
+    }
 
     return (
         <>
@@ -51,34 +63,61 @@ function CustomTable({
                     </div>
                 ) : (
                     <>
-                        {/* Search & Entries Selection */}
-                        <div className="d-flex row align-items-center justify-content-between mb-3">
-                            <div className="col-8 d-flex align-items-center">
-                                {topComponent && topComponent}
+                        <div className="d-flex align-items-center justify-content-between mb-3">
+                            {topComponent && topComponent}
 
-                                {!hasEntriesNumber && (
-                                    <div className="text-start">
-                                        Show{' '}
-                                        <select
-                                            className="rounded mx-2 px-3"
-                                            value={table.getState().pagination.pageSize}
-                                            onChange={(e) =>
-                                                table.setPageSize(Number(e.target.value))
-                                            }
-                                        >
-                                            {[10, 20, 30, 50, 100].map((pageSize) => (
-                                                <option key={pageSize} value={pageSize}>
-                                                    {pageSize}
-                                                </option>
-                                            ))}
-                                        </select>{' '}
-                                        entries
-                                    </div>
-                                )}
-                            </div>
+                            {hasEntriesNumber && (
+                                <div className="text-start">
+                                    Show{' '}
+                                    <select
+                                        className="rounded mx-2 px-3"
+                                        value={table.getState().pagination.pageSize}
+                                        onChange={(e) => table.setPageSize(Number(e.target.value))}
+                                    >
+                                        {[10, 20, 30, 50, 100].map((pageSize) => (
+                                            <option key={pageSize} value={pageSize}>
+                                                {pageSize}
+                                            </option>
+                                        ))}
+                                    </select>{' '}
+                                    entries
+                                </div>
+                            )}
 
-                            {!hasSearch && (
-                                <div className="col-4">
+                            {hasExportOptions && (
+                                <div
+                                    className="btn-group gap-2"
+                                    role="group"
+                                    aria-label="Export options"
+                                >
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary rounded-3"
+                                        onClick={handleExport('pdf')}
+                                    >
+                                        <i className="bi bi-file-earmark-pdf-fill me-1"></i> Export
+                                        PDF
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary text-light rounded-3"
+                                        onClick={handleExport('excel')}
+                                    >
+                                        <i className="bi bi-file-earmark-excel-fill me-1"></i>{' '}
+                                        Export Excel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary rounded-3"
+                                        // onClick={() => window.print()}
+                                    >
+                                        <i className="bi bi-printer-fill me-1"></i> Print
+                                    </button>
+                                </div>
+                            )}
+
+                            {hasSearch && (
+                                <div className="" style={{ width: '400px' }}>
                                     <div className="input-group input-group-sm">
                                         <span className="input-group-text bg-primary text-light px-3 rounded-start-pill">
                                             Search
@@ -95,7 +134,6 @@ function CustomTable({
                             )}
                         </div>
 
-                        {/* Table */}
                         <div
                             className="table-responsive rounded-3 border mb-3"
                             style={{ overflow: 'visible' }}
@@ -104,36 +142,63 @@ function CustomTable({
                                 {caption && <caption className="text-center">{caption}</caption>}
                                 <thead>
                                     {table.getHeaderGroups().map((headerGroup) => (
-                                        <tr key={headerGroup.id}>
-                                            {headerGroup.headers.map((header) => (
-                                                <th
-                                                    className="fw-semibold"
-                                                    key={header.id}
-                                                    onClick={header.column.getToggleSortingHandler()}
-                                                    style={{
-                                                        cursor: 'pointer',
-                                                        borderRadius: '30px'
-                                                    }}
-                                                >
-                                                    {flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )}
-                                                    {header.column.getIsSorted() && (
-                                                        <i
-                                                            className={`bi ${
-                                                                header.column.getIsSorted() ===
-                                                                'asc'
-                                                                    ? 'bi-caret-down-fill'
-                                                                    : 'bi-caret-up-fill'
-                                                            } ms-2`}
-                                                        ></i>
-                                                    )}
-                                                </th>
-                                            ))}
-                                        </tr>
+                                        <React.Fragment key={headerGroup.id}>
+                                            <tr>
+                                                {headerGroup.headers.map((header) => (
+                                                    <th
+                                                        className="fw-semibold text-nowrap"
+                                                        key={header.id}
+                                                        onClick={header.column.getToggleSortingHandler()}
+                                                        style={{
+                                                            cursor: 'pointer',
+                                                            borderRadius: '30px'
+                                                        }}
+                                                    >
+                                                        {flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )}
+                                                        {header.column.getIsSorted() && (
+                                                            <i
+                                                                className={`bi ${
+                                                                    header.column.getIsSorted() ===
+                                                                    'asc'
+                                                                        ? 'bi-caret-down-fill'
+                                                                        : 'bi-caret-up-fill'
+                                                                } ms-2`}
+                                                            ></i>
+                                                        )}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                            {hasFilterByHeader && (
+                                                <tr>
+                                                    {headerGroup.headers.map((header) => (
+                                                        <th key={`${header.id}-filter`}>
+                                                            {header.column.getCanFilter() ? (
+                                                                <input
+                                                                    className="form-control form-control-sm"
+                                                                    type="text"
+                                                                    value={
+                                                                        header.column.getFilterValue() ??
+                                                                        ''
+                                                                    }
+                                                                    onChange={(e) =>
+                                                                        header.column.setFilterValue(
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    placeholder={`Filter ${flexRender(header.column.columnDef.header, header.getContext())}`}
+                                                                />
+                                                            ) : null}
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
                                     ))}
                                 </thead>
+
                                 <tbody className="table-group-divider">
                                     {table.getRowModel().rows.length > 0 ? (
                                         table.getRowModel().rows.map((row) => (
@@ -160,7 +225,7 @@ function CustomTable({
                         </div>
 
                         {/* Pagination */}
-                        {!hasPagination && (
+                        {hasPagination && (
                             <div className="d-flex justify-content-end pagination">
                                 <button
                                     onClick={() => table.setPageIndex(0)}

@@ -25,6 +25,6 @@ class MyTicketQueryService
                 ->orWhere('assigned_to', $user->id);
         });
 
-        return $query->orderBy('created_at', 'desc');
+        return $query->orderBy('updated_at', 'desc');
     }
 }

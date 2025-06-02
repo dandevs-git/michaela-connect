@@ -99,7 +99,6 @@ function RolesPermissions() {
                 id="permissionsModal"
                 tabIndex="-1"
                 aria-labelledby="permissionsModalLabel"
-                aria-hidden="true"
             >
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div className="modal-content">

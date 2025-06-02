@@ -25,7 +25,6 @@ function AddTicketModal({ id, refreshList }) {
     const [priorities, setPriorities] = useState([])
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [message, setMessage] = useState('')
 
     useEffect(() => {
         getData('/departments', setDepartments, () => {}, setError)
@@ -52,7 +51,6 @@ function AddTicketModal({ id, refreshList }) {
             priority_id: '',
             department_id: ''
         })
-        setMessage('')
         setError('')
         document.querySelector('.needs-validation')?.classList.remove('was-validated')
     }
@@ -61,7 +59,6 @@ function AddTicketModal({ id, refreshList }) {
         e.preventDefault()
         const form = e.target
         form.classList.remove('was-validated')
-        setMessage('')
         setError('')
 
         if (!form.checkValidity()) {
@@ -118,17 +115,15 @@ function AddTicketModal({ id, refreshList }) {
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {(message || error) && (
-                                    <div
-                                        className={`alert text-center py-2 ${error ? 'alert-danger' : 'alert-success'}`}
-                                    >
-                                        {error || message}
+                                {error && (
+                                    <div className="alert alert-danger text-center py-2">
+                                        {error}
                                     </div>
                                 )}
 
                                 <div className="col-md-12">
                                     <label htmlFor="ticketTitle" className="form-label">
-                                        Title
+                                        Concern
                                     </label>
                                     <input
                                         type="text"
@@ -145,7 +140,7 @@ function AddTicketModal({ id, refreshList }) {
 
                                 <div className="col-md-6">
                                     <label htmlFor="ticketDepartment" className="form-label">
-                                        Department
+                                        Assigned Department
                                     </label>
                                     <select
                                         className="form-select"
@@ -224,7 +219,6 @@ function AddTicketModal({ id, refreshList }) {
                                                 <span
                                                     className="spinner-grow spinner-grow-sm me-2"
                                                     role="status"
-                                                    aria-hidden="true"
                                                 ></span>
                                                 Submitting...
                                             </>

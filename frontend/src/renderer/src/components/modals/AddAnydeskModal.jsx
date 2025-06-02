@@ -136,6 +136,7 @@ function AddAnydeskModal({ id, refreshList }) {
                                             !!anydeskData?.user_id || !isSubmitted || ''
                                         )}
                                         classNamePrefix="react-select"
+                                        isClearable
                                         className={`form-control p-0 border-0 z-3 ${
                                             !anydeskData?.user_id && isSubmitted
                                                 ? 'is-invalid border border-danger'
@@ -211,7 +212,6 @@ function AddAnydeskModal({ id, refreshList }) {
                                                 <span
                                                     className="spinner-grow spinner-grow-sm me-2"
                                                     role="status"
-                                                    aria-hidden="true"
                                                 ></span>
                                                 Submitting...
                                             </>

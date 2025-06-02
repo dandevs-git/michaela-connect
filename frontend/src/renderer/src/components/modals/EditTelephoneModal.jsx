@@ -141,6 +141,7 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
                                         !!telephoneData?.user_id || !isSubmitted || ''
                                     )}
                                     classNamePrefix="react-select"
+                                    isClearable
                                     className={`form-control p-0 border-0 z-3 ${!telephoneData?.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                                 <div className="invalid-feedback">Please select a user.</div>

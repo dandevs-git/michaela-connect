@@ -37,7 +37,6 @@ function ResetTokenModal({ resetToken, setResetToken }) {
             data-bs-keyboard="false"
             tabIndex="-1"
             aria-labelledby="resetTokenModalLabel"
-            aria-hidden="true"
             ref={modalRef}
         >
             <div className="modal-dialog modal-dialog-centered">

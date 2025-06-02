@@ -23,6 +23,14 @@ class User extends Authenticatable
         'profile_picture',
         'status',
         'failed_attempts',
+
+        'department_id',
+        'ipAddress_id',
+        'telephone_id',
+        'printer_id',
+        'internet_id',
+        'anydesk_id',
+        'account_id',
     ];
 
     protected $hidden = [

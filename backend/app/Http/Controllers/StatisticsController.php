@@ -23,9 +23,10 @@ class StatisticsController extends Controller
 
         $teamStatusData = $this->getTicketStatusData(TeamTicketQueryService::class, $currentPeriodStart, $now);
         $teamTicketVolume = $this->getTicketVolumeByPriority($currentPeriodStart, $now);
-        $teamVolumeTrends = $this->getTicketVolumeTrends();
-
+        $teamVolumeTrends = $this->getTicketVolumeTrends(TeamTicketQueryService::class);
         $teamDepartmentTimes = $this->getDepartmentResolutionTimes($currentPeriodStart, $now, $previousPeriodStart, $previousPeriodEnd);
+
+        $myTicketVolume = $this->getTicketVolumeTrends(MyTicketQueryService::class);
 
         return response()->json([
             'current' => $currentMetrics,
@@ -35,6 +36,8 @@ class StatisticsController extends Controller
             'teamTicketVolume' => $teamTicketVolume,
             'teamVolumeTrends' => $teamVolumeTrends,
             'teamDepartmentTimes' => $teamDepartmentTimes,
+
+            'myVolumeTrends' => $myTicketVolume,
         ]);
     }
 
@@ -51,6 +54,7 @@ class StatisticsController extends Controller
             'teamTotalClosedTickets' => TeamTicketQueryService::queryForCurrentUser()->closed()->whereBetween('created_at', [$startDate, $endDate])->count(),
 
             // My Overview
+            'myAllTickets' => MyTicketQueryService::queryForCurrentUser()->whereBetween('created_at', [$startDate, $endDate])->count(),
             'myOpenTickets' => MyTicketQueryService::queryForCurrentUser()->open()->whereBetween('created_at', [$startDate, $endDate])->count(),
             'myInProgressTickets' => MyTicketQueryService::queryForCurrentUser()->inProgress()->whereBetween('created_at', [$startDate, $endDate])->count(),
             'myOverdueTickets' => MyTicketQueryService::queryForCurrentUser()->overdue()->whereBetween('created_at', [$startDate, $endDate])->count(),
@@ -73,6 +77,7 @@ class StatisticsController extends Controller
             'teamPendingApprovalsDelta' => $this->calculateDelta($current['teamPendingApprovals'], $previous['teamPendingApprovals']),
 
             // My Overview
+            'myAllTicketsDelta' => $this->calculateDelta($current['myAllTickets'], $previous['myAllTickets']),
             'myOpenTicketsDelta' => $this->calculateDelta($current['myOpenTickets'], $previous['myOpenTickets']),
             'myInProgressTicketsDelta' => $this->calculateDelta($current['myInProgressTickets'], $previous['myInProgressTickets']),
             'myOverdueTicketsDelta' => $this->calculateDelta($current['myOverdueTickets'], $previous['myOverdueTickets']),
@@ -179,24 +184,29 @@ class StatisticsController extends Controller
         return $result;
     }
 
-    private function getTicketVolumeTrends()
+    private function getTicketVolumeTrends($queryService)
     {
-        $tickets = Ticket::get();
+        $tickets = $queryService::queryForCurrentUser()->get();
 
-        return $tickets->groupBy(function ($ticket) {
-            return $ticket->created_at->format('Y-m-d');
-        })->sortKeys()->map(function ($group, $key) {
-            $date = Carbon::createFromFormat('Y-m-d', $key);
-            return [
-                'date' => $date->format('Y-m-d'),
-                'name' => $date->format('F j, Y'),
-                'Created' => $group->count(),
-                'Resolved' => $group->where('status', 'resolved')->count(),
-                'Reopened' => $group->where('status', 'reopened')->count(),
-                'Failed' => $group->where('status', 'failed')->count(),
-            ];
-        })->values();
+        return $tickets
+            ->groupBy(function ($ticket) {
+                return $ticket->created_at->format('Y-m-d');
+            })
+            ->sortKeys()
+            ->map(function ($group, $key) {
+                $date = Carbon::createFromFormat('Y-m-d', $key);
+                return [
+                    'date' => $date->format('Y-m-d'),
+                    'name' => $date->format('F j, Y'),
+                    'Created' => $group->count(),
+                    'Resolved' => $group->where('status', 'resolved')->count(),
+                    'Reopened' => $group->where('status', 'reopened')->count(),
+                    'Failed' => $group->where('status', 'failed')->count(),
+                ];
+            })
+            ->values();
     }
+
 
 
     private function getDepartmentResolutionTimes($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate)

@@ -13,9 +13,13 @@ function Department() {
     const [selectedDepartment, setSelectedDepartment] = useState(true)
     const [error, setError] = useState('')
 
-    useEffect(() => {
+    const refreshList = () => {
         getData('/departments', setDepartments, setLoadingDepartments, setError)
         getData('/departments?main', setMainDepartments, setLoadingMainDepartments, setError)
+    }
+
+    useEffect(() => {
+        refreshList()
     }, [])
 
     const departmentColumns = [
@@ -111,6 +115,12 @@ function Department() {
                 <div className="col-xl-12 p-3">
                     <h4 className="text-start fw-semibold">Main Departments</h4>
                     <CustomTable
+                        topComponent={
+                            <AddDepartmentModal
+                                id={'AddDepartmentModal'}
+                                refreshList={refreshList}
+                            />
+                        }
                         isloading={loadingMainDepartments}
                         columns={mainDepartmentColumns}
                         data={mainDepartments}

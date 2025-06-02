@@ -40,6 +40,7 @@ import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
 import TelephoneList from './pages/directory/TelephoneList'
 import PerformanceTracking from './pages/reports/PerformanceTracking'
+import TicketAnalytics from './pages/reports/TicketAnalytics'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -118,6 +119,7 @@ function App() {
 
                 <Route path="/reports">
                     <Route index element={<Navigate to="performance" replace />} />
+                    <Route path="analytics" element={<TicketAnalytics />} />
                     <Route path="performance" element={<PerformanceTracking />} />
                 </Route>
 

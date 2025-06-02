@@ -13,25 +13,28 @@ const hexToRgba = (hex, alpha) => {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
-export const selectStyles = (isValid) => ({
-    control: (provided, state) => ({
-        ...provided,
-        borderColor: !isValid
-            ? hexToRgba(COLORS[3], 1) // Red (danger)
-            : state.isFocused
-              ? hexToRgba(COLORS[4], 0.5) // Primary on focus
-              : '#ced4da',
-        boxShadow: state.isFocused
-            ? !isValid
-                ? `0 0 0 0.25rem ${hexToRgba(COLORS[3], 0.25)}`
-                : `0 0 0 0.25rem ${hexToRgba(COLORS[4], 0.25)}`
-            : null,
-        '&:hover': {
-            backgroundColor: '#f7f8f9'
-        },
-        borderRadius: '0.375rem',
-        minHeight: '38px'
-    }),
+export const selectStyles = (isValid, required = true) => ({
+    control: (provided, state) => {
+        const showError = required && !isValid
+        return {
+            ...provided,
+            borderColor: showError
+                ? hexToRgba(COLORS[3], 1) // Red (danger)
+                : state.isFocused
+                  ? hexToRgba(COLORS[4], 0.5) // Primary on focus
+                  : '#ced4da',
+            boxShadow: state.isFocused
+                ? showError
+                    ? `0 0 0 0.25rem ${hexToRgba(COLORS[3], 0.25)}`
+                    : `0 0 0 0.25rem ${hexToRgba(COLORS[4], 0.25)}`
+                : null,
+            '&:hover': {
+                backgroundColor: '#f7f8f9'
+            },
+            borderRadius: '0.375rem',
+            minHeight: '38px'
+        }
+    },
     option: (provided, state) => ({
         ...provided,
         backgroundColor: state.isSelected

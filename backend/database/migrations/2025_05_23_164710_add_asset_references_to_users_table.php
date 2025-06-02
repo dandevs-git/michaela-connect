@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->foreignId('printer_id')->nullable()->constrained('printers')->onDelete('set null');
             $table->foreignId('internet_id')->nullable()->constrained('internets')->onDelete('set null');
             $table->foreignId('anydesk_id')->nullable()->constrained('anydesks')->onDelete('set null');
+            $table->foreignId('account_id')->nullable()->constrained('accounts')->onDelete('set null');
         });
     }
 
@@ -26,13 +27,15 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['department_id']);
             $table->dropForeign(['ipAddress_id']);
             $table->dropForeign(['telephone_id']);
             $table->dropForeign(['printer_id']);
             $table->dropForeign(['internet_id']);
             $table->dropForeign(['anydesk_id']);
+            $table->dropForeign(['account_id']);
 
-            $table->dropColumn(['ipAddress_id', 'telephone_id', 'printer_id', 'internet_id', 'anydesk_id']);
+            $table->dropColumn(['department_id', 'ipAddress_id', 'telephone_id', 'printer_id', 'internet_id', 'anydesk_id', 'account_id']);
         });
     }
 };

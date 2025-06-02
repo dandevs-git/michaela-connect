@@ -40,7 +40,6 @@ function NewPasswordModal({ id, newPassword }) {
             tabIndex="-1"
             id={id}
             aria-labelledby="newPasswordModalLabel"
-            aria-hidden="true"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
         >

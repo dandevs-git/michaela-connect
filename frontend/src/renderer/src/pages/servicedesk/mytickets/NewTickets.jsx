@@ -19,6 +19,7 @@ function NewTickets() {
     const [error, setError] = useState('')
     const [subordinates, setSubordinates] = useState([])
     const [confirmType, setConfirmType] = useState('')
+    const [remarks, setRemarks] = useState('')
 
     useEffect(() => {
         getData('/tickets?status=new', setTickets, setLoading, setError)
@@ -27,8 +28,6 @@ function NewTickets() {
     useEffect(() => {
         getData(`/users/subordinates`, setSubordinates, setLoading, setError)
     }, [])
-
-    console.log(subordinates)
 
     const handleAssignButton = (ticket, user) => {
         setSelectedTickets(ticket)
@@ -45,14 +44,7 @@ function NewTickets() {
         modal.show()
     }
 
-    // const handleAcceptButton = (ticket) => {
-    //     setSelectedTickets(ticket)
-    //     setConfirmType('reject')
-    //     const modal = new Modal(document.getElementById('confirmModal'))
-    //     modal.show()
-    // }
-
-    const handleConfirm = async () => {
+    const handleConfirm = () => {
         if (!selectedTickets) return
 
         let url, payload
@@ -60,18 +52,21 @@ function NewTickets() {
             url = `/tickets/${selectedTickets.id}/assign`
             payload = { assigned_to: selectedUser.id }
         } else {
-            url = `/tickets/${selectedTickets.id}/accept/${selectedUser.id}`
-            payload = ''
+            url = `/tickets/${selectedTickets.id}/reject`
+            payload = { remarks }
         }
 
-        await postData(
+        postData(
             url,
             payload,
-            () => {},
+            () => {
+                setRemarks('')
+                setSelectedTickets(null)
+                getData('/tickets?status=pending', setTickets, setLoading, setError)
+            },
             () => {},
             setError
         )
-        await getData('/tickets?status=new', setTickets, setLoading, setError)
     }
 
     const flattenSubordinates = (users) => {
@@ -232,13 +227,37 @@ function NewTickets() {
             <ConfirmationModal
                 id="confirmModal"
                 title={`${confirmType} Ticket`}
-                message={`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number} to user ${selectedUser?.name}?`}
+                message={
+                    <>
+                        <div className="mb-4">
+                            {`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
+                        </div>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="remarks" className="form-label">
+                                Remarks
+                            </label>
+                            <textarea
+                                className="form-control mb-1"
+                                id="remarks"
+                                rows="5"
+                                value={remarks}
+                                onChange={(e) => setRemarks(e.target.value)}
+                            />
+                            {!remarks.trim() && (
+                                <div className="small text-center text-danger">
+                                    Remarks are required.
+                                </div>
+                            )}
+                        </div>
+                    </>
+                }
                 confirmLabel={confirmType}
                 confirmClass={
                     confirmType === 'assign' ? 'btn-success text-light' : 'btn-danger text-light'
                 }
                 cancelLabel="Cancel"
                 onConfirm={handleConfirm}
+                disableConfirm={!remarks.trim()}
             />
         </>
     )
