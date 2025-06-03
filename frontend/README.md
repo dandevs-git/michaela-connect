@@ -1,4 +1,4 @@
-# frontend
+# michaela-connect
 
 An Electron application with React
 
