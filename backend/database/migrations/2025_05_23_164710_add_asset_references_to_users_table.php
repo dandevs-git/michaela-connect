@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignId('printer_id')->nullable()->constrained('printers')->onDelete('set null');
             $table->foreignId('internet_id')->nullable()->constrained('internets')->onDelete('set null');
             $table->foreignId('anydesk_id')->nullable()->constrained('anydesks')->onDelete('set null');
-            $table->foreignId('account_id')->nullable()->constrained('accounts')->onDelete('set null');
+            // $table->foreignId('account_id')->nullable()->constrained('accounts')->onDelete('set null');
         });
     }
 
@@ -33,9 +33,10 @@ return new class extends Migration {
             $table->dropForeign(['printer_id']);
             $table->dropForeign(['internet_id']);
             $table->dropForeign(['anydesk_id']);
-            $table->dropForeign(['account_id']);
+            // $table->dropForeign(['account_id']);
 
-            $table->dropColumn(['department_id', 'ipAddress_id', 'telephone_id', 'printer_id', 'internet_id', 'anydesk_id', 'account_id']);
+            $table->dropColumn(['department_id', 'ipAddress_id', 'telephone_id', 'printer_id', 'internet_id', 'anydesk_id']);
+            // $table->dropColumn(['department_id', 'ipAddress_id', 'telephone_id', 'printer_id', 'internet_id', 'anydesk_id', 'account_id']);
         });
     }
 };

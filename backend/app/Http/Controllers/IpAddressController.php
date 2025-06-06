@@ -12,7 +12,7 @@ class IpAddressController extends Controller
      */
     public function index()
     {
-        $ipAddresses = IpAddress::with('user.department')->orderBy('created_at', 'desc')->get();
+        $ipAddresses = IpAddress::with('user.department')->latest()->get();
         return response()->json($ipAddresses, 200);
     }
 

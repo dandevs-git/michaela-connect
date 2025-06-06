@@ -12,7 +12,7 @@ class TelephoneController extends Controller
      */
     public function index()
     {
-        $telephones = Telephone::with('user.department')->orderBy('created_at', 'desc')->get();
+        $telephones = Telephone::with('user.department')->latest()->get();
         return response()->json($telephones, 200);
     }
 

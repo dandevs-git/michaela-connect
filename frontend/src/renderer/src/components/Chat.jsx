@@ -20,7 +20,7 @@ function Chat() {
             </button>
 
             <div
-                className="collapse position-fixed shadow-lg bottom-0 end-0 mb-5 me-5 z-1"
+                className="collapse position-fixed shadow-lg bottom-0 end-0 mb-5 me-5 z-1 rounded-2"
                 id="chatBox"
                 style={{ width: '300px' }}
             >

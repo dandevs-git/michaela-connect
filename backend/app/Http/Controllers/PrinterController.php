@@ -13,7 +13,7 @@ class PrinterController extends Controller
     public function index()
     {
         $printers = Printer::with('user.department', 'user.anydesk', 'user.telephone', 'user.printer', 'user.ipAddress')
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         return response()->json($printers, 200);

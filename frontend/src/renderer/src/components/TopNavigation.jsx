@@ -46,7 +46,11 @@ function TopNavigation() {
                 />
             )}
 
-            <div className="navbar navbar-expand-md bg-light-subtle shadow-lg sticky-top">
+            <div
+                data-aos="fade-down"
+                data-aos-duration="3000"
+                className="navbar navbar-expand-md bg-light-subtle shadow-lg sticky-top"
+            >
                 <div className="col d-flex justify-content-between order-3">
                     <nav className="d-flex align-items-center mx-4">
                         <ol className="breadcrumb mb-0">{breadcrumbItems}</ol>

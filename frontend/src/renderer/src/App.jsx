@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAPI } from './contexts/APIContext'
-// import { useEffect } from 'react'
+import { useEffect } from 'react'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 import MainLayout from './layouts/MainLayout'
 import AuthLayout from './layouts/AuthLayout'
@@ -41,6 +43,7 @@ import ResetPassword from './pages/auth/ResetPassword'
 import TelephoneList from './pages/directory/TelephoneList'
 import PerformanceTracking from './pages/reports/PerformanceTracking'
 import TicketAnalytics from './pages/reports/TicketAnalytics'
+import SystemFeedback from './pages/reports/SystemFeedback'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -53,6 +56,10 @@ function App() {
     const { authUser } = useAPI()
     // const isAuth = !!localStorage.getItem('token')
     const isAuth = !!sessionStorage.getItem('token')
+
+    useEffect(() => {
+        AOS.init({ duration: 1000 })
+    }, [])
 
     return (
         <Routes>
@@ -121,6 +128,7 @@ function App() {
                     <Route index element={<Navigate to="performance" replace />} />
                     <Route path="analytics" element={<TicketAnalytics />} />
                     <Route path="performance" element={<PerformanceTracking />} />
+                    <Route path="feedback" element={<SystemFeedback />} />
                 </Route>
 
                 <Route path="/settings">

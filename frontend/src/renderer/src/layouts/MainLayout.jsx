@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import TopNavigation from '../components/TopNavigation'
 import SideNavigation from '../components/SideNavigation'
 import Chat from '../components/Chat'
+import Feedback from '../components/Feedback'
 
 function MainLayout() {
     return (
@@ -15,7 +16,8 @@ function MainLayout() {
                     </div>
                 </div>
             </div>
-            <Chat />
+            {/* <Chat /> */}
+            <Feedback />
         </>
     )
 }

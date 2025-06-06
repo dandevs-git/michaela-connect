@@ -12,7 +12,7 @@ class AnydeskController extends Controller
      */
     public function index()
     {
-        $anydesk = Anydesk::with('user.department')->orderBy('created_at', 'desc')->get();
+        $anydesk = Anydesk::with('user.department')->latest()->get();
         return response()->json($anydesk, 200);
     }
 

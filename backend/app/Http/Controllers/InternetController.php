@@ -13,7 +13,7 @@ class InternetController extends Controller
 
     public function index()
     {
-        $internet = Internet::with('user.department')->orderBy('created_at', 'desc')->get();
+        $internet = Internet::with('user.department')->latest()->get();
         return response()->json($internet, 200);
     }
 

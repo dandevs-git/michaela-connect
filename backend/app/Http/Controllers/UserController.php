@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('department', 'telephone', 'printer', 'anydesk', 'ipAddress', 'roles.permissions')->orderBy('created_at', 'desc')->get();
+        $users = User::with('department', 'telephone', 'printer', 'anydesk', 'ipAddress', 'roles.permissions')->latest()->get();
 
         $filteredUsers = $users->filter(function ($user) {
             return !$user->getRoleNames()->contains('superadmin');
@@ -88,7 +88,7 @@ class UserController extends Controller
         return response()->json([
             'message' => 'User created successfully',
             'user' => [
-                'name' => $user->name,
+                'username' => $user->username,
                 'rfid' => $user->rfid,
                 'password' => $password,
             ],

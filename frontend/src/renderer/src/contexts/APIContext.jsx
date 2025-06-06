@@ -8,7 +8,7 @@ export const APIContext = createContext()
 export const APIProvider = ({ children }) => {
     const { showToast } = useToast()
     const [authUser, setAuthUser] = useState(null)
-    const [authLoading, setAuthLoading] = useState(false)
+    const [authLoading, setAuthLoading] = useState(true)
 
     const navigate = useNavigate()
 

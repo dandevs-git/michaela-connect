@@ -5,6 +5,7 @@ namespace Database\Seeders;
 
 use App\Models\Anydesk;
 use App\Models\Department;
+use App\Models\Feedback;
 use App\Models\Internet;
 use App\Models\IpAddress;
 use App\Models\Printer;
@@ -111,6 +112,8 @@ class DatabaseSeeder extends Seeder
         IpAddress::factory()->count(10)->create();
         Anydesk::factory()->count(10)->create();
         Printer::factory()->count(10)->create();
+        Feedback::factory()->count(10)->create();
+
 
 
         // ini_set('memory_limit', '1G');

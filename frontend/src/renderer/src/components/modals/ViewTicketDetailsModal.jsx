@@ -237,7 +237,7 @@ function ViewTicketDetailsModal({ id, data }) {
                                     <h4 className="fw-bold mb-2">Comments</h4>
                                     <div
                                         ref={commentsContainerRef}
-                                        className="overflow-auto p-3 border-top border-bottom"
+                                        className="overflow-auto scroll p-3 border-top border-bottom"
                                         style={{ maxHeight: '300px' }}
                                     >
                                         {comments?.length > 0 ? (

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -65,6 +66,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResources([
         'tickets' => TicketController::class,
+        'feedback' => FeedbackController::class,
         'departments' => DepartmentController::class,
         'priorities' => PriorityController::class,
         'telephones' => TelephoneController::class,

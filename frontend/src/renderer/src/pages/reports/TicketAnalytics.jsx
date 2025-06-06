@@ -20,6 +20,7 @@ function TicketAnalytics() {
     const [statistics, setStatisticsStats] = useState([])
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
+    const [ticketLoading, setTicketLoading] = useState(true)
     const [error, setError] = useState('')
     const [period, setPeriod] = useState('monthly')
 
@@ -28,7 +29,7 @@ function TicketAnalytics() {
     }, [])
 
     useEffect(() => {
-        getData(`/tickets`, setTickets, setLoading, setError)
+        getData(`/tickets`, setTickets, setTicketLoading, setError)
     }, [])
 
     const columns = [
@@ -377,11 +378,7 @@ function TicketAnalytics() {
                                         {loading ? (
                                             <Placeholder height="300px" />
                                         ) : !statistics?.teamVolumeTrends?.some(
-                                              (e) =>
-                                                  e.Created > 0 &&
-                                                  e.Failed &&
-                                                  e.Reopened &&
-                                                  e.Resolved
+                                              (e) => e.Created > 0
                                           ) ? (
                                             <div className="text-center text-muted py-4">
                                                 <i className="bi bi-info-circle fs-1 mb-2"></i>
@@ -461,99 +458,13 @@ function TicketAnalytics() {
                                                 hasExportOptions={true}
                                                 hasFilterByHeader={true}
                                                 hasSearch={false}
-                                                isloading={loading}
+                                                isloading={ticketLoading}
                                                 columns={columns}
                                                 data={tickets}
                                             />
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="container py-4">
-                <div className="row g-4">
-                    {/* Total Tickets */}
-                    <div className="col-md-6 col-lg-4">
-                        <div className="card">
-                            <div className="card-body">
-                                <h5 className="card-title">Total Tickets</h5>
-                                <ResponsiveContainer width="100%" height={150}>
-                                    <BarChart
-                                        data={Object.entries(kpiData.totalTickets).map(
-                                            ([status, count]) => ({ status, count })
-                                        )}
-                                    >
-                                        <XAxis dataKey="status" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Bar dataKey="count" fill="#60a5fa" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* SLA Compliance */}
-                    <div className="col-md-6 col-lg-4">
-                        <div className="card text-center">
-                            <div className="card-body">
-                                <h5 className="card-title">SLA Compliance</h5>
-                                <p className="display-4 text-success">{kpiData.slaCompliance}%</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Avg First Response Time */}
-                    <div className="col-md-6 col-lg-4">
-                        <div className="card text-center">
-                            <div className="card-body">
-                                <h5 className="card-title">Avg. First Response</h5>
-                                <p className="display-5">{kpiData.avgFirstResponseTime} hrs</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Avg Resolution Time */}
-                    <div className="col-md-6 col-lg-4">
-                        <div className="card text-center">
-                            <div className="card-body">
-                                <h5 className="card-title">Avg. Resolution Time</h5>
-                                <p className="display-5">{kpiData.avgResolutionTime} hrs</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* CSAT */}
-                    <div className="col-md-6 col-lg-4">
-                        <div className="card text-center">
-                            <div className="card-body">
-                                <h5 className="card-title">CSAT</h5>
-                                <CustomRadialBarChart data={csatData} />
-                                <p className="h4 mt-2">{kpiData.csat}/5</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Backlog */}
-                    <div className="col-md-6 col-lg-4">
-                        <div className="card text-center">
-                            <div className="card-body">
-                                <h5 className="card-title">Ticket Backlog</h5>
-                                <p className="display-5 text-warning">{kpiData.backlogCount}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Reopen Rate */}
-                    <div className="col-md-6 col-lg-4">
-                        <div className="card text-center">
-                            <div className="card-body">
-                                <h5 className="card-title">Reopen Rate</h5>
-                                <p className="display-5 text-danger">{kpiData.reopenRate}%</p>
                             </div>
                         </div>
                     </div>
