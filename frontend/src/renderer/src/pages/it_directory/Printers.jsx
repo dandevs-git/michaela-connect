@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
+import { FaEdit, FaEye, FaNetworkWired, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
-import AddInternetModal from '../../components/modals/AddInternetModal'
-import ViewInternetDetailsModal from '../../components/modals/ViewInternetDetailsModal'
+import ViewPrinterDetailsModal from '../../components/modals/ViewPrinterDetailsModal'
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
-import EditInternetModal from '../../components/modals/EditInternetModal'
+import EditPrinterModal from '../../components/modals/EditPrinterModal'
+import AddPrinterModal from '../../components/modals/AddPrinterModal'
 
-function InternetDirectory() {
+function Printers() {
     const { getData, deleteData } = useAPI()
-    const [internet, setInternet] = useState([])
-    const [selectedInternet, setSelectedInternet] = useState(null)
+    const [printers, setPrinters] = useState([])
+    const [selectedprinter, setSelectedprinter] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     const refreshList = () => {
-        getData('/internet', setInternet, setLoading, setError)
+        getData('/printers', setPrinters, setLoading, setError)
     }
 
     useEffect(() => {
         refreshList()
     }, [])
 
-    const handleDeleteInternet = async () => {
-        const response = await deleteData(`/internet/${selectedInternet.id}`, setLoading, setError)
+    const handleDeletePrinter = async () => {
+        const response = await deleteData(`/printers/${selectedprinter.id}`, setLoading, setError)
         if (response) {
             refreshList()
         }
@@ -44,11 +44,13 @@ function InternetDirectory() {
             filterFn: 'includesString',
             cell: ({ row }) => row.original.user?.department?.name || 'N/A'
         },
-        { header: 'Provider', accessorKey: 'provider' },
-        { header: 'Gateway', accessorKey: 'gateway' },
-        // { header: 'Cable Code', accessorKey: 'cable_code' },
-        // { header: 'Location', accessorKey: 'location' },
-        // { header: 'Description', accessorKey: 'description' },
+        { header: 'Printer', accessorKey: 'name' },
+        {
+            header: 'IP Address',
+            accessorKey: 'ip',
+            cell: ({ row }) => row.original?.user?.ip_address?.ip || 'N/A'
+        },
+        { header: 'Ink Code', accessorKey: 'inkcode' },
         {
             header: 'Actions',
             accessorKey: 'actions',
@@ -68,8 +70,8 @@ function InternetDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#internetDetailsModal"
-                                onClick={() => setSelectedInternet(row.original)}
+                                data-bs-target="#printerDetailsModal"
+                                onClick={() => setSelectedprinter(row.original)}
                             >
                                 <FaEye /> View
                             </button>
@@ -78,8 +80,8 @@ function InternetDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editInternetModal"
-                                onClick={() => setSelectedInternet(row.original)}
+                                data-bs-target="#editPrinterModal"
+                                onClick={() => setSelectedprinter(row.original)}
                             >
                                 <FaEdit /> Edit
                             </button>
@@ -88,8 +90,8 @@ function InternetDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#deleteInternetConfirmModal"
-                                onClick={() => setSelectedInternet(row.original)}
+                                data-bs-target="#deletePrinterConfirmModal"
+                                onClick={() => setSelectedprinter(row.original)}
                             >
                                 <FaTrash /> Delete
                             </button>
@@ -98,13 +100,13 @@ function InternetDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 onClick={() => {
-                                    const gateway = row.original?.gateway
-                                    if (gateway) {
-                                        window.open(`https://${gateway}`, '_blank')
+                                    const ip = row.original?.user?.ip_address?.ip
+                                    if (ip) {
+                                        window.api.send('open-network-path', ip)
                                     }
                                 }}
                             >
-                                Redirect to {row.original?.gateway}
+                                Open \\{row.original?.user?.ip_address?.ip}
                             </button>
                         </li>
                     </ul>
@@ -117,44 +119,41 @@ function InternetDirectory() {
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-                    Internet Directory
+                    Printers
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <AddInternetModal
-                                    id={'AddInternetModal'}
-                                    refreshList={refreshList}
-                                />
+                                <AddPrinterModal id={'AddPrinterModal'} refreshList={refreshList} />
                             }
                             isloading={loading}
                             columns={columns}
-                            data={internet}
+                            data={printers}
                         />
                     </div>
                 </div>
             </div>
 
-            <ViewInternetDetailsModal id="internetDetailsModal" internet={selectedInternet} />
+            <ViewPrinterDetailsModal id="printerDetailsModal" printer={selectedprinter} />
 
-            <EditInternetModal
-                id="editInternetModal"
-                internet={selectedInternet}
+            <EditPrinterModal
+                id="editPrinterModal"
+                printer={selectedprinter}
                 refreshList={refreshList}
             />
 
             <ConfirmationModal
-                id="deleteInternetConfirmModal"
-                title="Delete Internet Line"
-                message={`Are you sure you want to Delete Internet Line with Code ${selectedInternet?.cable_code}?`}
+                id="deletePrinterConfirmModal"
+                title="Delete Printer"
+                message={`Are you sure you want to delete printer from employee ${selectedprinter?.user?.name}?`}
                 confirmLabel="Delete"
                 confirmClass="btn-danger text-light"
                 cancelLabel="Cancel"
-                onConfirm={() => handleDeleteInternet(selectedInternet)}
+                onConfirm={() => handleDeletePrinter(selectedprinter)}
             />
         </>
     )
 }
 
-export default InternetDirectory
+export default Printers

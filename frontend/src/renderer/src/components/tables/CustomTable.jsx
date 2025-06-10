@@ -151,7 +151,8 @@ function CustomTable({
                                                         onClick={header.column.getToggleSortingHandler()}
                                                         style={{
                                                             cursor: 'pointer',
-                                                            borderRadius: '30px'
+                                                            borderTopLeftRadius: '10px',
+                                                            borderTopRightRadius: '10px'
                                                         }}
                                                     >
                                                         {flexRender(

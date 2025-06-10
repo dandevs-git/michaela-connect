@@ -27,23 +27,31 @@ import MyReports from './pages/servicedesk/MyReports'
 import AllEmployees from './pages/employees/AllEmployees'
 import RolesPermissions from './pages/employees/RolesPermissions'
 import ActivityLog from './pages/employees/ActivityLog'
-import Department from './pages/directory/Department'
-import TelephoneDirectory from './pages/directory/TelephoneDirectory'
-import IpAddressDirectory from './pages/directory/IpAddressDirectory'
-import AnydeskDirectory from './pages/directory/AnydeskDirectory'
-import PrinterDirectory from './pages/directory/PrinterDirectory'
-import InternetDirectory from './pages/directory/InternetDirectory'
+import Department from './pages/it_directory/Department'
+import TelephoneLines from './pages/it_directory/TelephoneLines'
+import IpAddresses from './pages/it_directory/IpAddresses'
+import AnydeskIds from './pages/it_directory/AnydeskIds'
+import Printers from './pages/it_directory/Printers'
+import InternetLines from './pages/it_directory/InternetLines'
 import NewTickets from './pages/servicedesk/mytickets/NewTickets'
 import TeamOverview from './pages/dashboard/TeamOverview'
 import TeamActivities from './pages/dashboard/TeamActivities'
-import TeamReports from './pages/dashboard/TeamReports'
 import Login from './pages/auth/Login'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
-import TelephoneList from './pages/directory/TelephoneList'
+import TelephoneList from './pages/directory/TelephoneDirectory'
 import PerformanceTracking from './pages/reports/PerformanceTracking'
 import TicketAnalytics from './pages/reports/TicketAnalytics'
 import SystemFeedback from './pages/reports/SystemFeedback'
+import TeamSla from './pages/dashboard/TeamSla'
+import TeamPerformance from './pages/dashboard/TeamPerformance'
+import TelephoneDirectory from './pages/directory/TelephoneDirectory'
+import BranchLocations from './pages/directory/BranchLocations'
+import StaffExtensions from './pages/directory/StaffExtensions'
+import AccountsDirectory from './pages/directory/AccountsDirectory'
+import SystemAccounts from './pages/it_directory/SystemAccounts'
+import NetworkDevices from './pages/it_directory/NetworkDevices'
+import SharedDrives from './pages/it_directory/SharedDrives'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -80,10 +88,11 @@ function App() {
                     <Route index element={<Navigate to="overview" replace />} />
                     <Route path="overview" element={<TeamOverview />} />
                     <Route path="activities" element={<TeamActivities />} />
-                    <Route path="reports" element={<TeamReports />} />
+                    <Route path="performance" element={<TeamPerformance />} />
+                    <Route path="sla" element={<TeamSla />} />
                 </Route>
 
-                <Route path="/servicedesk">
+                <Route path="/service-desk">
                     <Route index element={<Navigate to="overview" replace />} />
                     <Route path="overview" element={<MyOverview />} />
                     <Route path="reports" element={<MyReports />} />
@@ -107,33 +116,57 @@ function App() {
                     <Route path="all" element={<AllEmployees />} />
                     <Route path="departments" element={<Department />} />
                     <Route path="roles" element={<RolesPermissions />} />
-                    <Route path="logs" element={<ActivityLog />} />
+                    <Route path="activity-logs" element={<ActivityLog />} />
                 </Route>
 
                 <Route path="/directory">
                     <Route index element={<Navigate to="telephones" replace />} />
-                    <Route path="telephoneList" element={<TelephoneList />} />
+                    <Route path="telephones" element={<TelephoneDirectory />} />
+                    <Route path="branches" element={<BranchLocations />} />
+                    <Route path="staff" element={<StaffExtensions />} />
+                    <Route path="accounts" element={<AccountsDirectory />} />
                 </Route>
 
-                <Route path="/itdirectory">
-                    <Route index element={<Navigate to="internet" replace />} />
-                    <Route path="telephones" element={<TelephoneDirectory />} />
-                    <Route path="internet" element={<InternetDirectory />} />
-                    <Route path="ipAddress" element={<IpAddressDirectory />} />
-                    <Route path="anydesks" element={<AnydeskDirectory />} />
-                    <Route path="printers" element={<PrinterDirectory />} />
+                <Route path="/it-directory">
+                    <Route index element={<Navigate to="telephones" replace />} />
+                    <Route path="telephones" element={<TelephoneLines />} />
+                    <Route path="internet" element={<InternetLines />} />
+                    <Route path="ip-addresses" element={<IpAddresses />} />
+                    <Route path="anydesk-ids" element={<AnydeskIds />} />
+                    <Route path="printers" element={<Printers />} />
+                    <Route path="accounts" element={<SystemAccounts />} />
+                    <Route path="drives" element={<SharedDrives />} />
+                    <Route path="network" element={<NetworkDevices />} />
                 </Route>
 
                 <Route path="/reports">
-                    <Route index element={<Navigate to="performance" replace />} />
+                    <Route index element={<Navigate to="analytics" replace />} />
                     <Route path="analytics" element={<TicketAnalytics />} />
                     <Route path="performance" element={<PerformanceTracking />} />
-                    <Route path="feedback" element={<SystemFeedback />} />
+                    <Route path="sla-insights" element={<PerformanceTracking />} />
+                    <Route path="department-metrics" element={<PerformanceTracking />} />
+                    <Route path="monthly-trends" element={<PerformanceTracking />} />
+                    <Route path="employee-satisfaction" element={<PerformanceTracking />} />
                 </Route>
 
-                <Route path="/settings">
-                    <Route index element={<Navigate to="telephones" replace />} />
-                    <Route path="telephoneList" element={<TelephoneList />} />
+                <Route path="/system-settings">
+                    <Route index element={<Navigate to="general" replace />} />
+                    <Route path="general" element={<TelephoneList />} />
+                    <Route path="security-authentication" element={<TelephoneList />} />
+                    <Route path="email-notification" element={<TelephoneList />} />
+                    <Route path="department" element={<TelephoneList />} />
+                </Route>
+
+                <Route path="/system-administration">
+                    <Route index element={<Navigate to="feedback" replace />} />
+                    <Route path="system-overview" element={<SystemFeedback />} />
+                    <Route path="user-access-control" element={<SystemFeedback />} />
+                    <Route path="audit-logs" element={<SystemFeedback />} />
+                    <Route path="maintenance-mode" element={<SystemFeedback />} />
+                    <Route path="updates-backups" element={<SystemFeedback />} />
+                    <Route path="security-compliance" element={<SystemFeedback />} />
+                    <Route path="integration-settings" element={<SystemFeedback />} />
+                    <Route path="system-feedback" element={<SystemFeedback />} />
                 </Route>
             </Route>
 

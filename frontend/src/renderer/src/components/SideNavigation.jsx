@@ -15,6 +15,7 @@ import {
 } from 'react-icons/fa'
 import '../assets/styles/css/sideNavigationStyle.css'
 import { useAPI } from '../contexts/APIContext'
+import Placeholder from './placeholders/Placeholder'
 
 const pages = [
     {
@@ -32,12 +33,12 @@ const pages = [
     },
     {
         page: 'Service Desk',
-        link: '/servicedesk',
+        link: '/service-desk',
         icon: <FaTicketAlt />,
         subPages: [
-            { name: 'My Overview', link: '/servicedesk/overview' },
-            { name: 'My Tickets', link: '/servicedesk/tickets' },
-            { name: 'My Reports', link: '/servicedesk/reports' }
+            { name: 'My Overview', link: '/service-desk/overview' },
+            { name: 'My Tickets', link: '/service-desk/tickets' },
+            { name: 'My Reports', link: '/service-desk/reports' }
         ],
         permission: 'access service desk'
         // permission: 'servicedesk:access'
@@ -50,7 +51,7 @@ const pages = [
             { name: 'Employee Directory', link: '/employees/all' },
             { name: 'Departments & Teams', link: '/employees/departments' },
             { name: 'Roles & Access', link: '/employees/roles' },
-            { name: 'Activity History', link: '/employees/logs' }
+            { name: 'Activity History', link: '/employees/activity-logs' }
         ],
         permission: 'manage employees'
         // permission: 'employees:manage'
@@ -60,9 +61,9 @@ const pages = [
         link: '/directory',
         icon: <FaNetworkWired />,
         subPages: [
-            { name: 'Telephone Directory', link: '/directory/telephoneList' },
-            { name: 'Branch Locations', link: '/directory/locations' },
-            { name: 'Staff Extensions', link: '/directory/extensions' },
+            { name: 'Telephone Directory', link: '/directory/telephones' },
+            { name: 'Branch Locations', link: '/directory/branches' },
+            { name: 'Staff Extensions', link: '/directory/staff' },
             { name: 'Accounts Directory', link: '/directory/accounts' }
         ],
         permission: 'view general directory'
@@ -70,17 +71,17 @@ const pages = [
     },
     {
         page: 'IT Directory',
-        link: '/itdirectory',
+        link: '/it-directory',
         icon: <FaServer />,
         subPages: [
-            { name: 'Telephone lines', link: '/itdirectory/telephones' },
-            { name: 'Internet lines', link: '/itdirectory/internet' },
-            { name: 'IP Addresses', link: '/itdirectory/ipAddress' },
-            { name: 'Anydesk IDs', link: '/itdirectory/anydesks' },
-            { name: 'Printers', link: '/itdirectory/printers' },
-            { name: 'System Accounts', link: '/itdirectory/accounts' },
-            { name: 'Shared Drives', link: '/itdirectory/drives' },
-            { name: 'Network Devices', link: '/itdirectory/network' }
+            { name: 'Telephone lines', link: '/it-directory/telephones' },
+            { name: 'Internet lines', link: '/it-directory/internet' },
+            { name: 'IP Addresses', link: '/it-directory/ip-addresses' },
+            { name: 'Anydesk IDs', link: '/it-directory/anydesk-ids' },
+            { name: 'Printers', link: '/it-directory/printers' },
+            { name: 'System Accounts', link: '/it-directory/accounts' },
+            { name: 'Shared Drives', link: '/it-directory/drives' },
+            { name: 'Network Devices', link: '/it-directory/network' }
         ],
         permission: 'view it directory'
         //  permission: 'directory:it:view'
@@ -92,40 +93,40 @@ const pages = [
         subPages: [
             { name: 'Ticket Analytics', link: '/reports/analytics' },
             { name: 'Performance Tracking', link: '/reports/performance' },
-            { name: 'SLA Insights', link: '/reports/slaPerformance' },
-            { name: 'Department Metrics', link: '/reports/departments' },
-            { name: 'Monthly Trends', link: '/reports/monthly' },
-            { name: 'User Satisfaction', link: '/reports/feedback' }
+            { name: 'SLA Insights', link: '/reports/sla-insights' },
+            { name: 'Department Metrics', link: '/reports/department-metrics' },
+            { name: 'Monthly Trends', link: '/reports/monthly-trends' },
+            { name: 'Employee Satisfaction', link: '/reports/employee-satisfaction' }
         ],
         permission: 'view analytics reports'
         // permission: 'analytics:reports:view'
     },
     {
         page: 'System Settings',
-        link: '/settings',
+        link: '/system-settings',
         icon: <FaCog />,
         subPages: [
-            { name: 'General Settings', link: '/settings/generalSettings' },
-            { name: 'Security & Authentication', link: '/settings/authentication' },
-            { name: 'Email & Notifications', link: '/settings/notifications' },
-            { name: 'Department Settings', link: '/settings/departments' }
+            { name: 'General Settings', link: '/system-settings/general' },
+            { name: 'Security & Authentication', link: '/system-settings/security-authentication' },
+            { name: 'Email & Notifications', link: '/system-settings/email-notification' },
+            { name: 'Department Settings', link: '/system-settings/department' }
         ],
         // permission: 'settings:manage'
         permission: 'manage system settings'
     },
     {
         page: 'System Administration',
-        link: '/administrator',
+        link: '/system-administration',
         icon: <FaTools />,
         subPages: [
-            { name: 'System Overview', link: '/administrator/overview' },
-            { name: 'User Access Control', link: '/administrator/access' },
-            { name: 'Audit Logs', link: '/administrator/logs' },
-            { name: 'Maintenance Mode', link: '/administrator/maintenance' },
-            { name: 'Updates & Backups', link: '/administrator/backups' },
-            { name: 'Security & Compliance', link: '/administrator/security' },
-            { name: 'Integration Settings', link: '/administrator/integrations' },
-            { name: 'System Feedback', link: '/administrator/feedback' }
+            { name: 'System Overview', link: '/system-administration/system-overview' },
+            { name: 'User Access Control', link: '/system-administration/user-access-control' },
+            { name: 'Audit Logs', link: '/system-administration/audit-logs' },
+            { name: 'Maintenance Mode', link: '/system-administration/maintenance-mode' },
+            { name: 'Updates & Backups', link: '/system-administration/updates-backups' },
+            { name: 'Security & Compliance', link: '/system-administration/security-compliance' },
+            { name: 'Integration Settings', link: '/system-administration/integration-settings' },
+            { name: 'System Feedback', link: '/system-administration/system-feedback' }
         ],
         // permission: 'admin:system-management'
         permission: 'manage system settings'
@@ -144,10 +145,6 @@ function SideNavigation() {
             [index]: !prev[index]
         }))
     }
-
-    // if (!authUser) {
-    //     return null
-    // }
 
     const visiblePages = pages.filter(
         ({ permission }) => !permission || authUser?.all_permissions?.includes(permission)
@@ -169,62 +166,81 @@ function SideNavigation() {
             </Link>
             <div className="flex-grow-1 p-2 overflow-auto scroll">
                 <ul className="flex-column nav p-2">
-                    {visiblePages.map((page, index) => {
-                        const isActive = location.pathname.startsWith(page.link)
-                        const isOpen = openMenus[index]
+                    {!visiblePages[0]?.page ? (
+                        <>
+                            <Placeholder width="100%" height="40px" />
+                            <Placeholder width="80%" height="40px" />
+                            <Placeholder width="90%" height="40px" />
+                            <Placeholder width="100%" height="40px" />
+                            <Placeholder width="90%" height="40px" />
+                            <Placeholder width="100%" height="40px" />
+                            <Placeholder width="90%" height="40px" />
+                            <Placeholder width="100%" height="40px" />
+                            <Placeholder width="80%" height="40px" />
+                            <Placeholder width="90%" height="40px" />
+                            <Placeholder width="80%" height="40px" />
+                            <Placeholder width="80%" height="40px" />
+                        </>
+                    ) : (
+                        visiblePages.map((page, index) => {
+                            const isActive = location.pathname.startsWith(page.link)
+                            const isOpen = openMenus[index]
 
-                        return (
-                            <li
-                                key={index}
-                                data-aos="fade-right"
-                                data-aos-duration={`${300 + index * 300}`}
-                                className="mb-1"
-                            >
-                                {page.subPages ? (
-                                    <>
-                                        <button
-                                            className={`nav-link d-flex align-items-center px-3 py-2 rounded w-100 text-start 
+                            return (
+                                <li
+                                    key={index}
+                                    data-aos="fade-right"
+                                    data-aos-duration={`${300 + index * 300}`}
+                                    className="mb-1"
+                                >
+                                    {page.subPages ? (
+                                        <>
+                                            <button
+                                                className={`nav-link d-flex align-items-center px-3 py-2 rounded w-100 text-start 
                                         ${isActive ? 'text-light bg-primary' : 'text-light-emphasis'} 
                                         ${isOpen ? 'active-menu' : ''}`}
-                                            onClick={() => toggleMenu(index)}
-                                        >
-                                            {page.icon}
-                                            <span className="ms-2">{page.page}</span>
-                                            <i
-                                                className={`bi ms-auto ${isOpen ? 'bi-chevron-down' : 'bi-chevron-right'}`}
-                                            ></i>
-                                        </button>
+                                                onClick={() => toggleMenu(index)}
+                                            >
+                                                {page.icon}
+                                                <span className="ms-2">{page.page}</span>
+                                                <i
+                                                    className={`bi ms-auto ${isOpen ? 'bi-chevron-down' : 'bi-chevron-right'}`}
+                                                ></i>
+                                            </button>
 
-                                        <div className={`collapse-content ${isOpen ? 'show' : ''}`}>
-                                            <ul className="flex-column nav">
-                                                {page.subPages.map((subPage, subIndex) => (
-                                                    <li key={subIndex}>
-                                                        <NavLink
-                                                            to={subPage.link}
-                                                            className={({ isActive }) =>
-                                                                `nav-link text-light-emphasis ps-3 border-start ms-4 my-1 p-1 
+                                            <div
+                                                className={`collapse-content ${isOpen ? 'show' : ''}`}
+                                            >
+                                                <ul className="flex-column nav">
+                                                    {page.subPages.map((subPage, subIndex) => (
+                                                        <li key={subIndex}>
+                                                            <NavLink
+                                                                to={subPage.link}
+                                                                className={({ isActive }) =>
+                                                                    `nav-link text-light-emphasis ps-3 border-start ms-4 my-1 p-1 
                                                         ${isActive ? 'text-decoration-underline underline-offset-8 fw-bold' : ''}`
-                                                            }
-                                                        >
-                                                            {subPage.name}
-                                                        </NavLink>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <NavLink
-                                        to={page.link}
-                                        className={`nav-link d-flex align-items-center px-3 py-2 rounded 
+                                                                }
+                                                            >
+                                                                {subPage.name}
+                                                            </NavLink>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <NavLink
+                                            to={page.link}
+                                            className={`nav-link d-flex align-items-center px-3 py-2 rounded 
                                     ${isActive ? 'bg-primary text-white' : 'text-light-emphasis'}`}
-                                    >
-                                        {page.icon} <span className="ms-2">{page.page}</span>
-                                    </NavLink>
-                                )}
-                            </li>
-                        )
-                    })}
+                                        >
+                                            {page.icon} <span className="ms-2">{page.page}</span>
+                                        </NavLink>
+                                    )}
+                                </li>
+                            )
+                        })
+                    )}
                 </ul>
             </div>
 

@@ -2,29 +2,29 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
-import AddIpAddressModal from '../../components/modals/AddIpAddressModal'
-import ViewIpAddressDetailsModal from '../../components/modals/ViewIpAddressDetailsModal'
+import AddTelephoneModal from '../../components/modals/AddTelephoneModal'
+import ViewTelephoneDetailsModal from '../../components/modals/ViewTelephoneDetailsModal'
+import EditTelephoneModal from '../../components/modals/EditTelephoneModal'
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
-import EditIpAddressModal from '../../components/modals/EditIpAddressModal'
 
-function IpAddressDirectory() {
+function TelephoneLines() {
     const { getData, deleteData } = useAPI()
-    const [ipAddress, setIpaddress] = useState([])
-    const [selectedIpaddress, setSelectedIpaddress] = useState(null)
+    const [telephones, setTelephones] = useState([])
+    const [selectedTelephone, setSelectedTelephone] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     const refreshList = () => {
-        getData('/ipAddress', setIpaddress, setLoading, setError)
+        getData('/telephones', setTelephones, setLoading, setError)
     }
 
     useEffect(() => {
         refreshList()
     }, [])
 
-    const handleDeleteIpaddress = async () => {
+    const handleDeleteTelephone = async () => {
         const response = await deleteData(
-            `/ipAddress/${selectedIpaddress.id}`,
+            `/telephones/${selectedTelephone.id}`,
             setLoading,
             setError
         )
@@ -48,11 +48,8 @@ function IpAddressDirectory() {
             filterFn: 'includesString',
             cell: ({ row }) => row.original.user?.department?.name || 'N/A'
         },
-        { header: 'IP Address', accessorKey: 'ip' },
-        { header: 'Device Type', accessorKey: 'type' },
-        // { header: 'Assigned Date', accessorKey: 'assigned_date' },
-        // { header: 'Location', accessorKey: 'location' },
-        // { header: 'Description', accessorKey: 'description' },
+        { header: 'Telephone Number', accessorKey: 'number' },
+        { header: 'Cable Code', accessorKey: 'cable_code' },
         {
             header: 'Actions',
             accessorKey: 'actions',
@@ -72,8 +69,8 @@ function IpAddressDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#ipAddressDetailsModal"
-                                onClick={() => setSelectedIpaddress(row.original)}
+                                data-bs-target="#telephoneDetailsModal"
+                                onClick={() => setSelectedTelephone(row.original)}
                             >
                                 <FaEye /> View
                             </button>
@@ -82,8 +79,8 @@ function IpAddressDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editIpaddressModal"
-                                onClick={() => setSelectedIpaddress(row.original)}
+                                data-bs-target="#editTelephoneModal"
+                                onClick={() => setSelectedTelephone(row.original)}
                             >
                                 <FaEdit /> Edit
                             </button>
@@ -92,23 +89,10 @@ function IpAddressDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#deleteIpaddressConfirmModal"
-                                onClick={() => setSelectedIpaddress(row.original)}
+                                data-bs-target="#deleteTelephoneConfirmModal"
+                                onClick={() => setSelectedTelephone(row.original)}
                             >
                                 <FaTrash /> Delete
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
-                                onClick={() => {
-                                    const ip = row.original?.ip
-                                    if (ip) {
-                                        window.api.send('open-network-path', ip)
-                                    }
-                                }}
-                            >
-                                Open \\{row.original?.ip}
                             </button>
                         </li>
                     </ul>
@@ -121,44 +105,44 @@ function IpAddressDirectory() {
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-                    Ip Address Directory
+                    Telephone Lines
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <AddIpAddressModal
-                                    id={'AddIpAddressModal'}
+                                <AddTelephoneModal
+                                    id={'AddTelephoneModal'}
                                     refreshList={refreshList}
                                 />
                             }
                             isloading={loading}
                             columns={columns}
-                            data={ipAddress}
+                            data={telephones}
                         />
                     </div>
                 </div>
             </div>
 
-            <ViewIpAddressDetailsModal id="ipAddressDetailsModal" ipAddress={selectedIpaddress} />
+            <ViewTelephoneDetailsModal id="telephoneDetailsModal" telephone={selectedTelephone} />
 
-            <EditIpAddressModal
-                id="editIpaddressModal"
-                ipAddress={selectedIpaddress}
+            <EditTelephoneModal
+                id="editTelephoneModal"
+                telephone={selectedTelephone}
                 refreshList={refreshList}
             />
 
             <ConfirmationModal
-                id="deleteIpaddressConfirmModal"
-                title="Delete Ip Address"
-                message={`Are you sure you want to Delete Ip Address ${selectedIpaddress?.ip}?`}
+                id="deleteTelephoneConfirmModal"
+                title="Delete Telephone"
+                message={`Are you sure you want to Delete Telephone Number ${selectedTelephone?.number}?`}
                 confirmLabel="Delete"
                 confirmClass="btn-danger text-light"
                 cancelLabel="Cancel"
-                onConfirm={() => handleDeleteIpaddress(selectedIpaddress)}
+                onConfirm={() => handleDeleteTelephone(selectedTelephone)}
             />
         </>
     )
 }
 
-export default IpAddressDirectory
+export default TelephoneLines

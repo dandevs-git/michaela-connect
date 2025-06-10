@@ -11,7 +11,11 @@ function MainLayout() {
                 <SideNavigation />
                 <div className="w-100">
                     <TopNavigation />
-                    <div className="p-4 w-100 d-flex flex-column">
+                    <div
+                        data-aos="fade-up"
+                        data-aos-duration="1000"
+                        className="p-4 w-100 d-flex flex-column"
+                    >
                         <Outlet />
                     </div>
                 </div>

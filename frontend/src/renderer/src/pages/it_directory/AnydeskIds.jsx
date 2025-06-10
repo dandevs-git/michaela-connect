@@ -16,7 +16,7 @@ import ViewAnydeskDetailsModal from '../../components/modals/ViewAnydeskDetailsM
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
 import EditAnydeskModal from '../../components/modals/EditAnydeskModal'
 
-function AnydeskDirectory() {
+function AnydeskIds() {
     const { getData, deleteData } = useAPI()
     const [anydesk, setAnydesk] = useState([])
     const [selectedAnydesk, setSelectedAnydesk] = useState(null)
@@ -183,7 +183,7 @@ function AnydeskDirectory() {
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-                    Anydesk Directory
+                    Anydesk Ids
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
@@ -220,4 +220,4 @@ function AnydeskDirectory() {
     )
 }
 
-export default AnydeskDirectory
+export default AnydeskIds

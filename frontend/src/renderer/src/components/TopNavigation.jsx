@@ -4,11 +4,7 @@ import { useAPI } from '../contexts/APIContext'
 import { useState } from 'react'
 import FullScreenLoader from './FullScreenLoader'
 
-const pages = [
-    { page: 'Dashboard', link: '/dashboard' }
-    // { page: 'Profile', link: '/profile' },
-    // { page: 'Settings', link: '/settings' }
-]
+const pages = [{ page: 'Dashboard', link: '/dashboard' }]
 
 function TopNavigation() {
     const { logout, authUser } = useAPI()
@@ -30,7 +26,7 @@ function TopNavigation() {
             return (
                 <li key={routeTo} className="breadcrumb-item active" aria-current="page">
                     <Link className="text-decoration-none" to={routeTo}>
-                        {name.charAt(0).toUpperCase() + name.slice(1)}
+                        {name.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
                     </Link>
                 </li>
             )

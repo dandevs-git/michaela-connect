@@ -21,7 +21,6 @@ return new class extends Migration {
             $table->string('status')->default('new');
             $table->timestamps();
         });
-
     }
 
     /**

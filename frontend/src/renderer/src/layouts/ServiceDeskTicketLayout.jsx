@@ -7,39 +7,39 @@ function ServiceDeskTicketLayout() {
     const tabs = [
         {
             tab: 'All Tickets',
-            link: '/servicedesk/tickets/all',
+            link: '/service-desk/tickets/all',
             permission: 'view all tickets tab'
         },
         {
             tab: 'Pending',
-            link: '/servicedesk/tickets/pending',
+            link: '/service-desk/tickets/pending',
             permission: 'view pending tickets tab'
         },
-        { tab: 'New', link: '/servicedesk/tickets/new', permission: 'view new tickets tab' },
-        { tab: 'Open', link: '/servicedesk/tickets/open', permission: 'view open tickets tab' },
+        { tab: 'New', link: '/service-desk/tickets/new', permission: 'view new tickets tab' },
+        { tab: 'Open', link: '/service-desk/tickets/open', permission: 'view open tickets tab' },
         {
             tab: 'In Progress',
-            link: '/servicedesk/tickets/inprogress',
+            link: '/service-desk/tickets/inprogress',
             permission: 'view inprogress tickets tab'
         },
         {
             tab: 'Resolved',
-            link: '/servicedesk/tickets/resolved',
+            link: '/service-desk/tickets/resolved',
             permission: 'view resolved tickets tab'
         },
         {
             tab: 'Closed',
-            link: '/servicedesk/tickets/closed',
+            link: '/service-desk/tickets/closed',
             permission: 'view closed tickets tab'
         },
         {
             tab: 'Failed',
-            link: '/servicedesk/tickets/failed',
+            link: '/service-desk/tickets/failed',
             permission: 'view failed tickets tab'
         },
         {
             tab: 'Rejected',
-            link: '/servicedesk/tickets/rejected',
+            link: '/service-desk/tickets/rejected',
             permission: 'view rejected tickets tab'
         }
     ]

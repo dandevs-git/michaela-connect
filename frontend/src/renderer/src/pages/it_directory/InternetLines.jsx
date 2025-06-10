@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaNetworkWired, FaPlus, FaTrash } from 'react-icons/fa'
+import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
-import ViewPrinterDetailsModal from '../../components/modals/ViewPrinterDetailsModal'
+import AddInternetModal from '../../components/modals/AddInternetModal'
+import ViewInternetDetailsModal from '../../components/modals/ViewInternetDetailsModal'
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
-import EditPrinterModal from '../../components/modals/EditPrinterModal'
-import AddPrinterModal from '../../components/modals/AddPrinterModal'
+import EditInternetModal from '../../components/modals/EditInternetModal'
 
-function PrinterDirectory() {
+function InternetLines() {
     const { getData, deleteData } = useAPI()
-    const [printers, setPrinters] = useState([])
-    const [selectedprinter, setSelectedprinter] = useState(null)
+    const [internet, setInternet] = useState([])
+    const [selectedInternet, setSelectedInternet] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     const refreshList = () => {
-        getData('/printers', setPrinters, setLoading, setError)
+        getData('/internet', setInternet, setLoading, setError)
     }
 
     useEffect(() => {
         refreshList()
     }, [])
 
-    const handleDeletePrinter = async () => {
-        const response = await deleteData(`/printers/${selectedprinter.id}`, setLoading, setError)
+    const handleDeleteInternet = async () => {
+        const response = await deleteData(`/internet/${selectedInternet.id}`, setLoading, setError)
         if (response) {
             refreshList()
         }
@@ -44,13 +44,11 @@ function PrinterDirectory() {
             filterFn: 'includesString',
             cell: ({ row }) => row.original.user?.department?.name || 'N/A'
         },
-        { header: 'Printer', accessorKey: 'name' },
-        {
-            header: 'IP Address',
-            accessorKey: 'ip',
-            cell: ({ row }) => row.original?.user?.ip_address?.ip || 'N/A'
-        },
-        { header: 'Ink Code', accessorKey: 'inkcode' },
+        { header: 'Provider', accessorKey: 'provider' },
+        { header: 'Gateway', accessorKey: 'gateway' },
+        // { header: 'Cable Code', accessorKey: 'cable_code' },
+        // { header: 'Location', accessorKey: 'location' },
+        // { header: 'Description', accessorKey: 'description' },
         {
             header: 'Actions',
             accessorKey: 'actions',
@@ -70,8 +68,8 @@ function PrinterDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#printerDetailsModal"
-                                onClick={() => setSelectedprinter(row.original)}
+                                data-bs-target="#internetDetailsModal"
+                                onClick={() => setSelectedInternet(row.original)}
                             >
                                 <FaEye /> View
                             </button>
@@ -80,8 +78,8 @@ function PrinterDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editPrinterModal"
-                                onClick={() => setSelectedprinter(row.original)}
+                                data-bs-target="#editInternetModal"
+                                onClick={() => setSelectedInternet(row.original)}
                             >
                                 <FaEdit /> Edit
                             </button>
@@ -90,8 +88,8 @@ function PrinterDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#deletePrinterConfirmModal"
-                                onClick={() => setSelectedprinter(row.original)}
+                                data-bs-target="#deleteInternetConfirmModal"
+                                onClick={() => setSelectedInternet(row.original)}
                             >
                                 <FaTrash /> Delete
                             </button>
@@ -100,13 +98,13 @@ function PrinterDirectory() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 onClick={() => {
-                                    const ip = row.original?.user?.ip_address?.ip
-                                    if (ip) {
-                                        window.api.send('open-network-path', ip)
+                                    const gateway = row.original?.gateway
+                                    if (gateway) {
+                                        window.open(`https://${gateway}`, '_blank')
                                     }
                                 }}
                             >
-                                Open \\{row.original?.user?.ip_address?.ip}
+                                Redirect to {row.original?.gateway}
                             </button>
                         </li>
                     </ul>
@@ -119,41 +117,44 @@ function PrinterDirectory() {
         <>
             <div className="card shadow w-100">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
-                    Printer Directory
+                    Internet Lines
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <AddPrinterModal id={'AddPrinterModal'} refreshList={refreshList} />
+                                <AddInternetModal
+                                    id={'AddInternetModal'}
+                                    refreshList={refreshList}
+                                />
                             }
                             isloading={loading}
                             columns={columns}
-                            data={printers}
+                            data={internet}
                         />
                     </div>
                 </div>
             </div>
 
-            <ViewPrinterDetailsModal id="printerDetailsModal" printer={selectedprinter} />
+            <ViewInternetDetailsModal id="internetDetailsModal" internet={selectedInternet} />
 
-            <EditPrinterModal
-                id="editPrinterModal"
-                printer={selectedprinter}
+            <EditInternetModal
+                id="editInternetModal"
+                internet={selectedInternet}
                 refreshList={refreshList}
             />
 
             <ConfirmationModal
-                id="deletePrinterConfirmModal"
-                title="Delete Printer"
-                message={`Are you sure you want to delete printer from employee ${selectedprinter?.user?.name}?`}
+                id="deleteInternetConfirmModal"
+                title="Delete Internet Line"
+                message={`Are you sure you want to Delete Internet Line with Code ${selectedInternet?.cable_code}?`}
                 confirmLabel="Delete"
                 confirmClass="btn-danger text-light"
                 cancelLabel="Cancel"
-                onConfirm={() => handleDeletePrinter(selectedprinter)}
+                onConfirm={() => handleDeleteInternet(selectedInternet)}
             />
         </>
     )
 }
 
-export default PrinterDirectory
+export default InternetLines
