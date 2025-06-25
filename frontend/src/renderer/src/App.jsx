@@ -42,7 +42,7 @@ import ResetPassword from './pages/auth/ResetPassword'
 import TelephoneList from './pages/directory/TelephoneDirectory'
 import PerformanceTracking from './pages/reports/PerformanceTracking'
 import TicketAnalytics from './pages/reports/TicketAnalytics'
-import SystemFeedback from './pages/reports/SystemFeedback'
+import SystemFeedback from './pages/system_admin/SystemFeedback'
 import TeamSla from './pages/dashboard/TeamSla'
 import TeamPerformance from './pages/dashboard/TeamPerformance'
 import TelephoneDirectory from './pages/directory/TelephoneDirectory'
@@ -52,6 +52,21 @@ import AccountsDirectory from './pages/directory/AccountsDirectory'
 import SystemAccounts from './pages/it_directory/SystemAccounts'
 import NetworkDevices from './pages/it_directory/NetworkDevices'
 import SharedDrives from './pages/it_directory/SharedDrives'
+import IntegrationSettings from './pages/system_admin/IntegrationSettings'
+import SecurityCompliance from './pages/system_admin/SecurityCompliance'
+import UpdatesBackup from './pages/system_admin/UpdatesBackup'
+import MaintenanceMode from './pages/system_admin/MaintenanceMode'
+import AuditLogs from './pages/system_admin/AuditLogs'
+import UserAccessControl from './pages/system_admin/UserAccessControl'
+import SystemOverview from './pages/system_admin/SystemOverview'
+import DepartmentSettings from './pages/system_settings/DepartmentSettings'
+import EmailNotifications from './pages/system_settings/EmailNotifications'
+import SecurityAuthentication from './pages/system_settings/SecurityAuthentication'
+import GeneralSettings from './pages/system_settings/GeneralSettings'
+import EmployeeSatisfaction from './pages/reports/EmployeeSatisfaction'
+import MonthlyTrends from './pages/reports/MonthlyTrends'
+import DepartmentMetrics from './pages/reports/DepartmentMetrics'
+import SlaInsights from './pages/reports/slaInsights'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -143,29 +158,29 @@ function App() {
                     <Route index element={<Navigate to="analytics" replace />} />
                     <Route path="analytics" element={<TicketAnalytics />} />
                     <Route path="performance" element={<PerformanceTracking />} />
-                    <Route path="sla-insights" element={<PerformanceTracking />} />
-                    <Route path="department-metrics" element={<PerformanceTracking />} />
-                    <Route path="monthly-trends" element={<PerformanceTracking />} />
-                    <Route path="employee-satisfaction" element={<PerformanceTracking />} />
+                    <Route path="sla-insights" element={<SlaInsights />} />
+                    <Route path="department-metrics" element={<DepartmentMetrics />} />
+                    <Route path="monthly-trends" element={<MonthlyTrends />} />
+                    <Route path="employee-satisfaction" element={<EmployeeSatisfaction />} />
                 </Route>
 
                 <Route path="/system-settings">
                     <Route index element={<Navigate to="general" replace />} />
-                    <Route path="general" element={<TelephoneList />} />
-                    <Route path="security-authentication" element={<TelephoneList />} />
-                    <Route path="email-notification" element={<TelephoneList />} />
-                    <Route path="department" element={<TelephoneList />} />
+                    <Route path="general" element={<GeneralSettings />} />
+                    <Route path="security-authentication" element={<SecurityAuthentication />} />
+                    <Route path="email-notification" element={<EmailNotifications />} />
+                    <Route path="department" element={<DepartmentSettings />} />
                 </Route>
 
                 <Route path="/system-administration">
                     <Route index element={<Navigate to="feedback" replace />} />
-                    <Route path="system-overview" element={<SystemFeedback />} />
-                    <Route path="user-access-control" element={<SystemFeedback />} />
-                    <Route path="audit-logs" element={<SystemFeedback />} />
-                    <Route path="maintenance-mode" element={<SystemFeedback />} />
-                    <Route path="updates-backups" element={<SystemFeedback />} />
-                    <Route path="security-compliance" element={<SystemFeedback />} />
-                    <Route path="integration-settings" element={<SystemFeedback />} />
+                    <Route path="system-overview" element={<SystemOverview />} />
+                    <Route path="user-access-control" element={<UserAccessControl />} />
+                    <Route path="audit-logs" element={<AuditLogs />} />
+                    <Route path="maintenance-mode" element={<MaintenanceMode />} />
+                    <Route path="updates-backups" element={<UpdatesBackup />} />
+                    <Route path="security-compliance" element={<SecurityCompliance />} />
+                    <Route path="integration-settings" element={<IntegrationSettings />} />
                     <Route path="system-feedback" element={<SystemFeedback />} />
                 </Route>
             </Route>

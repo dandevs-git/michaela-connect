@@ -1,6 +1,6 @@
 {
     "name": "michaela-connect",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Michaela Ticketing System",
     "main": "./out/main/index.js",
     "author": "example.com",

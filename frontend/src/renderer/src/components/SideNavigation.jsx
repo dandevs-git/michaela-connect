@@ -79,7 +79,7 @@ const pages = [
             { name: 'IP Addresses', link: '/it-directory/ip-addresses' },
             { name: 'Anydesk IDs', link: '/it-directory/anydesk-ids' },
             { name: 'Printers', link: '/it-directory/printers' },
-            { name: 'System Accounts', link: '/it-directory/accounts' },
+            { name: 'Accounts', link: '/it-directory/accounts' },
             { name: 'Shared Drives', link: '/it-directory/drives' },
             { name: 'Network Devices', link: '/it-directory/network' }
         ],

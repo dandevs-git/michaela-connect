@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
-import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaPlus } from 'react-icons/fa'
 import Select from 'react-select'
 import { COLORS, selectStyles } from '../../constants/config'
