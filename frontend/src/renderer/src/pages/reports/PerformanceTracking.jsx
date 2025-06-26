@@ -9,13 +9,13 @@ import { FaBolt, FaEye, FaStackpath, FaTachometerAlt } from 'react-icons/fa'
 
 function PerformanceTracking() {
     const { getData } = useAPI()
-    const [statistics, setStatisticsStats] = useState([])
+    const [teamOverview, setStatisticsStats] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [period, setPeriod] = useState('monthly')
 
     useEffect(() => {
-        getData('/statistics', setStatisticsStats, setLoading, setError)
+        getData('/team-overview', setStatisticsStats, setLoading, setError)
     }, [])
 
     const columnsEmployeesPerformance = [
@@ -196,8 +196,8 @@ function PerformanceTracking() {
 
                             <StatisticsCard
                                 title="Avg Resolution Time"
-                                // value={statistics.current?.teamAvgResolutionTime}
-                                // delta={statistics.delta?.teamAvgResolutionTimeDelta}
+                                // value={teamOverview.current?.teamAvgResolutionTime}
+                                // delta={teamOverview.delta?.teamAvgResolutionTimeDelta}
                                 iconClass="bi-lightning-fill"
                                 isTime={true}
                                 reverseDelta={true}
@@ -205,8 +205,8 @@ function PerformanceTracking() {
                             />
                             <StatisticsCard
                                 title="Avg Response Time"
-                                // value={statistics.current?.teamAvgResponseTime}
-                                // delta={statistics.delta?.teamAvgResponseTimeDelta}
+                                // value={teamOverview.current?.teamAvgResponseTime}
+                                // delta={teamOverview.delta?.teamAvgResponseTimeDelta}
                                 iconClass="bi-clock-history"
                                 isTime={true}
                                 reverseDelta={true}
@@ -226,7 +226,7 @@ function PerformanceTracking() {
                                     <div className="d-flex card-body align-items-center justify-content-center">
                                         {loading ? (
                                             <Placeholder height="300px" />
-                                        ) : !statistics?.teamVolumeTrends?.some(
+                                        ) : !teamOverview?.teamVolumeTrends?.some(
                                               (e) =>
                                                   e.Created > 0 &&
                                                   e.Failed &&
@@ -239,7 +239,7 @@ function PerformanceTracking() {
                                             </div>
                                         ) : (
                                             <CustomBarChart
-                                                data={statistics?.teamDepartmentTimes}
+                                                data={teamOverview?.teamDepartmentTimes}
                                             />
                                         )}
                                     </div>
@@ -253,7 +253,7 @@ function PerformanceTracking() {
                                     <div className="d-flex card-body align-items-center justify-content-center">
                                         {loading ? (
                                             <Placeholder height="300px" />
-                                        ) : !statistics?.teamVolumeTrends?.some(
+                                        ) : !teamOverview?.teamVolumeTrends?.some(
                                               (e) =>
                                                   e.Created > 0 &&
                                                   e.Failed &&
@@ -266,7 +266,7 @@ function PerformanceTracking() {
                                             </div>
                                         ) : (
                                             <CustomBarChart
-                                                data={statistics?.teamDepartmentTimes}
+                                                data={teamOverview?.teamDepartmentTimes}
                                             />
                                         )}
                                     </div>
@@ -281,7 +281,7 @@ function PerformanceTracking() {
                                     <div className="d-flex card-body align-items-center justify-content-center">
                                         {loading ? (
                                             <Placeholder height="300px" />
-                                        ) : !statistics?.teamVolumeTrends?.some(
+                                        ) : !teamOverview?.teamVolumeTrends?.some(
                                               (e) =>
                                                   e.Created > 0 &&
                                                   e.Failed &&
@@ -293,7 +293,9 @@ function PerformanceTracking() {
                                                 <div className="fs-6">No data available</div>
                                             </div>
                                         ) : (
-                                            <CustomLineChart data={statistics?.teamVolumeTrends} />
+                                            <CustomLineChart
+                                                data={teamOverview?.teamVolumeTrends}
+                                            />
                                         )}
                                     </div>
                                 </div>
@@ -307,7 +309,7 @@ function PerformanceTracking() {
                                     <div className="d-flex card-body align-items-center justify-content-center">
                                         {loading ? (
                                             <Placeholder height="300px" />
-                                        ) : !statistics?.teamVolumeTrends?.some(
+                                        ) : !teamOverview?.teamVolumeTrends?.some(
                                               (e) =>
                                                   e.Created > 0 &&
                                                   e.Failed &&
@@ -319,7 +321,9 @@ function PerformanceTracking() {
                                                 <div className="fs-6">No data available</div>
                                             </div>
                                         ) : (
-                                            <CustomLineChart data={statistics?.teamVolumeTrends} />
+                                            <CustomLineChart
+                                                data={teamOverview?.teamVolumeTrends}
+                                            />
                                         )}
                                     </div>
                                 </div>

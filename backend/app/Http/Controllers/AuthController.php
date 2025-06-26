@@ -91,7 +91,8 @@ class AuthController extends Controller
 
         $user->update([
             'failed_attempts' => 0,
-            'status' => 'active'
+            'status' => 'active',
+            'last_seen_at' => now(),
         ]);
 
         if (Hash::check('michaela', $user->password)) {
@@ -142,6 +143,8 @@ class AuthController extends Controller
             'Logout',
             "User {$user->username} logged out successfully from IP: {$request->ip()} on " . gethostname() . "."
         );
+
+        $user->update(['last_seen_at' => null]);
 
         return response()->json([
             'message' => 'Logged out successfully'

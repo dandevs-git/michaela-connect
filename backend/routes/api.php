@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
@@ -30,7 +31,8 @@ Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->na
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::get('/statistics', [StatisticsController::class, 'getTicketStatisticsSummary']);
+    // Route::get('/statistics', [StatisticsController::class, 'getTicketStatisticsSummary']);
+    Route::get('/team-overview', [DashboardController::class, 'getTeamOverview']);
     Route::get('/performance', [StatisticsController::class, 'getUserPerformanceSummary']);
 
     Route::prefix('tickets')->group(function () {
