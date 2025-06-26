@@ -197,12 +197,12 @@ class DatabaseSeeder extends Seeder
 
 
 
-        // Telephone::factory()->count(10)->create();
-        // Internet::factory()->count(10)->create();
-        // IpAddress::factory()->count(10)->create();
-        // Anydesk::factory()->count(10)->create();
-        // Printer::factory()->count(10)->create();
-        // Feedback::factory()->count(10)->create();
+        Telephone::factory()->count(10)->create();
+        Internet::factory()->count(10)->create();
+        IpAddress::factory()->count(10)->create();
+        Anydesk::factory()->count(10)->create();
+        Printer::factory()->count(10)->create();
+        Feedback::factory()->count(10)->create();
 
 
 
@@ -216,6 +216,6 @@ class DatabaseSeeder extends Seeder
         //     echo "Batch $i inserted\n";
         // }
 
-        // Ticket::factory()->count(1000)->create();
+        Ticket::factory()->count(1000)->create();
     }
 }

@@ -6,16 +6,41 @@ import { useAPI } from '../../contexts/APIContext'
 import CustomRadarChart from '../../components/charts/CustomRadarChart'
 import StatisticsCard from '../../components/cards/StatisticsCard'
 import Placeholder from '../../components/placeholders/Placeholder'
+import CustomTable from '../../components/tables/CustomTable'
+import { Cell } from 'recharts'
 
 function TeamOverview() {
     const { getData } = useAPI()
-    const [statistics, setStatisticsStats] = useState([])
+    const [teamOverview, setStatisticsStats] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/statistics', setStatisticsStats, setLoading, setError)
+        getData('/team-overview', setStatisticsStats, setLoading, setError)
     }, [])
+
+    const columnsLiveEmployeeStatus = [
+        {
+            header: 'Name',
+            accessorKey: 'name'
+        },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: ({ row }) => {
+                const status = row.original?.status
+                const statusClass = status === 'Online' ? 'success' : 'secondary'
+
+                return <span className={`badge fs-6 rounded-pill bg-${statusClass}`}>{status}</span>
+            }
+        },
+        {
+            header: 'Last Seen At',
+            accessorKey: 'last_seen_at'
+        }
+    ]
+
+    console.log(teamOverview.liveEmployeeStatus)
 
     return (
         <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
@@ -32,32 +57,32 @@ function TeamOverview() {
                         <div className="d-flex row card-body align-items-center justify-content-center m-0 px-3">
                             <StatisticsCard
                                 title="Total Tickets"
-                                value={statistics.current?.teamTotalTickets}
-                                delta={statistics.delta?.teamTotalTicketsDelta}
+                                value={teamOverview.current?.teamTotalTickets}
+                                delta={teamOverview.delta?.teamTotalTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
                                 redirectTo="/servicedesk/tickets/all"
                             />
                             <StatisticsCard
                                 title="Resolved Tickets"
-                                value={statistics.current?.teamResolvedTickets}
-                                delta={statistics.delta?.teamResolvedTicketsDelta}
+                                value={teamOverview.current?.teamResolvedTickets}
+                                delta={teamOverview.delta?.teamResolvedTicketsDelta}
                                 iconClass="bi-clipboard-check"
                                 loading={loading}
                                 redirectTo="/servicedesk/tickets/resolved"
                             />
                             <StatisticsCard
                                 title="SLA Compliance"
-                                value={statistics.current?.teamSlaCompliance}
-                                delta={statistics.delta?.teamSlaComplianceDelta}
+                                value={teamOverview.current?.teamSlaCompliance}
+                                delta={teamOverview.delta?.teamSlaComplianceDelta}
                                 iconClass="bi-shield-check"
                                 unit="%"
                                 loading={loading}
                             />
                             <StatisticsCard
                                 title="Avg Resolution Time"
-                                value={statistics.current?.teamAvgResolutionTime}
-                                delta={statistics.delta?.teamAvgResolutionTimeDelta}
+                                value={teamOverview.current?.teamAvgResolutionTime}
+                                delta={teamOverview.delta?.teamAvgResolutionTimeDelta}
                                 iconClass="bi-lightning-fill"
                                 isTime={true}
                                 reverseDelta={true}
@@ -65,8 +90,8 @@ function TeamOverview() {
                             />
                             <StatisticsCard
                                 title="Avg Response Time"
-                                value={statistics.current?.teamAvgResponseTime}
-                                delta={statistics.delta?.teamAvgResponseTimeDelta}
+                                value={teamOverview.current?.teamAvgResponseTime}
+                                delta={teamOverview.delta?.teamAvgResponseTimeDelta}
                                 iconClass="bi-clock-history"
                                 isTime={true}
                                 reverseDelta={true}
@@ -74,8 +99,8 @@ function TeamOverview() {
                             />
                             <StatisticsCard
                                 title="Pending Approvals"
-                                value={statistics.current?.teamPendingApprovals}
-                                delta={statistics.delta?.teamPendingApprovalsDelta}
+                                value={teamOverview.current?.teamPendingApprovals}
+                                delta={teamOverview.delta?.teamPendingApprovalsDelta}
                                 iconClass="bi-hourglass-top"
                                 reverseDelta={true}
                                 loading={loading}
@@ -94,13 +119,13 @@ function TeamOverview() {
                             <div className="d-flex card-body align-items-center justify-content-center">
                                 {loading ? (
                                     <Placeholder height="200px" />
-                                ) : !statistics?.teamStatusData?.some((e) => e.value > 0) ? (
+                                ) : !teamOverview?.teamStatusData?.some((e) => e.value > 0) ? (
                                     <div className="text-center text-muted py-4">
                                         <i className="bi bi-info-circle fs-1 mb-2"></i>
                                         <div className="fs-6">No data available</div>
                                     </div>
                                 ) : (
-                                    <CustomPieChart data={statistics.teamStatusData} />
+                                    <CustomPieChart data={teamOverview.teamStatusData} />
                                 )}
                             </div>
                         </div>
@@ -114,13 +139,13 @@ function TeamOverview() {
                             <div className="d-flex card-body align-items-center justify-content-center">
                                 {loading ? (
                                     <Placeholder height="200px" />
-                                ) : !statistics?.teamTicketVolume?.some((e) => e.value > 0) ? (
+                                ) : !teamOverview?.teamTicketVolume?.some((e) => e.value > 0) ? (
                                     <div className="text-center text-muted py-4">
                                         <i className="bi bi-info-circle fs-1 mb-2"></i>
                                         <div className="fs-6">No data available</div>
                                     </div>
                                 ) : (
-                                    <CustomRadarChart data={statistics.teamTicketVolume} />
+                                    <CustomRadarChart data={teamOverview.teamTicketVolume} />
                                 )}
                             </div>
                         </div>
@@ -135,14 +160,14 @@ function TeamOverview() {
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
                                 <Placeholder height="300px" />
-                            ) : !statistics?.teamVolumeTrends?.some((e) => e.Created > 0) ? (
+                            ) : !teamOverview?.teamVolumeTrends?.some((e) => e.Created > 0) ? (
                                 <div className="text-center text-muted py-4">
                                     <i className="bi bi-info-circle fs-1 mb-2"></i>
                                     <div className="fs-6">No data available</div>
                                 </div>
                             ) : (
                                 <CustomLineChart
-                                    data={statistics?.teamVolumeTrends}
+                                    data={teamOverview?.teamVolumeTrends}
                                     hasFilter={true}
                                 />
                             )}
@@ -158,7 +183,7 @@ function TeamOverview() {
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
                                 <Placeholder height="300px" />
-                            ) : !statistics?.teamDepartmentTimes?.some(
+                            ) : !teamOverview?.teamDepartmentTimes?.some(
                                   (e) => e.current_resolution_time > 0 && e.previous_resolution_time
                               ) ? (
                                 <div className="text-center text-muted py-4">
@@ -167,13 +192,45 @@ function TeamOverview() {
                                 </div>
                             ) : (
                                 <CustomBarChart
-                                    data={statistics?.teamDepartmentTimes}
+                                    data={teamOverview?.teamDepartmentTimes}
                                     datakey="resolution_time"
                                     display="Average Resolution Time"
                                 />
                             )}
                         </div>
                     </div>
+                </div>
+
+                <div className="col-xl-12 p-4">
+                    <div className="card h-100 rounded-4 shadow text-center mb-3">
+                        <div className="card-header text-uppercase fs-3 fw-semibold">
+                            Team Member Workload
+                        </div>
+                        <div className="d-flex card-body align-items-center justify-content-center">
+                            {loading ? (
+                                <Placeholder height="300px" />
+                            ) : !teamOverview?.teamVolumeTrends?.some((e) => e.Created > 0) ? (
+                                <div className="text-center text-muted py-4">
+                                    <i className="bi bi-info-circle fs-1 mb-2"></i>
+                                    <div className="fs-6">No data available</div>
+                                </div>
+                            ) : (
+                                <CustomLineChart
+                                    data={teamOverview?.teamVolumeTrends}
+                                    hasFilter={true}
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-xl-12 p-4">
+                    <h4 className="text-start fw-semibold">Live Employee Status</h4>
+                    <CustomTable
+                        isloading={loading}
+                        columns={columnsLiveEmployeeStatus}
+                        data={teamOverview?.liveEmployeeStatus}
+                    />
                 </div>
             </div>
         </div>
