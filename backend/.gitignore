@@ -1,23 +1,46 @@
-/.phpunit.cache
+# Laravel default
+/vendor
 /node_modules
-/public/build
-/public/hot
 /public/storage
 /storage/*.key
-/storage/pail
-/vendor
-# .env
-.env.backup
-.env.production
-.phpactor.json
+.env
+.env.*
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-/auth.json
-/.fleet
-/.idea
-/.nova
-/.vscode
-/.zed
+
+# Laravel 8+ or with Sail/Docker
+docker-compose.override.yml
+
+# Ignored IDE/editor files
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Cache, logs and compiled files
+/storage/app/public
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/testing
+/storage/framework/views
+/storage/logs
+
+# Optional: ignore test coverage reports
+/coverage
+.php_cs.cache
+
+# Laravel Mix
+/public/hot
+/public/mix-manifest.json
+/public/css
+/public/js
+
+# Composer
+composer.lock
