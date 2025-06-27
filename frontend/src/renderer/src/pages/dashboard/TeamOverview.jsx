@@ -155,20 +155,23 @@ function TeamOverview() {
                 <div className="col-xl-6 p-4">
                     <div className="card h-100 rounded-4 shadow text-center mb-3">
                         <div className="card-header text-uppercase fs-3 fw-semibold">
-                            Ticket Trends Over Time
+                            Team Member Workload
                         </div>
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
                                 <Placeholder height="300px" />
-                            ) : !teamOverview?.teamVolumeTrends?.some((e) => e.Created > 0) ? (
+                            ) : !teamOverview?.teamDepartmentTimes?.some(
+                                  (e) => e.current_resolution_time > 0 && e.previous_resolution_time
+                              ) ? (
                                 <div className="text-center text-muted py-4">
                                     <i className="bi bi-info-circle fs-1 mb-2"></i>
                                     <div className="fs-6">No data available</div>
                                 </div>
                             ) : (
-                                <CustomLineChart
-                                    data={teamOverview?.teamVolumeTrends}
-                                    hasFilter={true}
+                                <CustomBarChart
+                                    data={teamOverview?.teamDepartmentTimes}
+                                    datakey="resolution_time"
+                                    display="Average Resolution Time"
                                 />
                             )}
                         </div>
@@ -204,7 +207,7 @@ function TeamOverview() {
                 <div className="col-xl-12 p-4">
                     <div className="card h-100 rounded-4 shadow text-center mb-3">
                         <div className="card-header text-uppercase fs-3 fw-semibold">
-                            Team Member Workload
+                            Ticket Trends Over Time
                         </div>
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
