@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->enum('status', ['active', 'inactive', 'suspended', 'locked'])->default('active');
             $table->integer('failed_attempts')->default(0);
             $table->timestamp('suspended_until')->nullable();
-            $table->timestamp('last_seen_at')->nullable();
+            $table->timestamp('last_activity_at')->nullable();
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

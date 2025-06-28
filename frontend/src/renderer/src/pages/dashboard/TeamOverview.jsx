@@ -11,36 +11,34 @@ import { Cell } from 'recharts'
 
 function TeamOverview() {
     const { getData } = useAPI()
-    const [teamOverview, setStatisticsStats] = useState([])
+    const [teamOverview, setTeamOverview] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/team-overview', setStatisticsStats, setLoading, setError)
+        getData('/team-overview', setTeamOverview, setLoading, setError)
     }, [])
 
-    const columnsLiveEmployeeStatus = [
-        {
-            header: 'Name',
-            accessorKey: 'name'
-        },
-        {
-            header: 'Status',
-            accessorKey: 'status',
-            cell: ({ row }) => {
-                const status = row.original?.status
-                const statusClass = status === 'Online' ? 'success' : 'secondary'
+    // const columnsLiveEmployeeStatus = [
+    //     {
+    //         header: 'Name',
+    //         accessorKey: 'name'
+    //     },
+    //     {
+    //         header: 'Status',
+    //         accessorKey: 'status',
+    //         cell: ({ row }) => {
+    //             const status = row.original?.status
+    //             const statusClass = status === 'Online' ? 'success' : 'secondary'
 
-                return <span className={`badge fs-6 rounded-pill bg-${statusClass}`}>{status}</span>
-            }
-        },
-        {
-            header: 'Last Seen At',
-            accessorKey: 'last_seen_at'
-        }
-    ]
-
-    console.log(teamOverview.liveEmployeeStatus)
+    //             return <span className={`badge fs-6 rounded-pill bg-${statusClass}`}>{status}</span>
+    //         }
+    //     },
+    //     {
+    //         header: 'Last Seen At',
+    //         accessorKey: 'last_seen_at'
+    //     }
+    // ]
 
     return (
         <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
@@ -228,12 +226,20 @@ function TeamOverview() {
                 </div>
 
                 <div className="col-xl-12 p-4">
-                    <h4 className="text-start fw-semibold">Live Employee Status</h4>
-                    <CustomTable
-                        isloading={loading}
-                        columns={columnsLiveEmployeeStatus}
-                        data={teamOverview?.liveEmployeeStatus}
-                    />
+                    <div className="card h-100 rounded-4 shadow text-center mb-3">
+                        <div className="card-header text-uppercase fs-3 fw-semibold">
+                            Live Employee Status
+                        </div>
+                        <div className="d-flex card-body align-items-center justify-content-center">
+                            <div className="col-xl-12 p-4">
+                                {/* <CustomTable
+                                    isloading={loading}
+                                    columns={columnsLiveEmployeeStatus}
+                                    data={teamOverview?.liveEmployeeStatus}
+                                /> */}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

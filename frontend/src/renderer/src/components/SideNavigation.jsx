@@ -260,7 +260,7 @@ function SideNavigation() {
                     </strong>
                 )}
 
-                <span className="p-2">&copy; 2025 Goldnines</span>
+                <span className="p-2">&copy; {new Date().getFullYear()} Michaela</span>
             </div>
         </div>
     )

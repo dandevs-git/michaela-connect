@@ -7,12 +7,12 @@ import Placeholder from '../../components/placeholders/Placeholder'
 
 function MyOverview() {
     const { getData } = useAPI()
-    const [statistics, setStatisticsStats] = useState([])
+    const [myOverview, setMyOverview] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     useEffect(() => {
-        getData('/statistics', setStatisticsStats, setLoading, setError)
+        getData('/my-overview', setMyOverview, setLoading, setError)
     }, [])
 
     return (
@@ -33,8 +33,8 @@ function MyOverview() {
                             </div>
                             <StatisticsCard
                                 title="Total Tickets Assigned"
-                                value={statistics.current?.myAllTickets}
-                                delta={statistics.delta?.myAllTicketsDelta}
+                                value={myOverview.current?.myAllTickets}
+                                delta={myOverview.delta?.myAllTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
                                 redirectTo="/servicedesk/tickets/all"
@@ -42,8 +42,8 @@ function MyOverview() {
                             />
                             <StatisticsCard
                                 title="Open Tickets"
-                                value={statistics.current?.myOpenTickets}
-                                delta={statistics.delta?.myOpenTicketsDelta}
+                                value={myOverview.current?.myOpenTickets}
+                                delta={myOverview.delta?.myOpenTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
                                 redirectTo="/servicedesk/tickets/open"
@@ -51,8 +51,8 @@ function MyOverview() {
                             />
                             <StatisticsCard
                                 title="In Progress Tickets"
-                                value={statistics.current?.myInProgressTickets}
-                                delta={statistics.delta?.myInProgressTicketsDelta}
+                                value={myOverview.current?.myInProgressTickets}
+                                delta={myOverview.delta?.myInProgressTicketsDelta}
                                 iconClass="bi-hourglass-split"
                                 loading={loading}
                                 redirectTo="/servicedesk/tickets/inprogress"
@@ -60,8 +60,8 @@ function MyOverview() {
                             />
                             <StatisticsCard
                                 title="Overdue Tickets"
-                                value={statistics.current?.myOverdueTickets}
-                                delta={statistics.delta?.myOverdueTicketsDelta}
+                                value={myOverview.current?.myOverdueTickets}
+                                delta={myOverview.delta?.myOverdueTicketsDelta}
                                 iconClass="bi-exclamation-triangle-fill"
                                 loading={loading}
                                 reverseDelta={true}
@@ -77,16 +77,16 @@ function MyOverview() {
                             </div>
                             <StatisticsCard
                                 title="Closed Tickets"
-                                value={statistics.current?.myClosedTickets}
-                                delta={statistics.delta?.myClosedTicketsDelta}
+                                value={myOverview.current?.myClosedTickets}
+                                delta={myOverview.delta?.myClosedTicketsDelta}
                                 iconClass="bi-check-circle-fill"
                                 loading={loading}
                                 col={3}
                             />
                             <StatisticsCard
                                 title="SLA Compliance"
-                                value={statistics.current?.mySlaCompliance}
-                                delta={statistics.delta?.mySlaComplianceDelta}
+                                value={myOverview.current?.mySlaCompliance}
+                                delta={myOverview.delta?.mySlaComplianceDelta}
                                 iconClass="bi-shield-check"
                                 unit="%"
                                 loading={loading}
@@ -94,8 +94,8 @@ function MyOverview() {
                             />
                             <StatisticsCard
                                 title="Resolution Time"
-                                value={statistics.current?.myResolutionTime}
-                                delta={statistics.delta?.myResolutionTimeDelta}
+                                value={myOverview.current?.myResolutionTime}
+                                delta={myOverview.delta?.myResolutionTimeDelta}
                                 iconClass="bi-lightning-fill"
                                 loading={loading}
                                 isTime={true}
@@ -104,8 +104,8 @@ function MyOverview() {
                             />
                             <StatisticsCard
                                 title="Failed Tickets"
-                                value={statistics.current?.myFailedTickets}
-                                delta={statistics.delta?.myFailedTicketsDelta}
+                                value={myOverview.current?.myFailedTickets}
+                                delta={myOverview.delta?.myFailedTicketsDelta}
                                 iconClass="bi-x-circle-fill"
                                 loading={loading}
                                 reverseDelta={true}
@@ -113,7 +113,7 @@ function MyOverview() {
                             />
 
                             <hr className="mt-3" />
-                            <div className="col-xl-6 p-4">
+                            <div className="col-xl-12 p-4">
                                 <div className="card h-100 rounded-4 shadow text-center mb-3">
                                     <div className="card-header text-uppercase fs-3 fw-semibold">
                                         Ticket Trends Over Time
@@ -121,7 +121,7 @@ function MyOverview() {
                                     <div className="d-flex card-body align-items-center justify-content-center">
                                         {loading ? (
                                             <Placeholder height="300px" />
-                                        ) : !statistics?.myVolumeTrends?.some(
+                                        ) : !myOverview?.myVolumeTrends?.some(
                                               (e) => e.Created > 0
                                           ) ? (
                                             <div className="text-center text-muted py-4">
@@ -130,14 +130,14 @@ function MyOverview() {
                                             </div>
                                         ) : (
                                             <CustomLineChart
-                                                data={statistics?.myVolumeTrends}
+                                                data={myOverview?.myVolumeTrends}
                                                 hasFilter={true}
                                             />
                                         )}
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xl-6 p-4">
+                            {/* <div className="col-xl-6 p-4">
                                 <div className="card h-100 rounded-4 shadow text-center mb-3">
                                     <div className="card-header text-uppercase fs-3 fw-semibold">
                                         Department-Wise Resolution Time
@@ -145,7 +145,7 @@ function MyOverview() {
                                     <div className="d-flex card-body align-items-center justify-content-center">
                                         {loading ? (
                                             <Placeholder height="300px" />
-                                        ) : !statistics?.teamDepartmentTimes?.some(
+                                        ) : !myOverview?.teamDepartmentTimes?.some(
                                               (e) =>
                                                   e.current_resolution_time > 0 &&
                                                   e.previous_resolution_time
@@ -156,14 +156,14 @@ function MyOverview() {
                                             </div>
                                         ) : (
                                             <CustomBarChart
-                                                data={statistics?.teamDepartmentTimes}
+                                                data={myOverview?.teamDepartmentTimes}
                                                 datakey="resolution_time"
                                                 display="Average Resolution Time"
                                             />
                                         )}
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $teamVolumeTrends = $this->getTicketVolumeTrends(TeamTicketQueryService::class);
         $teamDepartmentTimes = $this->getDepartmentResolutionTimes($currentPeriodStart, $now, $previousPeriodStart, $previousPeriodEnd);
         $teamWorkload = $this->getTeamWorkload($currentPeriodStart, $now);
-        $liveEmployeeStatus = $this->getLiveEmployeeStatus();
+        // $liveEmployeeStatus = $this->getLiveEmployeeStatus();
 
         return response()->json([
             'current' => $currentMetrics,
@@ -37,7 +37,7 @@ class DashboardController extends Controller
             'teamVolumeTrends' => $teamVolumeTrends,
             'teamDepartmentTimes' => $teamDepartmentTimes,
             'teamWorkload' => $teamWorkload,
-            'liveEmployeeStatus' => $liveEmployeeStatus,
+            // 'liveEmployeeStatus' => $liveEmployeeStatus,
         ]);
     }
 
@@ -245,21 +245,21 @@ class DashboardController extends Controller
     }
     private function getLiveEmployeeStatus()
     {
-        $onlineThreshold = now()->subMinutes(5);
+        // $onlineThreshold = now()->subMinutes(30);
 
-        $users = User::select('name', 'last_seen_at')
-            ->get()
-            ->map(function ($user) use ($onlineThreshold) {
-                $lastSeen = $user->last_seen_at ? Carbon::parse($user->last_seen_at) : null;
+        // $users = User::select('name', 'last_seen_at')
+        //     ->get()
+        //     ->map(function ($user) use ($onlineThreshold) {
+        //         $lastSeen = $user->last_seen_at ? Carbon::parse($user->last_seen_at) : null;
 
-                return [
-                    'name' => $user->name,
-                    'status' => $lastSeen && $lastSeen->greaterThanOrEqualTo($onlineThreshold) ? 'Online' : 'Offline',
-                    'last_seen_at' => $lastSeen?->diffForHumans(),
-                ];
-            });
+        //         return [
+        //             'name' => $user->name,
+        //             'status' => $lastSeen && $lastSeen->greaterThanOrEqualTo($onlineThreshold) ? 'Online' : 'Offline',
+        //             'last_seen_at' => $lastSeen?->diffForHumans(),
+        //         ];
+        //     });
 
-        return $users;
+        // return $users;
     }
 
 

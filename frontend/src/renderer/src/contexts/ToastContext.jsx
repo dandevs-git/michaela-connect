@@ -8,16 +8,19 @@ export const ToastProvider = ({ children }) => {
 
     const showToast = useCallback((options) => {
         const id = Date.now() + Math.random()
-        setToasts((prev) => [
-            {
-                id,
-                message: options.message || '',
-                title: options.title || 'Notification',
-                isPositive: options.isPositive !== false,
-                delay: options.delay || 3000
-            },
-            ...prev
-        ])
+        const token = sessionStorage.getItem('token')
+        if (token) {
+            setToasts((prev) => [
+                {
+                    id,
+                    message: options.message || '',
+                    title: options.title || 'Notification',
+                    isPositive: options.isPositive !== false,
+                    delay: options.delay || 3000
+                },
+                ...prev
+            ])
+        }
     }, [])
 
     const removeToast = useCallback((id) => {

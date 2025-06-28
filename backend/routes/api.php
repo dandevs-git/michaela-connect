@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceDeskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AnydeskController;
@@ -29,10 +30,15 @@ Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/forgot-password', [PasswordController::class, 'requestReset'])->name('password.forgot');
 Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->name('password.reset');
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'inactivity.logout'])->group(function () {
+
+    Route::get('/test-inactivity', function () {
+        return response()->json(['message' => 'You are still active!']);
+    });
 
     // Route::get('/statistics', [StatisticsController::class, 'getTicketStatisticsSummary']);
     Route::get('/team-overview', [DashboardController::class, 'getTeamOverview']);
+    Route::get('/my-overview', [ServiceDeskController::class, 'getMyOverview']);
     Route::get('/performance', [StatisticsController::class, 'getUserPerformanceSummary']);
 
     Route::prefix('tickets')->group(function () {

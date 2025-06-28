@@ -13,7 +13,6 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
-        // const token = localStorage.getItem('token')
         const token = sessionStorage.getItem('token')
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
@@ -21,6 +20,23 @@ api.interceptors.request.use(
         return config
     },
     (error) => {
+        return Promise.reject(error)
+    }
+)
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (
+            error.response &&
+            error.response.status === 401 &&
+            error.response.data.message === 'Unauthenticated.'
+        ) {
+            sessionStorage.removeItem('token')
+            setTimeout(() => {
+                window.location.href = '/login'
+            }, 2000)
+        }
         return Promise.reject(error)
     }
 )

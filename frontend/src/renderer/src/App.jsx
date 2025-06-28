@@ -67,6 +67,7 @@ import EmployeeSatisfaction from './pages/reports/EmployeeSatisfaction'
 import MonthlyTrends from './pages/reports/MonthlyTrends'
 import DepartmentMetrics from './pages/reports/DepartmentMetrics'
 import SlaInsights from './pages/reports/slaInsights'
+import MaintenancePage from './pages/MaintenancePage'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -103,8 +104,13 @@ function App() {
                     <Route index element={<Navigate to="overview" replace />} />
                     <Route path="overview" element={<TeamOverview />} />
                     <Route path="activities" element={<TeamActivities />} />
-                    <Route path="performance" element={<TeamPerformance />} />
-                    <Route path="sla" element={<TeamSla />} />
+                    {/* <Route path="performance" element={<TeamPerformance />} /> */}
+                    <Route
+                        path="performance"
+                        element={<MaintenancePage titlePage={'Performance Summary'} />}
+                    />
+                    {/* <Route path="sla" element={<TeamSla />} /> */}
+                    <Route path="sla" element={<MaintenancePage titlePage={'SLA Compliance'} />} />
                 </Route>
 
                 <Route path="/service-desk">
@@ -137,9 +143,21 @@ function App() {
                 <Route path="/directory">
                     <Route index element={<Navigate to="telephones" replace />} />
                     <Route path="telephones" element={<TelephoneDirectory />} />
-                    <Route path="branches" element={<BranchLocations />} />
-                    <Route path="staff" element={<StaffExtensions />} />
-                    <Route path="accounts" element={<AccountsDirectory />} />
+                    {/* <Route path="branches" element={<BranchLocations />} /> */}
+                    <Route
+                        path="branches"
+                        element={<MaintenancePage titlePage={'Branch Locations'} />}
+                    />
+                    {/* <Route path="staff" element={<StaffExtensions />} /> */}
+                    <Route
+                        path="staff"
+                        element={<MaintenancePage titlePage={'Staff Extensions'} />}
+                    />
+                    {/* <Route path="accounts" element={<AccountsDirectory />} /> */}
+                    <Route
+                        path="accounts"
+                        element={<MaintenancePage titlePage={'Accounts Directory'} />}
+                    />
                 </Route>
 
                 <Route path="/it-directory">
@@ -149,38 +167,107 @@ function App() {
                     <Route path="ip-addresses" element={<IpAddresses />} />
                     <Route path="anydesk-ids" element={<AnydeskIds />} />
                     <Route path="printers" element={<Printers />} />
-                    <Route path="accounts" element={<SystemAccounts />} />
-                    <Route path="drives" element={<SharedDrives />} />
-                    <Route path="network" element={<NetworkDevices />} />
+                    {/* <Route path="accounts" element={<SystemAccounts />} /> */}
+                    <Route path="accounts" element={<MaintenancePage titlePage={'Accounts'} />} />
+                    {/* <Route path="drives" element={<SharedDrives />} /> */}
+                    <Route
+                        path="drives"
+                        element={<MaintenancePage titlePage={'Shared Drives'} />}
+                    />
+                    {/* <Route path="network" element={<NetworkDevices />} /> */}
+                    <Route
+                        path="network"
+                        element={<MaintenancePage titlePage={'Network Devices'} />}
+                    />
                 </Route>
 
                 <Route path="/reports">
                     <Route index element={<Navigate to="analytics" replace />} />
                     <Route path="analytics" element={<TicketAnalytics />} />
                     <Route path="performance" element={<PerformanceTracking />} />
-                    <Route path="sla-insights" element={<SlaInsights />} />
-                    <Route path="department-metrics" element={<DepartmentMetrics />} />
-                    <Route path="monthly-trends" element={<MonthlyTrends />} />
-                    <Route path="employee-satisfaction" element={<EmployeeSatisfaction />} />
+                    {/* <Route path="sla-insights" element={<SlaInsights />} /> */}
+                    <Route
+                        path="sla-insights"
+                        element={<MaintenancePage titlePage={'SLA Insights'} />}
+                    />
+                    {/* <Route path="department-metrics" element={<DepartmentMetrics />} /> */}
+                    <Route
+                        path="department-metrics"
+                        element={<MaintenancePage titlePage={'Department Metrics'} />}
+                    />
+                    {/* <Route path="monthly-trends" element={<MonthlyTrends />} /> */}
+                    <Route
+                        path="monthly-trends"
+                        element={<MaintenancePage titlePage={'Monthly Trends'} />}
+                    />
+                    {/* <Route path="employee-satisfaction" element={<EmployeeSatisfaction />} /> */}
+                    <Route
+                        path="employee-satisfaction"
+                        element={<MaintenancePage titlePage={'Employee Satisfaction'} />}
+                    />
                 </Route>
 
                 <Route path="/system-settings">
                     <Route index element={<Navigate to="general" replace />} />
-                    <Route path="general" element={<GeneralSettings />} />
-                    <Route path="security-authentication" element={<SecurityAuthentication />} />
-                    <Route path="email-notification" element={<EmailNotifications />} />
-                    <Route path="department" element={<DepartmentSettings />} />
+                    {/* <Route path="general" element={<GeneralSettings />} /> */}
+                    <Route
+                        path="general"
+                        element={<MaintenancePage titlePage={'General Settings'} />}
+                    />
+                    {/* <Route path="security-authentication" element={<SecurityAuthentication />} /> */}
+                    <Route
+                        path="security-authentication"
+                        element={<MaintenancePage titlePage={'Security & Authentication'} />}
+                    />
+                    {/* <Route path="email-notification" element={<EmailNotifications />} /> */}
+                    <Route
+                        path="email-notification"
+                        element={<MaintenancePage titlePage={'Email Notifications'} />}
+                    />
+                    {/* <Route path="department" element={<DepartmentSettings />} /> */}
+                    <Route
+                        path="department"
+                        element={<MaintenancePage titlePage={'Department Settings'} />}
+                    />
                 </Route>
 
                 <Route path="/system-administration">
-                    <Route index element={<Navigate to="feedback" replace />} />
-                    <Route path="system-overview" element={<SystemOverview />} />
-                    <Route path="user-access-control" element={<UserAccessControl />} />
-                    <Route path="audit-logs" element={<AuditLogs />} />
-                    <Route path="maintenance-mode" element={<MaintenanceMode />} />
-                    <Route path="updates-backups" element={<UpdatesBackup />} />
-                    <Route path="security-compliance" element={<SecurityCompliance />} />
-                    <Route path="integration-settings" element={<IntegrationSettings />} />
+                    <Route index element={<Navigate to="system-overview" replace />} />
+                    {/* <Route path="system-overview" element={<SystemOverview />} /> */}
+                    <Route
+                        path="system-overview"
+                        element={<MaintenancePage titlePage={'System Overview'} />}
+                    />
+                    {/* <Route path="user-access-control" element={<UserAccessControl />} /> */}
+                    <Route
+                        path="user-access-control"
+                        element={<MaintenancePage titlePage={'User Access Control'} />}
+                    />
+                    {/* <Route path="audit-logs" element={<AuditLogs />} /> */}
+                    <Route
+                        path="audit-logs"
+                        element={<MaintenancePage titlePage={'Audi Logs'} />}
+                    />
+                    {/* <Route path="maintenance-mode" element={<MaintenanceMode />} /> */}
+                    <Route
+                        path="maintenance-mode"
+                        element={<MaintenancePage titlePage={'MaintenanceMode'} />}
+                    />
+                    {/* <Route path="updates-backups" element={<UpdatesBackup />} /> */}
+                    <Route
+                        path="updates-backups"
+                        element={<MaintenancePage titlePage={'Updates & Backup'} />}
+                    />
+                    {/* <Route path="security-compliance" element={<SecurityCompliance />} /> */}
+                    <Route
+                        path="security-compliance"
+                        element={<MaintenancePage titlePage={'Security & Compliance'} />}
+                    />
+                    {/* <Route path="integration-settings" element={<IntegrationSettings />} /> */}
+                    <Route
+                        path="integration-settings"
+                        element={<MaintenancePage titlePage={'Integration Settings'} />}
+                    />
                     <Route path="system-feedback" element={<SystemFeedback />} />
                 </Route>
             </Route>

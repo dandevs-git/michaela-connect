@@ -23,7 +23,7 @@ class User extends Authenticatable
         'profile_picture',
         'status',
         'failed_attempts',
-        'last_seen_at',
+        'last_activity_at',
 
         'department_id',
         'ipAddress_id',
