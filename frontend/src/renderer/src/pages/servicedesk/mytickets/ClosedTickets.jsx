@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
 import { FaEye, FaEdit, FaTrash, FaPlus } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
-import StatusBadge from '../../../components/badges/StatusBadge'
+import TicketStatusBadge from '../../../components/badges/TicketStatusBadge'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import ViewTicketDetailsModal from '../../../components/modals/ViewTicketDetailsModal'
 
@@ -43,7 +43,7 @@ function ClosedTickets() {
         {
             header: 'Status',
             accessorKey: 'status',
-            cell: ({ row }) => <StatusBadge status={row.original.status} />
+            cell: ({ row }) => <TicketStatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
         {

@@ -20,12 +20,11 @@ const statusIcons = {
     resolved: { icon: <FaCheckCircle />, class: 'bg-success' },
     reopened: { icon: <FaRedo />, class: 'bg-info' },
     failed: { icon: <FaBan />, class: 'bg-danger' },
-    completed: { icon: <FaCheckCircle />, class: 'bg-success' },
     rejected: { icon: <FaTimesCircle />, class: 'bg-danger' },
     closed: { icon: <FaDoorClosed />, class: 'bg-secondary' }
 }
 
-function StatusBadge({ status }) {
+function TicketStatusBadge({ status }) {
     const info = statusIcons[status] || { icon: <FaClock />, class: 'bg-secondary' }
 
     return (
@@ -37,4 +36,4 @@ function StatusBadge({ status }) {
     )
 }
 
-export default StatusBadge
+export default TicketStatusBadge

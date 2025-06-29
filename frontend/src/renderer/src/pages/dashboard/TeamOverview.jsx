@@ -7,7 +7,7 @@ import CustomRadarChart from '../../components/charts/CustomRadarChart'
 import StatisticsCard from '../../components/cards/StatisticsCard'
 import Placeholder from '../../components/placeholders/Placeholder'
 import CustomTable from '../../components/tables/CustomTable'
-import { Cell } from 'recharts'
+import { COLORS } from '../../constants/config'
 
 function TeamOverview() {
     const { getData } = useAPI()
@@ -19,26 +19,33 @@ function TeamOverview() {
         getData('/team-overview', setTeamOverview, setLoading, setError)
     }, [])
 
-    // const columnsLiveEmployeeStatus = [
-    //     {
-    //         header: 'Name',
-    //         accessorKey: 'name'
-    //     },
-    //     {
-    //         header: 'Status',
-    //         accessorKey: 'status',
-    //         cell: ({ row }) => {
-    //             const status = row.original?.status
-    //             const statusClass = status === 'Online' ? 'success' : 'secondary'
+    const columnsLiveEmployeeStatus = [
+        {
+            header: 'Name',
+            accessorKey: 'name'
+        },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: ({ row }) => {
+                const status = row.original?.status
+                const statusClass =
+                    status === 'Online'
+                        ? 'success'
+                        : status === 'Offline'
+                          ? 'secondary'
+                          : status === 'Away'
+                            ? 'warning'
+                            : 'danger'
 
-    //             return <span className={`badge fs-6 rounded-pill bg-${statusClass}`}>{status}</span>
-    //         }
-    //     },
-    //     {
-    //         header: 'Last Seen At',
-    //         accessorKey: 'last_seen_at'
-    //     }
-    // ]
+                return <span className={`badge fs-6 rounded-pill bg-${statusClass}`}>{status}</span>
+            }
+        },
+        {
+            header: 'Last Seen',
+            accessorKey: 'last_activity_at'
+        }
+    ]
 
     return (
         <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
@@ -156,20 +163,30 @@ function TeamOverview() {
                             Team Member Workload
                         </div>
                         <div className="d-flex card-body align-items-center justify-content-center">
+                            {console.log(teamOverview)}
                             {loading ? (
-                                <Placeholder height="300px" />
-                            ) : !teamOverview?.teamDepartmentTimes?.some(
-                                  (e) => e.current_resolution_time > 0 && e.previous_resolution_time
-                              ) ? (
+                                <Placeholder height="350px" />
+                            ) : !teamOverview?.teamWorkload?.some((e) => e.current_workload > 0 && e.previous_workload) ? (
                                 <div className="text-center text-muted py-4">
                                     <i className="bi bi-info-circle fs-1 mb-2"></i>
                                     <div className="fs-6">No data available</div>
                                 </div>
                             ) : (
                                 <CustomBarChart
-                                    data={teamOverview?.teamDepartmentTimes}
-                                    datakey="resolution_time"
-                                    display="Average Resolution Time"
+                                    data={teamOverview?.teamWorkload}
+                                    bars={[
+                                        {
+                                            dataKey: 'previous_workload',
+                                            name: 'Previous Workload',
+                                            fill: COLORS[2]
+                                        },
+                                        {
+                                            dataKey: 'current_workload',
+                                            name: 'Current Workload',
+                                            fill: COLORS[0]
+                                        }
+                                    ]}
+                                    xAxisKey="name"
                                 />
                             )}
                         </div>
@@ -183,7 +200,7 @@ function TeamOverview() {
                         </div>
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
-                                <Placeholder height="300px" />
+                                <Placeholder height="350px" />
                             ) : !teamOverview?.teamDepartmentTimes?.some(
                                   (e) => e.current_resolution_time > 0 && e.previous_resolution_time
                               ) ? (
@@ -193,9 +210,23 @@ function TeamOverview() {
                                 </div>
                             ) : (
                                 <CustomBarChart
+                                    // data={teamOverview?.teamDepartmentTimes}
+                                    // datakey="resolution_time"
+                                    // display="Average Resolution Time"
                                     data={teamOverview?.teamDepartmentTimes}
-                                    datakey="resolution_time"
-                                    display="Average Resolution Time"
+                                    bars={[
+                                        {
+                                            dataKey: 'previous_resolution_time',
+                                            name: 'Previous Resolution Time',
+                                            fill: COLORS[2]
+                                        },
+                                        {
+                                            dataKey: 'current_resolution_time',
+                                            name: 'Current Resolution Time',
+                                            fill: COLORS[0]
+                                        }
+                                    ]}
+                                    xAxisKey="name"
                                 />
                             )}
                         </div>
@@ -209,7 +240,7 @@ function TeamOverview() {
                         </div>
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
-                                <Placeholder height="300px" />
+                                <Placeholder height="350px" />
                             ) : !teamOverview?.teamVolumeTrends?.some((e) => e.Created > 0) ? (
                                 <div className="text-center text-muted py-4">
                                     <i className="bi bi-info-circle fs-1 mb-2"></i>
@@ -218,6 +249,8 @@ function TeamOverview() {
                             ) : (
                                 <CustomLineChart
                                     data={teamOverview?.teamVolumeTrends}
+                                    xKey="name"
+                                    yKeys={['Resolved', 'Created', 'Reopened', 'Failed']}
                                     hasFilter={true}
                                 />
                             )}
@@ -228,15 +261,15 @@ function TeamOverview() {
                 <div className="col-xl-12 p-4">
                     <div className="card h-100 rounded-4 shadow text-center mb-3">
                         <div className="card-header text-uppercase fs-3 fw-semibold">
-                            Live Employee Status
+                            Live Employees Status
                         </div>
                         <div className="d-flex card-body align-items-center justify-content-center">
                             <div className="col-xl-12 p-4">
-                                {/* <CustomTable
+                                <CustomTable
                                     isloading={loading}
                                     columns={columnsLiveEmployeeStatus}
                                     data={teamOverview?.liveEmployeeStatus}
-                                /> */}
+                                />
                             </div>
                         </div>
                     </div>

@@ -67,7 +67,8 @@ function AddAnydeskModal({ id, refreshList }) {
         if (response) {
             setIsSubmitted(false)
             resetForm()
-            Modal.getInstance(modalRef.current)?.hide()
+            // Modal.getInstance(modalRef.current)?.hide()
+            modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
             refreshList()
         }
     }
@@ -108,7 +109,7 @@ function AddAnydeskModal({ id, refreshList }) {
                                 ref={formRef}
                                 className="row g-3 needs-validation p-3"
                                 noValidate
-                                onSubmit={handleSubmit}
+                                onSubmit={() => handleSubmit}
                             >
                                 {error && (
                                     <div className="alert alert-danger text-center py-2">

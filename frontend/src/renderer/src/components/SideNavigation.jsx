@@ -152,8 +152,8 @@ function SideNavigation() {
 
     return (
         <div
-            data-aos="fade-right"
-            data-aos-duration="1200"
+            // data-aos="fade-right"
+            // data-aos-duration="1200"
             className="d-flex flex-column bg-light-subtle border-end border-light-subtle shadow-lg pt-3 sticky-top vh-100"
             style={{ width: '280px' }}
         >
@@ -189,8 +189,8 @@ function SideNavigation() {
                             return (
                                 <li
                                     key={index}
-                                    data-aos="fade-right"
-                                    data-aos-duration={`${300 + index * 300}`}
+                                    // data-aos="fade-right"
+                                    // data-aos-duration={`${300 + index * 300}`}
                                     className="mb-1"
                                 >
                                     {page.subPages ? (

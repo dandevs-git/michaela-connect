@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
 import { FaEye, FaTimes, FaUserCheck } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
-import StatusBadge from '../../../components/badges/StatusBadge'
+import TicketStatusBadge from '../../../components/badges/TicketStatusBadge'
 import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
@@ -108,7 +108,7 @@ function NewTickets() {
         {
             header: 'Status',
             accessorKey: 'status',
-            cell: ({ row }) => <StatusBadge status={row.original.status} />
+            cell: ({ row }) => <TicketStatusBadge status={row.original.status} />
         },
         { header: 'Title', accessorKey: 'title' },
         {

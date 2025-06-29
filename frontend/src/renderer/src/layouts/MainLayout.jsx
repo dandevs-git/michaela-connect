@@ -12,8 +12,8 @@ function MainLayout() {
                 <div className="w-100">
                     <TopNavigation />
                     <div
-                        data-aos="fade-up"
-                        data-aos-duration="1000"
+                        // data-aos="fade-up"
+                        // data-aos-duration="1000"
                         className="p-4 w-100 d-flex flex-column"
                     >
                         <Outlet />

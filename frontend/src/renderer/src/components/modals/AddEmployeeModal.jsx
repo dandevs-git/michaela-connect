@@ -307,7 +307,8 @@ function AddEmployeeModal({ id, refreshList }) {
                                     <button
                                         className="btn btn-primary w-100 d-flex justify-content-center align-items-center gap-2"
                                         onClick={() => {
-                                            Modal.getInstance(modalRef.current).hide()
+                                            // Modal.getInstance(modalRef.current)?.hide()
+modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
                                             resetForm()
                                             refreshList?.()
                                         }}

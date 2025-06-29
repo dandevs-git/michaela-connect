@@ -193,7 +193,7 @@ export const APIProvider = ({ children }) => {
                 passwordReset
             }}
         >
-            {authLoading ? (
+            {/* {authLoading ? (
                 <div className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center flex-column">
                     <div className="d-flex gap-4">
                         <div className="spinner-grow text-light" role="status">
@@ -208,9 +208,9 @@ export const APIProvider = ({ children }) => {
                     </div>
                     <h4 className="text-light mt-3">Authenticating</h4>
                 </div>
-            ) : (
-                children
-            )}
+            ) : ( */}
+                {children}
+             {/* )} */}
         </APIContext.Provider>
     )
 }

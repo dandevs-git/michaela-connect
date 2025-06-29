@@ -81,9 +81,9 @@ function App() {
     // const isAuth = !!localStorage.getItem('token')
     const isAuth = !!sessionStorage.getItem('token')
 
-    useEffect(() => {
-        AOS.init({ duration: 1000 })
-    }, [])
+    // useEffect(() => {
+    //     AOS.init({ duration: 1000 })
+    // }, [])
 
     return (
         <Routes>

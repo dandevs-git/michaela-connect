@@ -7,9 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 function AddTicketModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
-    const { showToast } = useToast()
     const navigate = useNavigate()
-    const location = useLocation()
 
     const modalRef = useRef(null)
     const titleRef = useRef(null)

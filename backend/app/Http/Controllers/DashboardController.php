@@ -25,8 +25,8 @@ class DashboardController extends Controller
         $teamTicketVolume = $this->getTicketVolumeByPriority($currentPeriodStart, $now);
         $teamVolumeTrends = $this->getTicketVolumeTrends(TeamTicketQueryService::class);
         $teamDepartmentTimes = $this->getDepartmentResolutionTimes($currentPeriodStart, $now, $previousPeriodStart, $previousPeriodEnd);
-        $teamWorkload = $this->getTeamWorkload($currentPeriodStart, $now);
-        // $liveEmployeeStatus = $this->getLiveEmployeeStatus();
+        $teamWorkload = $this->getTeamWorkload($currentPeriodStart, $now, $previousPeriodStart, $previousPeriodEnd);
+        $liveEmployeeStatus = $this->getLiveEmployeeStatus();
 
         return response()->json([
             'current' => $currentMetrics,
@@ -37,7 +37,7 @@ class DashboardController extends Controller
             'teamVolumeTrends' => $teamVolumeTrends,
             'teamDepartmentTimes' => $teamDepartmentTimes,
             'teamWorkload' => $teamWorkload,
-            // 'liveEmployeeStatus' => $liveEmployeeStatus,
+            'liveEmployeeStatus' => $liveEmployeeStatus,
         ]);
     }
 
@@ -200,7 +200,7 @@ class DashboardController extends Controller
 
         return $tickets
             ->groupBy(function ($ticket) {
-                return $ticket->assignedTo->department->name ?? 'Unknown';
+                return $ticket->assignedTo->department->name ?? 'Unassigned';
             })
             ->map(function ($tickets, $department) use ($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate) {
                 $current = $tickets->filter(function ($ticket) use ($currentStartDate, $currentEndDate) {
@@ -228,39 +228,68 @@ class DashboardController extends Controller
             ->values();
     }
 
-    private function getTeamWorkload($startDate, $endDate)
+    private function getTeamWorkload($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate)
     {
         $tickets = TeamTicketQueryService::queryForCurrentUser()
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where(function ($query) use ($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate) {
+                $query->whereBetween('created_at', [$currentStartDate, $currentEndDate])
+                    ->orWhereBetween('created_at', [$previousStartDate, $previousEndDate]);
+            })
             ->with('assignedTo')
             ->get();
 
         return $tickets
             ->groupBy(fn($ticket) => optional($ticket->assignedTo)->name ?? 'Unassigned')
-            ->map(fn($group, $userName) => [
-                'name' => $userName,
-                'value' => $group->count(),
-            ])
+            ->map(function ($group, $userName) use ($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate) {
+                $current = $group->filter(fn($ticket) =>
+                    Carbon::parse($ticket->created_at)->between($currentStartDate, $currentEndDate)
+                );
+
+                $previous = $group->filter(fn($ticket) =>
+                    Carbon::parse($ticket->created_at)->between($previousStartDate, $previousEndDate)
+                );
+
+                return [
+                    'name' => $userName,
+                    'current_workload' => $current->count(),
+                    'previous_workload' => $previous->count(),
+                ];
+            })
             ->values();
     }
+
+
     private function getLiveEmployeeStatus()
     {
-        // $onlineThreshold = now()->subMinutes(30);
+        $onlineThreshold = now()->subMinutes(2);  
+        $awayThreshold = now()->subMinutes(30);  
 
-        // $users = User::select('name', 'last_seen_at')
-        //     ->get()
-        //     ->map(function ($user) use ($onlineThreshold) {
-        //         $lastSeen = $user->last_seen_at ? Carbon::parse($user->last_seen_at) : null;
+        $users = User::select('name', 'last_activity_at')
+            ->get()
+            ->map(function ($user) use ($onlineThreshold, $awayThreshold) {
+                $lastSeen = $user->last_activity_at ? Carbon::parse($user->last_activity_at) : null;
 
-        //         return [
-        //             'name' => $user->name,
-        //             'status' => $lastSeen && $lastSeen->greaterThanOrEqualTo($onlineThreshold) ? 'Online' : 'Offline',
-        //             'last_seen_at' => $lastSeen?->diffForHumans(),
-        //         ];
-        //     });
+                $status = 'Offline';
 
-        // return $users;
+                if ($lastSeen) {
+                    if ($lastSeen->greaterThanOrEqualTo($onlineThreshold)) {
+                        $status = 'Online';
+                    } elseif ($lastSeen->greaterThanOrEqualTo($awayThreshold)) {
+                        $status = 'Away';
+                    }
+                }
+
+                return [
+                    'name' => $user->name,
+                    'status' => $status,
+                    'last_activity_at' => $lastSeen?->diffForHumans(),
+                ];
+            });
+
+        return $users;
     }
+
+    
 
 
 

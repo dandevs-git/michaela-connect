@@ -12,7 +12,7 @@ import CustomRadialBarChart from '../../components/charts/CustomRadialBarChart'
 import CustomAreaChart from '../../components/charts/CustomAreaChart'
 import CustomPieChart from '../../components/charts/CustomPieChart'
 import CustomStackedBarChart from '../../components/charts/CustomAreaChart copy'
-import StatusBadge from '../../components/badges/StatusBadge'
+import TicketStatusBadge from '../../components/badges/TicketStatusBadge'
 import { formatDateVerbose } from '../../utils/formatDateVerbose'
 
 function TicketAnalytics() {
@@ -58,7 +58,7 @@ function TicketAnalytics() {
         {
             header: 'Status',
             accessorKey: 'status',
-            cell: ({ row }) => <StatusBadge status={row.original.status} />
+            cell: ({ row }) => <TicketStatusBadge status={row.original.status} />
         },
         {
             header: 'Title',

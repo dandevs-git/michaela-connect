@@ -1,7 +1,8 @@
 import { Toast } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { useEffect, useRef } from 'react'
+import { diffForHumans } from '../../config/helpers'
 
-const GlobalToast = ({ message, show, onClose, isPositive, title, delay }) => {
+const GlobalToast = ({ message, show, onClose, isPositive, title, delay, timestamp  }) => {
     const toastRef = useRef(null)
     const toastInstance = useRef(null)
 
@@ -35,6 +36,8 @@ const GlobalToast = ({ message, show, onClose, isPositive, title, delay }) => {
         }
     }, [onClose])
 
+    const timeAgo = timestamp ? diffForHumans(new Date(timestamp)) : 'Just now'
+
     return (
         <div
             ref={toastRef}
@@ -52,7 +55,7 @@ const GlobalToast = ({ message, show, onClose, isPositive, title, delay }) => {
                     } me-2`}
                 ></i>
                 <strong className="me-auto">{title}</strong>
-                <small className="text-muted">Just now</small>
+                <small className="text-muted">{timeAgo}</small>
                 <button
                     type="button"
                     className="btn-close"

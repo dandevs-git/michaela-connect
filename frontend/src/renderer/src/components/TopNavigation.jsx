@@ -43,8 +43,8 @@ function TopNavigation() {
             )}
 
             <div
-                data-aos="fade-down"
-                data-aos-duration="3000"
+                // data-aos="fade-down"
+                // data-aos-duration="3000"
                 className="navbar navbar-expand-md bg-light-subtle shadow-lg sticky-top"
             >
                 <div className="col d-flex justify-content-between order-3">

@@ -83,7 +83,8 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
         if (response) {
             setIsSubmitted(false)
             resetForm()
-            Modal.getInstance(modalRef.current)?.hide()
+            // Modal.getInstance(modalRef.current)?.hide()
+modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
             refreshList?.()
         }
     }

@@ -15,7 +15,11 @@ const getFilteredData = (data, filter) => {
     const now = new Date()
 
     return data.filter((item) => {
-        const itemDate = new Date(item.date)
+        const rawDate = item.date || item.name
+
+        const itemDate = new Date(rawDate)
+
+        if (isNaN(itemDate)) return false
 
         switch (filter) {
             case 'weekly': {
@@ -44,15 +48,37 @@ const getFilteredData = (data, filter) => {
     })
 }
 
-function CustomLineChart({ data, hasFilter = false }) {
-    const [filter, setFilter] = useState('monthly')
+export default function CustomLineChart({
+    data = [],
+    xKey = 'name',
+    yKeys,
+    colors = COLORS,
+    filterOptions = [
+        { value: 'weekly', label: 'Last 7 Days' },
+        { value: 'monthly', label: 'Last 30 Days' },
+        { value: 'quarterly', label: 'Last 90 Days' },
+        { value: 'yearly', label: 'Last Year' },
+        { value: 'all', label: 'All' }
+    ],
+    hasFilter = false,
+    grid = true,
+    dots = true,
+    tooltip = true,
+    legend = true,
+    height = 350
+}) {
+    const [filter, setFilter] = useState(
+        filterOptions.find((opt) => opt.value === 'monthly')?.value || filterOptions[0].value
+    )
 
     const filteredData = useMemo(() => getFilteredData(data, filter), [data, filter])
 
-    const lineKeys =
-        filteredData.length > 0
-            ? Object.keys(filteredData[0]).filter((key) => key !== 'name' && key !== 'date')
-            : []
+    const lines =
+        yKeys && yKeys.length > 0
+            ? yKeys
+            : filteredData.length > 0
+              ? Object.keys(filteredData[0]).filter((k) => k !== xKey && k !== 'date')
+              : []
 
     return (
         <div className="w-100">
@@ -67,37 +93,30 @@ function CustomLineChart({ data, hasFilter = false }) {
                         value={filter}
                         onChange={(e) => setFilter(e.target.value)}
                     >
-                        <option value="weekly">Last 7 Days</option>
-                        <option value="monthly">Last 30 Days</option>
-                        <option value="quarterly">Last 90 Days</option>
-                        <option value="yearly">Last Year</option>
-                        <option value="all">All</option>
+                        {filterOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
                     </select>
                 </div>
             )}
 
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={height}>
                 <LineChart data={filteredData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" padding={{ left: 10, right: 10 }} />
+                    {grid && <CartesianGrid strokeDasharray="3 3" />}
+                    <XAxis dataKey={xKey} />
                     <YAxis />
-                    <Tooltip
-                        contentStyle={{
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            borderRadius: '10px',
-                            color: '#333'
-                        }}
-                    />
-                    <Legend />
-                    {lineKeys.map((key, index) => (
+                    {tooltip && <Tooltip />}
+                    {legend && <Legend />}
+                    {lines.map((key, i) => (
                         <Line
                             key={key}
                             type="monotone"
                             dataKey={key}
-                            stroke={COLORS[index % COLORS.length]}
+                            stroke={colors[i % colors.length]}
                             strokeWidth={2}
-                            dot={{ r: 5, fill: COLORS[index % COLORS.length] }}
+                            dot={dots ? { r: 5, fill: colors[i % colors.length] } : false}
                             activeDot={{ r: 8 }}
                         />
                     ))}
@@ -106,5 +125,3 @@ function CustomLineChart({ data, hasFilter = false }) {
         </div>
     )
 }
-
-export default CustomLineChart

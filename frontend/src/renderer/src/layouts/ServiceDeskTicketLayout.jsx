@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAPI } from '../contexts/APIContext'
+import Placeholder from '../components/placeholders/Placeholder'
 
 function ServiceDeskTicketLayout() {
     const { authUser } = useAPI()
@@ -70,25 +71,27 @@ function ServiceDeskTicketLayout() {
                             </button>
                             <div className="collapse navbar-collapse" id="ticketTabs">
                                 <ul className="nav nav-pills d-flex w-100">
-                                    {visibleTabs.map((tab, index) => (
-                                        <li
-                                            className="nav-item flex-grow-1 text-center"
-                                            key={index}
-                                        >
-                                            <NavLink
-                                                className={({ isActive }) =>
-                                                    `nav-link rounded-pill ${
-                                                        isActive
-                                                            ? 'active'
-                                                            : 'link-body-emphasis bg-light-subtle'
-                                                    }`
-                                                }
-                                                to={tab.link}
-                                            >
-                                                <span className="mx-2">{tab.tab}</span>
-                                            </NavLink>
-                                        </li>
-                                    ))}
+                                    {!visibleTabs[0]?.tab
+                                        ?  <Placeholder width="100%" height="40px" className='rounded-pill' />
+                                        : visibleTabs.map((tab, index) => (
+                                              <li
+                                                  className="nav-item flex-grow-1 text-center"
+                                                  key={index}
+                                              >
+                                                  <NavLink
+                                                      className={({ isActive }) =>
+                                                          `nav-link rounded-pill ${
+                                                              isActive
+                                                                  ? 'active'
+                                                                  : 'link-body-emphasis bg-light-subtle'
+                                                          }`
+                                                      }
+                                                      to={tab.link}
+                                                  >
+                                                      <span className="mx-2">{tab.tab}</span>
+                                                  </NavLink>
+                                              </li>
+                                          ))}
                                 </ul>
                             </div>
                         </div>

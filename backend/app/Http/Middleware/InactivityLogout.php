@@ -24,22 +24,15 @@ class InactivityLogout
                 ? Carbon::parse($user->last_activity_at)
                 : $now;
 
-            $timeoutMinutes = 1;
+            $timeoutMinutes = 30;
 
             $diffMinutes = $last->diffInMinutes($now);
-
-            // return response()->json([
-            //     'now' => $now,
-            //     'last' => $last,
-            //     'timeoutMinutes' => $timeoutMinutes,
-            //     'diffMinutes' => $diffMinutes,
-            // ], 401);
 
             if ($diffMinutes >= $timeoutMinutes) {
                 $user->tokens()->delete();
 
                 return response()->json([
-                    'message' => 'Session expired due to inactivity.',
+                    'message' => 'Session expired due to inactivity. Redirect to login.',
                 ], 401);
             }
 

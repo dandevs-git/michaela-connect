@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { FaPlay, FaPaperPlane, FaEdit } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
-import StatusBadge from '../badges/StatusBadge'
+import TicketStatusBadge from '../badges/TicketStatusBadge'
 import { formatDateAndTimeVerbose } from '../../utils/formatDateAndTimeVerbose'
 
 function ViewTicketDetailsModal({ id, data }) {
@@ -113,7 +113,7 @@ function ViewTicketDetailsModal({ id, data }) {
                                     <div className="col-md-6">
                                         <div className="card shadow p-3 h-100 rounded-4">
                                             <h6 className="fw-bold">Status:</h6>
-                                            {<StatusBadge status={data?.status} />}
+                                            {<TicketStatusBadge status={data?.status} />}
                                         </div>
                                     </div>
                                     <div className="col-md-6">

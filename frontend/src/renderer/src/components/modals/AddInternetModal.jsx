@@ -69,7 +69,8 @@ function AddInternetModal({ id, refreshList }) {
         const response = await postData('/internet', internetData, () => {}, setLoading, setError)
 
         if (response) {
-            Modal.getInstance(modalRef.current).hide()
+            // Modal.getInstance(modalRef.current)?.hide()
+modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
             resetForm()
             refreshList?.()
         }
