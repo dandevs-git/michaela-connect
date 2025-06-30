@@ -1,0 +1,24 @@
+# Auto normalize line endings
+* text=auto
+
+# Treat PHP files as PHP
+*.php diff=php
+
+# Treat JS files as JavaScript
+*.js diff=javascript
+
+# Treat CSS files as CSS
+*.css diff=css
+
+# Treat JSON/YAML properly
+*.json text
+*.yml text
+
+# Exclude generated files from diff
+*.lock -diff
+
+# Keep shell scripts with LF endings
+*.sh text eol=lf
+
+# Keep Markdown normalized
+*.md text
