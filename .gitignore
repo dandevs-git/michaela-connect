@@ -9,7 +9,6 @@
 !storage/framework/.gitignore
 /storage/logs/*
 .env
-.env.*
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
