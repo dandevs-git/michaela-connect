@@ -1,135 +1,76 @@
-# Laravel default
+# ====================================================
+# Laravel Core
 /vendor
 /node_modules
 /public/storage
 /storage/*.key
+/storage/app/public
+/storage/framework/*
+!storage/framework/.gitignore
+/storage/logs/*
 .env
 .env.*
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
-npm-debug.log
-yarn-error.log
 
-# Laravel 8+ or with Sail/Docker
-docker-compose.override.yml
-
-# Ignored IDE/editor files
-.idea
-.vscode
-*.sublime-project
-*.sublime-workspace
-
-# OS-generated files
-.DS_Store
-Thumbs.db
-
-# Cache, logs and compiled files
-/storage/app/public
-/storage/framework/cache
-/storage/framework/sessions
-/storage/framework/testing
-/storage/framework/views
-/storage/logs
-
-# Optional: ignore test coverage reports
-/coverage
-.php_cs.cache
-
-# Laravel Mix
+# ====================================================
+# Laravel Mix / Vite / Build
 /public/hot
 /public/mix-manifest.json
 /public/css
 /public/js
+/dist/
+/build/
+/.vite/
+/.cache/
+/.parcel-cache/
 
-# Composer
-composer.lock
-
-
-# Node modules (important!)
+# ====================================================
+# Node Modules
 node_modules/
-
-# Build output
-dist/
-build/
-
-# Runtime data
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# OS files
+# ====================================================
+# IDE / Editor
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ====================================================
+# OS
 .DS_Store
 Thumbs.db
 
-# dotenv environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# ====================================================
+# Composer Cache
+composer.lock
 
-# Editor folders
-.vscode/
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+# ====================================================
+# Logs & Runtime
+*.log
 
-# Optional npm cache directory
-.npm/
-
-# Output of `npm pack`
-*.tgz
-
-# Mac system files
-*.DS_Store
-
-# Coverage reports
+# ====================================================
+# Misc / Optional
+.php_cs.cache
 coverage/
-
-# Storybook files
-.out/
-.storybook-out/
-
-# Parcel-bundled output
-.cache/
-.parcel-cache/
-
-# Vite
-.vite/
-
-# eslint/tslint cache
+*.tsbuildinfo
 .eslintcache
 .tslintcache
-
-# TypeScript
-*.tsbuildinfo
-
-# Jest test coverage and cache
-coverage/
 jest-cache/
 jest.config.js
 
-# VS Code debug
-.vscode/
-.vscode-test/
-
-# Next.js
+# ====================================================
+# Extra for Common Tools
 .next/
-
-# Netlify
 .netlify/
-
-# Firebase
 .firebase/
 firestore.indexes.json
 firestore.rules
-
-# Misc
 *.pem
 *.key
 *.crt
