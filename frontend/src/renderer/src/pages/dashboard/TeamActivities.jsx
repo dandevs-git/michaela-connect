@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../components/tables/CustomTable'
 import { useAPI } from '../../contexts/APIContext'
+import { diffForHumans } from '../../config/helpers'
 
 function TeamActivities() {
     const { getData } = useAPI()
@@ -34,6 +35,11 @@ function TeamActivities() {
         {
             header: 'Timestamp',
             accessorKey: 'formatted_time'
+        },
+        {
+            header: 'Time Ago',
+            accessorKey: 'formatted_time',
+            cell: ({ row }) => diffForHumans(new Date(row.original.created_at))
         }
     ]
     return (
@@ -46,8 +52,6 @@ function TeamActivities() {
                     <div className="col-xl-12 m-0 p-4">
                         <h4 className="text-start fw-semibold">Recent Tasks & Assignments</h4>
                         <CustomTable isloading={loading} columns={columnsLogs} data={dataLogs} />
-                        {/* <h4 className="text-start fw-semibold">Upcoming Deadlines</h4>
-                        <CustomTable isloading={loading} columns={columnsLogs} data={dataLogs} /> */}
                     </div>
                 </div>
             </div>

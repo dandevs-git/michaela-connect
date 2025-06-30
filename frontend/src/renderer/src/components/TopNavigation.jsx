@@ -3,6 +3,7 @@ import ThemeSwitch from './ThemeSwitch'
 import { useAPI } from '../contexts/APIContext'
 import { useState } from 'react'
 import FullScreenLoader from './FullScreenLoader'
+import Placeholder from './placeholders/Placeholder'
 
 const pages = [{ page: 'Dashboard', link: '/dashboard' }]
 
@@ -146,7 +147,13 @@ function TopNavigation() {
                                     </div>
                                 )}
 
-                                <strong>{authUser?.name}</strong>
+                                {!authUser?.name[0] ? (
+                                    <>
+                                        <Placeholder width="100px" height="30px" />
+                                    </>
+                                ) : (
+                                    <strong>{authUser?.name}</strong>
+                                )}
                             </Link>
 
                             <ul className="dropdown-menu dropdown-menu-end bg-body shadow text-body text-small">

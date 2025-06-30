@@ -15,11 +15,11 @@ export default defineConfig({
                 '@renderer': resolve('src/renderer/src')
             }
         },
-        plugins: [react()]
-        // server: {
-        //     host: '0.0.0.0',
-        //     // host: '192.168.2.133',
-        //     port: 5173
-        // }
+        plugins: [react()],
+        server: {
+            host: '0.0.0.0',
+            // host: '192.168.2.133',
+            port: 5173
+        }
     }
 })
