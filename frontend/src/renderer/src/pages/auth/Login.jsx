@@ -99,9 +99,9 @@ function Login() {
                 <button
                     className="btn btn-primary w-100 rounded-4 mb-2"
                     type="submit"
-                    disabled={loading}
+                    disabled={loading && (username || password)}
                 >
-                    {loading ? (
+                    {loading && (username || password) ? (
                         <>
                             <span className="spinner-grow spinner-grow-sm"></span>
                             <span className="ms-2">Logging in...</span>

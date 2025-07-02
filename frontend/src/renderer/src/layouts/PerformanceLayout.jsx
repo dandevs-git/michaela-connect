@@ -20,24 +20,33 @@ function PerformanceLayout() {
 
     return (
         <>
-            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
-                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+            <div
+                className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4"
+                id="overview"
+            >
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4">
                     Team Overview
                 </div>
                 <div className="row card-body">
                     <TeamOverview />
                 </div>
             </div>
-            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="activities">
-                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+            <div
+                className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4"
+                id="activities"
+            >
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4">
                     Team Activities
                 </div>
                 <div className="row card-body">
                     <TeamActivities />
                 </div>
             </div>
-            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="reports">
-                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+            <div
+                className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4"
+                id="reports"
+            >
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4">
                     Team Performance Reports
                 </div>
                 <div className="row card-body">

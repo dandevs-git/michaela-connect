@@ -50,7 +50,7 @@ function ServiceDeskTicketLayout() {
 
     return (
         <div className="card shadow w-100">
-            <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
+            <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4 text-center">
                 My Tickets
             </div>
 
@@ -71,27 +71,33 @@ function ServiceDeskTicketLayout() {
                             </button>
                             <div className="collapse navbar-collapse" id="ticketTabs">
                                 <ul className="nav nav-pills d-flex w-100">
-                                    {!visibleTabs[0]?.tab
-                                        ?  <Placeholder width="100%" height="40px" className='rounded-pill' />
-                                        : visibleTabs.map((tab, index) => (
-                                              <li
-                                                  className="nav-item flex-grow-1 text-center"
-                                                  key={index}
-                                              >
-                                                  <NavLink
-                                                      className={({ isActive }) =>
-                                                          `nav-link rounded-pill ${
-                                                              isActive
-                                                                  ? 'active'
-                                                                  : 'link-body-emphasis bg-light-subtle'
-                                                          }`
-                                                      }
-                                                      to={tab.link}
-                                                  >
-                                                      <span className="mx-2">{tab.tab}</span>
-                                                  </NavLink>
-                                              </li>
-                                          ))}
+                                    {!visibleTabs[0]?.tab ? (
+                                        <Placeholder
+                                            width="100%"
+                                            height="40px"
+                                            className="rounded-pill"
+                                        />
+                                    ) : (
+                                        visibleTabs.map((tab, index) => (
+                                            <li
+                                                className="nav-item flex-grow-1 text-center"
+                                                key={index}
+                                            >
+                                                <NavLink
+                                                    className={({ isActive }) =>
+                                                        `nav-link rounded-pill ${
+                                                            isActive
+                                                                ? 'active'
+                                                                : 'link-body-emphasis bg-light-subtle'
+                                                        }`
+                                                    }
+                                                    to={tab.link}
+                                                >
+                                                    <span className="mx-2">{tab.tab}</span>
+                                                </NavLink>
+                                            </li>
+                                        ))
+                                    )}
                                 </ul>
                             </div>
                         </div>

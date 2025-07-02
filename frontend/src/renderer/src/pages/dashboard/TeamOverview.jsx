@@ -48,8 +48,11 @@ function TeamOverview() {
     ]
 
     return (
-        <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
-            <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+        <div
+            className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4 rounded-4"
+            id="overview"
+        >
+            <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4 rounded-top-4">
                 Team Overview
             </div>
             <div className="row card-body">
@@ -166,7 +169,9 @@ function TeamOverview() {
                             {console.log(teamOverview)}
                             {loading ? (
                                 <Placeholder height="350px" />
-                            ) : !teamOverview?.teamWorkload?.some((e) => e.current_workload > 0 && e.previous_workload) ? (
+                            ) : !teamOverview?.teamWorkload?.some(
+                                  (e) => e.current_workload > 0 && e.previous_workload
+                              ) ? (
                                 <div className="text-center text-muted py-4">
                                     <i className="bi bi-info-circle fs-1 mb-2"></i>
                                     <div className="fs-6">No data available</div>
@@ -259,7 +264,6 @@ function TeamOverview() {
                 </div>
 
                 <div className="col-xl-12 p-4">
-                    
                     <div className="card h-100 rounded-4 shadow text-center mb-3">
                         <div className="card-header text-uppercase fs-3 fw-semibold">
                             Live Employees Status

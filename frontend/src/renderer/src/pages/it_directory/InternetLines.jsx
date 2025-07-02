@@ -116,7 +116,7 @@ function InternetLines() {
     return (
         <>
             <div className="card shadow w-100">
-                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold text-center">
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4 text-center">
                     Internet Lines
                 </div>
                 <div className="card-body">

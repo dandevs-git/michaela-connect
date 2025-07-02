@@ -81,8 +81,11 @@ function MyReports() {
 
     return (
         <>
-            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="reports">
-                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+            <div
+                className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4"
+                id="reports"
+            >
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4">
                     My Reports
                 </div>
                 <div className="row card-body">

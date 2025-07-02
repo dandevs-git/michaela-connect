@@ -205,8 +205,11 @@ function TicketAnalytics() {
 
     return (
         <>
-            <div className="card bg-light-subtle shadow text-center w-100 mb-5" id="overview">
-                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold">
+            <div
+                className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4"
+                id="overview"
+            >
+                <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4">
                     Ticket Analytics
                 </div>
                 <div className="row card-body">
