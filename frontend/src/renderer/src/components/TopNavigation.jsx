@@ -54,6 +54,39 @@ function TopNavigation() {
                     </nav>
 
                     <div className="me-4 d-flex">
+                        {/* <div className="dropdown mx-2">
+                            <button
+                                type="button"
+                                className="btn bg-transparent border-0 p-1 position-relative"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <i className="bi bi-bell-fill fs-4 mx-1"></i>
+                                <span className="badge bg-danger border border-light position-absolute mt-2 start-100 top-0 translate-middle">
+                                    <span>0</span>
+                                </span>
+                            </button>
+
+                            <ul className="dropdown-menu dropdown-menu-end shadow-lg rounded-3 border-0">
+                                <li className="dropdown-header text-center fw-bold py-3">
+                                    Notifications
+                                </li>
+                                <li className="text-center py-4 text-muted">
+                                    <i className="bi bi-tools fs-2 mb-2 text-secondary"></i>
+                                    <div className="fw-semibold">Under Maintenance</div>
+                                    <small>Notifications temporarily unavailable</small>
+                                </li>
+                                <li>
+                                    <hr className="dropdown-divider" />
+                                </li>
+                                <li>
+                                    <span className="dropdown-item text-center disabled">
+                                        View All Notifications
+                                    </span>
+                                </li>
+                            </ul>
+                        </div> */}
+
                         <div className="dropdown mx-2">
                             <button
                                 type="button"
@@ -63,7 +96,7 @@ function TopNavigation() {
                             >
                                 <i className="bi bi-bell-fill fs-4 mx-1"></i>
                                 <span className="badge bg-danger border border-light position-absolute mt-2 start-100 top-0 translate-middle">
-                                    <span>3</span>
+                                    <span>0</span>
                                 </span>
                             </button>
 
@@ -72,7 +105,13 @@ function TopNavigation() {
                                     Notifications
                                 </li>
 
-                                <li>
+                                <li className="text-center py-4 text-muted">
+                                    <i className="bi bi-tools fs-2 mb-2 text-secondary"></i>
+                                    <div className="fw-semibold">Under Maintenance</div>
+                                    <small>Notifications temporarily unavailable</small>
+                                </li>
+
+                                {/* <li>
                                     <a className="dropdown-item d-flex align-items-start" href="#">
                                         <div className="me-3">
                                             <i className="bi bi-box-seam text-primary fs-5"></i>
@@ -110,7 +149,7 @@ function TopNavigation() {
                                             <small className="text-muted">1 hour ago</small>
                                         </div>
                                     </a>
-                                </li>
+                                </li> */}
 
                                 <li>
                                     <hr className="dropdown-divider" />
