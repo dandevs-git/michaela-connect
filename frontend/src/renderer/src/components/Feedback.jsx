@@ -15,7 +15,7 @@ function Feedback() {
         type: 'general',
         source: 'system',
         severity: 'low',
-        version: ''
+        version: '1.0.0'
     })
 
     const handleInputChange = (e) => {
@@ -160,15 +160,18 @@ function Feedback() {
                                 <label htmlFor="source" className="form-label small">
                                     Source
                                 </label>
-                                <input
-                                    type="text"
-                                    className="form-control form-control-sm"
+                                <select
                                     id="source"
                                     name="source"
+                                    className="form-select form-select-sm"
                                     value={feedbackData.source}
                                     onChange={handleInputChange}
-                                    placeholder="e.g. system, mobile, web"
-                                />
+                                    required
+                                >
+                                    <option value="system">System</option>
+                                    <option value="mobile">Mobile</option>
+                                    <option value="website">Website</option>
+                                </select>
                             </div>
 
                             <div className="mb-2">
@@ -176,6 +179,7 @@ function Feedback() {
                                     Version
                                 </label>
                                 <input
+                                    readOnly
                                     type="text"
                                     className="form-control form-control-sm"
                                     id="version"
