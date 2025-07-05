@@ -241,11 +241,13 @@ class DashboardController extends Controller
         return $tickets
             ->groupBy(fn($ticket) => optional($ticket->assignedTo)->name ?? 'Unassigned')
             ->map(function ($group, $userName) use ($currentStartDate, $currentEndDate, $previousStartDate, $previousEndDate) {
-                $current = $group->filter(fn($ticket) =>
+                $current = $group->filter(
+                    fn($ticket) =>
                     Carbon::parse($ticket->created_at)->between($currentStartDate, $currentEndDate)
                 );
 
-                $previous = $group->filter(fn($ticket) =>
+                $previous = $group->filter(
+                    fn($ticket) =>
                     Carbon::parse($ticket->created_at)->between($previousStartDate, $previousEndDate)
                 );
 
@@ -261,8 +263,8 @@ class DashboardController extends Controller
 
     private function getLiveEmployeeStatus()
     {
-        $onlineThreshold = now()->subMinutes(2);  
-        $awayThreshold = now()->subMinutes(30);  
+        $onlineThreshold = now()->subMinutes(2);
+        $awayThreshold = now()->subMinutes(30);
 
         $users = User::select('name', 'last_activity_at')
             ->get()
@@ -289,70 +291,77 @@ class DashboardController extends Controller
         return $users;
     }
 
-    
+    public function getPerformanceSummary()
+    {
+        $now = now();
+        $currentStart = $now->copy()->subDays(30);
+        $previousStart = $now->copy()->subDays(60);
+        $previousEnd = $now->copy()->subDays(31);
 
+        $currentMetrics = $this->calculatePerformanceMetrics($currentStart, $now);
+        $previousMetrics = $this->calculatePerformanceMetrics($previousStart, $previousEnd);
 
+        return response()->json([
+            'current' => $currentMetrics,
+            'previous' => $previousMetrics,
+            'delta' => $this->calculatePerformanceDeltas($currentMetrics, $previousMetrics),
+        ]);
+    }
 
+    private function calculatePerformanceMetrics($startDate, $endDate)
+    {
+        $totalTickets = Ticket::whereBetween('created_at', [$startDate, $endDate])->count();
+        $resolvedTickets = Ticket::where('status', 'resolved')->whereBetween('resolved_at', [$startDate, $endDate])->count();
 
+        $avgFirstResponse = Ticket::whereNotNull('approved_at')
+            ->whereBetween('approved_at', [$startDate, $endDate])
+            ->get()
+            ->avg(function ($ticket) {
+                return $ticket->created_at?->diffInMinutes($ticket->approved_at);
+            });
 
-    // public function getUserPerformanceSummary()
-    // {
-    //     $users = User::with('department')->where('status', 'active')->get();
+        $avgResolution = Ticket::whereNotNull('resolved_at')
+            ->whereBetween('resolved_at', [$startDate, $endDate])
+            ->get()
+            ->avg(function ($ticket) {
+                return $ticket->start_at?->diffInMinutes($ticket->resolved_at);
+            });
 
-    //     $summary = $users->map(function ($user) {
-    //         $resolved = Ticket::where('assigned_to', $user->id)->whereNotNull('resolved_at')->count();
-    //         $failed = Ticket::where('assigned_to', $user->id)->whereNotNull('failed_at')->count();
-    //         $reopened = Ticket::where('assigned_to', $user->id)->where('status', 'reopened')->count();
-    //         $slaCompliant = Ticket::where('assigned_to', $user->id)->where('sla_breached', false)->count();
+        $slaMet = Ticket::where('status', 'resolved')
+            ->where('sla_breached', false)
+            ->whereBetween('resolved_at', [$startDate, $endDate])
+            ->count();
 
-    //         $total = $resolved + $failed;
+        $slaTotal = Ticket::where('status', 'resolved')
+            ->whereBetween('resolved_at', [$startDate, $endDate])
+            ->count();
 
-    //         $avgResolutionTime = Ticket::where('assigned_to', $user->id)
-    //             ->whereNotNull('resolved_at')
-    //             ->whereNotNull('start_at')
-    //             ->select(DB::raw('AVG(TIMESTAMPDIFF(MINUTE, start_at, resolved_at)) as avg'))
-    //             ->value('avg');
+        $slaCompliance = $slaTotal > 0 ? round(($slaMet / $slaTotal) * 100, 2) : 0;
 
-    //         $resolutionRate = $total > 0 ? round(($resolved / $total) * 100, 2) : 0;
-    //         $slaRate = $total > 0 ? round(($slaCompliant / $total) * 100, 2) : 0;
+        $monthlyTrends = Ticket::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, count(*) as count')
+            ->whereBetween('created_at', [$startDate->copy()->subMonths(6), $endDate])
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
 
-    //         return [
-    //             'employee' => $user->name,
-    //             'department' => optional($user->department)->name,
-    //             'ticketsResolved' => $resolved,
-    //             'reopenedTickets' => $reopened,
-    //             'avgResponseTime' => $avgResolutionTime ? round($avgResolutionTime, 2) . ' mins' : 'N/A',
-    //             'slaCompliance' => $slaRate . '%',
-    //             'performanceScore' => $this->computePerformanceScore($resolved, $slaCompliant, $avgResolutionTime, $reopened),
-    //             'status' => $this->scoreToStatus($resolved, $slaCompliant, $reopened),
-    //         ];
-    //     });
+        return [
+            'totalTickets' => $totalTickets,
+            'resolvedTickets' => $resolvedTickets,
+            'averageFirstResponseTime' => $avgFirstResponse ? round($avgFirstResponse, 2) : 0,
+            'averageResolutionTime' => $avgResolution ? round($avgResolution, 2) : 0,
+            'slaCompliance' => $slaCompliance,
+            'monthlyTrends' => $monthlyTrends,
+        ];
+    }
 
-    //     return response()->json($summary);
-    // }
-
-    // private function computePerformanceScore($resolved, $sla, $avgTime, $reopened)
-    // {
-    //     $score = 0;
-    //     $score += $resolved * 0.5;
-    //     $score += $sla * 0.3;
-    //     $score += $avgTime ? max(0, 100 - ($avgTime / 2)) * 0.1 : 0;
-    //     $score -= $reopened * 0.2;
-
-    //     return round(min(max($score, 0), 100), 2);
-    // }
-
-    // private function scoreToStatus($resolved, $sla, $reopened)
-    // {
-    //     $score = $this->computePerformanceScore($resolved, $sla, 30, $reopened); // using 30min as base
-    //     if ($score >= 85)
-    //         return 'Excellent';
-    //     if ($score >= 70)
-    //         return 'Satisfactory';
-    //     if ($score >= 50)
-    //         return 'Needs Improvement';
-    //     return 'Poor';
-    // }
-
-
+    private function calculatePerformanceDeltas($current, $previous)
+    {
+        return [
+            'totalTicketsDelta' => $this->calculateDelta($current['totalTickets'], $previous['totalTickets']),
+            'resolvedTicketsDelta' => $this->calculateDelta($current['resolvedTickets'], $previous['resolvedTickets']),
+            'averageFirstResponseTimeDelta' => $this->calculateDelta($current['averageFirstResponseTime'], $previous['averageFirstResponseTime']),
+            'averageResolutionTimeDelta' => $this->calculateDelta($current['averageResolutionTime'], $previous['averageResolutionTime']),
+            'slaComplianceDelta' => $this->calculateDelta($current['slaCompliance'], $previous['slaCompliance']),
+        ];
+    }
 }

@@ -38,6 +38,8 @@ Route::middleware(['auth:sanctum', 'inactivity.logout'])->group(function () {
 
     // Route::get('/statistics', [StatisticsController::class, 'getTicketStatisticsSummary']);
     Route::get('/team-overview', [DashboardController::class, 'getTeamOverview']);
+    Route::get('/performance-summary', [DashboardController::class, 'getPerformanceSummary']);
+
     Route::get('/my-overview', [ServiceDeskController::class, 'getMyOverview']);
     Route::get('/performance', [StatisticsController::class, 'getUserPerformanceSummary']);
 

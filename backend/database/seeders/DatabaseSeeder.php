@@ -22,179 +22,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(PermissionSeeder::class);
-
-        DB::table('priorities')->insert([
-            ['name' => 'Low', 'response_time' => 480, 'resolution_time' => 8640],
-            ['name' => 'Medium', 'response_time' => 240, 'resolution_time' => 4320],
-            ['name' => 'High', 'response_time' => 60, 'resolution_time' => 720],
-            ['name' => 'Urgent', 'response_time' => 15, 'resolution_time' => 240],
-        ]);
-
-        $departments = [
-            'MANAGEMENT',
-            'ACCOUNTING DEPARTMENT',
-            'ADMIN DEPARTMENT',
-            'ELECTRONIC DATA DEPARTMENT',
-            'MARKET AND RESEARCH DEVELOPMENT',
-            'HUMAN RESOURCE AND PAYROLL DEPARTMENT',
-            'KENVA PROPERTIES CORPORATION',
-            'LEASING DEPARTMENT',
-            'MCARES DEPARTMENT',
-            'PURCHASING DEPARTMENT',
-            'SALES AND OPERATION DEPARTMENT',
-        ];
-
-        $subDepartments = [
-            ['IT DEPARTMENT', 4],
-            ['HUMAN RESOURCE DEPARTMENT', 6],
-            ['PAYROLL DEPARTMENT', 6],
-        ];
-
-        foreach ($departments as $name) {
-            Department::create(['name' => $name]);
-        }
-
-        foreach ($subDepartments as [$name, $parentId]) {
-            Department::create([
-                'name' => $name,
-                'parent_id' => $parentId,
-            ]);
-        }
-
-        $roles = [
-            'superadmin' => Role::firstOrCreate(['name' => 'superadmin']),
-            'admin' => Role::firstOrCreate(['name' => 'admin']),
-            'manager' => Role::firstOrCreate(['name' => 'manager']),
-            'head' => Role::firstOrCreate(['name' => 'head']),
-            'staff' => Role::firstOrCreate(['name' => 'staff']),
-        ];
-
-        $roles['manager']->parent_id = $roles['admin']->id;
-        $roles['manager']->save();
-
-        $roles['head']->parent_id = $roles['manager']->id;
-        $roles['head']->save();
-
-        $roles['staff']->parent_id = $roles['head']->id;
-        $roles['staff']->save();
-
-        $superadmin = User::create([
-            'rfid' => '1111111111',
-            'name' => 'Super Admin',
-            'username' => 'superadmin',
-            'password' => Hash::make('110686'),
-            'status' => 'active',
-        ]);
-
-        $superadmin->assignRole($roles['superadmin']);
-
-        $manager1 = User::create([
-            'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-            'name' => "Javed Bolista",
-            'username' => "javed",
-            'password' => Hash::make('1234'),
-            'status' => 'active',
-            'department_id' => 4,
-        ]);
-        $manager1->assignRole($roles['manager']);
-
-        $head1 = User::create([
-            'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-            'name' => "Herminio Trinidad Jr.",
-            'username' => "herminio",
-            'password' => Hash::make('1234'),
-            'status' => 'active',
-            'department_id' => 12,
-        ]);
-        $head1->assignRole($roles['head']);
-
-        $staff1 = User::create([
-            'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-            'name' => "John Justin Feranil",
-            'username' => "justin",
-            'password' => Hash::make('1234'),
-            'status' => 'active',
-            'department_id' => 12,
-        ]);
-        $staff1->assignRole($roles['staff']);
-
-
-        $manager2 = User::create([
-            'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-            'name' => "Liberato Garcia",
-            'username' => "liberato",
-            'password' => Hash::make('1234'),
-            'status' => 'active',
-            'department_id' => 6,
-        ]);
-        $manager2->assignRole($roles['manager']);
-
-        $head2 = User::create([
-            'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-            'name' => "Shayne Solinap",
-            'username' => "Shayne",
-            'password' => Hash::make('1234'),
-            'status' => 'active',
-            'department_id' => 14,
-        ]);
-        $head2->assignRole($roles['head']);
-
-        $staff2 = User::create([
-            'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-            'name' => "Romalin Baylen",
-            'username' => "romalin",
-            'password' => Hash::make('1234'),
-            'status' => 'active',
-            'department_id' => 14,
-        ]);
-        $staff2->assignRole($roles['staff']);
-
-        // for ($i = 1; $i <= 5; $i++) {
-        //     $admin = User::create([
-        //         'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-        //         'name' => "Admin $i",
-        //         'username' => "admin$i",
-        //         'password' => Hash::make('110686'),
-        //         'status' => 'active',
-        //         'department_id' => $i,
-        //         // 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
-        //     ]);
-        //     $admin->assignRole($roles['admin']);
-
-        //     $manager = User::create([
-        //         'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-        //         'name' => "Manager $i",
-        //         'username' => "manager$i",
-        //         'password' => Hash::make('110686'),
-        //         'status' => 'active',
-        //         'department_id' => $i,
-        //         // 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
-        //     ]);
-        //     $manager->assignRole($roles['manager']);
-
-        //     $head = User::create([
-        //         'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-        //         'name' => "Head $i",
-        //         'username' => "head$i",
-        //         'password' => Hash::make('110686'),
-        //         'status' => 'active',
-        //         'department_id' => $i,
-        //         // 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
-        //     ]);
-        //     $head->assignRole($roles['head']);
-
-        //     $staff = User::create([
-        //         'rfid' => str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
-        //         'name' => "Staff $i",
-        //         'username' => "staff$i",
-        //         'password' => Hash::make('110686'),
-        //         'status' => 'active',
-        //         'department_id' => $i,
-        //         // 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
-        //     ]);
-        //     $staff->assignRole($roles['staff']);
-        // }
-
+        $this->call(DepartmentSeeder::class);
+        $this->call(PrioritySeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(UserSeeder::class);
 
 
         Telephone::factory()->count(10)->create();
@@ -203,8 +34,7 @@ class DatabaseSeeder extends Seeder
         Anydesk::factory()->count(10)->create();
         Printer::factory()->count(10)->create();
         Feedback::factory()->count(10)->create();
-
-
+        Ticket::factory()->count(100)->create();
 
         // ini_set('memory_limit', '1G');
 
@@ -216,6 +46,5 @@ class DatabaseSeeder extends Seeder
         //     echo "Batch $i inserted\n";
         // }
 
-        Ticket::factory()->count(1000)->create();
     }
 }

@@ -186,13 +186,13 @@ function TopNavigation() {
                                     </div>
                                 )}
 
-                                {!authUser?.name[0] ? (
+                                {/* {!authUser?.name[0] ? (
                                     <>
                                         <Placeholder width="100px" height="30px" />
                                     </>
-                                ) : (
-                                    <strong>{authUser?.name}</strong>
-                                )}
+                                ) : ( */}
+                                <strong>{authUser?.name}</strong>
+                                {/* )} */}
                             </Link>
 
                             <ul className="dropdown-menu dropdown-menu-end bg-body shadow text-body text-small">

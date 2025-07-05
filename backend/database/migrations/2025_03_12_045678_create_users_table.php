@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('rfid')->unique();
             $table->string('name');
-            $table->string('username')->unique();
+            $table->string('username');
+            // $table->string('username')->unique();
             $table->string('email')->unique()->nullable(); // Kapag meron ng hosting;
             $table->string('profile_picture')->nullable();
             $table->string('password');
