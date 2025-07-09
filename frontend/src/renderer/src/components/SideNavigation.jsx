@@ -78,10 +78,28 @@ const pages = [
             { name: 'Internet lines', link: '/it-directory/internet' },
             { name: 'IP Addresses', link: '/it-directory/ip-addresses' },
             { name: 'Anydesk IDs', link: '/it-directory/anydesk-ids' },
-            { name: 'Printers', link: '/it-directory/printers' },
             { name: 'Accounts', link: '/it-directory/accounts' },
             { name: 'Shared Drives', link: '/it-directory/drives' },
             { name: 'Network Devices', link: '/it-directory/network' }
+        ],
+        permission: 'view it directory'
+        //  permission: 'directory:it:view'
+    },
+    {
+        page: 'IT Inventory',
+        link: '/it-inventory',
+        icon: <FaServer />,
+        subPages: [
+            { name: 'Printers', link: '/it-directory/printers' },
+            { name: 'System Unit', link: '/it-directory/printers' },
+            { name: 'Monitor', link: '/it-directory/printers' },
+            { name: 'Keyboard', link: '/it-directory/printers' },
+            { name: 'Mouse', link: '/it-directory/printers' },
+            { name: 'Router', link: '/it-directory/printers' },
+            { name: 'Switch Hub', link: '/it-directory/printers' },
+            { name: 'CCTV Camera', link: '/it-directory/printers' },
+            { name: 'DVR/NVR', link: '/it-directory/printers' },
+            { name: 'DVR/NVR', link: '/it-directory/printers' }
         ],
         permission: 'view it directory'
         //  permission: 'directory:it:view'

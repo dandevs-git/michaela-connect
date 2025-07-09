@@ -104,11 +104,11 @@ function App() {
                     <Route index element={<Navigate to="overview" replace />} />
                     <Route path="overview" element={<TeamOverview />} />
                     <Route path="activities" element={<TeamActivities />} />
-                    <Route path="performance" element={<TeamPerformance />} />
-                    {/* <Route
+                    {/* <Route path="performance" element={<TeamPerformance />} /> */}
+                    <Route
                         path="performance"
                         element={<MaintenancePage titlePage={'Performance Summary'} />}
-                    /> */}
+                    />
                     {/* <Route path="sla" element={<TeamSla />} /> */}
                     <Route path="sla" element={<MaintenancePage titlePage={'SLA Compliance'} />} />
                 </Route>

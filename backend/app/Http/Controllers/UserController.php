@@ -49,6 +49,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|string|exists:roles,name',
+            'position' => 'required|string|max:255',
         ]);
 
 
@@ -57,6 +58,7 @@ class UserController extends Controller
                 $admin->id,
                 "User Management",
                 'User Registration Failed',
+
                 "User registration failed for {$request->name} by Admin {$admin->name}. Reason: " . json_encode($validator->errors()->all())
             );
             return response()->json(['errors' => $validator->errors()], 422);
@@ -71,6 +73,7 @@ class UserController extends Controller
             'username' => $username,
             'rfid' => $request->rfid,
             'password' => Hash::make($password),
+            'position' => $request->position,
             'department_id' => $request->department_id,
             'status' => 'active',
         ]);
@@ -194,6 +197,7 @@ class UserController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'username' => $user->username,
+            'position' => $user->position,
             'email' => $user->email,
             'profile_picture' => $user->profile_picture,
             'status' => $user->status,

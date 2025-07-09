@@ -3,12 +3,13 @@ import { useAPI } from '../../contexts/APIContext'
 import StatisticsCard from '../../components/cards/StatisticsCard'
 import Placeholder from '../../components/placeholders/Placeholder'
 import CustomLineChart from '../../components/charts/CustomLineChart'
+import CustomBarChart from '../../components/charts/CustomBarChart'
 import { COLORS } from '../../constants/config'
 import CustomTable from '../../components/tables/CustomTable'
 
 function PerformanceSummary() {
     const { getData } = useAPI()
-    const [performanceSummary, setPerformanceSummary] = useState([])
+    const [performanceSummary, setPerformanceSummary] = useState({})
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
@@ -42,6 +43,29 @@ function PerformanceSummary() {
         }
     ]
 
+    // const mergedMonthlyTrends = () => {
+    //     const current = performanceSummary.current.monthlyTrends || []
+    //     const previous = performanceSummary.previous.monthlyTrends || []
+
+    //     const allMonthsSet = new Set([
+    //         ...current.map((item) => item.month),
+    //         ...previous.map((item) => item.month)
+    //     ])
+
+    //     const allMonths = Array.from(allMonthsSet).sort()
+
+    //     return allMonths.map((month) => {
+    //         const currentItem = current.find((item) => item.month === month)
+    //         const previousItem = previous.find((item) => item.month === month)
+
+    //         return {
+    //             month,
+    //             Current: currentItem?.count || 0,
+    //             Previous: previousItem?.count || 0
+    //         }
+    //     })
+    // }
+
     return (
         <div
             className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4"
@@ -55,21 +79,22 @@ function PerformanceSummary() {
                 {/* KPI summary cards */}
                 <div className="d-flex row justify-content-center align-items-center px-3 mb-4">
                     <StatisticsCard
-                        title="Total Tickets"
+                        title="Top Employee Total Tickets"
                         value={performanceSummary.current?.totalTickets}
                         delta={performanceSummary.delta?.totalTicketsDelta}
                         iconClass="bi-ticket-perforated"
                         loading={loading}
+                        col={4}
                     />
                     <StatisticsCard
-                        title="Resolved Tickets"
+                        title="Top Employee Resolved Tickets"
                         value={performanceSummary.current?.resolvedTickets}
                         delta={performanceSummary.delta?.resolvedTicketsDelta}
                         iconClass="bi-clipboard-check"
                         loading={loading}
                     />
                     <StatisticsCard
-                        title="SLA Compliance"
+                        title="Top Employee SLA Compliance"
                         value={performanceSummary.current?.slaCompliance}
                         unit="%"
                         delta={performanceSummary.delta?.slaComplianceDelta}
@@ -77,7 +102,7 @@ function PerformanceSummary() {
                         loading={loading}
                     />
                     <StatisticsCard
-                        title="Avg First Response"
+                        title="Top Employee Avg First Response"
                         value={performanceSummary.current?.averageFirstResponseTime}
                         delta={performanceSummary.delta?.averageFirstResponseTimeDelta}
                         iconClass="bi-clock-history"
@@ -86,7 +111,7 @@ function PerformanceSummary() {
                         loading={loading}
                     />
                     <StatisticsCard
-                        title="Avg Resolution"
+                        title="Top Employee Avg Resolution"
                         value={performanceSummary.current?.averageResolutionTime}
                         delta={performanceSummary.delta?.averageResolutionTimeDelta}
                         iconClass="bi-lightning-fill"
@@ -96,7 +121,6 @@ function PerformanceSummary() {
                     />
                 </div>
 
-                {/* Monthly trends */}
                 <div className="col-xl-12 p-4">
                     <div className="card h-100 rounded-4 shadow text-center mb-3">
                         <div className="card-header text-uppercase fs-3 fw-semibold">
@@ -105,17 +129,20 @@ function PerformanceSummary() {
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
                                 <Placeholder height="350px" />
-                            ) : !performanceSummary?.monthlyTrends?.length ? (
+                            ) : performanceSummary?.current?.monthlyTrends.length === 0 ? (
                                 <div className="text-center text-muted py-4">
                                     <i className="bi bi-info-circle fs-1 mb-2"></i>
                                     <div className="fs-6">No data available</div>
                                 </div>
                             ) : (
                                 <CustomLineChart
-                                    data={performanceSummary.monthlyTrends}
+                                    data={performanceSummary.current.monthlyTrends.map((item) => ({
+                                        month: item.month,
+                                        Tickets: item.count
+                                    }))}
                                     xKey="month"
-                                    yKeys={['Created', 'Resolved', 'Failed', 'Reopened']}
-                                    colors={[COLORS[0], COLORS[1], COLORS[2], COLORS[3]]}
+                                    yKeys={['Tickets']}
+                                    colors={[COLORS[0]]}
                                     hasFilter={true}
                                 />
                             )}
@@ -123,36 +150,19 @@ function PerformanceSummary() {
                     </div>
                 </div>
 
+                {/* Department-Wise SLA - Placeholder or integrate logic later */}
                 <div className="col-xl-12 p-4">
                     <div className="card h-100 rounded-4 shadow text-center mb-3">
                         <div className="card-header text-uppercase fs-3 fw-semibold">
                             Department-Wise SLA Compliance
                         </div>
                         <div className="d-flex card-body align-items-center justify-content-center">
-                            {loading ? (
-                                <Placeholder height="350px" />
-                            ) : !performanceSummary?.departmentPerformance?.length ? (
-                                <div className="text-center text-muted py-4">
-                                    <i className="bi bi-info-circle fs-1 mb-2"></i>
-                                    <div className="fs-6">No data available</div>
-                                </div>
-                            ) : (
-                                <CustomBarChart
-                                    data={performanceSummary.departmentPerformance}
-                                    bars={[
-                                        {
-                                            dataKey: 'slaCompliance',
-                                            name: 'SLA Compliance',
-                                            fill: COLORS[0]
-                                        }
-                                    ]}
-                                    xAxisKey="department"
-                                />
-                            )}
+                            <Placeholder height="350px" />
                         </div>
                     </div>
                 </div>
 
+                {/* Employee Performance Table */}
                 <div className="col-xl-12 p-4">
                     <div className="card h-100 rounded-4 shadow text-center mb-3">
                         <div className="card-header text-uppercase fs-3 fw-semibold">
@@ -161,7 +171,7 @@ function PerformanceSummary() {
                         <div className="card-body">
                             <CustomTable
                                 columns={columnsEmployeePerformance}
-                                data={performanceSummary?.employeePerformance}
+                                data={performanceSummary?.employeePerformance || []}
                                 isloading={loading}
                             />
                         </div>

@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('email')->unique()->nullable(); // Kapag meron ng hosting;
             $table->string('profile_picture')->nullable();
             $table->string('password');
+            $table->string('position');
             $table->enum('status', ['active', 'inactive', 'suspended', 'locked'])->default('active');
             $table->integer('failed_attempts')->default(0);
             $table->timestamp('suspended_until')->nullable();

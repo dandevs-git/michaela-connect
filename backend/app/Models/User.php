@@ -20,6 +20,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'position',
         'profile_picture',
         'status',
         'failed_attempts',
@@ -116,5 +117,3 @@ class User extends Authenticatable
         })->where('department_id', $this->department_id)->get();
     }
 }
-
-

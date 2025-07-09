@@ -13,9 +13,11 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\InternetController;
 use App\Http\Controllers\IpAddressController;
+use App\Http\Controllers\PerformanceSummaryController;
 use App\Http\Controllers\PrinterController;
 use App\Http\Controllers\PriorityController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TeamOverviewController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TelephoneController;
 use Illuminate\Support\Facades\Route;
@@ -37,8 +39,8 @@ Route::middleware(['auth:sanctum', 'inactivity.logout'])->group(function () {
     });
 
     // Route::get('/statistics', [StatisticsController::class, 'getTicketStatisticsSummary']);
-    Route::get('/team-overview', [DashboardController::class, 'getTeamOverview']);
-    Route::get('/performance-summary', [DashboardController::class, 'getPerformanceSummary']);
+    Route::get('/team-overview', [TeamOverviewController::class, 'getTeamOverview']);
+    Route::get('/performance-summary', [PerformanceSummaryController::class, 'getPerformanceSummary']);
 
     Route::get('/my-overview', [ServiceDeskController::class, 'getMyOverview']);
     Route::get('/performance', [StatisticsController::class, 'getUserPerformanceSummary']);
