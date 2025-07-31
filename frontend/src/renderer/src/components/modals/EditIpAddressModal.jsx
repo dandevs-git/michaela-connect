@@ -84,9 +84,6 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
             return
         }
 
-        console.log(ipAddress.id)
-        console.log(ipData)
-
         const response = await putData(
             `/ipAddress/${ipAddress.id}`,
             ipData,
@@ -99,7 +96,7 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
             setIsSubmitted(false)
             resetForm()
             // Modal.getInstance(modalRef.current)?.hide()
-modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
+            modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
             refreshList?.()
         }
     }
@@ -132,10 +129,6 @@ modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
                             noValidate
                             onSubmit={handleSubmit}
                         >
-                            {error && (
-                                <div className="alert alert-danger text-center py-2">{error}</div>
-                            )}
-
                             <div className="col-md-12">
                                 <label htmlFor="user" className="form-label">
                                     User
@@ -294,7 +287,7 @@ modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
                                             Saving...
                                         </>
                                     ) : (
-                                        'Update IP Address'
+                                        'Update IP Address Record'
                                     )}
                                 </button>
                             </div>

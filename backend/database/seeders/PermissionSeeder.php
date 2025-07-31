@@ -15,7 +15,8 @@ class PermissionSeeder extends Seeder
                 //FIX PERMISSIONS
 
                 // Directories
-                'view it directory'
+                'view it directory',
+                'view it assets'
             ],
             'admin' => [
 

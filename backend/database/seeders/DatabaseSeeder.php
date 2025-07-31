@@ -12,6 +12,7 @@ use App\Models\Printer;
 use App\Models\Telephone;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\Wifi;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -28,13 +29,14 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
 
 
-        Telephone::factory()->count(10)->create();
-        Internet::factory()->count(10)->create();
-        IpAddress::factory()->count(10)->create();
-        Anydesk::factory()->count(10)->create();
-        Printer::factory()->count(10)->create();
-        Feedback::factory()->count(10)->create();
-        Ticket::factory()->count(100)->create();
+        // Telephone::factory()->count(10)->create();
+        // Internet::factory()->count(10)->create();
+        // Wifi::factory()->count(10)->create();
+        // IpAddress::factory()->count(10)->create();
+        // Anydesk::factory()->count(10)->create();
+        // Printer::factory()->count(10)->create();
+        // Feedback::factory()->count(10)->create();
+        // Ticket::factory()->count(100)->create();
 
         // ini_set('memory_limit', '1G');
 

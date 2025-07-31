@@ -113,12 +113,6 @@ function AddTicketModal({ id, refreshList }) {
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {error && (
-                                    <div className="alert alert-danger text-center py-2">
-                                        {error}
-                                    </div>
-                                )}
-
                                 <div className="col-md-12">
                                     <label htmlFor="ticketTitle" className="form-label">
                                         Concern

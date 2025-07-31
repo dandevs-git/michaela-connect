@@ -1,22 +1,25 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
+import { useToast } from '../../contexts/ToastContext'
 import Select from 'react-select'
-import { COLORS, selectStyles } from '../../constants/config'
+import { selectStyles } from '../../constants/config'
 
-function EditTelephoneModal({ id, telephone, refreshList }) {
+function EditWifiModal({ id, wifi, refreshList }) {
     const { putData, getData } = useAPI()
+    const { showToast } = useToast()
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [users, setUsers] = useState([])
-    const [telephoneData, setTelephoneData] = useState({
+    const [wifiData, setWifiData] = useState({
         user_id: '',
-        number: '',
-        cable_code: '',
-        location: '',
-        description: ''
+        device: '',
+        ip_address: '',
+        ssid: '',
+        gateway: '',
+        mac_address: ''
     })
 
     const modalRef = useRef(null)
@@ -27,34 +30,47 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
     }, [])
 
     useEffect(() => {
-        if (telephone) {
-            setTelephoneData({
-                user_id: telephone?.user?.id || '',
-                number: telephone.number || '',
-                cable_code: telephone.cable_code || '',
-                location: telephone.location || '',
-                description: telephone.description || ''
+        if (wifi) {
+            setWifiData({
+                user_id: wifi?.user?.id || '',
+                device: wifi.device || '',
+                ip_address: wifi.ip_address || '',
+                ssid: wifi.ssid || '',
+                gateway: wifi.gateway || '',
+                mac_address: wifi.mac_address || ''
             })
         }
-    }, [telephone])
+    }, [wifi])
 
     const userOptions = users.map((user) => ({
         value: user.id,
         label: user.name
     }))
 
+    const deviceOptions = [
+        { value: 'Computer', label: 'Computer' },
+        { value: 'Laptop', label: 'Laptop' },
+        { value: 'Printer', label: 'Printer' },
+        { value: 'Phone', label: 'Phone' },
+        { value: 'Tablet', label: 'Tablet' },
+        { value: 'CCTV', label: 'CCTV' },
+        { value: 'Access Point', label: 'Access Point' },
+        { value: 'Other', label: 'Other' }
+    ]
+
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setTelephoneData((prev) => ({ ...prev, [name]: value }))
+        setWifiData((prev) => ({ ...prev, [name]: value }))
     }
 
     const resetForm = () => {
-        setTelephoneData({
+        setWifiData({
             user_id: '',
-            number: '',
-            cable_code: '',
-            location: '',
-            description: ''
+            device: '',
+            ip_address: '',
+            ssid: '',
+            gateway: '',
+            mac_address: ''
         })
         setError('')
         formRef.current?.classList.remove('was-validated')
@@ -67,25 +83,19 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
         setIsSubmitted(true)
         setError('')
 
-        if (!form.checkValidity()) {
+        if (!form.checkValidity() || !wifiData.user_id) {
             form.classList.add('was-validated')
             return
         }
 
-        const response = await putData(
-            `/telephones/${telephone.id}`,
-            telephoneData,
-            () => {},
-            setLoading,
-            setError
-        )
+        const response = await putData(`/wifi/${wifi.id}`, wifiData, () => {}, setLoading, setError)
 
         if (response) {
             setIsSubmitted(false)
             resetForm()
             // Modal.getInstance(modalRef.current)?.hide()
             modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
-            refreshList?.()
+            refreshList()
         }
     }
 
@@ -101,7 +111,7 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title fw-semibold text-uppercase">Edit Telephone</h5>
+                        <h5 className="modal-title fw-semibold text-uppercase">Edit Wifi</h5>
                         <button
                             type="button"
                             className="btn-close"
@@ -122,88 +132,111 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
                                     User
                                 </label>
                                 <Select
-                                    inputId="user_id"
+                                    inputId="user"
                                     name="user_id"
                                     options={userOptions}
                                     value={userOptions.find(
-                                        (option) => option.value === telephoneData?.user_id || ''
+                                        (option) => option.value === wifiData.user_id
                                     )}
                                     onChange={(selected) =>
-                                        setTelephoneData((prev) => ({
+                                        setWifiData((prev) => ({
                                             ...prev,
                                             user_id: selected?.value || ''
                                         }))
                                     }
-                                    styles={selectStyles(
-                                        !!telephoneData?.user_id || !isSubmitted || ''
-                                    )}
+                                    styles={selectStyles(!!wifiData.user_id || !isSubmitted)}
                                     classNamePrefix="react-select"
                                     isClearable
-                                    className={`form-control p-0 border-0 z-3 ${!telephoneData?.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                    className={`form-control p-0 border-0 z-3 ${!wifiData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                                 <div className="invalid-feedback">Please select a user.</div>
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="number" className="form-label">
-                                    Telephone Number
+                                <label htmlFor="device" className="form-label">
+                                    Device Type
+                                </label>
+                                <Select
+                                    inputId="device"
+                                    name="device"
+                                    options={deviceOptions}
+                                    value={deviceOptions.find(
+                                        (option) => option.value === wifiData.device
+                                    )}
+                                    onChange={(selected) =>
+                                        setWifiData((prev) => ({
+                                            ...prev,
+                                            device: selected?.value || ''
+                                        }))
+                                    }
+                                    styles={selectStyles(!!wifiData.device || !isSubmitted)}
+                                    classNamePrefix="react-select"
+                                    isClearable
+                                    className={`form-control p-0 border-0 z-2 ${!wifiData.device && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                />
+                                <div className="invalid-feedback">Please select a device type.</div>
+                            </div>
+
+                            <div className="col-md-12">
+                                <label htmlFor="ip_address" className="form-label">
+                                    IP Address
                                 </label>
                                 <input
                                     type="text"
                                     className="form-control"
-                                    id="number"
-                                    name="number"
-                                    value={telephoneData?.number || ''}
+                                    id="ip_address"
+                                    name="ip_address"
+                                    value={wifiData.ip_address}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                                <div className="invalid-feedback">Please enter the IP Address.</div>
+                            </div>
+
+                            <div className="col-md-12">
+                                <label htmlFor="gateway" className="form-label">
+                                    Gateway
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="gateway"
+                                    name="gateway"
+                                    value={wifiData.gateway}
                                     onChange={handleInputChange}
                                     required
                                 />
                                 <div className="invalid-feedback">
-                                    Please enter a unique telephone number.
+                                    Please enter the gateway address.
                                 </div>
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="cableCode" className="form-label">
-                                    Cable Code
+                                <label htmlFor="ssid" className="form-label">
+                                    SSID
                                 </label>
                                 <input
                                     type="text"
                                     className="form-control"
-                                    id="cableCode"
-                                    name="cable_code"
-                                    value={telephoneData?.cable_code || ''}
+                                    id="ssid"
+                                    name="ssid"
+                                    value={wifiData.ssid}
                                     onChange={handleInputChange}
                                     required
                                 />
-                                <div className="invalid-feedback">
-                                    Please enter a unique cable code.
-                                </div>
+                                <div className="invalid-feedback">Please enter a ssid.</div>
                             </div>
 
                             <div className="col-md-12">
-                                <label htmlFor="location" className="form-label">
-                                    Location (optional)
+                                <label htmlFor="mac_address" className="form-label">
+                                    MAC Address (Optional)
                                 </label>
                                 <input
                                     type="text"
                                     className="form-control"
-                                    id="location"
-                                    name="location"
-                                    value={telephoneData?.location || ''}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-
-                            <div className="col-md-12">
-                                <label htmlFor="description" className="form-label">
-                                    Description (optional)
-                                </label>
-                                <textarea
-                                    className="form-control"
-                                    id="description"
-                                    name="description"
-                                    rows="2"
-                                    value={telephoneData?.description || ''}
+                                    id="mac_address"
+                                    name="mac_address"
+                                    value={wifiData.mac_address}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -223,7 +256,7 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
                                             Saving...
                                         </>
                                     ) : (
-                                        'Update Telephone Record'
+                                        'Update Wifi Record'
                                     )}
                                 </button>
                             </div>
@@ -235,4 +268,4 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
     )
 }
 
-export default EditTelephoneModal
+export default EditWifiModal

@@ -22,6 +22,7 @@ function AddEmployeeModal({ id, refreshList }) {
         rfid: '',
         name: '',
         role: '',
+        position: '',
         department_id: ''
     })
 
@@ -44,6 +45,7 @@ function AddEmployeeModal({ id, refreshList }) {
             rfid: '',
             name: '',
             role: '',
+            position: '',
             department_id: ''
         })
         setError('')
@@ -133,11 +135,11 @@ function AddEmployeeModal({ id, refreshList }) {
                                     onSubmit={handleSubmit}
                                     ref={formRef}
                                 >
-                                    {error && (
+                                    {/* {error && (
                                         <div className="alert alert-danger text-center py-2">
                                             {error}
                                         </div>
-                                    )}
+                                    )} */}
 
                                     <div className="col-md-12">
                                         <label htmlFor="employeeRfid" className="form-label">
@@ -170,6 +172,24 @@ function AddEmployeeModal({ id, refreshList }) {
                                             required
                                         />
                                         <div className="invalid-feedback">Please enter a name.</div>
+                                    </div>
+
+                                    <div className="col-md-12">
+                                        <label htmlFor="employeePosition" className="form-label">
+                                            Position
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="employeePosition"
+                                            name="position"
+                                            value={employeeData.position}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                        <div className="invalid-feedback">
+                                            Please enter a position.
+                                        </div>
                                     </div>
 
                                     <div className="col-md-6">
@@ -308,7 +328,9 @@ function AddEmployeeModal({ id, refreshList }) {
                                         className="btn btn-primary w-100 d-flex justify-content-center align-items-center gap-2"
                                         onClick={() => {
                                             // Modal.getInstance(modalRef.current)?.hide()
-modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
+                                            modalRef.current
+                                                .querySelector('[data-bs-dismiss="modal"]')
+                                                .click()
                                             resetForm()
                                             refreshList?.()
                                         }}
@@ -318,8 +340,6 @@ modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
                                     </button>
                                 </div>
                             )}
-
-                            {console.log(newEmployeeData)}
                         </div>
                     </div>
                 </div>

@@ -131,7 +131,7 @@ function InProgressTickets() {
 
     return (
         <>
-            <div className="card shadow w-100">
+            <div className="card shadow w-100 rounded-4 ">
                 <div className="card-header bg-primary text-light text-uppercase fs-4 fw-semibold text-center">
                     In Progress tickets
                 </div>

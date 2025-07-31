@@ -5,6 +5,7 @@ import Placeholder from '../../components/placeholders/Placeholder'
 import CustomLineChart from '../../components/charts/CustomLineChart'
 import CustomBarChart from '../../components/charts/CustomBarChart'
 import { COLORS } from '../../constants/config'
+
 import CustomTable from '../../components/tables/CustomTable'
 
 function PerformanceSummary() {
@@ -129,7 +130,7 @@ function PerformanceSummary() {
                         <div className="d-flex card-body align-items-center justify-content-center">
                             {loading ? (
                                 <Placeholder height="350px" />
-                            ) : performanceSummary?.current?.monthlyTrends.length === 0 ? (
+                            ) : performanceSummary?.current?.monthlyTrends?.length === 0 ? (
                                 <div className="text-center text-muted py-4">
                                     <i className="bi bi-info-circle fs-1 mb-2"></i>
                                     <div className="fs-6">No data available</div>

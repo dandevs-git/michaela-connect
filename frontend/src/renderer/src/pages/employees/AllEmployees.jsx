@@ -131,10 +131,15 @@ function AllEmployees() {
                 return row.original.department ? row.original.department.name : 'N/A'
             }
         },
+        // {
+        //     header: 'Role',
+        //     accessorKey: 'role',
+        //     cell: ({ row }) => row.original.roles[0]?.name || 'N/A'
+        // },
         {
-            header: 'Role',
-            accessorKey: 'role',
-            cell: ({ row }) => row.original.roles[0]?.name || 'N/A'
+            header: 'Position',
+            accessorKey: 'position',
+            cell: ({ row }) => row.original.position || 'N/A'
         },
         { header: 'Status', accessorKey: 'status' },
         {
@@ -258,7 +263,7 @@ function AllEmployees() {
                 />
             )}
 
-            <div className="card shadow w-100">
+            <div className="card shadow w-100 rounded-4 ">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4 text-center">
                     All Employees
                 </div>

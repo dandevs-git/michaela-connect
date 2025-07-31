@@ -268,6 +268,7 @@ class TeamOverviewController extends Controller
 
         $users = User::select('name', 'last_activity_at')
             ->get()
+            ->sortByDesc('last_activity_at') // ✅ Sort by actual timestamp
             ->map(function ($user) use ($onlineThreshold, $awayThreshold) {
                 $lastSeen = $user->last_activity_at ? Carbon::parse($user->last_activity_at) : null;
 
@@ -288,6 +289,6 @@ class TeamOverviewController extends Controller
                 ];
             });
 
-        return $users;
+        return $users->values(); // Re-index the collection
     }
 }

@@ -5,6 +5,7 @@ import logoBlack from '../assets/images/logos/logo-black.png'
 import logoWhite from '../assets/images/logos/logo-white.png'
 import ThemeContext from '../contexts/ThemeContext'
 import {
+    FaBoxOpen,
     FaChartLine,
     FaCog,
     FaNetworkWired,
@@ -24,9 +25,9 @@ const pages = [
         icon: <FaChartLine />,
         subPages: [
             { name: 'Team Overview', link: '/dashboard/overview' },
-            { name: 'Team Activities', link: '/dashboard/activities' },
-            { name: 'Performance Summary', link: '/dashboard/performance' },
-            { name: 'SLA Compliance', link: '/dashboard/sla' }
+            { name: 'Team Activities', link: '/dashboard/activities' }
+            // { name: 'Performance Summary', link: '/dashboard/performance' },
+            // { name: 'SLA Compliance', link: '/dashboard/sla' }
         ],
         permission: 'view dashboard'
         // permission: 'dashboard:read'
@@ -37,8 +38,8 @@ const pages = [
         icon: <FaTicketAlt />,
         subPages: [
             { name: 'My Overview', link: '/service-desk/overview' },
-            { name: 'My Tickets', link: '/service-desk/tickets' },
-            { name: 'My Reports', link: '/service-desk/reports' }
+            { name: 'My Tickets', link: '/service-desk/tickets' }
+            // { name: 'My Reports', link: '/service-desk/reports' }
         ],
         permission: 'access service desk'
         // permission: 'servicedesk:access'
@@ -62,9 +63,9 @@ const pages = [
         icon: <FaNetworkWired />,
         subPages: [
             { name: 'Telephone Directory', link: '/directory/telephones' },
-            { name: 'Branch Locations', link: '/directory/branches' },
-            { name: 'Staff Extensions', link: '/directory/staff' },
-            { name: 'Accounts Directory', link: '/directory/accounts' }
+            { name: 'Branch Locations', link: '/directory/branches' }
+            // { name: 'Staff Extensions', link: '/directory/staff' },
+            // { name: 'Accounts Directory', link: '/directory/accounts' }
         ],
         permission: 'view general directory'
         // permission: 'directory:general:view'
@@ -76,33 +77,33 @@ const pages = [
         subPages: [
             { name: 'Telephone lines', link: '/it-directory/telephones' },
             { name: 'Internet lines', link: '/it-directory/internet' },
+            { name: 'Wifi Clients', link: '/it-directory/wifi' },
             { name: 'IP Addresses', link: '/it-directory/ip-addresses' },
             { name: 'Anydesk IDs', link: '/it-directory/anydesk-ids' },
             { name: 'Accounts', link: '/it-directory/accounts' },
-            { name: 'Shared Drives', link: '/it-directory/drives' },
-            { name: 'Network Devices', link: '/it-directory/network' }
+            { name: 'CCTV', link: '/it-directory/cctv' }
         ],
         permission: 'view it directory'
         //  permission: 'directory:it:view'
     },
     {
-        page: 'IT Inventory',
-        link: '/it-inventory',
-        icon: <FaServer />,
+        page: 'IT Assets',
+        link: '/it-assets',
+        icon: <FaBoxOpen />,
         subPages: [
-            { name: 'Printers', link: '/it-directory/printers' },
-            { name: 'System Unit', link: '/it-directory/printers' },
-            { name: 'Monitor', link: '/it-directory/printers' },
-            { name: 'Keyboard', link: '/it-directory/printers' },
-            { name: 'Mouse', link: '/it-directory/printers' },
-            { name: 'Router', link: '/it-directory/printers' },
-            { name: 'Switch Hub', link: '/it-directory/printers' },
-            { name: 'CCTV Camera', link: '/it-directory/printers' },
-            { name: 'DVR/NVR', link: '/it-directory/printers' },
-            { name: 'DVR/NVR', link: '/it-directory/printers' }
+            { name: 'Printers', link: '/it-assets/printers' },
+            { name: 'Inks', link: '/it-assets/inks' },
+            { name: 'System Units', link: '/it-assets/system-units' },
+            { name: 'Monitors', link: '/it-assets/monitors' },
+            { name: 'Keyboards', link: '/it-assets/keyboards' },
+            { name: 'Mice', link: '/it-assets/mice' },
+            { name: 'Routers', link: '/it-assets/routers' },
+            { name: 'Switch Hubs', link: '/it-assets/switch-hubs' },
+            { name: 'CCTV Cameras', link: '/it-assets/cctv-cameras' },
+            { name: 'DVR/NVRs', link: '/it-assets/dvr-nvrs' }
         ],
-        permission: 'view it directory'
-        //  permission: 'directory:it:view'
+        permission: 'view it assets'
+        // permission: 'assets:it:view'
     },
     {
         page: 'Reports & Analytics',
@@ -265,7 +266,7 @@ function SideNavigation() {
             <div className="bg-primary text-center text-white mt-auto small flex-column d-flex">
                 {authUser?.role?.name && (
                     <strong className="text-uppercase border-bottom p-1 fs-4 flex-column">
-                        <span>{authUser.role.name}</span>
+                        <span>{authUser.position}</span>
                     </strong>
                 )}
 

@@ -1,33 +1,29 @@
-import { useEffect, useState } from 'react'
-import CustomTable from '../../components/tables/CustomTable'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react'
 import { useAPI } from '../../contexts/APIContext'
-import AddIpAddressModal from '../../components/modals/AddIpAddressModal'
-import ViewIpAddressDetailsModal from '../../components/modals/ViewIpAddressDetailsModal'
+import CustomTable from '../../components/tables/CustomTable'
+import { FaEdit, FaEye, FaTrash } from 'react-icons/fa'
+import AddWifiModal from '../../components/modals/AddWifiModal'
+import ViewWifiDetailsModal from '../../components/modals/ViewWifiDetailsModal'
+import EditWifiModal from '../../components/modals/EditWifiModal'
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
-import EditIpAddressModal from '../../components/modals/EditIpAddressModal'
 
-function IpAddresses() {
+function Wifi() {
     const { getData, deleteData } = useAPI()
-    const [ipAddress, setIpaddress] = useState([])
-    const [selectedIpaddress, setSelectedIpaddress] = useState(null)
+    const [wifi, setWifi] = useState([])
+    const [selectedWifi, setSelectedWifi] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
     const refreshList = () => {
-        getData('/ipAddress', setIpaddress, setLoading, setError)
+        getData('/wifi', setWifi, setLoading, setError)
     }
 
     useEffect(() => {
         refreshList()
     }, [])
 
-    const handleDeleteIpaddress = async () => {
-        const response = await deleteData(
-            `/ipAddress/${selectedIpaddress.id}`,
-            setLoading,
-            setError
-        )
+    const handleDeleteWifi = async () => {
+        const response = await deleteData(`/wifi/${selectedWifi.id}`, setLoading, setError)
         if (response) {
             refreshList()
         }
@@ -48,11 +44,27 @@ function IpAddresses() {
             filterFn: 'includesString',
             cell: ({ row }) => row.original.user?.department?.name || 'N/A'
         },
-        { header: 'IP Address', accessorKey: 'ip' },
-        { header: 'Device Type', accessorKey: 'type' },
-        // { header: 'Assigned Date', accessorKey: 'assigned_date' },
-        // { header: 'Location', accessorKey: 'location' },
-        // { header: 'Description', accessorKey: 'description' },
+        {
+            header: 'Device',
+            accessorKey: 'device',
+            cell: ({ row }) => row.original.device || 'N/A'
+        },
+        {
+            header: 'IP Address',
+            accessorKey: 'ip_address',
+            cell: ({ row }) => row.original.ip_address || 'N/A'
+        },
+        { header: 'SSID', accessorKey: 'ssid', cell: ({ row }) => row.original.ssid || 'N/A' },
+        {
+            header: 'Gateway',
+            accessorKey: 'gateway',
+            cell: ({ row }) => row.original.gateway || 'N/A'
+        },
+        {
+            header: 'MAC Address',
+            accessorKey: 'mac_address',
+            cell: ({ row }) => row.original.mac_address || 'N/A'
+        },
         {
             header: 'Actions',
             accessorKey: 'actions',
@@ -72,8 +84,8 @@ function IpAddresses() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#ipAddressDetailsModal"
-                                onClick={() => setSelectedIpaddress(row.original)}
+                                data-bs-target="#wifiDetailsModal"
+                                onClick={() => setSelectedWifi(row.original)}
                             >
                                 <FaEye /> View
                             </button>
@@ -82,8 +94,8 @@ function IpAddresses() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editIpaddressModal"
-                                onClick={() => setSelectedIpaddress(row.original)}
+                                data-bs-target="#editWifiModal"
+                                onClick={() => setSelectedWifi(row.original)}
                             >
                                 <FaEdit /> Edit
                             </button>
@@ -92,23 +104,10 @@ function IpAddresses() {
                             <button
                                 className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                                 data-bs-toggle="modal"
-                                data-bs-target="#deleteIpaddressConfirmModal"
-                                onClick={() => setSelectedIpaddress(row.original)}
+                                data-bs-target="#deleteWifiConfirmModal"
+                                onClick={() => setSelectedWifi(row.original)}
                             >
                                 <FaTrash /> Delete
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
-                                onClick={() => {
-                                    const ip = row.original?.ip
-                                    if (ip) {
-                                        window.api.send('open-network-path', ip)
-                                    }
-                                }}
-                            >
-                                Open \\{row.original?.ip}
                             </button>
                         </li>
                     </ul>
@@ -121,44 +120,37 @@ function IpAddresses() {
         <>
             <div className="card shadow w-100 rounded-4 ">
                 <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4 text-center">
-                    Ip Addresses
+                    Wifi Clients
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
                         <CustomTable
                             topComponent={
-                                <AddIpAddressModal
-                                    id={'AddIpAddressModal'}
-                                    refreshList={refreshList}
-                                />
+                                <AddWifiModal id={'AddWifiModal'} refreshList={refreshList} />
                             }
                             isloading={loading}
                             columns={columns}
-                            data={ipAddress}
+                            data={wifi}
                         />
                     </div>
                 </div>
             </div>
 
-            <ViewIpAddressDetailsModal id="ipAddressDetailsModal" ipAddress={selectedIpaddress} />
+            <ViewWifiDetailsModal id="wifiDetailsModal" wifi={selectedWifi} />
 
-            <EditIpAddressModal
-                id="editIpaddressModal"
-                ipAddress={selectedIpaddress}
-                refreshList={refreshList}
-            />
+            <EditWifiModal id="editWifiModal" wifi={selectedWifi} refreshList={refreshList} />
 
             <ConfirmationModal
-                id="deleteIpaddressConfirmModal"
-                title="Delete Ip Address"
-                message={`Are you sure you want to Delete Ip Address ${selectedIpaddress?.ip}?`}
+                id="deleteWifiConfirmModal"
+                title="Delete Wifi"
+                message={`Are you sure you want to Delete Wifi Client ${selectedWifi?.user?.name}?`}
                 confirmLabel="Delete"
                 confirmClass="btn-danger text-light"
                 cancelLabel="Cancel"
-                onConfirm={() => handleDeleteIpaddress(selectedIpaddress)}
+                onConfirm={() => handleDeleteWifi(selectedWifi)}
             />
         </>
     )
 }
 
-export default IpAddresses
+export default Wifi

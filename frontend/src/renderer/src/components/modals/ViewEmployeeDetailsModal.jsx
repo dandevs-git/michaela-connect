@@ -42,6 +42,12 @@ function ViewEmployeeDetailsModal({ id, employee }) {
                                         </span>
                                     </p>
                                     <p>
+                                        <strong className="me-2">Position:</strong>
+                                        <span className="text-uppercase">
+                                            {employee.position || 'N/A'}
+                                        </span>
+                                    </p>
+                                    <p>
                                         <strong className="me-2">Role:</strong>
                                         <span className="text-uppercase">
                                             {employee.roles?.[0]?.name || 'N/A'}

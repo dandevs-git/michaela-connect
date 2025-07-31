@@ -111,11 +111,8 @@ function AddAnydeskModal({ id, refreshList }) {
                                 noValidate
                                 onSubmit={() => handleSubmit}
                             >
-                                {error && (
-                                    <div className="alert alert-danger text-center py-2">
-                                        {error}
-                                    </div>
-                                )}
+                                {/*   */}
+
                                 <div className="col-md-12">
                                     <label htmlFor="user" className="form-label">
                                         User

@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAPI } from './contexts/APIContext'
-import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -49,9 +48,7 @@ import TelephoneDirectory from './pages/directory/TelephoneDirectory'
 import BranchLocations from './pages/directory/BranchLocations'
 import StaffExtensions from './pages/directory/StaffExtensions'
 import AccountsDirectory from './pages/directory/AccountsDirectory'
-import SystemAccounts from './pages/it_directory/SystemAccounts'
-import NetworkDevices from './pages/it_directory/NetworkDevices'
-import SharedDrives from './pages/it_directory/SharedDrives'
+import Accounts from './pages/it_directory/Accounts'
 import IntegrationSettings from './pages/system_admin/IntegrationSettings'
 import SecurityCompliance from './pages/system_admin/SecurityCompliance'
 import UpdatesBackup from './pages/system_admin/UpdatesBackup'
@@ -68,6 +65,8 @@ import MonthlyTrends from './pages/reports/MonthlyTrends'
 import DepartmentMetrics from './pages/reports/DepartmentMetrics'
 import SlaInsights from './pages/reports/slaInsights'
 import MaintenancePage from './pages/MaintenancePage'
+import Wifi from './pages/it_directory/Wifi'
+import Cctv from './pages/it_directory/Cctv'
 
 const PrivateRoute = ({ element, allowedRoles, isAuth, authUser }) => {
     if (!isAuth) {
@@ -84,6 +83,14 @@ function App() {
     // useEffect(() => {
     //     AOS.init({ duration: 1000 })
     // }, [])
+
+    if (import.meta.env.VITE_MAINTENANCE_MODE === 'true') {
+        return <div>Maintenance Mode is on</div>
+    }
+
+    // if (import.meta.env.VITE_MAINTENANCE_MODE === 'true') {
+    //     return <MaintenancePage titlePage="System Maintenance" />
+    // }
 
     return (
         <Routes>
@@ -104,11 +111,11 @@ function App() {
                     <Route index element={<Navigate to="overview" replace />} />
                     <Route path="overview" element={<TeamOverview />} />
                     <Route path="activities" element={<TeamActivities />} />
-                    {/* <Route path="performance" element={<TeamPerformance />} /> */}
-                    <Route
+                    <Route path="performance" element={<TeamPerformance />} />
+                    {/* <Route
                         path="performance"
                         element={<MaintenancePage titlePage={'Performance Summary'} />}
-                    />
+                    /> */}
                     {/* <Route path="sla" element={<TeamSla />} /> */}
                     <Route path="sla" element={<MaintenancePage titlePage={'SLA Compliance'} />} />
                 </Route>
@@ -164,21 +171,25 @@ function App() {
                     <Route index element={<Navigate to="telephones" replace />} />
                     <Route path="telephones" element={<TelephoneLines />} />
                     <Route path="internet" element={<InternetLines />} />
+                    <Route path="wifi" element={<Wifi />} />
                     <Route path="ip-addresses" element={<IpAddresses />} />
                     <Route path="anydesk-ids" element={<AnydeskIds />} />
+                    {/* <Route path="accounts" element={<Accounts />} /> */}
+
+                    <Route
+                        path="accounts"
+                        element={<MaintenancePage titlePage={'Accounts Directory'} />}
+                    />
+                    {/* <Route path="cctv" element={<Cctv />} /> */}
+
+                    <Route path="cctv" element={<MaintenancePage titlePage={'CCTV Directory'} />} />
+                </Route>
+
+                <Route path="/it-assets">
+                    <Route index element={<Navigate to="printers" replace />} />
                     <Route path="printers" element={<Printers />} />
-                    {/* <Route path="accounts" element={<SystemAccounts />} /> */}
-                    <Route path="accounts" element={<MaintenancePage titlePage={'Accounts'} />} />
-                    {/* <Route path="drives" element={<SharedDrives />} /> */}
-                    <Route
-                        path="drives"
-                        element={<MaintenancePage titlePage={'Shared Drives'} />}
-                    />
-                    {/* <Route path="network" element={<NetworkDevices />} /> */}
-                    <Route
-                        path="network"
-                        element={<MaintenancePage titlePage={'Network Devices'} />}
-                    />
+                    {/* <Route path="inks" element={<Printers />} />
+                    <Route path="system-units" element={<Printers />} /> */}
                 </Route>
 
                 <Route path="/reports">

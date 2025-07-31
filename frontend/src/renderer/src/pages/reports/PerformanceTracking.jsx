@@ -333,7 +333,7 @@ function PerformanceTracking() {
                             </div>
 
                             <div className="col-xl-12 p-3">
-                                <div className="card shadow w-100">
+                                <div className="card shadow w-100 rounded-4 ">
                                     <div className="card-header bg-light text-uppercase fs-4 fw-semibold text-center">
                                         Employee’s Performance Records
                                     </div>

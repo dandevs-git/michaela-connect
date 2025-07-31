@@ -76,6 +76,12 @@ class User extends Authenticatable
         return $this->hasOne(Printer::class);
     }
 
+    public function wifis()
+    {
+        return $this->hasMany(Wifi::class);
+    }
+
+
     public function supervisor()
     {
         $role = $this->roles->first();

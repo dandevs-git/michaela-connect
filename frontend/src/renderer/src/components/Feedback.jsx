@@ -95,10 +95,6 @@ function Feedback() {
                                 We'd love to hear your thoughts! Please share your feedback below.
                             </p>
 
-                            {error && (
-                                <div className="alert alert-danger text-center py-2">{error}</div>
-                            )}
-
                             <div className="mb-2">
                                 <label htmlFor="comment" className="form-label small">
                                     Feedback Comment

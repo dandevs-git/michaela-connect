@@ -48,10 +48,7 @@ function TeamOverview() {
     ]
 
     return (
-        <div
-            className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4"
-            id="overview"
-        >
+        <div className="card bg-light-subtle shadow text-center w-100 mb-5 rounded-4" id="overview">
             <div className="card-header bg-primary text-light text-uppercase fs-3 fw-semibold rounded-top-4">
                 Team Overview
             </div>
@@ -166,7 +163,6 @@ function TeamOverview() {
                             Team Member Workload
                         </div>
                         <div className="d-flex card-body align-items-center justify-content-center">
-                            {console.log(teamOverview)}
                             {loading ? (
                                 <Placeholder height="350px" />
                             ) : !teamOverview?.teamWorkload?.some(

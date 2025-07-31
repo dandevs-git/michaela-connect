@@ -14,8 +14,6 @@ function SystemFeedback() {
         getData('/feedback', setFeedback, setLoading, setError)
     }, [])
 
-    console.log(feedback)
-
     const columnsLogs = [
         {
             header: 'User',

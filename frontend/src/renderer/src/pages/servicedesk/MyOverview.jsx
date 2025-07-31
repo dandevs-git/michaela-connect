@@ -123,7 +123,7 @@ function MyOverview() {
                                     </div>
                                     <div className="d-flex card-body align-items-center justify-content-center">
                                         {loading ? (
-                                            <Placeholder height="300px" />
+                                            <Placeholder height="350px" />
                                         ) : !myOverview?.myVolumeTrends?.some(
                                               (e) => e.Created > 0
                                           ) ? (
@@ -134,6 +134,13 @@ function MyOverview() {
                                         ) : (
                                             <CustomLineChart
                                                 data={myOverview?.myVolumeTrends}
+                                                xKey="name"
+                                                yKeys={[
+                                                    'Resolved',
+                                                    'Created',
+                                                    'Reopened',
+                                                    'Failed'
+                                                ]}
                                                 hasFilter={true}
                                             />
                                         )}

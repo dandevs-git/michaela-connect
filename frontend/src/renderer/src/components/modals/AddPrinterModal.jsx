@@ -64,7 +64,7 @@ function AddPrinterModal({ id, refreshList }) {
             setIsSubmitted(false)
             resetForm()
             // Modal.getInstance(modalRef.current)?.hide()
-modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
+            modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
             refreshList?.()
         }
     }
@@ -108,12 +108,6 @@ modalRef.current.querySelector('[data-bs-dismiss="modal"]').click()
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                {error && (
-                                    <div className="alert alert-danger text-center py-2">
-                                        {error}
-                                    </div>
-                                )}
-
                                 <div className="col-md-12">
                                     <label htmlFor="user_id" className="form-label">
                                         User
