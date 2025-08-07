@@ -117,7 +117,8 @@ function StatisticsCard({
                                             className={`bi ${
                                                 (
                                                     reverseDelta
-                                                        ? trendReverse === 'danger'
+                                                        ? // reverseDelta && delta != 0
+                                                          trendReverse === 'danger'
                                                         : trend === 'success'
                                                 )
                                                     ? 'bi-arrow-up-short'

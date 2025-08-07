@@ -83,11 +83,7 @@ class TicketController extends Controller
             return response()->json(['error' => 'Invalid priority ID'], 400);
         }
 
-        $lastTicket = Ticket::latest('id')->first();
-        $ticketNumber = $lastTicket ? "T-" . ($lastTicket->id + 1001) : "T-1001";
-
         $ticket = Ticket::create([
-            'ticket_number' => $ticketNumber,
             'title' => $request->title,
             'description' => $request->description,
             'priority_id' => $priority->id,
@@ -98,6 +94,9 @@ class TicketController extends Controller
             'response_deadline' => Carbon::now()->addMinutes($priority->response_time),
             'resolution_deadline' => Carbon::now()->addMinutes($priority->resolution_time),
         ]);
+
+        $ticket->ticket_number = 'T-' . str_pad($ticket->id + 1000000, 8, '0', STR_PAD_LEFT);
+        $ticket->save();
 
         $this->logActivity("Create Ticket", "Ticket #{$ticket->id} created");
         return response()->json(['message' => 'Ticket created successfully', 'ticket' => $ticket], 201);

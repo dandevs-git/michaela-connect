@@ -6,20 +6,20 @@ import { useToast } from '../../contexts/ToastContext'
 import Select from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
-import { COLORS, selectStyles } from '../../constants/config'
+import { selectStyles } from '../../constants/config'
 
 function AddWifiModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
-    const [wifiList, setWifiList] = useState([])
     const [recommendedIP, setRecommendedIP] = useState('')
 
     const modalRef = useRef(null)
     const formRef = useRef(null)
 
     const [users, setUsers] = useState([])
+    const [wifiList, setWifiList] = useState([])
     const [wifiData, setWifiData] = useState({
         user_id: '',
         device: 'Phone',
@@ -48,14 +48,6 @@ function AddWifiModal({ id, refreshList }) {
         value: device,
         label: device
     }))
-
-    // 'Computer'
-    // 'Laptop'
-    // 'Printer'
-    // 'Phone'
-    // 'Tablet'
-    // 'Access Point'
-    // 'Computer'
 
     const ssidOptions = Array.from(new Set(wifiList.map((item) => item.ssid).filter(Boolean))).map(
         (ssid) => ({
@@ -232,7 +224,7 @@ function AddWifiModal({ id, refreshList }) {
                                                     .slice(0, 3)
                                                     .join('.')
                                                 let nextIp = ''
-                                                for (let i = 2; i < 255; i++) {
+                                                for (let i = 11; i < 255; i++) {
                                                     if (!usedIps.includes(i)) {
                                                         nextIp = `${base}.${i}`
                                                         break

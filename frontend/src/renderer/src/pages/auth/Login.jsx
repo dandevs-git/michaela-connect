@@ -12,7 +12,7 @@ function Login() {
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [rememberMe, setRememberMe] = useState(true)
+    const [rememberMe, setRememberMe] = useState(false)
 
     const navigate = useNavigate()
 

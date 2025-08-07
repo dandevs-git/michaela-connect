@@ -125,7 +125,7 @@ function Department() {
                         columns={mainDepartmentColumns}
                         data={mainDepartments}
                     />
-                    <hr />
+                    <hr className="mb-5" />
                     <h4 className="text-start fw-semibold">All Departments</h4>
                     <CustomTable
                         isloading={loadingDepartments}

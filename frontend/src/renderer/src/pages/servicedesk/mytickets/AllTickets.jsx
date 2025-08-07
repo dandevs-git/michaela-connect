@@ -1,22 +1,35 @@
 import { useEffect, useState } from 'react'
 import CustomTable from '../../../components/tables/CustomTable'
-import { FaEye, FaPlus } from 'react-icons/fa'
+import { FaEye, FaPlus, FaTrash } from 'react-icons/fa'
 import { useAPI } from '../../../contexts/APIContext'
 import TicketStatusBadge from '../../../components/badges/TicketStatusBadge'
 import ViewTicketDetailsModal from '../../../components/modals/ViewTicketDetailsModal'
 import AddTicketModal from '../../../components/modals/AddTicketModal'
 import { formatDateVerbose } from '../../../utils/formatDateVerbose'
+import PermissionButton from '../../../components/buttons/PermissionButton'
+import ConfirmationModal from '../../../components/modals/ConfirmationModal'
 
 function AllTickets() {
-    const { getData, authUser } = useAPI()
+    const { getData, deleteData } = useAPI()
     const [selectedTickets, setSelectedTickets] = useState(null)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
-    useEffect(() => {
+    const refreshList = () => {
         getData(`/tickets`, setTickets, setLoading, setError)
+    }
+
+    useEffect(() => {
+        refreshList()
     }, [])
+
+    const handleDeleteTicket = async () => {
+        const response = await deleteData(`/tickets/${selectedTickets.id}`, setLoading, setError)
+        if (response) {
+            refreshList()
+        }
+    }
 
     const columns = [
         { header: 'Tickets No.', accessorKey: 'ticket_number' },
@@ -81,6 +94,17 @@ function AllTickets() {
                                 <FaEye className="me-1" /> View
                             </button>
                         </li>
+                        <li>
+                            <PermissionButton
+                                permission={'delete tickets'}
+                                className="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                                onClick={() => setSelectedTickets(row.original)}
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteTicketConfirmModal"
+                            >
+                                <FaTrash className="me-1" /> Delete
+                            </PermissionButton>
+                        </li>
                     </ul>
                 </div>
             )
@@ -112,6 +136,16 @@ function AllTickets() {
             </div>
 
             <ViewTicketDetailsModal id={'ticketDetailsModal'} data={selectedTickets} />
+
+            <ConfirmationModal
+                id="deleteTicketConfirmModal"
+                title="Delete Ticket"
+                message={`Are you sure you want to Delete Ticket ${selectedTickets?.ticket_number}?`}
+                confirmLabel="Delete"
+                confirmClass="btn-danger text-light"
+                cancelLabel="Cancel"
+                onConfirm={() => handleDeleteTicket(selectedTickets)}
+            />
         </>
     )
 }

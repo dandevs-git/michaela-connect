@@ -16,7 +16,10 @@ class PermissionSeeder extends Seeder
 
                 // Directories
                 'view it directory',
-                'view it assets'
+                'view it assets',
+
+                // Tickets
+                'delete tickets',
             ],
             'admin' => [
 
@@ -29,7 +32,6 @@ class PermissionSeeder extends Seeder
                 'create tickets',
                 'view tickets',
                 'update tickets',
-                'delete tickets',
 
 
                 // Ticket Actions

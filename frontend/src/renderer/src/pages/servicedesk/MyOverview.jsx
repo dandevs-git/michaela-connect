@@ -40,7 +40,7 @@ function MyOverview() {
                                 delta={myOverview.delta?.myAllTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
-                                redirectTo="/servicedesk/tickets/all"
+                                redirectTo="/service-desk/tickets/all"
                                 col={3}
                             />
                             <StatisticsCard
@@ -49,7 +49,7 @@ function MyOverview() {
                                 delta={myOverview.delta?.myOpenTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
-                                redirectTo="/servicedesk/tickets/open"
+                                redirectTo="/service-desk/tickets/open"
                                 col={3}
                             />
                             <StatisticsCard
@@ -58,7 +58,7 @@ function MyOverview() {
                                 delta={myOverview.delta?.myInProgressTicketsDelta}
                                 iconClass="bi-hourglass-split"
                                 loading={loading}
-                                redirectTo="/servicedesk/tickets/inprogress"
+                                redirectTo="/service-desk/tickets/inprogress"
                                 col={3}
                             />
                             <StatisticsCard

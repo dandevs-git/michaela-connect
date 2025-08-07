@@ -166,23 +166,25 @@ function PendingTickets() {
                         <div className="mb-4">
                             {`Are you sure you want to ${confirmType} ticket #${selectedTickets?.ticket_number}?`}
                         </div>
-                        <div className="mb-3 text-start">
-                            <label htmlFor="remarks" className="form-label">
-                                Remarks
-                            </label>
-                            <textarea
-                                className="form-control mb-1"
-                                id="remarks"
-                                rows="5"
-                                value={remarks}
-                                onChange={(e) => setRemarks(e.target.value)}
-                            />
-                            {!remarks.trim() && (
-                                <div className="small text-center text-danger">
-                                    Remarks are required.
-                                </div>
-                            )}
-                        </div>
+                        {confirmType == 'reject' && (
+                            <div className="mb-3 text-start">
+                                <label htmlFor="remarks" className="form-label">
+                                    Remarks
+                                </label>
+                                <textarea
+                                    className="form-control mb-1"
+                                    id="remarks"
+                                    rows="5"
+                                    value={remarks}
+                                    onChange={(e) => setRemarks(e.target.value)}
+                                />
+                                {!remarks.trim() && (
+                                    <div className="small text-center text-danger">
+                                        Remarks are required.
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </>
                 }
                 confirmLabel={confirmType}
@@ -191,7 +193,7 @@ function PendingTickets() {
                 }
                 cancelLabel="Cancel"
                 onConfirm={handleConfirm}
-                disableConfirm={!remarks.trim()}
+                disableConfirm={confirmType == 'reject' && !remarks.trim()}
             />
         </>
     )

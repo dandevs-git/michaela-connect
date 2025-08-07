@@ -71,7 +71,6 @@ Route::middleware(['auth:sanctum', 'inactivity.logout'])->group(function () {
     Route::get('/logs/ticket', [ActivityLogController::class, 'getTicketLogs'])->name('logs.ticket');
     Route::get('/logs/user', [ActivityLogController::class, 'getUserLogs'])->name('logs.user');
 
-
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/change-password', [PasswordController::class, 'changePassword'])->name('password.change');
 

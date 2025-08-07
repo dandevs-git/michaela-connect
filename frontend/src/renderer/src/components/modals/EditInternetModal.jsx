@@ -14,7 +14,6 @@ function EditInternetModal({ id, internet, refreshList }) {
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [users, setUsers] = useState([])
     const [internetData, setInternetData] = useState({
-        user_id: '',
         name: '',
         provider: '',
         gateway: '',
@@ -33,7 +32,6 @@ function EditInternetModal({ id, internet, refreshList }) {
     useEffect(() => {
         if (internet) {
             setInternetData({
-                user_id: internet?.user?.id || '',
                 name: internet.name || '',
                 provider: internet.provider || '',
                 gateway: internet.gateway || '',
@@ -56,7 +54,6 @@ function EditInternetModal({ id, internet, refreshList }) {
 
     const resetForm = () => {
         setInternetData({
-            user_id: '',
             name: '',
             provider: '',
             gateway: '',
@@ -75,7 +72,7 @@ function EditInternetModal({ id, internet, refreshList }) {
         setIsSubmitted(true)
         setError('')
 
-        if (!form.checkValidity() || !internetData.user_id) {
+        if (!form.checkValidity()) {
             form.classList.add('was-validated')
             return
         }
@@ -125,31 +122,6 @@ function EditInternetModal({ id, internet, refreshList }) {
                             noValidate
                             onSubmit={handleSubmit}
                         >
-                            <div className="col-md-12">
-                                <label htmlFor="user" className="form-label">
-                                    User
-                                </label>
-                                <Select
-                                    inputId="user_id"
-                                    name="user_id"
-                                    options={userOptions}
-                                    value={userOptions.find(
-                                        (option) => option.value === internetData.user_id
-                                    )}
-                                    onChange={(selected) =>
-                                        setInternetData((prev) => ({
-                                            ...prev,
-                                            user_id: selected?.value || ''
-                                        }))
-                                    }
-                                    styles={selectStyles(!!internetData.user_id || !isSubmitted)}
-                                    classNamePrefix="react-select"
-                                    isClearable
-                                    className={`form-control p-0 border-0 z-3 ${!internetData.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
-                                />
-                                <div className="invalid-feedback">Please select a user.</div>
-                            </div>
-
                             <div className="col-md-12">
                                 <label htmlFor="name" className="form-label">
                                     Line Name

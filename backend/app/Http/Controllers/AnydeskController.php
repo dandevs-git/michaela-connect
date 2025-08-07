@@ -22,8 +22,8 @@ class AnydeskController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'sometimes|exists:users,id',
-            'number' => 'required|number|unique:anydesks,number',
+            'user_id' => 'required|exists:users,id',
+            'number' => 'required|string|unique:anydesks,number',
             'password' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'description' => 'nullable|string',

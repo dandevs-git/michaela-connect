@@ -66,7 +66,7 @@ function TeamOverview() {
                                 delta={teamOverview.delta?.teamTotalTicketsDelta}
                                 iconClass="bi-ticket-perforated"
                                 loading={loading}
-                                redirectTo="/servicedesk/tickets/all"
+                                redirectTo="/service-desk/tickets/all"
                             />
                             <StatisticsCard
                                 title="Resolved Tickets"
@@ -74,7 +74,7 @@ function TeamOverview() {
                                 delta={teamOverview.delta?.teamResolvedTicketsDelta}
                                 iconClass="bi-clipboard-check"
                                 loading={loading}
-                                redirectTo="/servicedesk/tickets/resolved"
+                                redirectTo="/service-desk/tickets/resolved"
                             />
                             <StatisticsCard
                                 title="SLA Compliance"
@@ -109,7 +109,7 @@ function TeamOverview() {
                                 iconClass="bi-hourglass-top"
                                 reverseDelta={true}
                                 loading={loading}
-                                redirectTo="/servicedesk/tickets/pending"
+                                redirectTo="/service-desk/tickets/pending"
                             />
                         </div>
                     </div>

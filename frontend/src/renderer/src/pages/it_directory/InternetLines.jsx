@@ -31,22 +31,25 @@ function InternetLines() {
 
     const columns = [
         {
-            header: 'User',
-            accessorFn: (row) => row.user?.name || '',
-            id: 'userName',
-            filterFn: 'includesString',
-            cell: ({ row }) => row.original.user?.name || 'N/A'
+            header: 'Line Name',
+            accessorKey: 'name',
+            cell: ({ row }) => row.original?.name || 'N/A'
         },
         {
-            header: 'Department',
-            accessorFn: (row) => row.user?.department?.name || '',
-            id: 'userDepartment',
-            filterFn: 'includesString',
-            cell: ({ row }) => row.original.user?.department?.name || 'N/A'
+            header: 'Provider',
+            accessorKey: 'provider',
+            cell: ({ row }) => row.original?.provider || 'N/A'
         },
-        { header: 'Provider', accessorKey: 'provider' },
-        { header: 'Gateway', accessorKey: 'gateway' },
-        // { header: 'Cable Code', accessorKey: 'cable_code' },
+        {
+            header: 'Gateway',
+            accessorKey: 'gateway',
+            cell: ({ row }) => row.original?.gateway || 'N/A'
+        },
+        {
+            header: 'Cable Code',
+            accessorKey: 'cable_code',
+            cell: ({ row }) => row.original?.cable_code || 'N/A'
+        },
         // { header: 'Location', accessorKey: 'location' },
         // { header: 'Description', accessorKey: 'description' },
         {

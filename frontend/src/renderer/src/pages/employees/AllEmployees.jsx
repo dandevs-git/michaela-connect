@@ -131,11 +131,11 @@ function AllEmployees() {
                 return row.original.department ? row.original.department.name : 'N/A'
             }
         },
-        // {
-        //     header: 'Role',
-        //     accessorKey: 'role',
-        //     cell: ({ row }) => row.original.roles[0]?.name || 'N/A'
-        // },
+        {
+            header: 'Role',
+            accessorKey: 'role',
+            cell: ({ row }) => row.original.roles[0]?.name || 'N/A'
+        },
         {
             header: 'Position',
             accessorKey: 'position',

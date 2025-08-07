@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
-import { FaPlus } from 'react-icons/fa'
+import { FaEye, FaEyeSlash, FaPlus } from 'react-icons/fa'
 import Select from 'react-select'
 import { COLORS, selectStyles } from '../../constants/config'
 
@@ -11,12 +11,13 @@ function AddAnydeskModal({ id, refreshList }) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
+    const [visible, setVisible] = useState(false)
 
     const modalRef = useRef(null)
     const formRef = useRef(null)
 
     const [users, setUsers] = useState([])
-    const [anydeskData, setAnydeskData] = useState({
+    const [formData, setFormData] = useState({
         user_id: '',
         number: '',
         password: '',
@@ -35,11 +36,11 @@ function AddAnydeskModal({ id, refreshList }) {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setAnydeskData((prev) => ({ ...prev, [name]: value }))
+        setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
     const resetForm = () => {
-        setAnydeskData({
+        setFormData({
             user_id: '',
             number: '',
             password: '',
@@ -57,12 +58,12 @@ function AddAnydeskModal({ id, refreshList }) {
         setIsSubmitted(true)
         setError('')
 
-        if (!form.checkValidity() || !anydeskData.user_id) {
+        if (!form.checkValidity() || !formData.user_id) {
             form.classList.add('was-validated')
             return
         }
 
-        const response = await postData('/anydesks', anydeskData, () => {}, setLoading, setError)
+        const response = await postData('/anydesks', formData, () => {}, setLoading, setError)
 
         if (response) {
             setIsSubmitted(false)
@@ -109,10 +110,8 @@ function AddAnydeskModal({ id, refreshList }) {
                                 ref={formRef}
                                 className="row g-3 needs-validation p-3"
                                 noValidate
-                                onSubmit={() => handleSubmit}
+                                onSubmit={handleSubmit}
                             >
-                                {/*   */}
-
                                 <div className="col-md-12">
                                     <label htmlFor="user" className="form-label">
                                         User
@@ -122,21 +121,21 @@ function AddAnydeskModal({ id, refreshList }) {
                                         name="user_id"
                                         options={userOptions}
                                         value={userOptions.find(
-                                            (option) => option.value === anydeskData.user_id
+                                            (option) => option.value === formData.user_id
                                         )}
                                         onChange={(selected) =>
-                                            setAnydeskData((prev) => ({
+                                            setFormData((prev) => ({
                                                 ...prev,
                                                 user_id: selected?.value || ''
                                             }))
                                         }
                                         styles={selectStyles(
-                                            !!anydeskData?.user_id || !isSubmitted || ''
+                                            !!formData?.user_id || !isSubmitted || ''
                                         )}
                                         classNamePrefix="react-select"
                                         isClearable
                                         className={`form-control p-0 border-0 z-3 ${
-                                            !anydeskData?.user_id && isSubmitted
+                                            !formData?.user_id && isSubmitted
                                                 ? 'is-invalid border border-danger'
                                                 : ''
                                         }`}
@@ -152,7 +151,7 @@ function AddAnydeskModal({ id, refreshList }) {
                                         className="form-control"
                                         id="anydeskNumber"
                                         name="number"
-                                        value={anydeskData.number}
+                                        value={formData.number}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -160,19 +159,32 @@ function AddAnydeskModal({ id, refreshList }) {
                                         Please enter a unique Anydesk number.
                                     </div>
                                 </div>
+
                                 <div className="col-md-12">
                                     <label htmlFor="password" className="form-label">
                                         Password (optional)
                                     </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="password"
-                                        name="password"
-                                        value={anydeskData.password}
-                                        onChange={handleInputChange}
-                                    />
+                                    <div className="input-group">
+                                        <input
+                                            type={visible ? 'text' : 'password'}
+                                            className="form-control"
+                                            id="password"
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleInputChange}
+                                            autoComplete="off"
+                                        />
+                                        <button
+                                            className="btn border"
+                                            type="button"
+                                            onClick={() => setVisible(!visible)}
+                                            title={visible ? 'Hide password' : 'Show password'}
+                                        >
+                                            {visible ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
+                                    </div>
                                 </div>
+
                                 <div className="col-md-12">
                                     <label htmlFor="location" className="form-label">
                                         Location (optional)
@@ -182,7 +194,7 @@ function AddAnydeskModal({ id, refreshList }) {
                                         className="form-control"
                                         id="location"
                                         name="location"
-                                        value={anydeskData.location}
+                                        value={formData.location}
                                         onChange={handleInputChange}
                                     />
                                 </div>
@@ -195,7 +207,7 @@ function AddAnydeskModal({ id, refreshList }) {
                                         id="description"
                                         name="description"
                                         rows="2"
-                                        value={anydeskData.description}
+                                        value={formData.description}
                                         onChange={handleInputChange}
                                     />
                                 </div>

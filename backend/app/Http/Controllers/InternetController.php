@@ -13,7 +13,7 @@ class InternetController extends Controller
 
     public function index()
     {
-        $internet = Internet::with('user.department')->latest()->get();
+        $internet = Internet::latest()->get();
         return response()->json($internet, 200);
     }
 
@@ -23,7 +23,6 @@ class InternetController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'name' => 'required|string',
             'provider' => 'required|string',
             'gateway' => 'required|ip|unique:ip_addresses,ip',
@@ -45,7 +44,7 @@ class InternetController extends Controller
      */
     public function show(Internet $internet)
     {
-        return response()->json($internet->load('user.department'), 200);
+        return response()->json($internet, 200);
     }
 
     /**
@@ -54,7 +53,6 @@ class InternetController extends Controller
     public function update(Request $request, Internet $internet)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'name' => 'required|string',
             'provider' => 'required|string',
             'gateway' => 'required|ip|unique:ip_addresses,ip',

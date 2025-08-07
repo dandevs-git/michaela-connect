@@ -70,7 +70,7 @@ function AddTicketModal({ id, refreshList }) {
             Modal.getInstance(modalRef.current).hide()
             resetForm()
             refreshList?.()
-            navigate('/servicedesk/tickets/all', { replace: true })
+            navigate('/service-desk/tickets/all', { replace: true })
         }
     }
 

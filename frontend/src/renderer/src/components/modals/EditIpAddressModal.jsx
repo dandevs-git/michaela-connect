@@ -2,16 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import Select from 'react-select'
+import CreatableSelect from 'react-select/creatable'
 import { COLORS, selectStyles } from '../../constants/config'
 import { FaCalendarDay, FaTimes } from 'react-icons/fa'
-
-const typeOptions = [
-    { value: 'Computer', label: 'Computer' },
-    { value: 'Printer', label: 'Printer' },
-    { value: 'Server', label: 'Server' },
-    { value: 'Router', label: 'Router' },
-    { value: 'Other', label: 'Other' }
-]
 
 function EditIpAddressModal({ id, ipAddress, refreshList }) {
     const { putData, getData } = useAPI()
@@ -20,6 +13,8 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
     const [error, setError] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [users, setUsers] = useState([])
+
+    const [ipList, setIpList] = useState([])
     const [ipData, setIpData] = useState({
         user_id: '',
         ip: '',
@@ -34,6 +29,10 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
 
     useEffect(() => {
         getData('/users', setUsers, () => {}, setError)
+    }, [])
+
+    useEffect(() => {
+        getData('/ipAddress', setIpList, () => {}, setError)
     }, [])
 
     useEffect(() => {
@@ -53,6 +52,13 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
         value: user.id,
         label: user.name
     }))
+
+    const typeOptions = Array.from(new Set(ipList.map((item) => item.type).filter(Boolean))).map(
+        (type) => ({
+            value: type,
+            label: type
+        })
+    )
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -176,7 +182,7 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                                 <label htmlFor="type" className="form-label">
                                     Type
                                 </label>
-                                <Select
+                                <CreatableSelect
                                     inputId="type"
                                     name="type"
                                     options={typeOptions}
