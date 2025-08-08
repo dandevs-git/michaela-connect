@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import Select from 'react-select'
+import CreatableSelect from 'react-select/creatable'
+import { createOptions } from '../../utils/createOptions'
 import { COLORS, selectStyles } from '../../constants/config'
 
 function EditTelephoneModal({ id, telephone, refreshList }) {
@@ -10,7 +12,9 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
+
     const [users, setUsers] = useState([])
+    const [telephoneList, setTelephoneList] = useState([])
     const [telephoneData, setTelephoneData] = useState({
         user_id: '',
         number: '',
@@ -24,6 +28,10 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
 
     useEffect(() => {
         getData('/users', setUsers, () => {}, setError)
+    }, [])
+
+    useEffect(() => {
+        getData('/telephones', setTelephoneList, () => {}, setError)
     }, [])
 
     useEffect(() => {
@@ -42,6 +50,8 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
         value: user.id,
         label: user.name
     }))
+
+    const locationOptions = createOptions(telephoneList, 'location')
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -184,13 +194,23 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
                                 <label htmlFor="location" className="form-label">
                                     Location (optional)
                                 </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="location"
+                                <CreatableSelect
+                                    inputId="location"
                                     name="location"
-                                    value={telephoneData?.location || ''}
-                                    onChange={handleInputChange}
+                                    options={locationOptions}
+                                    value={locationOptions.find(
+                                        (option) => option.value === telephoneData?.location || ''
+                                    )}
+                                    onChange={(selected) =>
+                                        setTelephoneData((prev) => ({
+                                            ...prev,
+                                            location: selected?.value || ''
+                                        }))
+                                    }
+                                    styles={selectStyles(!!telephoneData.location || !isSubmitted)}
+                                    classNamePrefix="react-select"
+                                    isClearable
+                                    className={`form-control p-0 border-0 z-2 ${!telephoneData.location && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                             </div>
 

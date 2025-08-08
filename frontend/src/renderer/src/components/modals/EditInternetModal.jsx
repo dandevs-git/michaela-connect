@@ -1,18 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
-import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
-import { useToast } from '../../contexts/ToastContext'
-import Select from 'react-select'
+import CreatableSelect from 'react-select/creatable'
+import { createOptions } from '../../utils/createOptions'
 import { selectStyles } from '../../constants/config'
 
 function EditInternetModal({ id, internet, refreshList }) {
     const { putData, getData } = useAPI()
-    const { showToast } = useToast()
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
-    const [users, setUsers] = useState([])
+
+    const [internetList, setInternetList] = useState([])
     const [internetData, setInternetData] = useState({
         name: '',
         provider: '',
@@ -25,8 +24,12 @@ function EditInternetModal({ id, internet, refreshList }) {
     const modalRef = useRef(null)
     const formRef = useRef(null)
 
+    const providerOptions = createOptions(internetList, 'provider')
+    const gatewayOptions = createOptions(internetList, 'gateway')
+    const locationOptions = createOptions(internetList, 'location')
+
     useEffect(() => {
-        getData('/users', setUsers, () => {}, setError)
+        getData('/internet', setInternetList, () => {}, setError)
     }, [])
 
     useEffect(() => {
@@ -41,11 +44,6 @@ function EditInternetModal({ id, internet, refreshList }) {
             })
         }
     }, [internet])
-
-    const userOptions = users.map((user) => ({
-        value: user.id,
-        label: user.name
-    }))
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -142,14 +140,23 @@ function EditInternetModal({ id, internet, refreshList }) {
                                 <label htmlFor="provider" className="form-label">
                                     Provider
                                 </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="provider"
+                                <CreatableSelect
+                                    inputId="provider"
                                     name="provider"
-                                    value={internetData.provider}
-                                    onChange={handleInputChange}
-                                    required
+                                    options={providerOptions}
+                                    value={providerOptions.find(
+                                        (option) => option.value === internetData?.provider || ''
+                                    )}
+                                    onChange={(selected) =>
+                                        setInternetData((prev) => ({
+                                            ...prev,
+                                            provider: selected?.value || ''
+                                        }))
+                                    }
+                                    styles={selectStyles(!!internetData.location || !isSubmitted)}
+                                    classNamePrefix="react-select"
+                                    isClearable
+                                    className={`form-control p-0 border-0 z-2 ${!internetData.location && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                                 <div className="invalid-feedback">Please enter a provider.</div>
                             </div>
@@ -158,14 +165,23 @@ function EditInternetModal({ id, internet, refreshList }) {
                                 <label htmlFor="gateway" className="form-label">
                                     Gateway
                                 </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="gateway"
+                                <CreatableSelect
+                                    inputId="gateway"
                                     name="gateway"
-                                    value={internetData.gateway}
-                                    onChange={handleInputChange}
-                                    required
+                                    options={gatewayOptions}
+                                    value={gatewayOptions.find(
+                                        (option) => option.value === internetData?.gateway || ''
+                                    )}
+                                    onChange={(selected) =>
+                                        setInternetData((prev) => ({
+                                            ...prev,
+                                            gateway: selected?.value || ''
+                                        }))
+                                    }
+                                    styles={selectStyles(!!internetData.location || !isSubmitted)}
+                                    classNamePrefix="react-select"
+                                    isClearable
+                                    className={`form-control p-0 border-0 z-2 ${!internetData.location && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                                 <div className="invalid-feedback">Please enter a gateway.</div>
                             </div>
@@ -192,13 +208,23 @@ function EditInternetModal({ id, internet, refreshList }) {
                                 <label htmlFor="location" className="form-label">
                                     Location (optional)
                                 </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="location"
+                                <CreatableSelect
+                                    inputId="location"
                                     name="location"
-                                    value={internetData.location}
-                                    onChange={handleInputChange}
+                                    options={locationOptions}
+                                    value={locationOptions.find(
+                                        (option) => option.value === internetData?.location || ''
+                                    )}
+                                    onChange={(selected) =>
+                                        setInternetData((prev) => ({
+                                            ...prev,
+                                            location: selected?.value || ''
+                                        }))
+                                    }
+                                    styles={selectStyles(!!internetData.location || !isSubmitted)}
+                                    classNamePrefix="react-select"
+                                    isClearable
+                                    className={`form-control p-0 border-0 z-2 ${!internetData.location && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                             </div>
 

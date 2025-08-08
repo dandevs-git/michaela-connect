@@ -197,7 +197,7 @@ function AddWifiModal({ id, refreshList }) {
                                     <label htmlFor="gateway" className="form-label">
                                         Gateway
                                     </label>
-                                    <Select
+                                    <CreatableSelect
                                         inputId="gateway"
                                         name="gateway"
                                         options={gatewayOptions}

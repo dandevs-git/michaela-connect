@@ -36,7 +36,7 @@ function InternetLines() {
             cell: ({ row }) => row.original?.name || 'N/A'
         },
         {
-            header: 'Provider',
+            header: 'Provider / Device',
             accessorKey: 'provider',
             cell: ({ row }) => row.original?.provider || 'N/A'
         },

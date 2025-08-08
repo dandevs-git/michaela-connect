@@ -5,6 +5,7 @@ import { FaCalendarDay, FaCross, FaPlus, FaTimes } from 'react-icons/fa'
 import Select from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 import { COLORS, selectStyles } from '../../constants/config'
+import { createOptions } from '../../utils/createOptions'
 
 function AddIpAddressModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
@@ -40,12 +41,8 @@ function AddIpAddressModal({ id, refreshList }) {
         label: user.name
     }))
 
-    const typeOptions = Array.from(new Set(ipList.map((item) => item.type).filter(Boolean))).map(
-        (type) => ({
-            value: type,
-            label: type
-        })
-    )
+    const typeOptions = createOptions(ipList, 'type')
+    const locationOptions = createOptions(ipList, 'location')
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -202,36 +199,23 @@ function AddIpAddressModal({ id, refreshList }) {
                                         Assigned Date (optional)
                                     </label>
                                     <div className="input-group">
-                                        <span className="input-group-text">
-                                            <FaCalendarDay />
-                                        </span>
                                         <input
                                             type="date"
                                             className="form-control z-1"
                                             id="assignedDate"
                                             name="assigned_date"
-                                            value={ipData.assigned_date}
+                                            value={
+                                                ipData.assigned_date
+                                                    ? ipData.assigned_date.split('T')[0]
+                                                    : new Date().toISOString().split('T')[0]
+                                            }
                                             onChange={handleInputChange}
                                             max={new Date().toISOString().split('T')[0]}
                                         />
+
                                         <button
                                             type="button"
-                                            className="btn border z-1"
-                                            onClick={() =>
-                                                setIpData((prev) => ({
-                                                    ...prev,
-                                                    assigned_date: new Date()
-                                                        .toISOString()
-                                                        .split('T')[0]
-                                                }))
-                                            }
-                                            title="Set Today"
-                                        >
-                                            Today
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn border z-1"
+                                            className="btn border z-1 text-body-tertiary"
                                             onClick={() =>
                                                 setIpData((prev) => ({
                                                     ...prev,
@@ -239,7 +223,7 @@ function AddIpAddressModal({ id, refreshList }) {
                                                 }))
                                             }
                                         >
-                                            <FaTimes />
+                                            Today
                                         </button>
                                     </div>
                                 </div>
@@ -247,13 +231,23 @@ function AddIpAddressModal({ id, refreshList }) {
                                     <label htmlFor="location" className="form-label">
                                         Location (optional)
                                     </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="location"
+                                    <CreatableSelect
+                                        inputId="location"
                                         name="location"
-                                        value={ipData.location}
-                                        onChange={handleInputChange}
+                                        options={locationOptions}
+                                        value={locationOptions.find(
+                                            (option) => option.value === ipData?.location || ''
+                                        )}
+                                        onChange={(selected) =>
+                                            setIpData((prev) => ({
+                                                ...prev,
+                                                location: selected?.value || ''
+                                            }))
+                                        }
+                                        styles={selectStyles(!!ipData.location || !isSubmitted)}
+                                        classNamePrefix="react-select"
+                                        isClearable
+                                        className={`form-control p-0 border-0 z-2 ${!ipData.location && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
                                 </div>
                                 <div className="col-md-12">

@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
-import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import { FaEye, FaEyeSlash, FaPlus } from 'react-icons/fa'
 import Select from 'react-select'
-import { COLORS, selectStyles } from '../../constants/config'
+import CreatableSelect from 'react-select/creatable'
+import { createOptions } from '../../utils/createOptions'
+import { selectStyles } from '../../constants/config'
 
 function AddAnydeskModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
@@ -17,7 +18,8 @@ function AddAnydeskModal({ id, refreshList }) {
     const formRef = useRef(null)
 
     const [users, setUsers] = useState([])
-    const [formData, setFormData] = useState({
+    const [anydeskList, setAnydeskList] = useState([])
+    const [anydeskData, setAnydeskData] = useState({
         user_id: '',
         number: '',
         password: '',
@@ -29,18 +31,24 @@ function AddAnydeskModal({ id, refreshList }) {
         getData('/users', setUsers, () => {}, setError)
     }, [])
 
+    useEffect(() => {
+        getData('/anydesks', setAnydeskList, () => {}, setError)
+    }, [])
+
     const userOptions = users.map((user) => ({
         value: user.id,
         label: user.name
     }))
 
+    const locationOptions = createOptions(anydeskList, 'location')
+
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setFormData((prev) => ({ ...prev, [name]: value }))
+        setAnydeskData((prev) => ({ ...prev, [name]: value }))
     }
 
     const resetForm = () => {
-        setFormData({
+        setAnydeskData({
             user_id: '',
             number: '',
             password: '',
@@ -58,12 +66,12 @@ function AddAnydeskModal({ id, refreshList }) {
         setIsSubmitted(true)
         setError('')
 
-        if (!form.checkValidity() || !formData.user_id) {
+        if (!form.checkValidity() || !anydeskData.user_id) {
             form.classList.add('was-validated')
             return
         }
 
-        const response = await postData('/anydesks', formData, () => {}, setLoading, setError)
+        const response = await postData('/anydesks', anydeskData, () => {}, setLoading, setError)
 
         if (response) {
             setIsSubmitted(false)
@@ -121,21 +129,21 @@ function AddAnydeskModal({ id, refreshList }) {
                                         name="user_id"
                                         options={userOptions}
                                         value={userOptions.find(
-                                            (option) => option.value === formData.user_id
+                                            (option) => option.value === anydeskData.user_id
                                         )}
                                         onChange={(selected) =>
-                                            setFormData((prev) => ({
+                                            setAnydeskData((prev) => ({
                                                 ...prev,
                                                 user_id: selected?.value || ''
                                             }))
                                         }
                                         styles={selectStyles(
-                                            !!formData?.user_id || !isSubmitted || ''
+                                            !!anydeskData?.user_id || !isSubmitted || ''
                                         )}
                                         classNamePrefix="react-select"
                                         isClearable
                                         className={`form-control p-0 border-0 z-3 ${
-                                            !formData?.user_id && isSubmitted
+                                            !anydeskData?.user_id && isSubmitted
                                                 ? 'is-invalid border border-danger'
                                                 : ''
                                         }`}
@@ -151,7 +159,7 @@ function AddAnydeskModal({ id, refreshList }) {
                                         className="form-control"
                                         id="anydeskNumber"
                                         name="number"
-                                        value={formData.number}
+                                        value={anydeskData.number}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -170,7 +178,7 @@ function AddAnydeskModal({ id, refreshList }) {
                                             className="form-control"
                                             id="password"
                                             name="password"
-                                            value={formData.password}
+                                            value={anydeskData.password}
                                             onChange={handleInputChange}
                                             autoComplete="off"
                                         />
@@ -189,14 +197,29 @@ function AddAnydeskModal({ id, refreshList }) {
                                     <label htmlFor="location" className="form-label">
                                         Location (optional)
                                     </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="location"
+                                    <CreatableSelect
+                                        inputId="location"
                                         name="location"
-                                        value={formData.location}
-                                        onChange={handleInputChange}
+                                        options={locationOptions}
+                                        value={locationOptions.find(
+                                            (option) => option.value === anydeskData.location
+                                        )}
+                                        onChange={(selected) =>
+                                            setAnydeskData((prev) => ({
+                                                ...prev,
+                                                location: selected?.value || ''
+                                            }))
+                                        }
+                                        styles={selectStyles(
+                                            !!anydeskData.location || !isSubmitted
+                                        )}
+                                        classNamePrefix="react-select"
+                                        isClearable
+                                        className={`form-control p-0 border-0 z-2 ${!anydeskData.location && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
+                                    <div className="invalid-feedback">
+                                        Please enter the location.
+                                    </div>
                                 </div>
                                 <div className="col-md-12">
                                     <label htmlFor="description" className="form-label">
@@ -207,7 +230,7 @@ function AddAnydeskModal({ id, refreshList }) {
                                         id="description"
                                         name="description"
                                         rows="2"
-                                        value={formData.description}
+                                        value={anydeskData.description}
                                         onChange={handleInputChange}
                                     />
                                 </div>

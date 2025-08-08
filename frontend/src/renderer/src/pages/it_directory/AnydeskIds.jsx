@@ -187,7 +187,6 @@ function AnydeskIds() {
                 </div>
                 <div className="card-body">
                     <div className="col-12 p-4">
-                        <h4 className="text-start fw-semibold">Office Anydesks</h4>
                         <CustomTable
                             topComponent={
                                 <AddAnydeskModal id={'AddAnydeskModal'} refreshList={refreshList} />
@@ -196,15 +195,6 @@ function AnydeskIds() {
                             columns={columns}
                             data={anydesk}
                         />
-                        <hr className="mb-5" />
-
-                        <h4 className="text-start fw-semibold">Store Anydesks</h4>
-                        <CustomTable isloading={loading} columns={columns} data={{}} />
-                        <hr className="mb-5" />
-
-                        <h4 className="text-start fw-semibold">Vacant Anydesks</h4>
-                        <CustomTable isloading={loading} columns={columns} data={{}} />
-                        <hr className="mb-5" />
                     </div>
                 </div>
             </div>

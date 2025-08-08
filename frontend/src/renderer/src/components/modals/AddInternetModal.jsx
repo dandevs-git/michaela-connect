@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
 import { FaPlus } from 'react-icons/fa'
 import CreatableSelect from 'react-select/creatable'
-import { COLORS, selectStyles } from '../../constants/config'
+import { createOptions } from '../../utils/createOptions'
+import { selectStyles } from '../../constants/config'
 
 function AddInternetModal({ id, refreshList }) {
     const { postData, getData } = useAPI()
@@ -27,19 +28,9 @@ function AddInternetModal({ id, refreshList }) {
         getData('/internet', setInternetList, () => {}, setError)
     }, [])
 
-    const providerOptions = Array.from(
-        new Set(internetList.map((item) => item.provider).filter(Boolean))
-    ).map((provider) => ({
-        value: provider,
-        label: provider
-    }))
-
-    const gatewayOptions = Array.from(
-        new Set(internetList.map((item) => item.gateway).filter(Boolean))
-    ).map((gateway) => ({
-        value: gateway,
-        label: gateway
-    }))
+    const providerOptions = createOptions(internetList, 'provider')
+    const gatewayOptions = createOptions(internetList, 'gateway')
+    const locationOptions = createOptions(internetList, 'location')
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -171,7 +162,6 @@ function AddInternetModal({ id, refreshList }) {
                                     <label htmlFor="gateway" className="form-label">
                                         Gateway
                                     </label>
-
                                     <CreatableSelect
                                         inputId="gateway"
                                         name="gateway"
@@ -192,16 +182,6 @@ function AddInternetModal({ id, refreshList }) {
                                         isClearable
                                         className={`form-control p-0 border-0 z-2 ${!internetData.gateway && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
-
-                                    {/* <input
-                                        type="text"
-                                        className="form-control"
-                                        id="gateway"
-                                        name="gateway"
-                                        value={internetData.gateway}
-                                        onChange={handleInputChange}
-                                        required
-                                    /> */}
                                     <div className="invalid-feedback">
                                         Please enter the gateway address.
                                     </div>
@@ -229,13 +209,26 @@ function AddInternetModal({ id, refreshList }) {
                                     <label htmlFor="location" className="form-label">
                                         Location (optional)
                                     </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="location"
+                                    <CreatableSelect
+                                        inputId="location"
                                         name="location"
-                                        value={internetData.location}
-                                        onChange={handleInputChange}
+                                        options={locationOptions}
+                                        value={locationOptions.find(
+                                            (option) =>
+                                                option.value === internetData?.location || ''
+                                        )}
+                                        onChange={(selected) =>
+                                            setInternetData((prev) => ({
+                                                ...prev,
+                                                location: selected?.value || ''
+                                            }))
+                                        }
+                                        styles={selectStyles(
+                                            !!internetData.location || !isSubmitted
+                                        )}
+                                        classNamePrefix="react-select"
+                                        isClearable
+                                        className={`form-control p-0 border-0 z-2 ${!internetData.location && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
                                 </div>
 
