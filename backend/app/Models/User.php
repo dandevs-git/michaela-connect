@@ -53,7 +53,12 @@ class User extends Authenticatable
 
     public function telephones()
     {
-        return $this->belongsToMany(Telephone::class)->withTimestamps();
+        return $this->belongsToMany(Telephone::class);
+    }
+
+    public function accounts()
+    {
+        return $this->belongsToMany(Account::class);
     }
 
     public function ipAddress()

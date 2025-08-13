@@ -27,11 +27,11 @@ function AddTelephoneModal({ id, refreshList }) {
     })
 
     useEffect(() => {
-        getData('/users', setUsers, () => { }, setError)
+        getData('/users', setUsers, () => {}, setError)
     }, [])
 
     useEffect(() => {
-        getData('/telephones', setTelephoneList, () => { }, setError)
+        getData('/telephones', setTelephoneList, () => {}, setError)
     }, [])
 
     const userOptions = users.map((user) => ({
@@ -70,20 +70,13 @@ function AddTelephoneModal({ id, refreshList }) {
             return
         }
 
-        const { user_id, ...rest } = telephoneData;
+        const { user_id, ...rest } = telephoneData
         const payload = {
             user_ids: user_id,
             ...rest
-        };
+        }
 
-        const response = await postData(
-            '/telephones',
-            payload,
-            () => { },
-            setLoading,
-            setError
-        );
-
+        const response = await postData('/telephones', payload, () => {}, setLoading, setError)
 
         if (response) {
             setIsSubmitted(false)
@@ -134,7 +127,7 @@ function AddTelephoneModal({ id, refreshList }) {
                             >
                                 <div className="col-md-12">
                                     <label htmlFor="user" className="form-label">
-                                        User
+                                        Users
                                     </label>
                                     <Select
                                         isMulti
@@ -147,7 +140,9 @@ function AddTelephoneModal({ id, refreshList }) {
                                         onChange={(selected) =>
                                             setTelephoneData((prev) => ({
                                                 ...prev,
-                                                user_id: selected ? selected.map((opt) => opt.value) : []
+                                                user_id: selected
+                                                    ? selected.map((opt) => opt.value)
+                                                    : []
                                             }))
                                         }
                                         styles={selectStyles(
@@ -157,8 +152,9 @@ function AddTelephoneModal({ id, refreshList }) {
                                         isClearable
                                         className={`form-control p-0 border-0 z-3 ${!telephoneData?.user_id?.length && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
-                                    <div className="invalid-feedback">Please select a user.</div>
+                                    <div className="invalid-feedback">Please select a users.</div>
                                 </div>
+
                                 <div className="col-md-12">
                                     <label htmlFor="telephoneNumber" className="form-label">
                                         Telephone Number

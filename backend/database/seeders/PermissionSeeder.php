@@ -14,12 +14,13 @@ class PermissionSeeder extends Seeder
             'superadmin' => [
                 //FIX PERMISSIONS
 
-                // Directories
-                'view it directory',
-                'view it assets',
-
                 // Tickets
                 'delete tickets',
+
+                // Side Navigation
+                'view it directory',
+                'view it assets',
+                'manage admin system settings '
             ],
             'admin' => [
 
@@ -122,6 +123,7 @@ class PermissionSeeder extends Seeder
                 'view dashboard',
                 'access service desk',
                 'view general directory',
+                'manage system settings',
 
                 // Role-based Insights
                 'view managed department tickets',
@@ -150,6 +152,7 @@ class PermissionSeeder extends Seeder
                 'view dashboard',
                 'access service desk',
                 'view general directory',
+                'manage system settings',
 
                 // Role-based Insights
                 'view own department tickets',
@@ -176,6 +179,7 @@ class PermissionSeeder extends Seeder
                 'view dashboard',
                 'access service desk',
                 'view general directory',
+                'manage system settings',
 
                 // Role-based Insights
                 'view own department tickets',

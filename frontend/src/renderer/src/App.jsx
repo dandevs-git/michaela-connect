@@ -281,11 +281,8 @@ function App() {
                     />
                     <Route path="system-feedback" element={<SystemFeedback />} />
                 </Route>
-            </Route>
 
-            <Route element={<PrivateRoute element={<ProfileLayout />} />}>
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
             </Route>
 
             <Route path="/403" element={<ErrorPage errorCode={403} />} />

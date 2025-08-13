@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa'
 import { useAPI } from '../../contexts/APIContext'
 import AddAccountModal from '../../components/modals/AddAccountModal'
-// import ViewAccountDetailsModal from '../../components/modals/ViewAccountDetailsModal'
+import ViewAccountDetailsModal from '../../components/modals/ViewAccountDetailsModal'
 import ConfirmationModal from '../../components/modals/ConfirmationModal'
 // import EditAccountModal from '../../components/modals/EditAccountModal'
 
@@ -47,13 +47,16 @@ function Accounts() {
         {
             header: 'Link',
             accessorKey: 'link',
-            cell: ({ row }) => row.original?.link || 'N/A'
+            cell: ({ row }) => <div className="text-lowercase">{row.original?.link || 'N/A'}</div>
         },
         {
             header: 'Username',
             accessorKey: 'username',
-            cell: ({ row }) => row.original?.username || 'N/A'
+            cell: ({ row }) => (
+                <div className="text-lowercase">{row.original?.username || 'N/A'}</div>
+            )
         },
+
         {
             header: 'Password',
             accessorKey: 'password',
@@ -112,38 +115,38 @@ function Accounts() {
         {
             header: 'Department',
             accessorKey: 'department',
-            cell: ({ row }) => row.original?.department || 'N/A'
+            enableHiding: true
         },
-        // {
-        //     header: 'Person Used',
-        //     accessorKey: 'person_used',
-        //     cell: ({ row }) => row.original?.person_used || 'N/A'
-        // },
-        // {
-        //     header: 'Purpose',
-        //     accessorKey: 'purpose',
-        //     cell: ({ row }) => row.original?.purpose || 'N/A'
-        // },
-        // {
-        //     header: 'Recovery Email',
-        //     accessorKey: 'recovery_email',
-        //     cell: ({ row }) => row.original?.recovery_email || 'N/A'
-        // },
-        // {
-        //     header: 'Recovery Number',
-        //     accessorKey: 'recovery_number',
-        //     cell: ({ row }) => row.original?.recovery_number || 'N/A'
-        // },
-        // {
-        //     header: '2-Step Verification',
-        //     accessorKey: 'verification',
-        //     cell: ({ row }) => row.original?.verification || 'N/A'
-        // },
-        // {
-        //     header: 'Description',
-        //     accessorKey: 'description',
-        //     cell: ({ row }) => row.original?.description || 'N/A'
-        // },
+        {
+            header: 'Users',
+            accessorKey: 'user_id',
+            enableHiding: true
+        },
+        {
+            header: 'Purpose',
+            accessorKey: 'purpose',
+            enableHiding: true
+        },
+        {
+            header: 'Recovery Email',
+            accessorKey: 'recovery_email',
+            enableHiding: true
+        },
+        {
+            header: 'Recovery Number',
+            accessorKey: 'recovery_number',
+            enableHiding: true
+        },
+        {
+            header: '2-Step Verification',
+            accessorKey: 'verification',
+            enableHiding: true
+        },
+        {
+            header: 'Description',
+            accessorKey: 'description',
+            enableHiding: true
+        },
         {
             header: 'Actions',
             accessorKey: 'actions',
@@ -215,9 +218,9 @@ function Accounts() {
                 </div>
             </div>
 
-            {/* <ViewAccountDetailsModal id="accountDetailsModal" account={selectedAccount} />
+            <ViewAccountDetailsModal id="accountDetailsModal" account={selectedAccount} />
 
-            <EditAccountModal
+            {/* <EditAccountModal
                 id="editAccountModal"
                 account={selectedAccount}
                 refreshList={refreshList}

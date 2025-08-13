@@ -148,7 +148,7 @@ const pages = [
             { name: 'System Feedback', link: '/system-administration/system-feedback' }
         ],
         // permission: 'admin:system-management'
-        permission: 'manage system settings'
+        permission: 'manage admin system settings'
     }
 ]
 

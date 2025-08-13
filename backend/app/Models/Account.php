@@ -15,11 +15,15 @@ class Account extends Model
         'username',
         'password',
         'department',
-        'person_used',
         'purpose',
         'recovery_email',
         'recovery_number',
         'verification',
         'description',
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

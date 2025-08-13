@@ -25,7 +25,7 @@ function AddAccountModal({ id, refreshList }) {
         username: '',
         password: '',
         department: '',
-        person_used: '',
+        user_id: [],
         purpose: '',
         recovery_email: '',
         recovery_number: '',
@@ -34,11 +34,11 @@ function AddAccountModal({ id, refreshList }) {
     })
 
     useEffect(() => {
-        getData('/users', setUsers, () => { }, setError)
+        getData('/users', setUsers, () => {}, setError)
     }, [])
 
     useEffect(() => {
-        getData('/accounts', setAccountList, () => { }, setError)
+        getData('/accounts', setAccountList, () => {}, setError)
     }, [])
 
     const userOptions = users.map((user) => ({
@@ -46,7 +46,10 @@ function AddAccountModal({ id, refreshList }) {
         label: user.name
     }))
 
-    const locationOptions = createOptions(accountList, 'location')
+    const typeOptions = createOptions(accountList, 'type')
+    const linkOptions = createOptions(accountList, 'link')
+    const usernameOptions = createOptions(accountList, 'username')
+    const verificationOptions = createOptions(accountList, 'verification')
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -60,7 +63,7 @@ function AddAccountModal({ id, refreshList }) {
             username: '',
             password: '',
             department: '',
-            person_used: '',
+            user_id: [],
             purpose: '',
             recovery_email: '',
             recovery_number: '',
@@ -83,7 +86,13 @@ function AddAccountModal({ id, refreshList }) {
             return
         }
 
-        const response = await postData('/accounts', accountData, () => { }, setLoading, setError)
+        const { user_id, ...rest } = accountData
+        const payload = {
+            user_ids: user_id,
+            ...rest
+        }
+
+        const response = await postData('/accounts', payload, () => {}, setLoading, setError)
 
         if (response) {
             setIsSubmitted(false)
@@ -132,46 +141,89 @@ function AddAccountModal({ id, refreshList }) {
                                 noValidate
                                 onSubmit={handleSubmit}
                             >
-                                <div className="col-md-12">
-                                    <label htmlFor="type" className="form-label">Type</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="type"
+                                <div className="col-md-5">
+                                    <label htmlFor="type" className="form-label">
+                                        Type
+                                    </label>
+                                    <CreatableSelect
+                                        inputId="type"
                                         name="type"
-                                        value={accountData.type}
-                                        onChange={handleInputChange}
-                                        required
+                                        options={typeOptions}
+                                        value={typeOptions.find(
+                                            (option) => option.value === accountData.type
+                                        )}
+                                        onChange={(selected) =>
+                                            setAccountData((prev) => ({
+                                                ...prev,
+                                                type: selected?.value || ''
+                                            }))
+                                        }
+                                        styles={selectStyles(!!accountData.type || !isSubmitted)}
+                                        classNamePrefix="react-select"
+                                        isClearable
+                                        className={`form-control p-0 border-0 z-2 ${!accountData.type && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
                                     <div className="invalid-feedback">Please enter the type.</div>
                                 </div>
 
-                                <div className="col-md-12">
-                                    <label htmlFor="link" className="form-label">Link</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="link"
+                                <div className="col-md-7">
+                                    <label htmlFor="link" className="form-label">
+                                        Link
+                                    </label>
+                                    <CreatableSelect
+                                        inputId="link"
                                         name="link"
-                                        value={accountData.link}
-                                        onChange={handleInputChange}
+                                        options={linkOptions}
+                                        value={linkOptions.find(
+                                            (option) => option.value === accountData.link
+                                        )}
+                                        onChange={(selected) =>
+                                            setAccountData((prev) => ({
+                                                ...prev,
+                                                link: selected?.value || ''
+                                            }))
+                                        }
+                                        styles={selectStyles(!!accountData.link || !isSubmitted)}
+                                        classNamePrefix="react-select"
+                                        isClearable
+                                        className={`form-control p-0 border-0 z-2 ${!accountData.link && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
+                                    <div className="invalid-feedback">Please enter the link.</div>
                                 </div>
 
                                 <div className="col-md-12">
-                                    <label htmlFor="username" className="form-label">Username</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="username"
+                                    <label htmlFor="username" className="form-label">
+                                        Username
+                                    </label>
+                                    <CreatableSelect
+                                        inputId="username"
                                         name="username"
-                                        value={accountData.username}
-                                        onChange={handleInputChange}
+                                        options={usernameOptions}
+                                        value={usernameOptions.find(
+                                            (option) => option.value === accountData.username
+                                        )}
+                                        onChange={(selected) =>
+                                            setAccountData((prev) => ({
+                                                ...prev,
+                                                username: selected?.value || ''
+                                            }))
+                                        }
+                                        styles={selectStyles(
+                                            !!accountData.username || !isSubmitted
+                                        )}
+                                        classNamePrefix="react-select"
+                                        isClearable
+                                        className={`form-control p-0 border-0 z-2 ${!accountData.username && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
+                                    <div className="invalid-feedback">
+                                        Please enter the username.
+                                    </div>
                                 </div>
 
-                                <div className="col-md-12">
-                                    <label htmlFor="password" className="form-label">Password</label>
+                                <div className="col-md-7">
+                                    <label htmlFor="password" className="form-label">
+                                        Password
+                                    </label>
                                     <div className="input-group">
                                         <input
                                             type={visible ? 'text' : 'password'}
@@ -193,32 +245,83 @@ function AddAccountModal({ id, refreshList }) {
                                     </div>
                                 </div>
 
-                                <div className="col-md-12">
-                                    <label htmlFor="department" className="form-label">Department</label>
+                                <div className="col-md-5">
+                                    <label htmlFor="verification" className="form-label">
+                                        2-Step Verification
+                                    </label>
+                                    <CreatableSelect
+                                        inputId="verification"
+                                        name="verification"
+                                        options={verificationOptions}
+                                        value={verificationOptions.find(
+                                            (option) => option.value === accountData.verification
+                                        )}
+                                        onChange={(selected) =>
+                                            setAccountData((prev) => ({
+                                                ...prev,
+                                                verification: selected?.value || ''
+                                            }))
+                                        }
+                                        styles={selectStyles(
+                                            !!accountData.verification || !isSubmitted
+                                        )}
+                                        classNamePrefix="react-select"
+                                        isClearable
+                                        className={`form-control p-0 border-0 z-2 ${!accountData.verification && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                    />
+                                    <div className="invalid-feedback">
+                                        Please enter the verification.
+                                    </div>
+                                </div>
+                                {/* 
+                                <div className="col-md-5">
+                                    <label htmlFor="verification" className="form-label">
+                                        2-Step Verification
+                                    </label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="department"
-                                        name="department"
-                                        value={accountData.department}
+                                        id="verification"
+                                        name="verification"
+                                        value={accountData.verification}
                                         onChange={handleInputChange}
                                     />
+                                </div> */}
+
+                                <div className="col-md-12">
+                                    <label htmlFor="user" className="form-label">
+                                        Users
+                                    </label>
+                                    <Select
+                                        isMulti
+                                        inputId="user_id"
+                                        name="user_id"
+                                        options={userOptions}
+                                        value={userOptions.filter((option) =>
+                                            accountData.user_id.includes(option.value)
+                                        )}
+                                        onChange={(selected) =>
+                                            setAccountData((prev) => ({
+                                                ...prev,
+                                                user_id: selected
+                                                    ? selected.map((opt) => opt.value)
+                                                    : []
+                                            }))
+                                        }
+                                        styles={selectStyles(
+                                            !!accountData?.user_id?.length || !isSubmitted
+                                        )}
+                                        classNamePrefix="react-select"
+                                        isClearable
+                                        className={`form-control p-0 border-0 z-3 ${!accountData?.user_id?.length && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                    />
+                                    <div className="invalid-feedback">Please select a users.</div>
                                 </div>
 
                                 <div className="col-md-12">
-                                    <label htmlFor="person_used" className="form-label">Person Used</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="person_used"
-                                        name="person_used"
-                                        value={accountData.person_used}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-12">
-                                    <label htmlFor="purpose" className="form-label">Purpose</label>
+                                    <label htmlFor="purpose" className="form-label">
+                                        Purpose
+                                    </label>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -229,8 +332,10 @@ function AddAccountModal({ id, refreshList }) {
                                     />
                                 </div>
 
-                                <div className="col-md-12">
-                                    <label htmlFor="recovery_email" className="form-label">Recovery Email</label>
+                                <div className="col-md-6">
+                                    <label htmlFor="recovery_email" className="form-label">
+                                        Recovery Email
+                                    </label>
                                     <input
                                         type="email"
                                         className="form-control"
@@ -241,8 +346,10 @@ function AddAccountModal({ id, refreshList }) {
                                     />
                                 </div>
 
-                                <div className="col-md-12">
-                                    <label htmlFor="recovery_number" className="form-label">Recovery Number</label>
+                                <div className="col-md-6">
+                                    <label htmlFor="recovery_number" className="form-label">
+                                        Recovery Number
+                                    </label>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -254,24 +361,14 @@ function AddAccountModal({ id, refreshList }) {
                                 </div>
 
                                 <div className="col-md-12">
-                                    <label htmlFor="verification" className="form-label">2-Step Verification</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="verification"
-                                        name="verification"
-                                        value={accountData.verification}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-12">
-                                    <label htmlFor="description" className="form-label">Description</label>
+                                    <label htmlFor="description" className="form-label">
+                                        Description
+                                    </label>
                                     <textarea
                                         className="form-control"
                                         id="description"
                                         name="description"
-                                        rows="2"
+                                        rows="3"
                                         value={accountData.description}
                                         onChange={handleInputChange}
                                     />
@@ -285,7 +382,10 @@ function AddAccountModal({ id, refreshList }) {
                                     >
                                         {loading ? (
                                             <>
-                                                <span className="spinner-grow spinner-grow-sm me-2" role="status" />
+                                                <span
+                                                    className="spinner-grow spinner-grow-sm me-2"
+                                                    role="status"
+                                                />
                                                 Submitting...
                                             </>
                                         ) : (
@@ -294,7 +394,6 @@ function AddAccountModal({ id, refreshList }) {
                                     </button>
                                 </div>
                             </form>
-
                         </div>
                     </div>
                 </div>

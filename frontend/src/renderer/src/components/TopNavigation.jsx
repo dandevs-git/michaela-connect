@@ -3,9 +3,11 @@ import ThemeSwitch from './ThemeSwitch'
 import { useAPI } from '../contexts/APIContext'
 import { useState } from 'react'
 import FullScreenLoader from './FullScreenLoader'
-import Placeholder from './placeholders/Placeholder'
 
-const pages = [{ page: 'Dashboard', link: '/dashboard' }]
+const pages = [
+    { page: 'Dashboard', link: '/dashboard' },
+    { page: 'Profile', link: '/profile' }
+]
 
 function TopNavigation() {
     const { logout, authUser } = useAPI()
@@ -186,13 +188,7 @@ function TopNavigation() {
                                     </div>
                                 )}
 
-                                {/* {!authUser?.name[0] ? (
-                                    <>
-                                        <Placeholder width="100px" height="30px" />
-                                    </>
-                                ) : ( */}
                                 <strong>{authUser?.name}</strong>
-                                {/* )} */}
                             </Link>
 
                             <ul className="dropdown-menu dropdown-menu-end bg-body shadow text-body text-small">

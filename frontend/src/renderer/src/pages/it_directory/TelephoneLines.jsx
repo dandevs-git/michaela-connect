@@ -35,18 +35,29 @@ function TelephoneLines() {
 
     const columns = [
         {
-            header: 'User',
-            accessorFn: (row) => row.user?.name || '',
-            id: 'userName',
+            header: 'Users',
+            accessorFn: (row) => row.users?.map((user) => user.name).join(', ') || '',
+            id: 'userNames',
             filterFn: 'includesString',
-            cell: ({ row }) => row.original.user?.name || 'N/A'
+            cell: ({ row }) =>
+                row.original.users?.length
+                    ? row.original.users.map((user) => <div key={user.id}>{user.name}</div>)
+                    : 'N/A'
         },
         {
             header: 'Department',
-            accessorFn: (row) => row.user?.department?.name || '',
+            accessorFn: (row) => row.users?.map((user) => user.department?.name).join(', ') || '',
             id: 'userDepartment',
             filterFn: 'includesString',
-            cell: ({ row }) => row.original.user?.department?.name || 'N/A'
+            cell: ({ row }) => {
+                const departments = row.original.users?.map((user) => user.department?.name) || []
+
+                const uniqueDepartments = [...new Set(departments.filter(Boolean))]
+
+                return uniqueDepartments.length
+                    ? uniqueDepartments.map((dep, idx) => <div key={idx}>{dep}</div>)
+                    : 'N/A'
+            }
         },
         {
             header: 'Telephone Number',
