@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
-import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import Select from 'react-select'
 import CreatableSelect from 'react-select/creatable'
-import { COLORS, selectStyles } from '../../constants/config'
+import { createOptions } from '../../utils/createOptions'
+import { selectStyles } from '../../constants/config'
 import { FaCalendarDay, FaTimes } from 'react-icons/fa'
 
 function EditIpAddressModal({ id, ipAddress, refreshList }) {
@@ -28,11 +28,11 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
     const formRef = useRef(null)
 
     useEffect(() => {
-        getData('/users', setUsers, () => {}, setError)
+        getData('/users', setUsers, () => { }, setError)
     }, [])
 
     useEffect(() => {
-        getData('/ipAddress', setIpList, () => {}, setError)
+        getData('/ipAddress', setIpList, () => { }, setError)
     }, [])
 
     useEffect(() => {
@@ -53,12 +53,8 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
         label: user.name
     }))
 
-    const typeOptions = Array.from(new Set(ipList.map((item) => item.type).filter(Boolean))).map(
-        (type) => ({
-            value: type,
-            label: type
-        })
-    )
+    const locationOptions = createOptions(ipList, 'location')
+    const typeOptions = createOptions(ipList, 'type')
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -93,7 +89,7 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
         const response = await putData(
             `/ipAddress/${ipAddress.id}`,
             ipData,
-            () => {},
+            () => { },
             setLoading,
             setError
         )
@@ -208,36 +204,23 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                                     Assigned Date (optional)
                                 </label>
                                 <div className="input-group">
-                                    <span className="input-group-text">
-                                        <FaCalendarDay />
-                                    </span>
                                     <input
                                         type="date"
                                         className="form-control z-1"
                                         id="assignedDate"
                                         name="assigned_date"
-                                        value={ipData.assigned_date}
+                                        value={
+                                            ipData.assigned_date
+                                                ? ipData.assigned_date.split('T')[0]
+                                                : new Date().toISOString().split('T')[0]
+                                        }
                                         onChange={handleInputChange}
                                         max={new Date().toISOString().split('T')[0]}
                                     />
+
                                     <button
                                         type="button"
-                                        className="btn border z-1"
-                                        onClick={() =>
-                                            setIpData((prev) => ({
-                                                ...prev,
-                                                assigned_date: new Date()
-                                                    .toISOString()
-                                                    .split('T')[0]
-                                            }))
-                                        }
-                                        title="Set Today"
-                                    >
-                                        Today
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn border z-1"
+                                        className="btn border z-1 text-body-tertiary"
                                         onClick={() =>
                                             setIpData((prev) => ({
                                                 ...prev,
@@ -245,7 +228,7 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                                             }))
                                         }
                                     >
-                                        <FaTimes />
+                                        Today
                                     </button>
                                 </div>
                             </div>
@@ -254,13 +237,23 @@ function EditIpAddressModal({ id, ipAddress, refreshList }) {
                                 <label htmlFor="location" className="form-label">
                                     Location (optional)
                                 </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="location"
+                                <CreatableSelect
+                                    inputId="location"
                                     name="location"
-                                    value={ipData.location}
-                                    onChange={handleInputChange}
+                                    options={locationOptions}
+                                    value={locationOptions.find(
+                                        (option) => option.value === ipData.location
+                                    )}
+                                    onChange={(selected) =>
+                                        setInternetData((prev) => ({
+                                            ...prev,
+                                            location: selected?.value || ''
+                                        }))
+                                    }
+                                    styles={selectStyles(!!ipData.location || !isSubmitted)}
+                                    classNamePrefix="react-select"
+                                    isClearable
+                                    className={`form-control p-0 border-0 z-2 ${!ipData.location && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                 />
                             </div>
 

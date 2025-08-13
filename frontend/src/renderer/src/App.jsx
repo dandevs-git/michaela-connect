@@ -174,15 +174,15 @@ function App() {
                     <Route path="wifi" element={<Wifi />} />
                     <Route path="ip-addresses" element={<IpAddresses />} />
                     <Route path="anydesk-ids" element={<AnydeskIds />} />
-                    {/* <Route path="accounts" element={<Accounts />} /> */}
+                    <Route path="accounts" element={<Accounts />} />
 
-                    <Route
+                    {/* <Route
                         path="accounts"
                         element={<MaintenancePage titlePage={'Accounts Directory'} />}
-                    />
-                    {/* <Route path="cctv" element={<Cctv />} /> */}
+                    /> */}
+                    <Route path="cctv" element={<Cctv />} />
 
-                    <Route path="cctv" element={<MaintenancePage titlePage={'CCTV Directory'} />} />
+                    {/* <Route path="cctv" element={<MaintenancePage titlePage={'CCTV Directory'} />} /> */}
                 </Route>
 
                 <Route path="/it-assets">

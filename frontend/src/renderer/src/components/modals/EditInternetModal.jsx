@@ -213,7 +213,7 @@ function EditInternetModal({ id, internet, refreshList }) {
                                     name="location"
                                     options={locationOptions}
                                     value={locationOptions.find(
-                                        (option) => option.value === internetData?.location || ''
+                                        (option) => option.value === internetData.location
                                     )}
                                     onChange={(selected) =>
                                         setInternetData((prev) => ({

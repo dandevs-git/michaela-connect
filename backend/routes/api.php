@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
@@ -87,6 +88,7 @@ Route::middleware(['auth:sanctum', 'inactivity.logout'])->group(function () {
         'anydesks' => AnydeskController::class,
         'printers' => PrinterController::class,
         'wifi' => WifiController::class,
+        'accounts' => AccountController::class,
     ]);
 
     Route::get('/users/supervisor', [UserController::class, 'getSupervisor']);

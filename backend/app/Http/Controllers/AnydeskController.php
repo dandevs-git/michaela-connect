@@ -12,7 +12,7 @@ class AnydeskController extends Controller
      */
     public function index()
     {
-        $anydesk = Anydesk::with('user.department')->latest()->get();
+        $anydesk = Anydesk::with('users.department')->latest()->get();
         return response()->json($anydesk, 200);
     }
 
@@ -42,7 +42,7 @@ class AnydeskController extends Controller
      */
     public function show(Anydesk $anydesk)
     {
-        $anydesk->load('user.department');
+        $anydesk->load('users.department');
         return response()->json($anydesk, 200);
     }
 

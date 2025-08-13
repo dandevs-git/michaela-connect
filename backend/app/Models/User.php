@@ -51,9 +51,9 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
-    public function telephone()
+    public function telephones()
     {
-        return $this->hasOne(Telephone::class);
+        return $this->belongsToMany(Telephone::class)->withTimestamps();
     }
 
     public function ipAddress()
@@ -80,6 +80,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Wifi::class);
     }
+
+
 
 
     public function supervisor()

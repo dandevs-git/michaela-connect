@@ -11,15 +11,14 @@ class Telephone extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'number',
         'cable_code',
         'location',
         'description',
     ];
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsToMany(User::class);
     }
 }

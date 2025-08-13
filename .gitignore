@@ -5,13 +5,20 @@
 /public/storage
 /storage/*.key
 /storage/app/public
-/storage/framework/*
-!storage/framework/.gitignore
+/storage/*.key
+/storage/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+!/storage/framework/cache/.gitignore
+!/storage/framework/sessions/.gitignore
+!/storage/framework/views/.gitignore
 /storage/logs/*
 .env
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
+
 
 # ====================================================
 # Laravel Mix / Vite / Build

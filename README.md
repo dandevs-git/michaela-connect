@@ -53,6 +53,11 @@ php artisan key:generate
 # Run migrations (make sure DB is ready)
 php artisan migrate
 
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan config:cache
+
 # Start Laravel development server
 php artisan serve
 
@@ -69,6 +74,7 @@ npm install
 
 # Run Vite dev server
 npm run dev
+
 
 
 

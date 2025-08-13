@@ -28,11 +28,11 @@ function AddAnydeskModal({ id, refreshList }) {
     })
 
     useEffect(() => {
-        getData('/users', setUsers, () => {}, setError)
+        getData('/users', setUsers, () => { }, setError)
     }, [])
 
     useEffect(() => {
-        getData('/anydesks', setAnydeskList, () => {}, setError)
+        getData('/anydesks', setAnydeskList, () => { }, setError)
     }, [])
 
     const userOptions = users.map((user) => ({
@@ -71,7 +71,7 @@ function AddAnydeskModal({ id, refreshList }) {
             return
         }
 
-        const response = await postData('/anydesks', anydeskData, () => {}, setLoading, setError)
+        const response = await postData('/anydesks', anydeskData, () => { }, setLoading, setError)
 
         if (response) {
             setIsSubmitted(false)
@@ -142,11 +142,10 @@ function AddAnydeskModal({ id, refreshList }) {
                                         )}
                                         classNamePrefix="react-select"
                                         isClearable
-                                        className={`form-control p-0 border-0 z-3 ${
-                                            !anydeskData?.user_id && isSubmitted
-                                                ? 'is-invalid border border-danger'
-                                                : ''
-                                        }`}
+                                        className={`form-control p-0 border-0 z-3 ${!anydeskData?.user_id && isSubmitted
+                                            ? 'is-invalid border border-danger'
+                                            : ''
+                                            }`}
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
                                 </div>

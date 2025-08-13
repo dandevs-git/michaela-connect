@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAPI } from '../../contexts/APIContext'
-import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
 import Select from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 import { createOptions } from '../../utils/createOptions'
-import { COLORS, selectStyles } from '../../constants/config'
+import { selectStyles } from '../../constants/config'
 
 function EditTelephoneModal({ id, telephone, refreshList }) {
     const { putData, getData } = useAPI()
@@ -27,11 +26,11 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
     const formRef = useRef(null)
 
     useEffect(() => {
-        getData('/users', setUsers, () => {}, setError)
+        getData('/users', setUsers, () => { }, setError)
     }, [])
 
     useEffect(() => {
-        getData('/telephones', setTelephoneList, () => {}, setError)
+        getData('/telephones', setTelephoneList, () => { }, setError)
     }, [])
 
     useEffect(() => {
@@ -85,7 +84,7 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
         const response = await putData(
             `/telephones/${telephone.id}`,
             telephoneData,
-            () => {},
+            () => { },
             setLoading,
             setError
         )
@@ -199,7 +198,7 @@ function EditTelephoneModal({ id, telephone, refreshList }) {
                                     name="location"
                                     options={locationOptions}
                                     value={locationOptions.find(
-                                        (option) => option.value === telephoneData?.location || ''
+                                        (option) => option.value === telephoneData.location
                                     )}
                                     onChange={(selected) =>
                                         setTelephoneData((prev) => ({

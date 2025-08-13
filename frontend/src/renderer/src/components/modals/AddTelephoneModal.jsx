@@ -19,7 +19,7 @@ function AddTelephoneModal({ id, refreshList }) {
     const [users, setUsers] = useState([])
     const [telephoneList, setTelephoneList] = useState([])
     const [telephoneData, setTelephoneData] = useState({
-        user_id: '',
+        user_id: [],
         number: '',
         cable_code: '',
         location: '',
@@ -27,11 +27,11 @@ function AddTelephoneModal({ id, refreshList }) {
     })
 
     useEffect(() => {
-        getData('/users', setUsers, () => {}, setError)
+        getData('/users', setUsers, () => { }, setError)
     }, [])
 
     useEffect(() => {
-        getData('/telephones', setTelephoneList, () => {}, setError)
+        getData('/telephones', setTelephoneList, () => { }, setError)
     }, [])
 
     const userOptions = users.map((user) => ({
@@ -48,7 +48,7 @@ function AddTelephoneModal({ id, refreshList }) {
 
     const resetForm = () => {
         setTelephoneData({
-            user_id: '',
+            user_id: [],
             number: '',
             cable_code: '',
             location: '',
@@ -70,13 +70,20 @@ function AddTelephoneModal({ id, refreshList }) {
             return
         }
 
+        const { user_id, ...rest } = telephoneData;
+        const payload = {
+            user_ids: user_id,
+            ...rest
+        };
+
         const response = await postData(
             '/telephones',
-            telephoneData,
-            () => {},
+            payload,
+            () => { },
             setLoading,
             setError
-        )
+        );
+
 
         if (response) {
             setIsSubmitted(false)
@@ -130,24 +137,25 @@ function AddTelephoneModal({ id, refreshList }) {
                                         User
                                     </label>
                                     <Select
+                                        isMulti
                                         inputId="user_id"
                                         name="user_id"
                                         options={userOptions}
-                                        value={userOptions.find(
-                                            (option) => option.value === telephoneData.user_id
+                                        value={userOptions.filter((option) =>
+                                            telephoneData.user_id.includes(option.value)
                                         )}
                                         onChange={(selected) =>
                                             setTelephoneData((prev) => ({
                                                 ...prev,
-                                                user_id: selected?.value || ''
+                                                user_id: selected ? selected.map((opt) => opt.value) : []
                                             }))
                                         }
                                         styles={selectStyles(
-                                            !!telephoneData?.user_id || !isSubmitted || ''
+                                            !!telephoneData?.user_id?.length || !isSubmitted
                                         )}
                                         classNamePrefix="react-select"
                                         isClearable
-                                        className={`form-control p-0 border-0 z-3 ${!telephoneData?.user_id && isSubmitted ? 'is-invalid border border-danger' : ''}`}
+                                        className={`form-control p-0 border-0 z-3 ${!telephoneData?.user_id?.length && isSubmitted ? 'is-invalid border border-danger' : ''}`}
                                     />
                                     <div className="invalid-feedback">Please select a user.</div>
                                 </div>

@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('department', 'telephone', 'printer', 'anydesk', 'ipAddress', 'roles.permissions')->latest()->get();
+        $users = User::with('department', 'telephones', 'printer', 'anydesk', 'ipAddress', 'roles.permissions')->latest()->get();
 
         $filteredUsers = $users->filter(function ($user) {
             return !$user->getRoleNames()->contains('superadmin');
@@ -100,7 +100,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $user->load('department', 'telephone', 'printer', 'anydesk', 'ipAddress', 'roles.permissions');
+        $user->load('department', 'telephones', 'printer', 'anydesk', 'ipAddress', 'roles.permissions');
         return response()->json($user, 200);
     }
 
